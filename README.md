@@ -35,9 +35,10 @@ dissertation
 
 ## Tools
 
-LaTeX
-Python
-Pandoc
-IPython
-LilyPond
-Graphviz
+- LaTeX
+- Python
+- Pandoc
+- IPython
+- LilyPond
+- ImageMagick
+- Graphviz
