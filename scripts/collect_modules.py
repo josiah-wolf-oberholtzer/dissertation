@@ -60,6 +60,8 @@ def source_path_to_title(module_name, source_path):
     path = path.strip('/')
     path = path.strip('.py')
     path = path.replace(os.path.sep, '.')
+    if path.endswith('.definition'):
+        path = path.replace('.definition', '')
     return path
 
 
@@ -85,7 +87,7 @@ def source_path_to_latex(module_name, source_path):
     title = source_path_to_title(module_name, source_path)
     title = title.replace('_', '\_')
     result = []
-    result.append(r'\subsubsection{{{}}}'.format(title))
+    result.append(r'\subsection{{{}}}'.format(title))
     result.append('')
     result.append(r'\begin{lstlisting}')
     result.extend(lines)
@@ -97,7 +99,7 @@ def source_path_to_latex(module_name, source_path):
 def write_module_index(module_name, tex_paths):
     import dissertation
     result = []
-    result.append(r'\subsection{{{}}}'.format(module_name))
+    result.append(r'\section{{\emph{{{}}} Source Code}}'.format(module_name))
     result.append('')
     for tex_path in tex_paths:
         tex_path = tex_path.partition('dissertation/')[-1] 

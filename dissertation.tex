@@ -1,0 +1,71 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+
+% Modify the following line to match your school
+% Available options include `Harvard`, `Princeton`, and `NYU`.
+\documentclass[School=Harvard]{Dissertate}
+
+\usepackage{color}
+\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{redstrings}{rgb}{0.9,0,0}
+
+\usepackage{listings}
+\lstset{language=Python,
+showspaces=false,
+showtabs=false,
+breaklines=false,
+showstringspaces=false,
+breakatwhitespace=false,
+escapeinside={(*@}{@*)},
+commentstyle=\color{greencomments},
+keywordstyle=\color{bluekeywords}\bfseries,
+stringstyle=\color{redstrings},
+basicstyle=\footnotesize\ttfamily
+}
+
+%\lstset{
+%    basicstyle=\footnotesize\ttfamily,
+%    breaklines=false,
+%    language=Python,
+%    showspaces=false, 
+%    showstringspaces=false
+%}
+
+\begin{document}
+
+% the front matter
+\input{frontmatter/personalize}
+\maketitle
+\copyrightpage
+\abstractpage
+\tableofcontents
+%\authorlist
+\listoffigures
+\dedicationpage
+\acknowledgments
+
+\doublespacing
+
+% include each chapter...
+\setcounter{chapter}{-1}  % start chapter numbering at 0
+%\include{chapters/introduction}
+%\include{chapters/chapter1}
+%\include{chapters/chapter2}
+%\include{chapters/chapter3}
+%\include{chapters/conclusion}
+\begin{appendices}
+    \include{appendices/appendices}
+\end{appendices}
+
+\singlespacing
+
+% the back matter
+\clearpage
+\bibliography{references}
+\addcontentsline{toc}{chapter}{References}
+\bibliographystyle{apalike2}
+
+\include{endmatter/colophon}
+
+\end{document}
