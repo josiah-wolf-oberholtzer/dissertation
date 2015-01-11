@@ -67,7 +67,8 @@ def source_path_to_tex_path(module_name, source_path):
     import dissertation
     root_path = dissertation.__path__[0]
     file_name = source_path_to_title(module_name, source_path)
-    file_name = file_name.replace('.', '__')
+    file_name = file_name.replace('.', '--')
+    file_name = file_name.replace('_', '-')
     file_name = file_name + '.tex'
     path = os.path.join(
         root_path,
@@ -82,6 +83,7 @@ def source_path_to_latex(module_name, source_path):
     with open(source_path, 'r') as file_pointer:
         lines = file_pointer.read().splitlines()
     title = source_path_to_title(module_name, source_path)
+    title = title.replace('_', '\_')
     result = []
     result.append(r'\subsubsection{{{}}}'.format(title))
     result.append('')
@@ -98,7 +100,7 @@ def write_module_index(module_name, tex_paths):
     result.append(r'\subsection{{{}}}'.format(module_name))
     result.append('')
     for tex_path in tex_paths:
-        _, tex_path = os.path.split(tex_path)
+        tex_path = tex_path.partition('dissertation/')[-1] 
         result.append(r'\input{{{}}}'.format(tex_path))
     result = '\n'.join(result)
     root_path = dissertation.__path__[0]
