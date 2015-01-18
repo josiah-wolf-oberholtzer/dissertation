@@ -1,13 +1,19 @@
 #! /usr/bin/env python
 # -*- encoding: utf-8 -*-
 from __future__ import print_function
-import armilla
 import os
+import armilla
+import ersilia
 import zaira
 
 
 def collect_score_paths(score_module):
-    paths = []
+    paths = {
+        'makers': [],
+        'materials': [],
+        'segments': [],
+        'stylesheet': None,
+        }
     root_path = score_module.__path__[0]
     print(root_path)
     makers_path = os.path.join(root_path, 'makers')
@@ -17,7 +23,7 @@ def collect_score_paths(score_module):
         if name.endswith('.py') and name[0].isalpha():
             file_path = os.path.join(makers_path, name)
             print(file_path)
-            paths.append(file_path)
+            paths['makers'].append(file_path)
     for name in os.listdir(materials_path):
         directory_path = os.path.join(materials_path, name)
         if not os.path.isdir(directory_path):
@@ -26,17 +32,18 @@ def collect_score_paths(score_module):
         if not os.path.exists(file_path):
             continue
         print(file_path)
-        paths.append(file_path)
+        paths['materials'].append(file_path)
     for name in os.listdir(segments_path):
-        directory_path = os.path.join(materials_path, name)
+        directory_path = os.path.join(segments_path, name)
         if not os.path.isdir(directory_path):
             continue
         file_path = os.path.join(directory_path, 'definition.py')
         if not os.path.exists(file_path):
             continue
         print(file_path)
-        paths.append(file_path)
-    paths = [(score_module.__name__, path) for path in paths]
+        paths['segments'].append(file_path)
+    stylesheet_path = os.path.join(root_path, 'stylesheets', 'stylesheet.ily')
+    paths['stylesheet'] = stylesheet_path
     return paths
 
 
@@ -51,7 +58,6 @@ def collect_consort_paths():
             file_path = os.path.join(tools_path, name)
             print(file_path)
             paths.append(file_path)
-    paths = [('consort', path) for path in paths]
     return paths
 
 
@@ -96,50 +102,117 @@ def source_path_to_latex(module_name, source_path):
     return result
 
 
-def write_module_index(module_name, tex_paths):
+def write_consort_source_index(source_paths):
+    import dissertation
+    result = [r'\section{\emph{consort} source}', '']
+    for source_path in source_paths:
+        tex_path = source_path_to_tex_path('consort', source_path)
+        tex_path = tex_path.partition('dissertation/')[-1]
+        result.append(r'\input{{{}}}'.format(tex_path))
+    result = '\n'.join(result)
+    root_path = dissertation.__path__[0]
+    index_path = os.path.join(root_path, 'appendices', 'consort', 'index.tex')
+    with open(index_path, 'w') as file_pointer:
+        file_pointer.write(result)
+
+
+def write_score_source_index(score_name, path_dictionary):
     import dissertation
     result = []
-    result.append(r'\section{{\emph{{{}}} Source Code}}'.format(module_name))
+
+    string = r'\section{{\emph{{{}}} makers source}}'
+    string = string.format(score_name)
+    result.append(string)
     result.append('')
-    for tex_path in tex_paths:
-        tex_path = tex_path.partition('dissertation/')[-1] 
+
+    source_paths = path_dictionary['makers']
+    for source_path in source_paths:
+        tex_path = source_path_to_tex_path(score_name, source_path)
+        tex_path = tex_path.partition('dissertation/')[-1]
         result.append(r'\input{{{}}}'.format(tex_path))
+
+    result.append('')
+    string = r'\section{{\emph{{{}}} materials source}}'
+    string = string.format(score_name)
+    result.append(string)
+    result.append('')
+
+    source_paths = path_dictionary['materials']
+    for source_path in source_paths:
+        tex_path = source_path_to_tex_path(score_name, source_path)
+        tex_path = tex_path.partition('dissertation/')[-1]
+        result.append(r'\input{{{}}}'.format(tex_path))
+
+    result.append('')
+    string = r'\section{{\emph{{{}}} segments source}}'
+    string = string.format(score_name)
+    result.append(string)
+    result.append('')
+
+    source_paths = path_dictionary['segments']
+    for source_path in source_paths:
+        tex_path = source_path_to_tex_path(score_name, source_path)
+        tex_path = tex_path.partition('dissertation/')[-1]
+        result.append(r'\input{{{}}}'.format(tex_path))
+
+    result.append('')
+    string = r'\section{{\emph{{{}}} stylesheet source}}'
+    string = string.format(score_name)
+    result.append(string)
+    result.append('')
+
+    source_paths = [path_dictionary['stylesheet']]
+    for source_path in source_paths:
+        tex_path = source_path_to_tex_path(score_name, source_path)
+        tex_path = tex_path.partition('dissertation/')[-1]
+        result.append(r'\input{{{}}}'.format(tex_path))
+
     result = '\n'.join(result)
     root_path = dissertation.__path__[0]
     index_path = os.path.join(
         root_path,
         'appendices',
-        module_name,
+        score_name,
         'index.tex'
         )
+
     with open(index_path, 'w') as file_pointer:
         file_pointer.write(result)
 
 
+def path_dictionary_to_list(path_dictionary):
+    paths = []
+    paths.extend(path_dictionary['makers'])
+    paths.extend(path_dictionary['materials'])
+    paths.extend(path_dictionary['segments'])
+    paths.append(path_dictionary['stylesheet'])
+    return paths
+
+
+def write_source_listings(module_name, source_paths):
+    for source_path in source_paths:
+        latex = source_path_to_latex(module_name, source_path)
+        tex_path = source_path_to_tex_path(module_name, source_path)
+        with open(tex_path, 'w') as file_pointer:
+            file_pointer.write(latex)
+
+
 if __name__ == '__main__':
-    armilla_paths = []
-    for module_name, source_path in collect_score_paths(armilla):
-        latex = source_path_to_latex(module_name, source_path)
-        tex_path = source_path_to_tex_path(module_name, source_path)
-        with open(tex_path, 'w') as file_pointer:
-            file_pointer.write(latex)
-        armilla_paths.append(tex_path)
-    write_module_index('armilla', armilla_paths)
+    zaira_path_dictionary = collect_score_paths(zaira)
+    zaira_paths = path_dictionary_to_list(zaira_path_dictionary)
+    write_source_listings('zaira', zaira_paths)
+    write_score_source_index('zaira', zaira_path_dictionary)
 
-    zaira_paths = []
-    for module_name, source_path in collect_score_paths(zaira):
-        latex = source_path_to_latex(module_name, source_path)
-        tex_path = source_path_to_tex_path(module_name, source_path)
-        with open(tex_path, 'w') as file_pointer:
-            file_pointer.write(latex)
-        zaira_paths.append(tex_path)
-    write_module_index('zaira', zaira_paths)
+    armilla_path_dictionary = collect_score_paths(armilla)
+    armilla_paths = path_dictionary_to_list(armilla_path_dictionary)
+    write_source_listings('armilla', armilla_paths)
+    write_score_source_index('armilla', armilla_path_dictionary)
 
-    consort_paths = []
-    for module_name, source_path in collect_consort_paths():
-        latex = source_path_to_latex(module_name, source_path)
-        tex_path = source_path_to_tex_path(module_name, source_path)
-        with open(tex_path, 'w') as file_pointer:
-            file_pointer.write(latex)
-        consort_paths.append(tex_path)
-    write_module_index('consort', consort_paths)
+    ersilia_path_dictionary = collect_score_paths(ersilia)
+    ersilia_paths = path_dictionary_to_list(ersilia_path_dictionary)
+    write_source_listings('ersilia', ersilia_paths)
+    write_score_source_index('ersilia', ersilia_path_dictionary)
+
+    consort_paths = collect_consort_paths()
+    write_source_listings('consort', consort_paths)
+    write_consort_source_index(consort_paths)
