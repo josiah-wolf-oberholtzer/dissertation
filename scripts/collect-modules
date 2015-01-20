@@ -93,7 +93,10 @@ def source_path_to_latex(module_name, source_path):
     title = source_path_to_title(module_name, source_path)
     title = title.replace('_', '\_')
     result = []
-    result.append(r'\subsection{{{}}}'.format(title))
+    if module_name == 'consort':
+        result.append(r'\section{{{}}}'.format(title))
+    else:
+        result.append(r'\subsection{{{}}}'.format(title))
     result.append('')
     result.append(r'\begin{lstlisting}')
     result.extend(lines)
@@ -104,7 +107,7 @@ def source_path_to_latex(module_name, source_path):
 
 def write_consort_source_index(source_paths):
     import dissertation
-    result = [r'\section{\emph{consort} source}', '']
+    result = [r'\chapter{\emph{consort} source}', '']
     for source_path in source_paths:
         tex_path = source_path_to_tex_path('consort', source_path)
         tex_path = tex_path.partition('dissertation/')[-1]
@@ -119,6 +122,11 @@ def write_consort_source_index(source_paths):
 def write_score_source_index(score_name, path_dictionary):
     import dissertation
     result = []
+
+    string = r'\chapter{{\emph{{{}}} source code}}'
+    string = string.format(score_name)
+    result.append(string)
+    result.append('')
 
     string = r'\section{{\emph{{{}}} makers source}}'
     string = string.format(score_name)
