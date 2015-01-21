@@ -5,6 +5,8 @@
 % Available options include `Harvard`, `Princeton`, and `NYU`.
 \documentclass[School=Harvard]{Dissertate}
 
+\usepackage{pdfpages}
+
 \usepackage{color}
 \definecolor{bluekeywords}{rgb}{0.13,0.13,1}
 \definecolor{greencomments}{rgb}{0,0.5,0}
@@ -12,29 +14,22 @@
 \definecolor{grey}{rgb}{0.5,0.5,0.5}
 
 \usepackage{listings}
-\lstset{language=Python,
-basicstyle=\footnotesize\ttfamily,
-breakatwhitespace=false,
-breaklines=false,
-commentstyle=\color{greencomments},
-escapeinside={(*@}{@*)},
-keywordstyle=\color{bluekeywords}\bfseries,
-numbers=left,
-numbersep=5pt,
-numberstyle=\tiny\color{grey},
-showspaces=false,
-showstringspaces=false,
-showtabs=false,
-stringstyle=\color{redstrings}
+\lstset{
+    basicstyle=\footnotesize\ttfamily,
+    breakatwhitespace=false,
+    breaklines=false,
+    commentstyle=\color{greencomments},
+    escapeinside={(*@}{@*)},
+    keywordstyle=\color{bluekeywords}\bfseries,
+    language=Python,
+    numbers=left,
+    numbersep=5pt,
+    numberstyle=\tiny\color{grey},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    stringstyle=\color{redstrings}
 }
-
-%\lstset{
-%    basicstyle=\footnotesize\ttfamily,
-%    breaklines=false,
-%    language=Python,
-%    showspaces=false, 
-%    showstringspaces=false
-%}
 
 \begin{document}
 
@@ -44,20 +39,34 @@ stringstyle=\color{redstrings}
 \copyrightpage
 \abstractpage
 \tableofcontents
-%\authorlist
 \listoffigures
 \dedicationpage
 \acknowledgments
 
 \doublespacing
 
-% include each chapter...
 \setcounter{chapter}{-1}  % start chapter numbering at 0
-%\include{chapters/introduction}
+
+\include{chapters/introduction}
+
 %\include{chapters/chapter1}
+
 %\include{chapters/chapter2}
+
 %\include{chapters/chapter3}
-%\include{chapters/conclusion}
+
+\include{chapters/aurora}
+
+\include{chapters/plague-water}
+
+\include{chapters/armilla}
+
+\include{chapters/zaira}
+
+\include{chapters/ersilia}
+
+\include{chapters/conclusion}
+
 \begin{appendices}
     \include{appendices/appendices}
 \end{appendices}
