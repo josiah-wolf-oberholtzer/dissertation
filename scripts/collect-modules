@@ -64,7 +64,10 @@ def collect_consort_paths():
 def source_path_to_title(module_name, source_path):
     path = source_path.partition(module_name)[-1]
     path = path.strip('/')
-    path = path.strip('.py')
+    if path.endswith('.py'):
+        path = path.strip('.py')
+    elif path.endswith('.ily'):
+        path = path.strip('.ily')
     path = path.replace(os.path.sep, '.')
     if path.endswith('.definition'):
         path = path.replace('.definition', '')
@@ -91,6 +94,8 @@ def source_path_to_latex(module_name, source_path):
     with open(source_path, 'r') as file_pointer:
         lines = file_pointer.read().splitlines()
     title = source_path_to_title(module_name, source_path)
+    if 'stylesheet' in title:
+        title = 'stylesheet.ily'
     title = title.replace('_', '\_')
     result = []
     if module_name == 'consort':
@@ -98,9 +103,11 @@ def source_path_to_latex(module_name, source_path):
     else:
         result.append(r'\subsection{{{}}}'.format(title))
     result.append('')
+    result.append(r'\begin{singlespacing}')
     result.append(r'\begin{lstlisting}')
     result.extend(lines)
     result.append(r'\end{lstlisting}')
+    result.append(r'\end{singlespacing}')
     result = '\n'.join(result)
     return result
 
