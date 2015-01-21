@@ -20,16 +20,16 @@
 
 % Formatting guidelines found in:
 % http://www.gsas.harvard.edu/publications/form_of_the_phd_dissertation.php
-\renewcommand{\frontmatter}{
-	\input{frontmatter/personalize}
-	\maketitle
-	\copyrightpage
-	\abstractpage
-	\tableofcontents
-	% \listoffigures % optional
-	\dedicationpage
-	\acknowledgments
-}
+%\renewcommand{\frontmatter}{
+%	\input{frontmatter/personalize}
+%	\maketitle
+%	\copyrightpage
+%	\abstractpage
+%	\tableofcontents
+%	% \listoffigures % optional
+%	\dedicationpage
+%	\acknowledgments
+%}
 
 \renewcommand{\maketitle}{
 	\thispagestyle{empty}
@@ -90,7 +90,5 @@
 	\chapter*{Acknowledgments}
 	\noindent
 	\input{frontmatter/thanks}
-	\vspace*{\fill} \newpage
-	\setcounter{page}{1}
-	\pagenumbering{arabic}
+	\vspace*{\fill}
 }

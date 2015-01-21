@@ -33,19 +33,23 @@
 
 \begin{document}
 
-% the front matter
+\frontmatter
+\pagenumbering{roman}
 \input{frontmatter/personalize}
 \maketitle
 \copyrightpage
 \abstractpage
 \tableofcontents
-\listoffigures
+%\listoffigures
 \dedicationpage
 \acknowledgments
 
+\mainmatter
 \doublespacing
-
-\setcounter{chapter}{-1}  % start chapter numbering at 0
+\cleardoublepage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\setcounter{chapter}{-1}
 
 \include{chapters/introduction}
 
@@ -56,6 +60,8 @@
 \include{chapters/composition}
 
 \include{chapters/consort}
+
+\include{chapters/timespans}
 
 \include{chapters/aurora}
 
