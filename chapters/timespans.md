@@ -66,12 +66,14 @@ Consort: laying out time
     - repeat and reflect
 - aside: looms in aurora
 
-## time manager
+## the time manager pipeline
  
 - populate independent timespans
     - populate multiplexed timespans
     - find meters
     - demultiplex timespans
+        - resolve timespan inventories
+        - subtract timespan inventories
     - split demultiplexed timespans
     - prune malformed timespans
     - consolidate demultiplexed timespans
