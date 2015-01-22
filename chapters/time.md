@@ -54,6 +54,7 @@ Laying out time
 ## timespan makers
 
 - timespan specifier
+- independent vs dependent
 - target timespans
 - talea
 - padding
