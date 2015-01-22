@@ -1,5 +1,5 @@
-Consort: laying out time
-========================
+Laying out time
+===============
 
 ## timespans and timespan inventories
 
@@ -65,36 +65,3 @@ Consort: laying out time
     - synchronization
     - repeat and reflect
 - aside: looms in aurora
-
-## the time manager pipeline
- 
-- populate independent timespans
-    - populate multiplexed timespans
-    - find meters
-    - demultiplex timespans
-        - resolve timespan inventories
-        - subtract timespan inventories
-    - split demultiplexed timespans
-    - prune malformed timespans
-    - consolidate demultiplexed timespans
-    - inscribe demultiplexed timespans
-        - get rhythm maker
-        - make simple music
-        - consolidate rests
-        - group nonsilent divisions
-    - multiplex timespans
-    - prune short timespans
-    - prune meters
-- populate dependent timespans
-    - populate multiplexed timespans
-    - demultiplex timespans
-    - split demultiplexed timespans
-    - prune short timespans
-    - prune malformed timespans
-    - consolidate demultiplexed timespans
-    - inscribe demultiplexed timespans
-- populate silent timespans
-- validate timespans
-- rewrite meters
-- collect attack points
-- populate score
