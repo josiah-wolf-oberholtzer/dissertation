@@ -1,14 +1,28 @@
 A theory of composition
 =======================
 
-## core concepts
+## highest level
+
+- specification
+- interpretation
+- different timescales
+
+## actors
 
 - makers
+    - configure and call
 - handlers
+    - configure and call
 - selectors
+    - configure and call
 - specifiers
+    - aggregate makers, handlers
 - materials
+    - something out of time
 - segments
+    - something in time
+
+## before rhythm, after rhythm
 
 ## dramatis personae
 
