@@ -14,7 +14,7 @@ from abjad.tools import stringtools
 if __name__ == '__main__':
     target_directory = os.path.join(
         dissertation.__path__[0],
-        'scores',
+        'assets',
         )
     score_packages = (
         aurora,
