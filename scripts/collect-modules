@@ -83,6 +83,7 @@ def source_path_to_tex_path(module_name, source_path):
     file_name = file_name + '.tex'
     path = os.path.join(
         root_path,
+        'source',
         'appendices',
         module_name,
         file_name,
@@ -121,7 +122,13 @@ def write_consort_source_index(source_paths):
         result.append(r'\input{{{}}}'.format(tex_path))
     result = '\n'.join(result)
     root_path = dissertation.__path__[0]
-    index_path = os.path.join(root_path, 'appendices', 'consort', 'index.tex')
+    index_path = os.path.join(
+        root_path,
+        'source',
+        'appendices',
+        'consort',
+        'index.tex',
+        )
     with open(index_path, 'w') as file_pointer:
         file_pointer.write(result)
 
@@ -186,6 +193,7 @@ def write_score_source_index(score_name, path_dictionary):
     root_path = dissertation.__path__[0]
     index_path = os.path.join(
         root_path,
+        'source',
         'appendices',
         score_name,
         'index.tex'

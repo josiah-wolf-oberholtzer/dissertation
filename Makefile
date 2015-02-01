@@ -10,3 +10,9 @@ abjad-book:
 
 clean:
 	rm -Rif assets/lilypond-*.pdf
+	find . -name "*.aux" -exec rm -rf {} \;
+	find . -name "*.lof" -exec rm -rf {} \;
+	find . -name "*.log" -exec rm -rf {} \;
+	find . -name "*.out" -exec rm -rf {} \;
+	find . -name "*.pyc" -exec rm -rf {} \;
+	find . -name "*.toc" -exec rm -rf {} \;
