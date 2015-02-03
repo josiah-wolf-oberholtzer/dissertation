@@ -9,7 +9,7 @@ collect:
 	scripts/collect-scores
 
 abjad-book:
-	abjad-book -a ./assets -l . -y ./assets/stylesheet.ily source/chapters/*.tex
+	abjad-book -a ./assets -l . -y ./stylesheet.ily source/chapters/*.tex
 
 compile:
 	xelatex dissertation.tex

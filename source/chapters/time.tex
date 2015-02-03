@@ -1,5 +1,19 @@
 \chapter{Modeling time, rhythm and meter}
 
+\begin{comment}
+<abjad>[hide=true]
+import consort
+</abjad>
+\end{comment}
+
+Timespans provide a coarse model of musical time, both in and outside of score
+hierarchy.
+
+Notated rhythm provides a fine model of musical time, from within score
+hierarchy.
+
+Meter coordinates time and rhythm vertical across score hierarchy.
+
 \section{timespans and timespan inventories}
 
 \subsection{anatomy of a timespan}
@@ -32,6 +46,12 @@
 
 - divisions
 
+\begin{comment}
+<abjad>
+divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
+</abjad>
+\end{comment}
+
 - rhythm maker
 
 \subsection{configuration}
@@ -42,15 +62,68 @@
 
 - specific rhythm makers
 
-    - NoteRhythmMaker
+- NoteRhythmMaker
 
-    - IncisedRhythmMaker
+\begin{comment}
+<abjad>
+note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(
+    )
+show(note_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
 
-    - EvenDivisionsRhythmMaker
+- EvenDivisionsRhythmMaker
 
-    - TaleaRhythmMaker
+\begin{comment}
+<abjad>
+even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker(
+    denominators=[8, 16, 4],
+    )
+show(even_division_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+- IncisedRhythmMaker
+
+\begin{comment}
+<abjad>
+incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
+    incise_specifier=rhythmmakertools.InciseSpecifier(
+        prefix_counts=[0],
+        suffix_talea=[-1],
+        suffix_counts=[1],
+        talea_denominator=16,
+        ),
+    )
+show(incised_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+- TaleaRhythmMaker
+
+\begin{comment}
+<abjad>
+talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
+    talea=rhythmmakertools.Talea(
+        counts=[1, 2, 3, 4],
+        denominator=16,
+        ),
+    )
+show(talea_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
 
 \subsection{composite rhythm maker}
+
+\begin{comment}
+<abjad>
+composite_rhythm_maker = consort.CompositeRhythmMaker(
+    default=note_rhythm_maker,
+    last=incised_rhythm_maker,
+    first=even_division_rhythm_maker,
+    )
+</abjad>
+\end{comment}
 
 \section{meter finding and rewriting}
 
@@ -77,6 +150,30 @@
 - dot count
 
 \section{performed and silent timespans}
+
+\begin{comment}
+<abjad>
+performed_timespan = consort.PerformedTimespan(
+    layer=1,
+    minimum_duration=Duration(1, 8),
+    music_specifier=consort.MusicSpecifier(),
+    start_offset=Offset(1, 4),
+    stop_offset=Offset(2, 1),
+    voice_name='Violin 1 LH Voice',
+    )
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+silent_timespan = consort.SilentTimespan(
+    layer=2,
+    start_offset=Offset(0, 1),
+    stop_offset=Offset(1, 4),
+    voice_name='Violin 1 LH Voice',
+    )
+</abjad>
+\end{comment}
 
 \subsection{payloaded timespans}
 
@@ -114,7 +211,24 @@
 
 \subsection{flooded timespan maker}
 
+\begin{comment}
+<abjad>
+flooded_timespan_maker = consort.FloodedTimespanMaker()
+print(format(flooded_timespan_maker))
+</abjad>
+\end{comment}
+
 \subsection{talea timespan maker}
+
+\begin{comment}
+<abjad>
+timespan_maker = consort.TaleaTimespanMaker(
+    initial_silence_talea=rhythmmakertools.Talea(
+        counts=(0, 4),
+        denominator=16,
+        )
+    )
+</abjad>
 
 - taleas: playing, silence and initial silence
 
@@ -125,3 +239,16 @@
 - repeat and reflect
 
 \subsection{dependent timespan maker}
+
+\begin{comment}
+<abjad>
+dependent_timespan_maker = consort.DependentTimespanMaker(
+    include_inner_starts=True,
+    include_inner_stops=False,
+    voice_names=(
+        'Piano Upper Voice',
+        'Piano Lower Voice',
+        )
+    )
+</abjad>
+\end{comment}
