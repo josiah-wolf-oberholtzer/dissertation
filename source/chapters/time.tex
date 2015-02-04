@@ -52,6 +52,14 @@ divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 - rhythm maker
 
 \subsection{configuration}
@@ -72,6 +80,17 @@ show(note_rhythm_maker, divisions=divisions)
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(
+...     )
+>>> show(note_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\end{singlespacing}
+\includegraphics{assets/lilypond-d0f66021e4860194d32ee0fa226ed174.pdf}
+%%% ABJADBOOK END %%%
+
 - EvenDivisionsRhythmMaker
 
 \begin{comment}
@@ -82,6 +101,18 @@ even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker(
 show(even_division_rhythm_maker, divisions=divisions)
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker(
+...     denominators=[8, 16, 4],
+...     )
+>>> show(even_division_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\end{singlespacing}
+\includegraphics{assets/lilypond-06c5f723997363adb1e3e9391d01892a.pdf}
+%%% ABJADBOOK END %%%
 
 - IncisedRhythmMaker
 
@@ -99,6 +130,23 @@ show(incised_rhythm_maker, divisions=divisions)
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
+...     incise_specifier=rhythmmakertools.InciseSpecifier(
+...         prefix_counts=[0],
+...         suffix_talea=[-1],
+...         suffix_counts=[1],
+...         talea_denominator=16,
+...         ),
+...     )
+>>> show(incised_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\end{singlespacing}
+\includegraphics{assets/lilypond-f21215b14c3e76d687060a020bdca52a.pdf}
+%%% ABJADBOOK END %%%
+
 - TaleaRhythmMaker
 
 \begin{comment}
@@ -113,6 +161,21 @@ show(talea_rhythm_maker, divisions=divisions)
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
+...     talea=rhythmmakertools.Talea(
+...         counts=[1, 2, 3, 4],
+...         denominator=16,
+...         ),
+...     )
+>>> show(talea_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\end{singlespacing}
+\includegraphics{assets/lilypond-101e0079ec09025cbd79b4f02fb37c60.pdf}
+%%% ABJADBOOK END %%%
+
 \subsection{composite rhythm maker}
 
 \begin{comment}
@@ -124,6 +187,18 @@ composite_rhythm_maker = consort.CompositeRhythmMaker(
     )
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> composite_rhythm_maker = consort.CompositeRhythmMaker(
+...     default=note_rhythm_maker,
+...     last=incised_rhythm_maker,
+...     first=even_division_rhythm_maker,
+...     )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \section{meter finding and rewriting}
 
@@ -164,6 +239,21 @@ performed_timespan = consort.PerformedTimespan(
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> performed_timespan = consort.PerformedTimespan(
+...     layer=1,
+...     minimum_duration=Duration(1, 8),
+...     music_specifier=consort.MusicSpecifier(),
+...     start_offset=Offset(1, 4),
+...     stop_offset=Offset(2, 1),
+...     voice_name='Violin 1 LH Voice',
+...     )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 silent_timespan = consort.SilentTimespan(
@@ -174,6 +264,19 @@ silent_timespan = consort.SilentTimespan(
     )
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> silent_timespan = consort.SilentTimespan(
+...     layer=2,
+...     start_offset=Offset(0, 1),
+...     stop_offset=Offset(1, 4),
+...     voice_name='Violin 1 LH Voice',
+...     )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \subsection{payloaded timespans}
 
@@ -218,6 +321,16 @@ print(format(flooded_timespan_maker))
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> flooded_timespan_maker = consort.FloodedTimespanMaker()
+>>> print(format(flooded_timespan_maker))
+consort.tools.FloodedTimespanMaker()
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \subsection{talea timespan maker}
 
 \begin{comment}
@@ -229,6 +342,19 @@ timespan_maker = consort.TaleaTimespanMaker(
         )
     )
 </abjad>
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan_maker = consort.TaleaTimespanMaker(
+...     initial_silence_talea=rhythmmakertools.Talea(
+...         counts=(0, 4),
+...         denominator=16,
+...         )
+...     )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 - taleas: playing, silence and initial silence
 
@@ -252,3 +378,18 @@ dependent_timespan_maker = consort.DependentTimespanMaker(
     )
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> dependent_timespan_maker = consort.DependentTimespanMaker(
+...     include_inner_starts=True,
+...     include_inner_stops=False,
+...     voice_names=(
+...         'Piano Upper Voice',
+...         'Piano Lower Voice',
+...         )
+...     )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
