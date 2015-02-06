@@ -29,13 +29,13 @@ if __name__ == '__main__':
         source_path = os.path.join(
             score_package.__path__[0],
             'build',
-            'score.pdf',
+            'dissertation-score.pdf',
             )
         if not os.path.exists(source_path):
             continue
         target_path = os.path.join(
             target_directory,
-            '{}-score.pdf'.format(score_name),
+            'dissertation-score-{}.pdf'.format(score_name),
             )
         print('Copying...')
         print('\tfrom:', source_path)
