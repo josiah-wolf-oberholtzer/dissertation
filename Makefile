@@ -8,8 +8,11 @@ collect:
 	scripts/collect-modules
 	scripts/collect-scores
 
-abjad-book:
+abjad/book:
 	abjad-book -a ./assets -l . -y ./stylesheet.ily source/chapters/*.tex
+
+abjad/clean:
+	abjad-book --clean -a ./assets -l . -y ./stylesheet.ily source/chapters/*.tex
 
 compile:
 	xelatex dissertation.tex
