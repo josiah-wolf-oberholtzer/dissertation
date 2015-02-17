@@ -1,4 +1,4 @@
-\chapter{Modeling time, rhythm and meter}
+\chapter{Tools for modeling time, rhythm and meter}
 
 \begin{comment}
 <abjad>[hide=true]
@@ -47,11 +47,31 @@ timespan = timespantools.Timespan(
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan = timespantools.Timespan(
+...     start_offset=Offset(1, 4),
+...     stop_offset=Offset(3, 2),
+...     )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 timespan.start_offset
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan.start_offset
+Offset(1, 4)
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \begin{comment}
 <abjad>
@@ -59,17 +79,44 @@ timespan.stop_offset
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan.stop_offset
+Offset(3, 2)
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 timespan.duration
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan.duration
+Duration(5, 4)
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 timespan.is_well_formed
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan.is_well_formed
+True
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \begin{comment}
 <abjad>
@@ -78,12 +125,35 @@ malformed_timespan.is_well_formed
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> malformed_timespan = timespantools.Timespan(0, 0)
+>>> malformed_timespan.is_well_formed
+False
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 templated_timespan = new(timespan, stop_offset=(5, 16))
 print(format(templated_timespan))
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> templated_timespan = new(timespan, stop_offset=(5, 16))
+>>> print(format(templated_timespan))
+timespantools.Timespan(
+    start_offset=durationtools.Offset(1, 4),
+    stop_offset=durationtools.Offset(5, 16),
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \begin{comment}
 <abjad>
@@ -95,6 +165,20 @@ annotated_timespan = timespantools.AnnotatedTimespan(
 annotated_timespan.annotation
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> annotated_timespan = timespantools.AnnotatedTimespan(
+...     start_offset=(1, 8),
+...     stop_offset=(7, 8),
+...     annotation='Any arbitrary object can act as an annotation.'
+...     )
+>>> annotated_timespan.annotation
+'Any arbitrary object can act as an annotation.'
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \subsection{time relations}
 
@@ -110,6 +194,16 @@ timespan_3 = timespantools.Timespan(10, 15)
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan_1 = timespantools.Timespan(0, 10)
+>>> timespan_2 = timespantools.Timespan(5, 15)
+>>> timespan_3 = timespantools.Timespan(10, 15)
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 timespan_1.intersects_timespan(timespan_2)
@@ -121,6 +215,25 @@ timespan_3.intersects_timespan(timespan_2)
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan_1.intersects_timespan(timespan_2)
+True
+>>> timespan_1.intersects_timespan(timespan_3)
+False
+>>> timespan_2.intersects_timespan(timespan_1)
+True
+>>> timespan_2.intersects_timespan(timespan_3)
+True
+>>> timespan_3.intersects_timespan(timespan_1)
+False
+>>> timespan_3.intersects_timespan(timespan_2)
+True
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 timespan_1.is_congruent_to_timespan(timespan_2)
@@ -128,12 +241,34 @@ timespan_1.is_congruent_to_timespan(timespan_1)
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan_1.is_congruent_to_timespan(timespan_2)
+False
+>>> timespan_1.is_congruent_to_timespan(timespan_1)
+True
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 timespan_1.is_tangent_to_timespan(timespan_2)
 timespan_1.is_tangent_to_timespan(timespan_3)
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan_1.is_tangent_to_timespan(timespan_2)
+False
+>>> timespan_1.is_tangent_to_timespan(timespan_3)
+True
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 - operations
 
@@ -147,6 +282,16 @@ timespan_3 = timespantools.Timespan(10, 15)
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan_1 = timespantools.Timespan(0, 10)
+>>> timespan_2 = timespantools.Timespan(5, 15)
+>>> timespan_3 = timespantools.Timespan(10, 15)
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 The logical AND of any two timespans can be computed.
 
 \begin{comment}
@@ -156,6 +301,19 @@ timespan_1 & timespan_3
 timespan_2 & timespan_3
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan_1 & timespan_2
+TimespanInventory([Timespan(start_offset=Offset(5, 1), stop_offset=Offset(10, 1))])
+>>> timespan_1 & timespan_3
+TimespanInventory([])
+>>> timespan_2 & timespan_3
+TimespanInventory([Timespan(start_offset=Offset(10, 1), stop_offset=Offset(15, 1))])
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 The logical OR of any two timespans can be computed.
 
@@ -167,6 +325,19 @@ timespan_2 | timespan_3
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan_1 | timespan_2
+TimespanInventory([Timespan(start_offset=Offset(0, 1), stop_offset=Offset(15, 1))])
+>>> timespan_1 | timespan_3
+TimespanInventory([Timespan(start_offset=Offset(0, 1), stop_offset=Offset(15, 1))])
+>>> timespan_2 | timespan_3
+TimespanInventory([Timespan(start_offset=Offset(5, 1), stop_offset=Offset(15, 1))])
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 Timespan subtraction is another crucial operation.
 
 \begin{comment}
@@ -176,6 +347,16 @@ timespan_2 = timespantools.Timespan(5, 10)
 timespan_3 = timespantools.Timespan(10, 20)
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan_1 = timespantools.Timespan(0, 15)
+>>> timespan_2 = timespantools.Timespan(5, 10)
+>>> timespan_3 = timespantools.Timespan(10, 20)
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \begin{comment}
 <abjad>
@@ -190,6 +371,78 @@ print(format(timespan_3 - timespan_2))
 print(format(timespan_3 - timespan_3))
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> print(format(timespan_1 - timespan_1))
+timespantools.TimespanInventory(
+    []
+    )
+>>> print(format(timespan_1 - timespan_2))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(5, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(10, 1),
+            stop_offset=durationtools.Offset(15, 1),
+            ),
+        ]
+    )
+>>> print(format(timespan_1 - timespan_3))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(10, 1),
+            ),
+        ]
+    )
+>>> print(format(timespan_2 - timespan_1))
+timespantools.TimespanInventory(
+    []
+    )
+>>> print(format(timespan_2 - timespan_2))
+timespantools.TimespanInventory(
+    []
+    )
+>>> print(format(timespan_2 - timespan_3))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(5, 1),
+            stop_offset=durationtools.Offset(10, 1),
+            ),
+        ]
+    )
+>>> print(format(timespan_3 - timespan_1))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(15, 1),
+            stop_offset=durationtools.Offset(20, 1),
+            ),
+        ]
+    )
+>>> print(format(timespan_3 - timespan_2))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(10, 1),
+            stop_offset=durationtools.Offset(20, 1),
+            ),
+        ]
+    )
+>>> print(format(timespan_3 - timespan_3))
+timespantools.TimespanInventory(
+    []
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \subsection{aggregate operations}
 
@@ -215,6 +468,30 @@ timespan_inventory.duration
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan_inventory = timespantools.TimespanInventory([
+...     timespantools.Timespan(0, 16),
+...     timespantools.Timespan(5, 12),
+...     timespantools.Timespan(-2, 8),
+...     ])
+>>> timespan_inventory.timespan
+Timespan(start_offset=Offset(-2, 1), stop_offset=Offset(16, 1))
+>>> timespan_inventory.duration
+Duration(18, 1)
+>>> timespan_inventory.start_offset
+Offset(-2, 1)
+>>> timespan_inventory.stop_offset
+Offset(16, 1)
+>>> timespan_inventory.append(timespantools.Timespan(15, 20))
+>>> timespan_inventory.sort()
+>>> timespan_inventory.duration
+Duration(22, 1)
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 - unioning, differencing and splitting
 
 \begin{comment}
@@ -230,6 +507,37 @@ print(format(timespan_inventory))
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan_inventory = timespantools.TimespanInventory([
+...     timespantools.Timespan(0, 16),
+...     timespantools.Timespan(5, 12),
+...     timespantools.Timespan(-2, 8),
+...     ])
+>>> timespan = timespantools.Timespan(5, 10)
+>>> result = timespan_inventory & timespan
+>>> print(format(timespan_inventory))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(5, 1),
+            stop_offset=durationtools.Offset(8, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(5, 1),
+            stop_offset=durationtools.Offset(10, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(5, 1),
+            stop_offset=durationtools.Offset(10, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 timespan_inventory = timespantools.TimespanInventory([
@@ -243,6 +551,41 @@ print(format(timespan_inventory))
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan_inventory = timespantools.TimespanInventory([
+...     timespantools.Timespan(0, 16),
+...     timespantools.Timespan(5, 12),
+...     timespantools.Timespan(-2, 8),
+...     ])
+>>> timespan = timespantools.Timespan(5, 10)
+>>> result = timespan_inventory - timespan
+>>> print(format(timespan_inventory))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(-2, 1),
+            stop_offset=durationtools.Offset(5, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(5, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(10, 1),
+            stop_offset=durationtools.Offset(12, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(10, 1),
+            stop_offset=durationtools.Offset(16, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 timespan_inventory = timespantools.TimespanInventory([
@@ -255,6 +598,45 @@ print(format(left))
 print(format(right))
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan_inventory = timespantools.TimespanInventory([
+...     timespantools.Timespan(0, 3),
+...     timespantools.Timespan(3, 6),
+...     timespantools.Timespan(6, 10),
+...     ])
+>>> left, right = timespan_inventory.split_at_offset(4)
+>>> print(format(left))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(3, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(3, 1),
+            stop_offset=durationtools.Offset(4, 1),
+            ),
+        ]
+    )
+>>> print(format(right))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(4, 1),
+            stop_offset=durationtools.Offset(6, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(6, 1),
+            stop_offset=durationtools.Offset(10, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \begin{comment}
 Timespan.split_at_offsets()
@@ -273,6 +655,19 @@ timespan_inventory = timespantools.TimespanInventory([
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan_inventory = timespantools.TimespanInventory([
+...     timespantools.Timespan(0, 10),
+...     timespantools.Timespan(5, 15),
+...     timespantools.Timespan(15, 20),
+...     timespantools.Timespan(25, 30),
+...     ])
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 for inventory in timespan_inventory.partition():
@@ -281,6 +676,44 @@ for inventory in timespan_inventory.partition():
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> for inventory in timespan_inventory.partition():
+...     print(format(inventory))
+...
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(10, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(5, 1),
+            stop_offset=durationtools.Offset(15, 1),
+            ),
+        ]
+    )
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(15, 1),
+            stop_offset=durationtools.Offset(20, 1),
+            ),
+        ]
+    )
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(25, 1),
+            stop_offset=durationtools.Offset(30, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 for inventory in timespan_inventory.partition(include_tangent_timespans=True):
@@ -288,6 +721,40 @@ for inventory in timespan_inventory.partition(include_tangent_timespans=True):
 
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> for inventory in timespan_inventory.partition(include_tangent_timespans=True):
+...     print(format(inventory))
+...
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(10, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(5, 1),
+            stop_offset=durationtools.Offset(15, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(15, 1),
+            stop_offset=durationtools.Offset(20, 1),
+            ),
+        ]
+    )
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(25, 1),
+            stop_offset=durationtools.Offset(30, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 - multiplexing and demultiplexing
 
@@ -330,6 +797,21 @@ performed_timespan = consort.PerformedTimespan(
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> performed_timespan = consort.PerformedTimespan(
+...     layer=1,
+...     minimum_duration=Duration(1, 8),
+...     music_specifier=consort.MusicSpecifier(),
+...     start_offset=Offset(1, 4),
+...     stop_offset=Offset(2, 1),
+...     voice_name='Violin 1 LH Voice',
+...     )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 silent_timespan = consort.SilentTimespan(
@@ -340,6 +822,19 @@ silent_timespan = consort.SilentTimespan(
     )
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> silent_timespan = consort.SilentTimespan(
+...     layer=2,
+...     start_offset=Offset(0, 1),
+...     stop_offset=Offset(1, 4),
+...     voice_name='Violin 1 LH Voice',
+...     )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \subsection{payloaded timespans}
 
@@ -384,6 +879,16 @@ print(format(flooded_timespan_maker))
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> flooded_timespan_maker = consort.FloodedTimespanMaker()
+>>> print(format(flooded_timespan_maker))
+consort.tools.FloodedTimespanMaker()
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \subsection{talea timespan maker}
 
 \begin{comment}
@@ -395,6 +900,19 @@ timespan_maker = consort.TaleaTimespanMaker(
         )
     )
 </abjad>
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> timespan_maker = consort.TaleaTimespanMaker(
+...     initial_silence_talea=rhythmmakertools.Talea(
+...         counts=(0, 4),
+...         denominator=16,
+...         )
+...     )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 - taleas: playing, silence and initial silence
 
@@ -419,6 +937,21 @@ dependent_timespan_maker = consort.DependentTimespanMaker(
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> dependent_timespan_maker = consort.DependentTimespanMaker(
+...     include_inner_starts=True,
+...     include_inner_stops=False,
+...     voice_names=(
+...         'Piano Upper Voice',
+...         'Piano Lower Voice',
+...         )
+...     )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \section{rhythm makers}
 
 \subsection{a factory for rhythmic material}
@@ -430,6 +963,14 @@ dependent_timespan_maker = consort.DependentTimespanMaker(
 divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 - rhythm maker
 
@@ -451,6 +992,17 @@ show(note_rhythm_maker, divisions=divisions)
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(
+...     )
+>>> show(note_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\includegraphics{assets/lilypond-d0f66021e4860194d32ee0fa226ed174.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 - EvenDivisionsRhythmMaker
 
 \begin{comment}
@@ -461,6 +1013,18 @@ even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker(
 show(even_division_rhythm_maker, divisions=divisions)
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker(
+...     denominators=[8, 16, 4],
+...     )
+>>> show(even_division_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\includegraphics{assets/lilypond-06c5f723997363adb1e3e9391d01892a.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 - IncisedRhythmMaker
 
@@ -478,6 +1042,23 @@ show(incised_rhythm_maker, divisions=divisions)
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
+...     incise_specifier=rhythmmakertools.InciseSpecifier(
+...         prefix_counts=[0],
+...         suffix_talea=[-1],
+...         suffix_counts=[1],
+...         talea_denominator=16,
+...         ),
+...     )
+>>> show(incised_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\includegraphics{assets/lilypond-f21215b14c3e76d687060a020bdca52a.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 - TaleaRhythmMaker
 
 \begin{comment}
@@ -492,6 +1073,21 @@ show(talea_rhythm_maker, divisions=divisions)
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
+...     talea=rhythmmakertools.Talea(
+...         counts=[1, 2, 3, 4],
+...         denominator=16,
+...         ),
+...     )
+>>> show(talea_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\includegraphics{assets/lilypond-101e0079ec09025cbd79b4f02fb37c60.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \subsection{composite rhythm maker}
 
 \begin{comment}
@@ -503,6 +1099,18 @@ composite_rhythm_maker = consort.CompositeRhythmMaker(
     )
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> composite_rhythm_maker = consort.CompositeRhythmMaker(
+...     default=note_rhythm_maker,
+...     last=incised_rhythm_maker,
+...     first=even_division_rhythm_maker,
+...     )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \section{meter finding and rewriting}
 
@@ -523,6 +1131,38 @@ print(six_eight_meter.pretty_rtm_format)
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> three_four_meter = metertools.Meter((3, 4))
+>>> five_sixteen_meter = metertools.Meter((5, 16))
+>>> six_eight_meter = metertools.Meter((6, 8))
+>>> print(three_four_meter.pretty_rtm_format)
+(3/4 (
+	1/4
+	1/4
+	1/4))
+>>> print(five_sixteen_meter.pretty_rtm_format)
+(5/16 (
+	1/16
+	1/16
+	1/16
+	1/16
+	1/16))
+>>> print(six_eight_meter.pretty_rtm_format)
+(6/8 (
+	(3/8 (
+		1/8
+		1/8
+		1/8))
+	(3/8 (
+		1/8
+		1/8
+		1/8))))
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \subsection{finding meters}
 
 \begin{comment}
@@ -535,6 +1175,22 @@ for x in metertools.Meter.fit_meters_to_expr(offsets, permitted_meters):
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> permitted_meters = [metertools.Meter(_) for _ in [(3, 4), (4, 4), (5, 4)]]
+>>> offsets = [(0, 4), (4, 4), (8, 4), (12, 4), (16, 4)]
+>>> for x in metertools.Meter.fit_meters_to_expr(offsets, permitted_meters):
+...     print(x.implied_time_signature)
+...
+4/4
+4/4
+4/4
+4/4
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 offsets = [(0, 4), (3, 4), (5, 4), (10, 4), (15, 4), (20, 4)]
@@ -543,6 +1199,22 @@ for x in metertools.Meter.fit_meters_to_expr(offsets, permitted_meters):
 
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\begin{lstlisting}
+>>> offsets = [(0, 4), (3, 4), (5, 4), (10, 4), (15, 4), (20, 4)]
+>>> for x in metertools.Meter.fit_meters_to_expr(offsets, permitted_meters):
+...     print(x.implied_time_signature)
+...
+3/4
+4/4
+3/4
+5/4
+5/4
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 - metric accent kernels
 

@@ -28,7 +28,9 @@
     showspaces=false,
     showstringspaces=false,
     showtabs=false,
-    stringstyle=\color{redstrings}
+    stringstyle=\color{redstrings},
+    %frame=l,
+    %numbers=none
 }
 
 %\includeonly{source/chapters/time}
@@ -54,20 +56,22 @@
 \setcounter{chapter}{-1}
 
 \include{source/chapters/introduction}
+
 \include{source/chapters/mise-en-place}
 \include{source/chapters/a-model-of-notation}
-\include{source/chapters/a-model-of-composition}
 \include{source/chapters/time-tools}
+\include{source/chapters/a-model-of-composition}
 \include{source/chapters/specification}
 \include{source/chapters/interpretation-1}
 \include{source/chapters/interpretation-2}
-\include{source/chapters/conclusion}
 
 \include{source/chapters/score-aurora}
 \include{source/chapters/score-plague-water}
 \include{source/chapters/score-zaira}
 \include{source/chapters/score-armilla}
 \include{source/chapters/score-ersilia}
+
+\include{source/chapters/conclusion}
 
 \begin{appendices}
     \include{source/appendices/appendices}

@@ -1,7 +1,7 @@
 all:
 	make clean
 	make collect
-	make abjad-book
+	make abjad/book
 	make compile
 
 collect:
