@@ -98,6 +98,8 @@ annotated_timespan.annotation
 
 \subsection{time relations}
 
+- comparison
+
 - time relations: intersection, congruency etc.
 
 \begin{comment}
@@ -169,9 +171,9 @@ Timespan subtraction is another crucial operation.
 
 \begin{comment}
 <abjad>
-timespan_1 = timespantools.Timespan(0, 10)
-timespan_2 = timespantools.Timespan(2, 5)
-timespan_3 = timespantools.Timespan(5, 12)
+timespan_1 = timespantools.Timespan(0, 15)
+timespan_2 = timespantools.Timespan(5, 10)
+timespan_3 = timespantools.Timespan(10, 20)
 </abjad>
 \end{comment}
 
@@ -191,124 +193,123 @@ print(format(timespan_3 - timespan_3))
 
 \subsection{aggregate operations}
 
+Timespans can be aggregated together in an instance of the TimespanInventory
+class. In addition to the protocol defined for ordered collections, timespan
+inventories provide a variety of other methods and properties for working
+specifically with timespans.
+
+\begin{comment}
+<abjad>
+timespan_inventory = timespantools.TimespanInventory([
+    timespantools.Timespan(0, 16),
+    timespantools.Timespan(5, 12),
+    timespantools.Timespan(-2, 8),
+    ])
+timespan_inventory.timespan
+timespan_inventory.duration
+timespan_inventory.start_offset
+timespan_inventory.stop_offset
+timespan_inventory.append(timespantools.Timespan(15, 20))
+timespan_inventory.sort()
+timespan_inventory.duration
+</abjad>
+\end{comment}
+
 - unioning, differencing and splitting
 
+\begin{comment}
+<abjad>
+timespan_inventory = timespantools.TimespanInventory([
+    timespantools.Timespan(0, 16),
+    timespantools.Timespan(5, 12),
+    timespantools.Timespan(-2, 8),
+    ])
+timespan = timespantools.Timespan(5, 10)
+result = timespan_inventory & timespan
+print(format(timespan_inventory))
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+timespan_inventory = timespantools.TimespanInventory([
+    timespantools.Timespan(0, 16),
+    timespantools.Timespan(5, 12),
+    timespantools.Timespan(-2, 8),
+    ])
+timespan = timespantools.Timespan(5, 10)
+result = timespan_inventory - timespan
+print(format(timespan_inventory))
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+timespan_inventory = timespantools.TimespanInventory([
+    timespantools.Timespan(0, 3),
+    timespantools.Timespan(3, 6),
+    timespantools.Timespan(6, 10),
+    ])
+left, right = timespan_inventory.split_at_offset(4)
+print(format(left))
+print(format(right))
+</abjad>
+\end{comment}
+
+Timespan.split_at_offsets()
+
 - partitioning
+
+\begin{comment}
+<abjad>
+timespan_inventory = timespantools.TimespanInventory([
+    timespantools.Timespan(0, 10),
+    timespantools.Timespan(5, 15),
+    timespantools.Timespan(15, 20),
+    timespantools.Timespan(25, 30),
+    ])
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+for inventory in timespan_inventory.partition():
+    print(format(inventory))
+
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+for inventory in timespan_inventory.partition(include_tangent_timespans=True):
+    print(format(inventory))
+
+</abjad>
+\end{comment}
 
 - multiplexing and demultiplexing
 
 - resolution
 
+- other operations
+
+TimespanInventory.all_are_contiguous
+TimespanInventory.all_are_nonoverlapping
+TimespanInventory.clip_timespan_durations
+TimespanInventory.count_offsets()
+TimespanInventory.explode()
+TimespanInventory.round_offsets()
+
 - timespan collection vs timespan inventory
 
-\section{rhythm makers}
-
-\subsection{a factory for rhythmic material}
-
-- divisions
-
-\begin{comment}
-<abjad>
-divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
-</abjad>
-\end{comment}
-
-- rhythm maker
-
-\subsection{configuration}
-
-- specifiers: tie, duration spelling, beam
-
-\subsection{examples}
-
-- specific rhythm makers
-
-- NoteRhythmMaker
-
-\begin{comment}
-<abjad>
-note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(
-    )
-show(note_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-- EvenDivisionsRhythmMaker
-
-\begin{comment}
-<abjad>
-even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker(
-    denominators=[8, 16, 4],
-    )
-show(even_division_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-- IncisedRhythmMaker
-
-\begin{comment}
-<abjad>
-incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
-    incise_specifier=rhythmmakertools.InciseSpecifier(
-        prefix_counts=[0],
-        suffix_talea=[-1],
-        suffix_counts=[1],
-        talea_denominator=16,
-        ),
-    )
-show(incised_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-- TaleaRhythmMaker
-
-\begin{comment}
-<abjad>
-talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
-    talea=rhythmmakertools.Talea(
-        counts=[1, 2, 3, 4],
-        denominator=16,
-        ),
-    )
-show(talea_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-\subsection{composite rhythm maker}
-
-\begin{comment}
-<abjad>
-composite_rhythm_maker = consort.CompositeRhythmMaker(
-    default=note_rhythm_maker,
-    last=incised_rhythm_maker,
-    first=even_division_rhythm_maker,
-    )
-</abjad>
-\end{comment}
-
-\section{meter finding and rewriting}
-
-\subsection{describing meter}
-
-- meters vs time signatures
-
-- rhythm trees
-
-\subsection{finding meters}
-
-- metric accent kernels
-
-- offset counters
-
-- discard final silence
-
-\subsection{rewriting meters}
-
-- specific iteration techniques
-
-- boundary depth
-
-- dot count
+Consort provides its own timespan collection class -- the TimespanCollection.
+This class stores timespans internally not as a list, but in a balanced
+"interval tree" datastructure which guarantees sorting and allows for highly
+optimized lookups of timespans intersecting specific offsets. This class is
+used at crucial points during Consort's interpretation stage simply for
+purposes of speed, and should be considered an implementation detail. With
+work, its internal datastructure will eventually be merged into Abjad's
+TimespanInventory.
 
 \section{performed and silent timespans}
 
@@ -413,3 +414,142 @@ dependent_timespan_maker = consort.DependentTimespanMaker(
     )
 </abjad>
 \end{comment}
+
+\section{rhythm makers}
+
+\subsection{a factory for rhythmic material}
+
+- divisions
+
+\begin{comment}
+<abjad>
+divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
+</abjad>
+\end{comment}
+
+- rhythm maker
+
+\subsection{configuration}
+
+- specifiers: tie, duration spelling, beam
+
+\subsection{examples}
+
+- specific rhythm makers
+
+- NoteRhythmMaker
+
+\begin{comment}
+<abjad>
+note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(
+    )
+show(note_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+- EvenDivisionsRhythmMaker
+
+\begin{comment}
+<abjad>
+even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker(
+    denominators=[8, 16, 4],
+    )
+show(even_division_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+- IncisedRhythmMaker
+
+\begin{comment}
+<abjad>
+incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
+    incise_specifier=rhythmmakertools.InciseSpecifier(
+        prefix_counts=[0],
+        suffix_talea=[-1],
+        suffix_counts=[1],
+        talea_denominator=16,
+        ),
+    )
+show(incised_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+- TaleaRhythmMaker
+
+\begin{comment}
+<abjad>
+talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
+    talea=rhythmmakertools.Talea(
+        counts=[1, 2, 3, 4],
+        denominator=16,
+        ),
+    )
+show(talea_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+\subsection{composite rhythm maker}
+
+\begin{comment}
+<abjad>
+composite_rhythm_maker = consort.CompositeRhythmMaker(
+    default=note_rhythm_maker,
+    last=incised_rhythm_maker,
+    first=even_division_rhythm_maker,
+    )
+</abjad>
+\end{comment}
+
+\section{meter finding and rewriting}
+
+\subsection{describing meter}
+
+- meters vs time signatures
+
+- rhythm trees
+
+\begin{comment}
+<abjad>
+three_four_meter = metertools.Meter((3, 4))
+five_sixteen_meter = metertools.Meter((5, 16))
+six_eight_meter = metertools.Meter((6, 8))
+print(three_four_meter.pretty_rtm_format)
+print(five_sixteen_meter.pretty_rtm_format)
+print(six_eight_meter.pretty_rtm_format)
+</abjad>
+\end{comment}
+
+\subsection{finding meters}
+
+\begin{comment}
+<abjad>
+permitted_meters = [metertools.Meter(_) for _ in [(3, 4), (4, 4), (5, 4)]]
+offsets = [(0, 4), (4, 4), (8, 4), (12, 4), (16, 4)]
+for x in metertools.Meter.fit_meters_to_expr(offsets, permitted_meters):
+    print(x.implied_time_signature)
+
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+offsets = [(0, 4), (3, 4), (5, 4), (10, 4), (15, 4), (20, 4)]
+for x in metertools.Meter.fit_meters_to_expr(offsets, permitted_meters):
+    print(x.implied_time_signature)
+
+</abjad>
+\end{comment}
+
+- metric accent kernels
+
+- offset counters
+
+- discard final silence
+
+\subsection{rewriting meters}
+
+- specific iteration techniques
+
+- boundary depth
+
+- dot count
