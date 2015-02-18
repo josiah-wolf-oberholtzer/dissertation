@@ -1191,8 +1191,6 @@ dependent_timespan_maker = consort.DependentTimespanMaker(
 \section{Rhythm makers}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{a factory for rhythmic material}
-
 - divisions
 
 \begin{comment}
@@ -1216,7 +1214,9 @@ divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
 
 - specifiers: tie, duration spelling, beam
 
-\subsection{NoteRhythmMaker}
+\subsection{Examples}
+
+\subsubsection{NoteRhythmMaker}
 
 \begin{comment}
 <abjad>
@@ -1238,7 +1238,7 @@ show(note_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{EvenDivisionsRhythmMaker}
+\subsubsection{EvenDivisionsRhythmMaker}
 
 \begin{comment}
 <abjad>
@@ -1262,7 +1262,7 @@ show(even_division_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{IncisedRhythmMaker}
+\subsubsection{IncisedRhythmMaker}
 
 \begin{comment}
 <abjad>
@@ -1296,7 +1296,7 @@ show(incised_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{TaleaRhythmMaker}
+\subsubsection{TaleaRhythmMaker}
 
 \begin{comment}
 <abjad>
@@ -1779,7 +1779,7 @@ graph(meter)
 \begin{lstlisting}
 >>> graph(meter)
 \end{lstlisting}
-\includegraphics[scale=0.66]{assets/graphviz-62792517f2bda456f93bcc885cf761a6.pdf}
+\includegraphics[scale=0.5]{assets/graphviz-62792517f2bda456f93bcc885cf761a6.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1806,9 +1806,3 @@ show(staff)
 \subsection{Boundary depth}
 
 \subsection{Recursive meter rewriting}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Conclusion}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-Foo
