@@ -33,7 +33,7 @@
 
 \RequirePackage{color}
 \usepackage{hyperref}
-\RequirePackage[tiny, md, sc]{titlesec}
+\RequirePackage[small, md, sc, compact]{titlesec}
 \setlength{\headheight}{15pt}
 \pagestyle{plain}
 \RequirePackage{titling}
