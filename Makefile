@@ -9,10 +9,21 @@ collect:
 	scripts/collect-scores
 
 abjad/book:
-	abjad-book -a ./assets -l . -y ./stylesheet.ily source/chapters/*.tex
+	abjad-book \
+		-a ./assets \
+		-g ./abjadbook.cfg \
+		-l . \
+		-y ./stylesheet.ily \
+		source/chapters/*.tex
 
 abjad/clean:
-	abjad-book --clean -a ./assets -l . -y ./stylesheet.ily source/chapters/*.tex
+	abjad-book \
+		--clean \
+		-a ./assets \
+		-g ./abjadbook.cfg \
+		-l . \
+		-y ./stylesheet.ily \
+		source/chapters/*.tex
 
 compile:
 	xelatex dissertation.tex
