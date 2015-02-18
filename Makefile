@@ -3,6 +3,12 @@ all:
 	make collect
 	make abjad/book
 	make compile
+	make open
+
+fast:
+	make abjad/book
+	make compile
+	make open
 
 collect:
 	scripts/collect-modules
@@ -28,11 +34,12 @@ abjad/clean:
 compile:
 	xelatex dissertation.tex
 	xelatex dissertation.tex
-	bibtex dissertation.aux
-	xelatex dissertation.tex
-	xelatex dissertation.tex
+	#bibtex dissertation.aux
+	#xelatex dissertation.tex
+	#xelatex dissertation.tex
 
 clean:
+	rm -Rif assets/graphviz-*.pdf
 	rm -Rif assets/lilypond-*.pdf
 	find . -name "*.aux" -exec rm -rf {} \;
 	find . -name "*.bbl" -exec rm -rf {} \;
@@ -42,3 +49,6 @@ clean:
 	find . -name "*.out" -exec rm -rf {} \;
 	find . -name "*.pyc" -exec rm -rf {} \;
 	find . -name "*.toc" -exec rm -rf {} \;
+
+open:
+	open dissertation.pdf
