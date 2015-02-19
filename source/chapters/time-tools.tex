@@ -1355,20 +1355,51 @@ composite_rhythm_maker = consort.CompositeRhythmMaker(
 \section{Modeling meter}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-- meters vs time signatures
+What is meter, anyway?
 
-- rhythm trees
+Abjad models meter as a \emph{rhythm tree} of nested, durated nodes which
+outline a series of strongly and weakly accented offsets. The accent strength
+of a particular offset found in a meter's rhythm tree derives from the number
+of nodes in that tree sharing that offset as a start or stop. The more nodes in
+the rhythm tree which share an offset, the greater the weight -- the
+accentedness -- of that offset is taken to be. Abjad can construct the rhythm
+tree for any meter from a numerator / denominator pair such as a rational
+duration or time signature. Meter construction involves the progressive
+division of the numerator of the input pair into groups of 2s and
+3s\footnote{The factors 4 and 5 are also used in meter rhythm tree generation
+as they provide better typical results during meter rewriting.}, and the
+decomposition of any other prime factors into groups of 3s and 2s. Division by
+2 always occurs before division by 3. Constructing rhythm trees in this fashion
+gives results which generally align with common practice expectations.
 
-\subsection{Rhythm trees}
+Consider the following 6/8 meter:
+
+\begin{comment}
+<abjad>
+six_eight_meter = metertools.Meter((6, 8))
+graph(six_eight_meter)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> six_eight_meter = metertools.Meter((6, 8))
+>>> graph(six_eight_meter)
+\end{lstlisting}
+\includegraphics[scale=0.5]{assets/graphviz-abfd99fbf1dc9a00da0431cab2018679.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+
+
+\subsection{Examples}
 
 \begin{comment}
 <abjad>
 three_four_meter = metertools.Meter((3, 4))
-five_sixteen_meter = metertools.Meter((5, 16))
-six_eight_meter = metertools.Meter((6, 8))
-print(three_four_meter.pretty_rtm_format)
-print(five_sixteen_meter.pretty_rtm_format)
-print(six_eight_meter.pretty_rtm_format)
+graph(three_four_meter)
 </abjad>
 \end{comment}
 
@@ -1377,35 +1408,101 @@ print(six_eight_meter.pretty_rtm_format)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> three_four_meter = metertools.Meter((3, 4))
->>> five_sixteen_meter = metertools.Meter((5, 16))
->>> six_eight_meter = metertools.Meter((6, 8))
->>> print(three_four_meter.pretty_rtm_format)
-(3/4 (
-	1/4
-	1/4
-	1/4))
+>>> graph(three_four_meter)
 \end{lstlisting}
+\includegraphics[scale=0.5]{assets/graphviz-1b7321785d49973a4bfdaebec03e73df.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+seven_eight_meter = metertools.Meter((7, 8))
+graph(seven_eight_meter)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> print(five_sixteen_meter.pretty_rtm_format)
-(5/16 (
-	1/16
-	1/16
-	1/16
-	1/16
-	1/16))
+>>> seven_eight_meter = metertools.Meter((7, 8))
+>>> graph(seven_eight_meter)
 \end{lstlisting}
+\includegraphics[scale=0.5]{assets/graphviz-cc3b743fa0d4d86d43573d81dd4e9c0f.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+twelve_eight_meter = metertools.Meter((12, 8))
+graph(twelve_eight_meter)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> print(six_eight_meter.pretty_rtm_format)
-(6/8 (
-	(3/8 (
-		1/8
-		1/8
-		1/8))
-	(3/8 (
-		1/8
-		1/8
-		1/8))))
+>>> twelve_eight_meter = metertools.Meter((12, 8))
+>>> graph(twelve_eight_meter)
 \end{lstlisting}
+\includegraphics[scale=0.5]{assets/graphviz-8059b6b9535db142f5578f6e7bb6bfb0.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\subsection{Alternate meter representations}
+
+\begin{comment}
+<abjad>
+four_four_meter = metertools.Meter((4, 4))
+graph(four_four_meter)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> four_four_meter = metertools.Meter((4, 4))
+>>> graph(four_four_meter)
+\end{lstlisting}
+\includegraphics[scale=0.5]{assets/graphviz-08471c3e9fc97e8d67a5709002d71e2c.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+arbitrary_meter_1 = metertools.Meter('(4/4 ((2/4 (1/4 1/4)) (2/4 (1/4 1/4))))')
+graph(arbitrary_meter_1)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> arbitrary_meter_1 = metertools.Meter('(4/4 ((2/4 (1/4 1/4)) (2/4 (1/4 1/4))))')
+>>> graph(arbitrary_meter_1)
+\end{lstlisting}
+\includegraphics[scale=0.5]{assets/graphviz-78ce6ac07784b1510506234d9e79bac8.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+arbitrary_meter_2 = metertools.Meter('(4/4 ((2/4 (1/4 (1/4 (1/8 1/8)))) 1/2))')
+graph(arbitrary_meter_2)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> arbitrary_meter_2 = metertools.Meter('(4/4 ((2/4 (1/4 (1/4 (1/8 1/8)))) 1/2))')
+>>> graph(arbitrary_meter_2)
+\end{lstlisting}
+\includegraphics[scale=0.5]{assets/graphviz-ab8bcde47a800c28d9d3faef76a6c982.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1779,7 +1876,7 @@ graph(meter)
 \begin{lstlisting}
 >>> graph(meter)
 \end{lstlisting}
-\includegraphics[scale=0.5]{assets/graphviz-3dfb06cb98b7b0155019f40dd05d6a23.pdf}
+\includegraphics[scale=0.5]{assets/graphviz-08471c3e9fc97e8d67a5709002d71e2c.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 

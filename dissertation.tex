@@ -8,6 +8,7 @@
 \usepackage{color}
 \usepackage{listings}
 \usepackage{pdfpages}
+\usepackage{textcomp}
 
 \definecolor{bluekeywords}{rgb}{0.13,0.13,1}
 \definecolor{greencomments}{rgb}{0,0.5,0}
@@ -24,13 +25,13 @@
     frame=l,
     framerule=1.5pt,
     framesep=6pt,
-    %rulecolor=\color{lightgrey},
     keywordstyle=\color{bluekeywords}\bfseries,
     language=Python,
     showspaces=false,
     showstringspaces=false,
     showtabs=false,
     stringstyle=\color{redstrings},
+    upquote=true,
 }
 
 %\titleformat*{\section}{\large\bfseries}
@@ -39,6 +40,8 @@
 %\titleformat*{\paragraph}{\large\bfseries}
 %\titleformat*{\subparagraph}{\large\bfseries}
 
+\includeonly{source/chapters/time-tools}
+
 \begin{document}
 
 \frontmatter
@@ -46,11 +49,11 @@
 \input{source/frontmatter/personalize}
 \maketitle
 \copyrightpage
-\abstractpage
+%\abstractpage
 \tableofcontents
-%\listoffigures
-\dedicationpage
-\acknowledgments
+%%\listoffigures
+%\dedicationpage
+%\acknowledgments
 
 \mainmatter
 \doublespacing
@@ -93,19 +96,18 @@
     showstringspaces=false,
     showtabs=false,
     stringstyle=\color{redstrings},
+    upquote=true,
 }
 
-\begin{appendices}
+%\singlespacing
+%\begin{appendices}
 %    \include{source/appendices/appendices}
-\end{appendices}
-
-\singlespacing
-
-\clearpage
-\bibliography{references}
-\addcontentsline{toc}{chapter}{References}
-\bibliographystyle{apalike2}
-
-\include{source/endmatter/colophon}
+%\end{appendices}
+%\clearpage
+%\bibliography{references}
+%\addcontentsline{toc}{chapter}{References}
+%\bibliographystyle{apalike2}
+%
+%\include{source/endmatter/colophon}
 
 \end{document}

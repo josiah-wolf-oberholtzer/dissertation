@@ -87,13 +87,15 @@
 %\setmonofont[Scale=MatchLowercase]{Source Code Pro}
 \setmonofont[Scale=MatchLowercase]{Inconsolata}
 
-\RequirePackage[labelfont={bf,sf,footnotesize,singlespacing},
-								textfont={sf,footnotesize,singlespacing},
-								justification={justified,RaggedRight},
-								singlelinecheck=false,
-								margin=0pt,
-								figurewithin=chapter,
-								tablewithin=chapter]{caption}
+\RequirePackage[
+    labelfont={bf,sf,footnotesize,singlespacing},
+    textfont={sf,footnotesize,singlespacing},
+    justification={justified,RaggedRight},
+    singlelinecheck=false,
+    margin=0pt,
+    figurewithin=chapter,
+    tablewithin=chapter
+    ]{caption}
 
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 
