@@ -1420,9 +1420,10 @@ metrical level and therefore all receive an accent weight of one.
 
 \subsection{Examples}
 
-Consider the following examples of meters modeled in Abjad. A 3/4 meter
-consists of a top-level 3/4 metrical grouping divided into three 1/4 duration
-beats:
+Consider the following examples of meters modeled in Abjad.
+
+A 3/4 meter consists of a top-level 3/4 metrical grouping divided into three
+1/4 duration beats:
 
 \begin{comment}
 <abjad>
@@ -1462,6 +1463,9 @@ graph(seven_eight_meter)
 \includegraphics[scale=0.5]{assets/graphviz-bbce67419d7d935bfc4536be88d9d06a.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent A 12/8 meter subdivides into four 3/8 duration groupings, each
+containining three 1/8 duration beats:
 
 \begin{comment}
 <abjad>
@@ -1582,10 +1586,428 @@ graph(arbitrary_meter_2)
 %%% ABJADBOOK END %%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Rewriting meters}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Notated rhythms can be expressed in multiple ways while maintaining the same
+attack-point and duration structure.
+
+\emph{Meter rewriting} formalizes the process of re-notating a rhythm according
+to the offset structure inherent to some meter.
+
+Consider the following rhythm:
+
+\begin{comment}
+<abjad>
+parseable = "abj: | 2/4 c'2 ~ |"
+parseable += "| 4/4 c'32 d'2.. ~ d'16 e'32 ~ |"
+parseable += "| 2/4 e'2 |"
+staff = Staff(parseable)
+show(staff)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> parseable = "abj: | 2/4 c'2 ~ |"
+>>> parseable += "| 4/4 c'32 d'2.. ~ d'16 e'32 ~ |"
+>>> parseable += "| 2/4 e'2 |"
+>>> staff = Staff(parseable)
+>>> show(staff)
+\end{lstlisting}
+\includegraphics{assets/lilypond-329490b244b088f012cb5146859cdab0.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+The middle measure is notated in a perfectly valid manner. However, the
+double-dotted D does not align with or break against any of the offsets of a
+4/4 metrical structure: 0/4, 1/4, 2/4, 3/4 or 4/4.
+
+\begin{comment}
+<abjad>
+four_four_meter = metertools.Meter((4, 4))
+graph(four_four_meter)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> four_four_meter = metertools.Meter((4, 4))
+>>> graph(four_four_meter)
+\end{lstlisting}
+\includegraphics[scale=0.5]{assets/graphviz-08a7fcb5e62e38947325ecc3e2f20393.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+mutate(staff[1][:]).rewrite_meter(four_four_meter)
+show(staff)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> mutate(staff[1][:]).rewrite_meter(four_four_meter)
+>>> show(staff)
+\end{lstlisting}
+\includegraphics{assets/lilypond-52ed3c73b623b7b0d9a2c6230084a264.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+two_two_meter = metertools.Meter((2, 2))
+staff = Staff(parseable)
+mutate(staff[1][:]).rewrite_meter(two_two_meter)
+show(staff)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> two_two_meter = metertools.Meter((2, 2))
+>>> staff = Staff(parseable)
+>>> mutate(staff[1][:]).rewrite_meter(two_two_meter)
+>>> show(staff)
+\end{lstlisting}
+\includegraphics{assets/lilypond-467c7a453dd4de93da0cc1c7acbe0a87.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\subsection{Dot count}
+
+\begin{comment}
+<abjad>
+measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
+show(measure)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
+>>> show(measure)
+\end{lstlisting}
+\includegraphics{assets/lilypond-8d4bc784b86bdade27d371532ab358a2.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+mutate(measure[:]).rewrite_meter((3, 4))
+show(measure)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> mutate(measure[:]).rewrite_meter((3, 4))
+>>> show(measure)
+\end{lstlisting}
+\includegraphics{assets/lilypond-d4d52cf91b08080c4067643d24faaf2a.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
+mutate(measure[:]).rewrite_meter((3, 4), maximum_dot_count=2)
+show(measure)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
+>>> mutate(measure[:]).rewrite_meter((3, 4), maximum_dot_count=2)
+>>> show(measure)
+\end{lstlisting}
+\includegraphics{assets/lilypond-40b68312fd44f949b40de163b21588c3.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
+mutate(measure[:]).rewrite_meter((3, 4), maximum_dot_count=1)
+show(measure)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
+>>> mutate(measure[:]).rewrite_meter((3, 4), maximum_dot_count=1)
+>>> show(measure)
+\end{lstlisting}
+\includegraphics{assets/lilypond-5fba6e827130a27fefae4843d2b21248.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
+mutate(measure[:]).rewrite_meter((3, 4), maximum_dot_count=0)
+show(measure)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
+>>> mutate(measure[:]).rewrite_meter((3, 4), maximum_dot_count=0)
+>>> show(measure)
+\end{lstlisting}
+\includegraphics{assets/lilypond-2ca50ee6f27ae56bae476fb9dc1faafa.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\subsection{Boundary depth}
+
+\begin{comment}
+<abjad>
+nine_eight_meter = metertools.Meter((9, 8))
+graph(nine_eight_meter)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> nine_eight_meter = metertools.Meter((9, 8))
+>>> graph(nine_eight_meter)
+\end{lstlisting}
+\includegraphics[scale=0.5]{assets/graphviz-63c84e9823eef4be1a2ac91cc7cf5a3f.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+measure = Measure((9, 8), "c'2 d'2 e'8")
+show(measure)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> measure = Measure((9, 8), "c'2 d'2 e'8")
+>>> show(measure)
+\end{lstlisting}
+\includegraphics{assets/lilypond-f459f8c64dd96ba762e4bdebba6f4680.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+mutate(measure[:]).rewrite_meter(nine_eight_meter)
+show(measure)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> mutate(measure[:]).rewrite_meter(nine_eight_meter)
+>>> show(measure)
+\end{lstlisting}
+\includegraphics{assets/lilypond-63f30ee6e2e244440af9d6f1e0f84a02.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+measure = Measure((9, 8), "c'2 d'2 e'8")
+mutate(measure[:]).rewrite_meter(
+    nine_eight_meter,
+    boundary_depth=1,
+    )
+show(measure)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> measure = Measure((9, 8), "c'2 d'2 e'8")
+>>> mutate(measure[:]).rewrite_meter(
+...     nine_eight_meter,
+...     boundary_depth=1,
+...     )
+>>> show(measure)
+\end{lstlisting}
+\includegraphics{assets/lilypond-93c0260083a9ae2ad25a3c7c064e3024.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\subsection{Disambiguating 3/4 \& 6/8}
+
+\begin{comment}
+<abjad>
+staff = Staff(context_name='RhythmicStaff')
+staff.extend("{ c'2 c'4 } { c'4. c'4. } { c'2 ~ c'8 c'8 }")
+attach(TimeSignature((3, 4)), staff)
+show(staff)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff = Staff(context_name='RhythmicStaff')
+>>> staff.extend("{ c'2 c'4 } { c'4. c'4. } { c'2 ~ c'8 c'8 }")
+>>> attach(TimeSignature((3, 4)), staff)
+>>> show(staff)
+\end{lstlisting}
+\includegraphics{assets/lilypond-b4a2116ab0031b6068b1112932629bac.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+for container in staff:
+    mutate(container[:]).rewrite_meter((3, 4), boundary_depth=1)
+
+show(staff)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for container in staff:
+...     mutate(container[:]).rewrite_meter((3, 4), boundary_depth=1)
+...
+>>> show(staff)
+\end{lstlisting}
+\includegraphics{assets/lilypond-0cef77f45f31e31ad271d15c9c32edf8.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+staff = Staff(context_name='RhythmicStaff')
+staff.extend("{ c'2 c'4 } { c'4. c'4. } { c'2 ~ c'8 c'8 }")
+attach(TimeSignature((6, 8)), staff)
+for container in staff:
+    mutate(container[:]).rewrite_meter((6, 8), boundary_depth=1)
+
+show(staff)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff = Staff(context_name='RhythmicStaff')
+>>> staff.extend("{ c'2 c'4 } { c'4. c'4. } { c'2 ~ c'8 c'8 }")
+>>> attach(TimeSignature((6, 8)), staff)
+>>> for container in staff:
+...     mutate(container[:]).rewrite_meter((6, 8), boundary_depth=1)
+...
+>>> show(staff)
+\end{lstlisting}
+\includegraphics{assets/lilypond-58a85c4734fd2a15643aa2409cbff0e5.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\subsection{Recursive meter rewriting}
+
+\begin{comment}
+<abjad>
+parseable = "abj: | 4/4 c'16 ~ c'4 d'8. ~ "
+parseable += "2/3 { d'8. ~ 3/5 { d'16 e'8 ~ e'16 f'16 ~ } } "
+parseable += "f'4 |"
+measure = parse(parseable)
+show(measure)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> parseable = "abj: | 4/4 c'16 ~ c'4 d'8. ~ "
+>>> parseable += "2/3 { d'8. ~ 3/5 { d'16 e'8 ~ e'16 f'16 ~ } } "
+>>> parseable += "f'4 |"
+>>> measure = parse(parseable)
+>>> show(measure)
+\end{lstlisting}
+\includegraphics{assets/lilypond-270f471c0052391c9bf1a5df2ccc4474.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+mutate(measure[:]).rewrite_meter(
+    measure,
+    boundary_depth=1,
+    )
+show(measure)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> mutate(measure[:]).rewrite_meter(
+...     measure,
+...     boundary_depth=1,
+...     )
+>>> show(measure)
+\end{lstlisting}
+\includegraphics{assets/lilypond-f7aa660690e64db249ef36ea1eac5ace.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Finding meters}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+A meter's weighted-offset pattern can be used as 1-dimensional kernel, or
+convolution matrix, to determine how strongly an arbitrary collection of
+offsets appears to express that meter.
+
+Abjad's \texttt{metertools} provides a \texttt{MetricAccentKernel} class.
+
 \subsection{Offset counters}
+
+Before convolving a meter with a collection of offsets, those offsets need to
+be extracted. The \texttt{MetricAccentKernel} class'
+\texttt{count\_offsets\_in\_expr()} method collects offsets in its input
+expression into a \emph{counter} -- a mapping of offsets to the number of times
+those offsets appear. Offsets which appear multiple times in the input
+expression will result in a higher count in the generated offset counter, and
+will in turn have a greater influence during the meter convolution process.
+
+Consider the following score example:
 
 \begin{comment}
 <abjad>
@@ -1615,11 +2037,17 @@ show(piano_staff)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent The offsets found in all of the leaves of the score can be counted by
+selecting the score's leaves and passing that selection to
+\texttt{count\_offsets\_in\_expr()}. Note that the offset 1/2 shows a count of
+4. This is because 1/2 acts as both the start and stop offset for four separate
+leaves in the score.
+
 \begin{comment}
 <abjad>
-MetricAccentKernel = metertools.MetricAccentKernel
 leaves = piano_staff.select_leaves(allow_discontiguous_leaves=True)
-piano_staff_counter = MetricAccentKernel.count_offsets_in_expr(leaves)
+piano_staff_counter = metertools.MetricAccentKernel.count_offsets_in_expr(
+    leaves)
 for offset, count in sorted(piano_staff_counter.items()):
     offset, count
 
@@ -1630,9 +2058,9 @@ for offset, count in sorted(piano_staff_counter.items()):
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> MetricAccentKernel = metertools.MetricAccentKernel
 >>> leaves = piano_staff.select_leaves(allow_discontiguous_leaves=True)
->>> piano_staff_counter = MetricAccentKernel.count_offsets_in_expr(leaves)
+>>> piano_staff_counter = metertools.MetricAccentKernel.count_offsets_in_expr(
+...     leaves)
 >>> for offset, count in sorted(piano_staff_counter.items()):
 ...     offset, count
 ...
@@ -1646,6 +2074,9 @@ for offset, count in sorted(piano_staff_counter.items()):
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+Offset counters can also be generated from timespan inventories, allowing meter
+convolution to be used without reference to any score objects at all:
+
 \begin{comment}
 <abjad>
 timespans = timespantools.TimespanInventory([
@@ -1654,7 +2085,8 @@ timespans = timespantools.TimespanInventory([
     timespantools.Timespan(15, 20),
     timespantools.Timespan(10, 15),
     ])
-timespan_counter = MetricAccentKernel.count_offsets_in_expr(timespans)
+timespan_counter = metertools.MetricAccentKernel.count_offsets_in_expr(
+    timespans)
 for offset, count in sorted(timespan_counter.items()):
     offset, count
 
@@ -1671,7 +2103,8 @@ for offset, count in sorted(timespan_counter.items()):
 ...     timespantools.Timespan(15, 20),
 ...     timespantools.Timespan(10, 15),
 ...     ])
->>> timespan_counter = MetricAccentKernel.count_offsets_in_expr(timespans)
+>>> timespan_counter = metertools.MetricAccentKernel.count_offsets_in_expr(
+...     timespans)
 >>> for offset, count in sorted(timespan_counter.items()):
 ...     offset, count
 ...
@@ -1684,7 +2117,12 @@ for offset, count in sorted(timespan_counter.items()):
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Metric accent kernels}
+\subsection{Generating metric accent kernels}
+
+As demonstrated earlier, meters describe a sequence of offsets with varying
+degrees of weight, or accentedness, attributed to each offset. Downbeats have a
+stronger accent than upbeats, the half-way beat of a 6/8 measure is less strong
+than the downbeat but stronger than any of the others, etc.
 
 \begin{comment}
 <abjad>
@@ -1717,6 +2155,8 @@ for offset, weight in sorted(kernel_44.kernel.items()):
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\subsection{Evaluating metric accent kernels}
 
 \noindent The 4/4 metric accent kernel can be called against an offset counter
 -- as though it were a function -- to generate a response via a kind of simple
@@ -1887,94 +2327,3 @@ for x in metertools.Meter.fit_meters_to_expr(offsets, permitted_meters):
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Rewriting meters}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-Notated rhythms can be expressed in multiple ways while maintaining the same
-attack-point and duration structure.
-
-\emph{Meter rewriting} formalizes the process of re-notating a rhythm according
-to the offset structure inherent to some meter.
-
-Consider the following rhythm:
-
-\begin{comment}
-<abjad>
-parseable = "abj: | 2/4 c'2 ~ |"
-parseable += "| 4/4 c'32 d'2.. ~ d'16 e'32 ~ |"
-parseable += "| 2/4 e'2 |"
-staff = Staff(parseable)
-show(staff)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> parseable = "abj: | 2/4 c'2 ~ |"
->>> parseable += "| 4/4 c'32 d'2.. ~ d'16 e'32 ~ |"
->>> parseable += "| 2/4 e'2 |"
->>> staff = Staff(parseable)
->>> show(staff)
-\end{lstlisting}
-\includegraphics{assets/lilypond-329490b244b088f012cb5146859cdab0.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-The middle measure is notated in a perfectly valid manner. However, the
-double-dotted D does not align with or break against any of the offsets of a
-4/4 metrical structure: 0/4, 1/4, 2/4, 3/4 or 4/4.
-
-\begin{comment}
-<abjad>
-meter = metertools.Meter((4, 4))
-print(meter.pretty_rtm_format)
-graph(meter)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> meter = metertools.Meter((4, 4))
->>> print(meter.pretty_rtm_format)
-(4/4 (
-	1/4
-	1/4
-	1/4
-	1/4))
-\end{lstlisting}
-\begin{lstlisting}
->>> graph(meter)
-\end{lstlisting}
-\includegraphics[scale=0.5]{assets/graphviz-08a7fcb5e62e38947325ecc3e2f20393.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-mutate(staff[1][:]).rewrite_meter(meter)
-show(staff)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> mutate(staff[1][:]).rewrite_meter(meter)
->>> show(staff)
-\end{lstlisting}
-\includegraphics{assets/lilypond-52ed3c73b623b7b0d9a2c6230084a264.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\subsection{Dot count}
-
-\subsection{Boundary depth}
-
-\subsection{Recursive meter rewriting}
