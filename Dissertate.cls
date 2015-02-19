@@ -80,11 +80,20 @@
 \widowpenalty=300
 \clubpenalty=300
 
+\usepackage{fontspec}
 \defaultfontfeatures{Mapping=tex-text}
+\setmainfont[
+    Ligatures=TeX,
+    Extension=.otf,
+    BoldFont=EBGaramond12-Regular,
+    BoldFeatures={FakeBold=3},
+    ItalicFont=EBGaramond12-Italic,
+    BoldItalicFont=EBGaramond12-Italic,
+    BoldItalicFeatures={FakeBold=3},
+]{EBGaramond12-Regular}
 \newfontfamily{\smallcaps}[RawFeature={+c2sc,+scmp}]{EB Garamond}
-\setromanfont[Numbers=OldStyle, Ligatures={Common}]{EB Garamond}
-\setsansfont[Scale=MatchLowercase, BoldFont={Lato Bold}]{Lato Regular}
-%\setmonofont[Scale=MatchLowercase]{Source Code Pro}
+%\setromanfont[Numbers=OldStyle, Ligatures={Common}]{EB Garamond}
+%\setsansfont[Scale=MatchLowercase, BoldFont={Lato Bold}]{Lato Regular}
 \setmonofont[Scale=MatchLowercase]{Inconsolata}
 
 \RequirePackage[
@@ -97,7 +106,7 @@
     tablewithin=chapter
     ]{caption}
 
-\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+%\renewcommand{\thefootnote}{\fnsymbol{footnote}}
 
 %\onehalfspacing
 %\doublespacing

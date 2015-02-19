@@ -821,12 +821,13 @@ TimespanInventory.round_offsets()
 
 Consort provides its own timespan collection class -- the TimespanCollection.
 This class stores timespans internally not as a list, but in a balanced
-"interval tree" datastructure which guarantees sorting and allows for highly
-optimized lookups of timespans intersecting specific offsets. This class is
-used at crucial points during Consort's interpretation stage simply for
-purposes of speed, and should be considered an implementation detail. With
-work, its internal datastructure will eventually be merged into Abjad's
-TimespanInventory.
+\emph{interval tree}\footnote{An interval tree is an augmented self-balancing
+binary tree which stores both start offsets as well as stop offsets.}
+datastructure which guarantees sorting and allows for highly optimized lookups
+of timespans intersecting specific offsets. This class is used at crucial
+points during Consort's interpretation stage simply for purposes of speed, and
+should be considered an implementation detail. With work, its internal
+datastructure will eventually be merged into Abjad's TimespanInventory.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Annotated timespans in \emph{Consort}}
@@ -1355,24 +1356,24 @@ composite_rhythm_maker = consort.CompositeRhythmMaker(
 \section{Modeling meter}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-What is meter, anyway?
-
-Abjad models meter as a \emph{rhythm tree} of nested, durated nodes which
+Abjad models meter as a \emph{rhythm-tree} of nested, durated nodes which
 outline a series of strongly and weakly accented offsets. The accent strength
-of a particular offset found in a meter's rhythm tree derives from the number
+of a particular offset found in a meter's rhythm-tree derives from the number
 of nodes in that tree sharing that offset as a start or stop. The more nodes in
-the rhythm tree which share an offset, the greater the weight -- the
+the rhythm-tree which share an offset, the greater the weight -- the
 accentedness -- of that offset is taken to be. Abjad can construct the rhythm
 tree for any meter from a numerator / denominator pair such as a rational
 duration or time signature. Meter construction involves the progressive
-division of the numerator of the input pair into groups of 2s and
-3s\footnote{The factors 4 and 5 are also used in meter rhythm tree generation
-as they provide better typical results during meter rewriting.}, and the
-decomposition of any other prime factors into groups of 3s and 2s. Division by
-2 always occurs before division by 3. Constructing rhythm trees in this fashion
-gives results which generally align with common practice expectations.
+division of the numerator of the input pair into groups of two and
+threes\footnote{The factors 4 and 5 are also used in meter rhythm-tree
+generation as they provide better typical results during meter rewriting.}, and
+the decomposition of any other prime factors into groups of threes and twos.
+Division by two always occurs before division by three, giving preference to
+even metrical structures above odd or otherwise prime divisions. Constructing
+rhythm-trees in this fashion gives results which generally align with common
+practice expectations.
 
-Consider the following 6/8 meter:
+Consider the following 6/8 meter and its graph representation:
 
 \begin{comment}
 <abjad>
@@ -1388,13 +1389,40 @@ graph(six_eight_meter)
 >>> six_eight_meter = metertools.Meter((6, 8))
 >>> graph(six_eight_meter)
 \end{lstlisting}
-\includegraphics[scale=0.5]{assets/graphviz-abfd99fbf1dc9a00da0431cab2018679.pdf}
+\includegraphics[scale=0.5]{assets/graphviz-6867ac3456c6ee33b782ab9744d80562.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent The triangular and rectangular boxes indicate nodes in the
+rhythm-tree itself. Rectangular boxes represent \enquote{beats} -- the leaves
+of the rhythm-tree -- while triangular boxes indicate larger metrical
+groupings. The ovals at the bottom of the graph indicate -- at their top -- the
+start or stop offset of the nodes connected to them from above and -- at their
+bottom -- the relative weight of their accent. The final oval on the right
+indicates the offset and accent weight of the \enquote{next} downbeat.
 
+The topmost triangle in the above graph represent the \enquote{highest}
+metrical grouping in a 6/8 meter. Tracing the leftmost and rightmost arrows
+down through the topmost node's children gives the offsets 0 and 3/4: the first
+downbeat and next downbeat in a 6/8 meter. Offsets 0 and 3/4 also have the
+strongest accent weights as they occur as either the start offset or stop
+offset of nodes at three levels of hierarchy in the rhythm tree. At the second
+level the 6/8 grouping divides into two 3/8 groupings, following common
+practice expectations: metrical groupings tend to subdivide into groups of two
+before they subdivide into groups of three\footnote{Consider a 12/8 meter.
+Western musicians tend to subdivide twelve into either two groups of six or
+four groups of three rather than into three groups of four.}. Both second-level
+nodes share the offset of 3/8, which also occurs in the third level, giving 3/8
+a weight of two. The third level contains the 1/8 duration beats, grouped by
+their parents in the second level into two groups three 1/8 duration nodes. The
+offsets 1/8, 1/4, 1/2 and 5/8 are not shared by any nodes except at the lowest
+metrical level and therefore all receive an accent weight of one.
 
 \subsection{Examples}
+
+Consider the following examples of meters modeled in Abjad. A 3/4 meter
+consists of a top-level 3/4 metrical grouping divided into three 1/4 duration
+beats:
 
 \begin{comment}
 <abjad>
@@ -1410,9 +1438,12 @@ graph(three_four_meter)
 >>> three_four_meter = metertools.Meter((3, 4))
 >>> graph(three_four_meter)
 \end{lstlisting}
-\includegraphics[scale=0.5]{assets/graphviz-1b7321785d49973a4bfdaebec03e73df.pdf}
+\includegraphics[scale=0.5]{assets/graphviz-106b9d861244019c8f4508e338f00c09.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent By default, a 7/8 meter subdivides its top-level metrical grouping
+into 3/8+2/8+2/8 groupings:
 
 \begin{comment}
 <abjad>
@@ -1428,7 +1459,7 @@ graph(seven_eight_meter)
 >>> seven_eight_meter = metertools.Meter((7, 8))
 >>> graph(seven_eight_meter)
 \end{lstlisting}
-\includegraphics[scale=0.5]{assets/graphviz-cc3b743fa0d4d86d43573d81dd4e9c0f.pdf}
+\includegraphics[scale=0.5]{assets/graphviz-bbce67419d7d935bfc4536be88d9d06a.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1446,11 +1477,18 @@ graph(twelve_eight_meter)
 >>> twelve_eight_meter = metertools.Meter((12, 8))
 >>> graph(twelve_eight_meter)
 \end{lstlisting}
-\includegraphics[scale=0.5]{assets/graphviz-8059b6b9535db142f5578f6e7bb6bfb0.pdf}
+\includegraphics[scale=0.5]{assets/graphviz-a4bd974839ddf0257ed007fe6f491351.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
 \subsection{Alternate meter representations}
+
+Abjad permits alternate representations of meters with the same numerator and
+denominator. The default interpretation of 4/4 generates a top-level rhythmic
+grouping with a duration of 4/4 and four 1/4 beats as children\footnote{A
+\enquote{flat} 4/4 metrical structure is useful for meter rewriting as it
+allows the meter rewriting algorithm to ignore many common rhythmic idioms like
+1/4+1/2+1/4 and 1/4+3/4.}.
 
 \begin{comment}
 <abjad>
@@ -1466,9 +1504,42 @@ graph(four_four_meter)
 >>> four_four_meter = metertools.Meter((4, 4))
 >>> graph(four_four_meter)
 \end{lstlisting}
-\includegraphics[scale=0.5]{assets/graphviz-08471c3e9fc97e8d67a5709002d71e2c.pdf}
+\includegraphics[scale=0.5]{assets/graphviz-08a7fcb5e62e38947325ecc3e2f20393.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent While meter objects are usually instantiated from numerator /
+denominator pairs, with their rhythm-tree structure determined programmatically
+from that input pair, they can also be instantiated from strings parseable as
+rhythm-trees, or from RhythmTree objects themselves. All meters, because they
+are implemented in terms of rhythm-trees, can be represented by a Lisp-like
+rhythm-tree syntax:
+
+\begin{comment}
+<abjad>
+print(four_four_meter.pretty_rtm_format)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> print(four_four_meter.pretty_rtm_format)
+(4/4 (
+	1/4
+	1/4
+	1/4
+	1/4))
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+Instantiating meters from explicit rhythm tree syntax allows composers to
+choose alternate representations of metrical structures. For example, a 4/4
+meter which strongly emphasizes beat three is possible by subdividing the
+top-level 4/4 metrical grouping into two 2/4 duration groupings, which are then
+subdivided each into two 1/4 duration beats:
 
 \begin{comment}
 <abjad>
@@ -1484,9 +1555,13 @@ graph(arbitrary_meter_1)
 >>> arbitrary_meter_1 = metertools.Meter('(4/4 ((2/4 (1/4 1/4)) (2/4 (1/4 1/4))))')
 >>> graph(arbitrary_meter_1)
 \end{lstlisting}
-\includegraphics[scale=0.5]{assets/graphviz-78ce6ac07784b1510506234d9e79bac8.pdf}
+\includegraphics[scale=0.5]{assets/graphviz-70be4a3bd53912533a67115b8f59e873.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent Unusual metrical structures are also possible, such as the following
+4/4 meter which divides into two parts, with the first part dividing into two
+again, and the second grouping of that divided into two again:
 
 \begin{comment}
 <abjad>
@@ -1502,7 +1577,7 @@ graph(arbitrary_meter_2)
 >>> arbitrary_meter_2 = metertools.Meter('(4/4 ((2/4 (1/4 (1/4 (1/8 1/8)))) 1/2))')
 >>> graph(arbitrary_meter_2)
 \end{lstlisting}
-\includegraphics[scale=0.5]{assets/graphviz-ab8bcde47a800c28d9d3faef76a6c982.pdf}
+\includegraphics[scale=0.5]{assets/graphviz-22af4041cd4228849368d4ee27d55fbb.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1876,7 +1951,7 @@ graph(meter)
 \begin{lstlisting}
 >>> graph(meter)
 \end{lstlisting}
-\includegraphics[scale=0.5]{assets/graphviz-08471c3e9fc97e8d67a5709002d71e2c.pdf}
+\includegraphics[scale=0.5]{assets/graphviz-08a7fcb5e62e38947325ecc3e2f20393.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
