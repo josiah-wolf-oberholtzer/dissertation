@@ -41,7 +41,7 @@
 %\titleformat*{\paragraph}{\large\bfseries}
 %\titleformat*{\subparagraph}{\large\bfseries}
 
-\includeonly{source/chapters/time-tools}
+%\includeonly{source/chapters/time-tools}
 
 \begin{document}
 
@@ -50,11 +50,11 @@
 \input{source/frontmatter/personalize}
 \maketitle
 \copyrightpage
-%\abstractpage
+\abstractpage
 \tableofcontents
-%%\listoffigures
-%\dedicationpage
-%\acknowledgments
+%\listoffigures
+\dedicationpage
+\acknowledgments
 
 \mainmatter
 \doublespacing
@@ -72,12 +72,13 @@
 \include{source/chapters/specification}
 \include{source/chapters/interpretation-1}
 \include{source/chapters/interpretation-2}
+\include{source/chapters/project}
 
-%\include{source/chapters/score-aurora}
-%\include{source/chapters/score-plague-water}
-%\include{source/chapters/score-zaira}
-%\include{source/chapters/score-armilla}
-%\include{source/chapters/score-ersilia}
+\include{source/chapters/score-aurora}
+\include{source/chapters/score-plague-water}
+\include{source/chapters/score-zaira}
+\include{source/chapters/score-armilla}
+\include{source/chapters/score-ersilia}
 
 \include{source/chapters/conclusion}
 
@@ -100,15 +101,15 @@
     upquote=true,
 }
 
-%\singlespacing
-%\begin{appendices}
-%    \include{source/appendices/appendices}
-%\end{appendices}
-%\clearpage
-%\bibliography{references}
-%\addcontentsline{toc}{chapter}{References}
-%\bibliographystyle{apalike2}
-%
-%\include{source/endmatter/colophon}
+\singlespacing
+\begin{appendices}
+    \include{source/appendices/appendices}
+\end{appendices}
+\clearpage
+\bibliography{references}
+\addcontentsline{toc}{chapter}{References}
+\bibliographystyle{apalike2}
+
+\include{source/endmatter/colophon}
 
 \end{document}
