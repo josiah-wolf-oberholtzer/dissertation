@@ -11,42 +11,54 @@ import consort
 \end{comment}
 
 Consort implements a model of composition which relies on a number of
-interrelated but distinct approaches to working with musical time.
-Abjad's \emph{timespan} object suggests a \enquote{coarse} approach to musical
-time. Timespans represent arbitrary durated events on a timeline, without
-respect for score hierarchy or meter. They are well-suited for modeling large
-scale phrasing or gestural density structures and can handle overlap,
-splitting, stretching and other transformations without requiring any
-notational reality. Annotated timespans allow composers to position metadata
-anywhere on a timeline, much like arranging audio regions in a DAW. Moreover,
-every durated object in a score hierarchy can be described as a timespan,
-allowing score components to engage in abstract time relations.
-In contrast, notated rhythms, composed of note, rest, tie and tuplet objects --
-among others, provide the most \enquote{fine-grained} approach to musical time.
-While incredibly expressive, fully notated rhythms are potentially complex to
-create, and must ultimately be anchored in a score hierarchy. Rhythm maker
-classes ameliorate the complexity of creating notated rhythms by providing a
-high-level interface to the process of rhythmic generation.
-Meter coordinates time and rhythm vertically across score hierarchy, and
-bridges the coarse and fine stages of rhythmic interpretation. Meter sequences
-can be generated from timespan-based phrase structures, and those meter
-sequences used to transform notated rhythms in turn. A thorough discussion of
-the implementations of time models and their implications will clarify a later
-analysis of Consort's score interpretation stage.
+interrelated but distinct approaches to working with musical time. Abjad's
+\emph{timespan} object suggests a \enquote{coarse} approach to musical time.
+Timespans represent arbitrary durated events on a timeline, without respect for
+score hierarchy or meter. They are well-suited for modeling large scale
+phrasing or gestural density structures and can handle overlap, splitting,
+stretching and other transformations without requiring any notational reality.
+Annotated timespans allow composers to position metadata anywhere on a
+timeline, much like arranging audio regions in a DAW. Moreover, every durated
+object in a score hierarchy can be described as a timespan, allowing score
+components to engage in abstract time relations. In contrast, notated rhythms,
+composed of note, rest, tie and tuplet objects -- among others, provide the
+most \enquote{fine-grained} approach to musical time. While incredibly
+expressive, fully notated rhythms are potentially complex to create, and must
+ultimately be anchored in a score hierarchy. Rhythm maker classes ameliorate
+the complexity of creating notated rhythms by providing a high-level interface
+to the process of rhythmic generation. Meter coordinates time and rhythm
+vertically across score hierarchy, and bridges the coarse and fine stages of
+rhythmic interpretation. Meter sequences can be generated from timespan-based
+phrase structures, and those meter sequences used to transform notated rhythms
+in turn. A thorough discussion of the implementations of time models and their
+implications will clarify a later analysis of Consort's score interpretation
+stage.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Timespans}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-A timespan is simply a start offset paired with a stop offset as a closed/open
-interval\footnote{Add a discussion of the mathematical definition of closed and
-open intervals here.}. Timespans represent an interval of time, of duration 0
-or greater, positioned somewhere along an arbitrary timeline. Every durated
-object in a score \emph{has} a timespan -- including the score itself, but
-timespans exist -- by definition -- without regard for any specific score, in
-whole or part.
+\emph{Timespans} model left-closed / right-open intervals of time positioned
+absolutely along a timeline. This means that every timespan describes an
+interval of time starting with -- and including -- some start offset and
+leading up to -- but not including -- some stop offset. Note that all leaves in
+a score describe such half-bounded interval of time. Adjacent notes in a score
+do not overlap, but rather abut one another because their timespans do not
+overlap. In fact, every durated object in a score -- every note, chord, rest,
+measure, staff, and even the score itself -- can be described in terms of
+timespans. Yet while score objects can always be described in terms of
+timespans, timespans themselved do not -- by definition -- refer to any score
+objects. Abjad implements timespans as immutable constants, much like Abjad's
+\texttt{Pitch} and \texttt{Duration} objects, and similarly to Python's
+implementation of numbers or strings. Constancy allows timespans to avoid a
+variety of computational reference problems. Multiple objects can reference the
+same timespan without fear of that timespan changing state, much as multiple
+objects can reference the integer 11 without fear that it will change into the
+integer 5.
 
-Abjad models timespans as the class \texttt{timespantools.Timespan}.
+Abjad implements timespans via the \texttt{timespantools.Timespan} class. The
+following timespan begins at the offset 1/4 and continues up until the offset
+3/2:
 
 \begin{comment}
 <abjad>
@@ -54,6 +66,7 @@ timespan = timespantools.Timespan(
     start_offset=Offset(1, 4),
     stop_offset=Offset(3, 2),
     )
+print(timespan)
 </abjad>
 \end{comment}
 
@@ -65,11 +78,18 @@ timespan = timespantools.Timespan(
 ...     start_offset=Offset(1, 4),
 ...     stop_offset=Offset(3, 2),
 ...     )
+>>> print(timespan)
+Timespan(start_offset=Offset(1, 4), stop_offset=Offset(3, 2))
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Inspecting timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent The \texttt{Timespan} class provides a large number of methods and
+properties for inspecting timespans, comparing them to other timespans or
+offsets, and for operating on timespans to generate new timespans. Once
+instantiated, the timespan can be examined for its start offset, stop offset
+and duration. Because of the \texttt{Timespan} class' immutability, these
+properties are read-only and therefore can only be accessed, but not changed.
 
 \begin{comment}
 <abjad>
@@ -97,10 +117,16 @@ Duration(5, 4)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent A timespan's start offset must be equal to or less than its stop
+offset. Timespans with identical start and stop offsets have a duration of 0
+and effectively model a single time-point. Such timespans are considered not
+\enquote{well-formed}:
+
 \begin{comment}
 <abjad>
-malformed_timespan = timespantools.Timespan(0, 0)
-malformed_timespan.is_well_formed
+timepoint_timespan = timespantools.Timespan(1, 1)
+timepoint_timespan.duration
+timepoint_timespan.is_well_formed
 </abjad>
 \end{comment}
 
@@ -108,17 +134,30 @@ malformed_timespan.is_well_formed
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> malformed_timespan = timespantools.Timespan(0, 0)
->>> malformed_timespan.is_well_formed
+>>> timepoint_timespan = timespantools.Timespan(1, 1)
+>>> timepoint_timespan.duration
+Duration(0, 1)
+\end{lstlisting}
+\begin{lstlisting}
+>>> timepoint_timespan.is_well_formed
 False
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Both the \texttt{start\_offset} and \texttt{stop\_offset} keywords to
+the \texttt{Timespan} class' initializer are optional, and default to Abjad's
+built-in rational constants \texttt{NegativeInfinity} and \texttt{Infinity}
+respectively. A timespan created without specifying either a start or stop
+offset effectively describes the timespan which encompasses all possible
+offsets in time:
+
 \begin{comment}
 <abjad>
-templated_timespan = new(timespan, stop_offset=(5, 16))
-print(format(templated_timespan))
+infinite_timespan = timespantools.Timespan()
+infinite_timespan.start_offset
+infinite_timespan.stop_offset
+infinite_timespan.duration
 </abjad>
 \end{comment}
 
@@ -126,15 +165,74 @@ print(format(templated_timespan))
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> templated_timespan = new(timespan, stop_offset=(5, 16))
->>> print(format(templated_timespan))
-timespantools.Timespan(
-    start_offset=durationtools.Offset(1, 4),
-    stop_offset=durationtools.Offset(5, 16),
-    )
+>>> infinite_timespan = timespantools.Timespan()
+>>> infinite_timespan.start_offset
+NegativeInfinity
+\end{lstlisting}
+\begin{lstlisting}
+>>> infinite_timespan.stop_offset
+Infinity
+\end{lstlisting}
+\begin{lstlisting}
+>>> infinite_timespan.duration
+Infinity
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent By specifying only a start or stop offset, timespans can also be
+created which encompass the infinite set of offsets up until some stop offset,
+or the infinite set of offsets starting at and following some start-offset:
+
+\begin{comment}
+<abjad>
+timespantools.Timespan(stop_offset=0)
+timespantools.Timespan(start_offset=0)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> timespantools.Timespan(stop_offset=0)
+Timespan(start_offset=NegativeInfinity, stop_offset=Offset(0, 1))
+\end{lstlisting}
+\begin{lstlisting}
+>>> timespantools.Timespan(start_offset=0)
+Timespan(start_offset=Offset(0, 1), stop_offset=Infinity)
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent \texttt{Timespan} objects also partake in Abjad's templating regime.
+New timespans can be created from old ones through the use of the top-level
+\texttt{new()} function:
+
+\begin{comment}
+<abjad>
+new(timespan, stop_offset=(5, 16))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> new(timespan, stop_offset=(5, 16))
+Timespan(start_offset=Offset(1, 4), stop_offset=Offset(5, 16))
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\subsection{Annotated timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+While the \texttt{Timespan} class only has two configurable properties -- its
+start offset and stop offset -- subclassing allows for the creation of new
+classes with the same core functionality as \texttt{Timespan} but expanded to
+allow for other configurable properties. As an example, \texttt{timespantools}
+provides an \texttt{AnnotatedTimespan} class which subclasses \texttt{Timespan}
+and adds a third read-only \texttt{annotation} property:
 
 \begin{comment}
 <abjad>
@@ -162,15 +260,229 @@ annotated_timespan.annotation
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Annotated timespans let composers position annotations or other
+metadata arbitrarily along a timeline. If the annotation is itself a mutable
+datastructure like a dictionary, that annotation can be used to store
+increasing amounts of arbitrary information during the compositional process.
+Abjad's top-level \texttt{new()} function can also be used to template new
+annotated timespans from old ones, replacing one annotation with another:
+
+\begin{comment}
+<abjad>
+metadata_timespan = new(annotated_timespan,
+    stop_offset=(3, 2),
+    annotation={
+        'durations': ((1, 8), (1, 8), (3, 16)),
+        'dynamic': indicatortools.Dynamic('ppp'),
+        'pitch_segment': pitchtools.PitchSegment([0, 1, 4, 7]),
+        },
+    )
+metadata_timespan.annotation['bow_contact_point'] = Multiplier(1, 3)
+print(format(metadata_timespan))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> metadata_timespan = new(annotated_timespan,
+...     stop_offset=(3, 2),
+...     annotation={
+...         'durations': ((1, 8), (1, 8), (3, 16)),
+...         'dynamic': indicatortools.Dynamic('ppp'),
+...         'pitch_segment': pitchtools.PitchSegment([0, 1, 4, 7]),
+...         },
+...     )
+>>> metadata_timespan.annotation['bow_contact_point'] = Multiplier(1, 3)
+>>> print(format(metadata_timespan))
+timespantools.AnnotatedTimespan(
+    start_offset=durationtools.Offset(1, 8),
+    stop_offset=durationtools.Offset(3, 2),
+    annotation={
+        'bow_contact_point': durationtools.Multiplier(1, 3),
+        'durations': (
+            (1, 8),
+            (1, 8),
+            (3, 16),
+            ),
+        'dynamic': indicatortools.Dynamic(
+            name='ppp',
+            ),
+        'pitch_segment': pitchtools.PitchSegment(
+            (
+                pitchtools.NumberedPitch(0),
+                pitchtools.NumberedPitch(1),
+                pitchtools.NumberedPitch(4),
+                pitchtools.NumberedPitch(7),
+                ),
+            item_class=pitchtools.NumberedPitch,
+            ),
+        },
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Other subclasses are also possible, allowing for even more
+configurable properties, as well as new methods. Two \texttt{Timespan}
+subclasses discussed later, \texttt{consort.PerformedTimespan} and
+\texttt{consort.SilentTimespan}, are core components in Consort's score
+interpretation algorithm.
+
 \subsection{Time relations} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-- time relations: intersection, congruency etc.
+Abjad's \texttt{timespantools} provides a \texttt{TimeRelation} class and a
+collection of factory methods for configuring \texttt{TimeRelation} instances
+which formalize all possible dispositions of a timespan relative another
+timespan or relative an offset\footnote{ The thirty-three time relation factory
+functions contained in \texttt{timespantools} are
+\texttt{offset\_happens\_after\_timespan\_starts()},
+\texttt{offset\_happens\_after\_timespan\_stops()},
+\texttt{offset\_happens\_before\_timespan\_starts()},
+\texttt{offset\_happens\_before\_timespan\_stops()},
+\texttt{offset\_happens\_during\_timespan()},
+\texttt{offset\_happens\_when\_timespan\_starts()},
+\texttt{offset\_happens\_when\_timespan\_stops()},
+\texttt{timespan\_2\_contains\_timespan\_1\_improperly()},
+\texttt{timespan\_2\_curtails\_timespan\_1()},
+\texttt{timespan\_2\_delays\_timespan\_1()},
+\texttt{timespan\_2\_happens\_during\_timespan\_1()},
+\texttt{timespan\_2\_intersects\_timespan\_1()},
+\texttt{timespan\_2\_is\_congruent\_to\_timespan\_1()},
+\texttt{timespan\_2\_overlaps\_all\_of\_timespan\_1()},
+\texttt{timespan\_2\_overlaps\_only\_start\_of\_timespan\_1()},
+\texttt{timespan\_2\_overlaps\_only\_stop\_of\_timespan\_1()},
+\texttt{timespan\_2\_overlaps\_start\_of\_timespan\_1()},
+\texttt{timespan\_2\_overlaps\_stop\_of\_timespan\_1()},
+\texttt{timespan\_2\_starts\_after\_timespan\_1\_starts()},
+\texttt{timespan\_2\_starts\_after\_timespan\_1\_stops()},
+\texttt{timespan\_2\_starts\_before\_timespan\_1\_starts()},
+\texttt{timespan\_2\_starts\_before\_timespan\_1\_stops()},
+\texttt{timespan\_2\_starts\_during\_timespan\_1()},
+\texttt{timespan\_2\_starts\_when\_timespan\_1\_starts()},
+\texttt{timespan\_2\_starts\_when\_timespan\_1\_stops()},
+\texttt{timespan\_2\_stops\_after\_timespan\_1\_starts()},
+\texttt{timespan\_2\_stops\_after\_timespan\_1\_stops()},
+\texttt{timespan\_2\_stops\_before\_timespan\_1\_starts()},
+\texttt{timespan\_2\_stops\_before\_timespan\_1\_stops()},
+\texttt{timespan\_2\_stops\_during\_timespan\_1()},
+\texttt{timespan\_2\_stops\_when\_timespan\_1\_starts()},
+\texttt{timespan\_2\_stops\_when\_timespan\_1\_stops()} and
+\texttt{timespan\_2\_trisects\_timespan\_1()}. }. Time relations may be
+configured with or without reference to any timespans or offsets at all,
+allowing for the possibility of modeling a purely abstract time relationship.
+
+\begin{comment}
+<abjad>
+time_relation_1 = timespantools.timespan_2_intersects_timespan_1()
+print(format(time_relation_1))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> time_relation_1 = timespantools.timespan_2_intersects_timespan_1()
+>>> print(format(time_relation_1))
+timespantools.TimespanTimespanTimeRelation(
+    inequality=timespantools.CompoundInequality(
+        [
+            timespantools.CompoundInequality(
+                [
+                    timespantools.SimpleInequality('timespan_1.start_offset <= timespan_2.start_offset'),
+                    timespantools.SimpleInequality('timespan_2.start_offset < timespan_1.stop_offset'),
+                    ],
+                logical_operator='and',
+                ),
+            timespantools.CompoundInequality(
+                [
+                    timespantools.SimpleInequality('timespan_2.start_offset <= timespan_1.start_offset'),
+                    timespantools.SimpleInequality('timespan_1.start_offset < timespan_2.stop_offset'),
+                    ],
+                logical_operator='and',
+                ),
+            ],
+        logical_operator='or',
+        ),
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent A \enquote{half-configured} time relation is also possible. Such
+object acts like a kind of \enquote{frozen} predicate function, and can be
+called like a function on another timespan or offset to return a truth value.
+
+\begin{comment}
+<abjad>
+time_relation_2 = timespantools.timespan_2_intersects_timespan_1(
+    timespan_1=timespantools.Timespan(0, 10),
+    )
+time_relation_2(timespan_2=timespantools.Timespan(5, 15))
+time_relation_2(timespan_2=timespantools.Timespan(30, 45))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> time_relation_2 = timespantools.timespan_2_intersects_timespan_1(
+...     timespan_1=timespantools.Timespan(0, 10),
+...     )
+>>> time_relation_2(timespan_2=timespantools.Timespan(5, 15))
+True
+\end{lstlisting}
+\begin{lstlisting}
+>>> time_relation_2(timespan_2=timespantools.Timespan(30, 45))
+False
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Time relations which are \enquote{fully loaded} will be evaluated
+immediately:
+
+\begin{comment}
+<abjad>
+timespantools.timespan_2_intersects_timespan_1(
+    timespan_1=timespantools.Timespan(1, 3),
+    timespan_2=timespantools.Timespan(2, 4),
+    )
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> timespantools.timespan_2_intersects_timespan_1(
+...     timespan_1=timespantools.Timespan(1, 3),
+...     timespan_2=timespantools.Timespan(2, 4),
+...     )
+True
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent The time relation factory functions in \texttt{timespantools} are
+also implemented as methods on the \texttt{Timespan} class itself, allowing
+composers to determine the various relations of any timespan relative any other
+timespan or offset in an object-oriented fashion. The \texttt{Timespan} object
+automatically \enquote{fills in} the \texttt{timespan\_1} argument to the
+\texttt{TimeRelation} with itself, and can pass the optional argument to its
+method call as the other object in the relation, allowing for the immediate
+evaluation of the relation as either true or false.
+
+Consider the following three timespans:
 
 \begin{comment}
 <abjad>
 timespan_1 = timespantools.Timespan(0, 10)
 timespan_2 = timespantools.Timespan(5, 15)
-timespan_3 = timespantools.Timespan(10, 15)
+timespan_3 = timespantools.Timespan(10, 20)
 </abjad>
 \end{comment}
 
@@ -180,10 +492,18 @@ timespan_3 = timespantools.Timespan(10, 15)
 \begin{lstlisting}
 >>> timespan_1 = timespantools.Timespan(0, 10)
 >>> timespan_2 = timespantools.Timespan(5, 15)
->>> timespan_3 = timespantools.Timespan(10, 15)
+>>> timespan_3 = timespantools.Timespan(10, 20)
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent We can test for intersection between these three timespans via the
+\texttt{intersects\_timespan()} method. Two timespans are considered to
+intersect if any part of one timespan overlaps any part of another, and is
+therefore commutative. Note that \texttt{timespan\_1} and \texttt{timespan\_3}
+do not overlap even though they share the offset 10. As discussed earlier,
+timespans are left-closed / right-open, meaning that while their start offset is
+contained in the infinite set of offsets they cover, their stop offset is not.
 
 \begin{comment}
 <abjad>
@@ -226,6 +546,9 @@ True
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Congruency tests whether two timespans share the same start and stop
+offset. Every timespan is congruent with itself:
+
 \begin{comment}
 <abjad>
 timespan_1.is_congruent_to_timespan(timespan_2)
@@ -246,6 +569,10 @@ True
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent Tangency tests whether one timespan's stop offset is the same as
+another timespan's start offset, or vice versa. Tangency can be used to
+determine if a sorted collection of timespans are all contiguous together.
 
 \begin{comment}
 <abjad>
@@ -268,7 +595,70 @@ True
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent A wide variety of other time relations are also possible, such as
+testing for intersection with single offsets. These predicates make possible
+many of the generative operations carried out on timespans.
+
 \subsection{Operations on timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Many \texttt{Timespan} methods transform and return new timespans.
+
+\begin{comment}
+<abjad>
+timespan = timespantools.Timespan(0, 15)
+timespan.translate(3)
+timespan.round_offsets(2)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> timespan = timespantools.Timespan(0, 15)
+>>> timespan.translate(3)
+Timespan(start_offset=Offset(3, 1), stop_offset=Offset(18, 1))
+\end{lstlisting}
+\begin{lstlisting}
+>>> timespan.round_offsets(2)
+Timespan(start_offset=Offset(0, 1), stop_offset=Offset(16, 1))
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+Splitting generates a timespan inventory, discussed later.
+
+\begin{comment}
+<abjad>
+result = timespan.split_at_offset(5)
+print(format(result))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> result = timespan.split_at_offset(5)
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(5, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(5, 1),
+            stop_offset=durationtools.Offset(15, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+More complex operations between timespans which result in timespan inventories
+include subtraction, unioning and intersection.
 
 Consider the following three timespans again.
 
@@ -276,7 +666,7 @@ Consider the following three timespans again.
 <abjad>
 timespan_1 = timespantools.Timespan(0, 10)
 timespan_2 = timespantools.Timespan(5, 15)
-timespan_3 = timespantools.Timespan(10, 15)
+timespan_3 = timespantools.Timespan(10, 20)
 </abjad>
 \end{comment}
 
@@ -286,83 +676,6 @@ timespan_3 = timespantools.Timespan(10, 15)
 \begin{lstlisting}
 >>> timespan_1 = timespantools.Timespan(0, 10)
 >>> timespan_2 = timespantools.Timespan(5, 15)
->>> timespan_3 = timespantools.Timespan(10, 15)
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-The logical AND of any two timespans can be computed.
-
-\begin{comment}
-<abjad>
-timespan_1 & timespan_2
-timespan_1 & timespan_3
-timespan_2 & timespan_3
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> timespan_1 & timespan_2
-TimespanInventory([Timespan(start_offset=Offset(5, 1), stop_offset=Offset(10, 1))])
-\end{lstlisting}
-\begin{lstlisting}
->>> timespan_1 & timespan_3
-TimespanInventory([])
-\end{lstlisting}
-\begin{lstlisting}
->>> timespan_2 & timespan_3
-TimespanInventory([Timespan(start_offset=Offset(10, 1), stop_offset=Offset(15, 1))])
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-The logical OR of any two timespans can be computed.
-
-\begin{comment}
-<abjad>
-timespan_1 | timespan_2
-timespan_1 | timespan_3
-timespan_2 | timespan_3
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> timespan_1 | timespan_2
-TimespanInventory([Timespan(start_offset=Offset(0, 1), stop_offset=Offset(15, 1))])
-\end{lstlisting}
-\begin{lstlisting}
->>> timespan_1 | timespan_3
-TimespanInventory([Timespan(start_offset=Offset(0, 1), stop_offset=Offset(15, 1))])
-\end{lstlisting}
-\begin{lstlisting}
->>> timespan_2 | timespan_3
-TimespanInventory([Timespan(start_offset=Offset(5, 1), stop_offset=Offset(15, 1))])
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-Timespan subtraction is another crucial operation.
-
-\begin{comment}
-<abjad>
-timespan_1 = timespantools.Timespan(0, 15)
-timespan_2 = timespantools.Timespan(5, 10)
-timespan_3 = timespantools.Timespan(10, 20)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> timespan_1 = timespantools.Timespan(0, 15)
->>> timespan_2 = timespantools.Timespan(5, 10)
 >>> timespan_3 = timespantools.Timespan(10, 20)
 \end{lstlisting}
 \end{singlespacing}
@@ -370,15 +683,24 @@ timespan_3 = timespantools.Timespan(10, 20)
 
 \begin{comment}
 <abjad>
-print(format(timespan_1 - timespan_1))
-print(format(timespan_1 - timespan_2))
-print(format(timespan_1 - timespan_3))
-print(format(timespan_2 - timespan_1))
-print(format(timespan_2 - timespan_2))
-print(format(timespan_2 - timespan_3))
-print(format(timespan_3 - timespan_1))
-print(format(timespan_3 - timespan_2))
-print(format(timespan_3 - timespan_3))
+result = timespan_1 - timespan_1
+print(format(result))
+result = timespan_1 - timespan_2
+print(format(result))
+result = timespan_1 - timespan_3
+print(format(result))
+result = timespan_2 - timespan_1
+print(format(result))
+result = timespan_2 - timespan_2
+print(format(result))
+result = timespan_2 - timespan_3
+print(format(result))
+result = timespan_3 - timespan_1
+print(format(result))
+result = timespan_3 - timespan_2
+print(format(result))
+result = timespan_3 - timespan_3
+print(format(result))
 </abjad>
 \end{comment}
 
@@ -386,13 +708,227 @@ print(format(timespan_3 - timespan_3))
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> print(format(timespan_1 - timespan_1))
+>>> result = timespan_1 - timespan_1
+>>> print(format(result))
 timespantools.TimespanInventory(
     []
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> print(format(timespan_1 - timespan_2))
+>>> result = timespan_1 - timespan_2
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(5, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\begin{lstlisting}
+>>> result = timespan_1 - timespan_3
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(10, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\begin{lstlisting}
+>>> result = timespan_2 - timespan_1
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(10, 1),
+            stop_offset=durationtools.Offset(15, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\begin{lstlisting}
+>>> result = timespan_2 - timespan_2
+>>> print(format(result))
+timespantools.TimespanInventory(
+    []
+    )
+\end{lstlisting}
+\begin{lstlisting}
+>>> result = timespan_2 - timespan_3
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(5, 1),
+            stop_offset=durationtools.Offset(10, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\begin{lstlisting}
+>>> result = timespan_3 - timespan_1
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(10, 1),
+            stop_offset=durationtools.Offset(20, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\begin{lstlisting}
+>>> result = timespan_3 - timespan_2
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(15, 1),
+            stop_offset=durationtools.Offset(20, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\begin{lstlisting}
+>>> result = timespan_3 - timespan_3
+>>> print(format(result))
+timespantools.TimespanInventory(
+    []
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+Logical \texttt{OR} results in a unioning of the two input timespans, if they
+overlap.
+
+\begin{comment}
+<abjad>
+result = timespan_1 | timespan_2
+print(format(result))
+result = timespan_1 | timespan_3
+print(format(result))
+result = timespan_2 | timespan_3
+print(format(result))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> result = timespan_1 | timespan_2
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(15, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\begin{lstlisting}
+>>> result = timespan_1 | timespan_3
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(20, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\begin{lstlisting}
+>>> result = timespan_2 | timespan_3
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(5, 1),
+            stop_offset=durationtools.Offset(20, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+Logical \texttt{AND} results in the intersection of the two input timespans:
+
+\begin{comment}
+<abjad>
+result = timespan_1 & timespan_2
+print(format(result))
+result = timespan_1 & timespan_3
+print(format(result))
+result = timespan_2 & timespan_3
+print(format(result))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> result = timespan_1 & timespan_2
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(5, 1),
+            stop_offset=durationtools.Offset(10, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\begin{lstlisting}
+>>> result = timespan_1 & timespan_3
+>>> print(format(result))
+timespantools.TimespanInventory(
+    []
+    )
+\end{lstlisting}
+\begin{lstlisting}
+>>> result = timespan_2 & timespan_3
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(10, 1),
+            stop_offset=durationtools.Offset(15, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+Logical \texttt{XOR} -- exclusive \texttt{OR} -- results in the symmetric
+difference of the two input timespans:
+
+\begin{comment}
+<abjad>
+result = timespan_1 ^ timespan_2
+print(format(result))
+result = timespan_1 ^ timespan_3
+print(format(result))
+result = timespan_2 ^ timespan_3
+print(format(result))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> result = timespan_1 ^ timespan_2
+>>> print(format(result))
 timespantools.TimespanInventory(
     [
         timespantools.Timespan(
@@ -407,54 +943,14 @@ timespantools.TimespanInventory(
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> print(format(timespan_1 - timespan_3))
+>>> result = timespan_1 ^ timespan_3
+>>> print(format(result))
 timespantools.TimespanInventory(
     [
         timespantools.Timespan(
             start_offset=durationtools.Offset(0, 1),
             stop_offset=durationtools.Offset(10, 1),
             ),
-        ]
-    )
-\end{lstlisting}
-\begin{lstlisting}
->>> print(format(timespan_2 - timespan_1))
-timespantools.TimespanInventory(
-    []
-    )
-\end{lstlisting}
-\begin{lstlisting}
->>> print(format(timespan_2 - timespan_2))
-timespantools.TimespanInventory(
-    []
-    )
-\end{lstlisting}
-\begin{lstlisting}
->>> print(format(timespan_2 - timespan_3))
-timespantools.TimespanInventory(
-    [
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(5, 1),
-            stop_offset=durationtools.Offset(10, 1),
-            ),
-        ]
-    )
-\end{lstlisting}
-\begin{lstlisting}
->>> print(format(timespan_3 - timespan_1))
-timespantools.TimespanInventory(
-    [
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(15, 1),
-            stop_offset=durationtools.Offset(20, 1),
-            ),
-        ]
-    )
-\end{lstlisting}
-\begin{lstlisting}
->>> print(format(timespan_3 - timespan_2))
-timespantools.TimespanInventory(
-    [
         timespantools.Timespan(
             start_offset=durationtools.Offset(10, 1),
             stop_offset=durationtools.Offset(20, 1),
@@ -463,9 +959,19 @@ timespantools.TimespanInventory(
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> print(format(timespan_3 - timespan_3))
+>>> result = timespan_2 ^ timespan_3
+>>> print(format(result))
 timespantools.TimespanInventory(
-    []
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(5, 1),
+            stop_offset=durationtools.Offset(10, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(15, 1),
+            stop_offset=durationtools.Offset(20, 1),
+            ),
+        ]
     )
 \end{lstlisting}
 \end{singlespacing}
@@ -475,10 +981,12 @@ timespantools.TimespanInventory(
 \section{Timespan inventories}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Timespans can be aggregated together in an instance of the TimespanInventory
-class. In addition to the protocol defined for ordered collections, timespan
-inventories provide a variety of other methods and properties for working
-specifically with timespans.
+Abjad provides a \texttt{TimespanInventory} class specifically for aggregating
+together a collection of \texttt{Timespan} objects.
+
+In addition to the protocol
+defined for ordered collections, timespan inventories provide a variety of
+other methods and properties for working specifically with timespans.
 
 \begin{comment}
 <abjad>
@@ -524,8 +1032,6 @@ timespantools.TimespanInventory(
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
-
-\subsection{Inspecting timespan inventories} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -757,9 +1263,120 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\subsection{In-place logical operations} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{comment}
-Timespan.split_at_offsets()
+<abjad>
+timespan_inventory = timespantools.TimespanInventory([
+    timespantools.Timespan(-2, 2),
+    timespantools.Timespan(0, 10),
+    timespantools.Timespan(5, 12),
+    ])
+result = timespan_inventory.compute_logical_or()
+print(format(result))
+</abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> timespan_inventory = timespantools.TimespanInventory([
+...     timespantools.Timespan(-2, 2),
+...     timespantools.Timespan(0, 10),
+...     timespantools.Timespan(5, 12),
+...     ])
+>>> result = timespan_inventory.compute_logical_or()
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(-2, 1),
+            stop_offset=durationtools.Offset(12, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+timespan_inventory = timespantools.TimespanInventory([
+    timespantools.Timespan(-2, 8),
+    timespantools.Timespan(0, 10),
+    timespantools.Timespan(5, 12),
+    ])
+result = timespan_inventory.compute_logical_and()
+print(format(result))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> timespan_inventory = timespantools.TimespanInventory([
+...     timespantools.Timespan(-2, 8),
+...     timespantools.Timespan(0, 10),
+...     timespantools.Timespan(5, 12),
+...     ])
+>>> result = timespan_inventory.compute_logical_and()
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(5, 1),
+            stop_offset=durationtools.Offset(8, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+timespan_inventory = timespantools.TimespanInventory([
+    timespantools.Timespan(-2, 2),
+    timespantools.Timespan(0, 10),
+    timespantools.Timespan(5, 12),
+    ])
+result = timespan_inventory.compute_logical_xor()
+print(format(result))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> timespan_inventory = timespantools.TimespanInventory([
+...     timespantools.Timespan(-2, 2),
+...     timespantools.Timespan(0, 10),
+...     timespantools.Timespan(5, 12),
+...     ])
+>>> result = timespan_inventory.compute_logical_xor()
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(-2, 1),
+            stop_offset=durationtools.Offset(0, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(2, 1),
+            stop_offset=durationtools.Offset(5, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(10, 1),
+            stop_offset=durationtools.Offset(12, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \subsection{Timewise partitioning} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
