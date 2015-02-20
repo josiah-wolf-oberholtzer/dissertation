@@ -1102,7 +1102,7 @@ timespantools.TimespanInventory(
 
 \noindent These operations, while perhaps initially rather abstract, are
 incredibly powerful and artistically useful. They afford composers with the
-functional building blocks to mask temporal objects with one another, fuse them
+procedural building blocks to mask temporal objects with one another, fuse them
 together, or create lacunae. When extended to operate on many timespans at
 once, wholesale transformations on massed timespans becomes practical.
 
@@ -1111,19 +1111,29 @@ once, wholesale transformations on massed timespans becomes practical.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Abjad provides a \texttt{TimespanInventory} class specifically for aggregating
-together a collection of \texttt{Timespan} objects.
+together a collection of \texttt{Timespan} objects. Timespan inventories
+implement Python's \emph{mutable sequence protocol} which allow them to behave
+exactly like lists, supporting appension, extension, insertion, indexing,
+sorting, iteration and other procedures pertinent to list-like objects. They
+also provide a wide variety of properties and methods for interacting with
+massed groups of timespans such as searching for timespans matching a time
+relation, splitting all timespans which interact with a given offset or
+partitioning one inventory into multiple separate inventories of overlapping
+timespans.
 
-In addition to the protocol
-defined for ordered collections, timespan inventories provide a variety of
-other methods and properties for working specifically with timespans.
+A timespan inventory can be created with a list of zero or more timespans as an
+argument, be appended to, or extended into:
 
 \begin{comment}
 <abjad>
-timespan_inventory = timespantools.TimespanInventory()
-timespan_inventory.append(timespantools.Timespan(0, 16))
+timespan_inventory = timespantools.TimespanInventory([
+    timespantools.Timespan(0, 16),
+    ])
 timespan_inventory.append(timespantools.Timespan(5, 12))
-timespan_inventory.append(timespantools.Timespan(-2, 8))
-timespan_inventory.append(timespantools.Timespan(15, 20))
+timespan_inventory.extend([
+    timespantools.Timespan(-2, 8),
+    timespantools.Timespan(15, 20),
+    ])
 print(format(timespan_inventory))
 </abjad>
 \end{comment}
@@ -1132,11 +1142,14 @@ print(format(timespan_inventory))
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> timespan_inventory = timespantools.TimespanInventory()
->>> timespan_inventory.append(timespantools.Timespan(0, 16))
+>>> timespan_inventory = timespantools.TimespanInventory([
+...     timespantools.Timespan(0, 16),
+...     ])
 >>> timespan_inventory.append(timespantools.Timespan(5, 12))
->>> timespan_inventory.append(timespantools.Timespan(-2, 8))
->>> timespan_inventory.append(timespantools.Timespan(15, 20))
+>>> timespan_inventory.extend([
+...     timespantools.Timespan(-2, 8),
+...     timespantools.Timespan(15, 20),
+...     ])
 >>> print(format(timespan_inventory))
 timespantools.TimespanInventory(
     [
@@ -1161,6 +1174,9 @@ timespantools.TimespanInventory(
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent Timespan inventories can also be queried for their length -- just
+like any other sequence in Python --, be indexed into, or iterated over:
 
 \begin{comment}
 <abjad>
@@ -1195,15 +1211,75 @@ Timespan(start_offset=Offset(15, 1), stop_offset=Offset(20, 1))
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Similarly, one timespan inventory can be created from another -- just
+like one can create a Python list simply by calling \texttt{list()} on another
+iterable object -- by passing the first timespan inventory as an instantiation
+argument to the second. As many of the mutating methods implemented on timespan
+inventories operate in place, this instantiation pattern provides a simple
+means of \enquote{copying}, allowing composers to duplicate a timespan
+structure before operating on it, thereby preserving the original.
+
+\begin{comment}
+<abjad>
+duplicate = timespantools.TimespanInventory(timespan_inventory)
+duplicate == timespan_inventory
+duplicate is timespan_inventory
+print(format(duplicate))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> duplicate = timespantools.TimespanInventory(timespan_inventory)
+>>> duplicate == timespan_inventory
+True
+\end{lstlisting}
+\begin{lstlisting}
+>>> duplicate is timespan_inventory
+False
+\end{lstlisting}
+\begin{lstlisting}
+>>> print(format(duplicate))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(16, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(5, 1),
+            stop_offset=durationtools.Offset(12, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(-2, 1),
+            stop_offset=durationtools.Offset(8, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(15, 1),
+            stop_offset=durationtools.Offset(20, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+Timespan inventories can be treated as timespans themselves, having
+a start offset equal to the minimum start offset of any of their contained
+timespans, and a stop offset equal to the maximum stop offset of any of their
+contained timespans. Their start and stop offset properties allow them to
+express a duration, as well as provide a concrete timespan representation.
+Because timespan inventories can be modeled as timespans, they can even be
+inserted into other timespan inventories.
+
 \begin{comment}
 <abjad>
 timespan_inventory.start_offset
 timespan_inventory.stop_offset
 timespan_inventory.duration
 timespan_inventory.timespan
-timespan_inventory.all_are_contiguous
-timespan_inventory.all_are_nonoverlapping
-timespan_inventory.all_are_well_formed
 </abjad>
 \end{comment}
 
@@ -1226,6 +1302,29 @@ Duration(22, 1)
 >>> timespan_inventory.timespan
 Timespan(start_offset=Offset(-2, 1), stop_offset=Offset(20, 1))
 \end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Because timespan inventories aggregate multiple timespans together,
+they also provide properties for describing collective qualities of those
+timespans. \emph{Contiguity} tests if every timespan in the inventory is
+tangent to another timespan, and does not overlap any other timespan,
+\emph{overlap} tests if any timespan intersects any other timespan, and
+\emph{well-formedness} tests that all timespans' durations are greater than 0.
+A timespan inventory whose timespans are contiguous is necessarily
+also non-overlapping.
+
+\begin{comment}
+<abjad>
+timespan_inventory.all_are_contiguous
+timespan_inventory.all_are_nonoverlapping
+timespan_inventory.all_are_well_formed
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> timespan_inventory.all_are_contiguous
 False
@@ -1236,6 +1335,74 @@ False
 \end{lstlisting}
 \begin{lstlisting}
 >>> timespan_inventory.all_are_well_formed
+True
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent The following timespan inventory's timespans are non-overlapping but
+non-contiguous:
+
+\begin{comment}
+<abjad>
+timespan_inventory = timespantools.TimespanInventory([
+    timespantools.Timespan(0, 10),
+    timespantools.Timespan(10, 20),
+    timespantools.Timespan(30, 40),
+    ])
+timespan_inventory.all_are_contiguous
+timespan_inventory.all_are_nonoverlapping
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> timespan_inventory = timespantools.TimespanInventory([
+...     timespantools.Timespan(0, 10),
+...     timespantools.Timespan(10, 20),
+...     timespantools.Timespan(30, 40),
+...     ])
+>>> timespan_inventory.all_are_contiguous
+False
+\end{lstlisting}
+\begin{lstlisting}
+>>> timespan_inventory.all_are_nonoverlapping
+True
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent In contrast, this timespan inventory's timespans are both
+non-overlapping and contiguous:
+
+\begin{comment}
+<abjad>
+timespan_inventory = timespantools.TimespanInventory([
+    timespantools.Timespan(0, 10),
+    timespantools.Timespan(10, 20),
+    timespantools.Timespan(20, 30),
+    ])
+timespan_inventory.all_are_contiguous
+timespan_inventory.all_are_nonoverlapping
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> timespan_inventory = timespantools.TimespanInventory([
+...     timespantools.Timespan(0, 10),
+...     timespantools.Timespan(10, 20),
+...     timespantools.Timespan(20, 30),
+...     ])
+>>> timespan_inventory.all_are_contiguous
+True
+\end{lstlisting}
+\begin{lstlisting}
+>>> timespan_inventory.all_are_nonoverlapping
 True
 \end{lstlisting}
 \end{singlespacing}
