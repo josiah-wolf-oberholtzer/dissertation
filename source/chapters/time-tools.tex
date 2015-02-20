@@ -1,5 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Tools for modeling time, rhythm and meter}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
@@ -8,35 +10,29 @@ import consort
 </abjad>
 \end{comment}
 
-Consort's implementation of a model of composition relies on a number of
-different but interrelated models of musical time. A thorough discussion of
-these time models here will clarify the analysis of Consort's implementation in
-the following chapters.
-
-Dichotomies: outside and inside the score hierarchy, with or without regard to
-notation, "coarse" versus "fine" or "phrase" versus "event", vertical or
-horizontal, metered and unmetered, potentially simultaneous or strictly
-contiguous.
-
-Timespans provide a coarse model of musical time, both in and outside of score
-hierarchy.
-
-Notated rhythm provides a fine model of musical time, from within score
-hierarchy.
-
+Consort implements a model of composition which relies on a number of
+interrelated but distinct approaches to working with musical time.
+Abjad's \emph{timespan} object suggests a \enquote{coarse} approach to musical
+time. Timespans represent arbitrary durated events on a timeline, without
+respect for score hierarchy or meter. They are well-suited for modeling large
+scale phrasing or gestural density structures and can handle overlap,
+splitting, stretching and other transformations without requiring any
+notational reality. Annotated timespans allow composers to position metadata
+anywhere on a timeline, much like arranging audio regions in a DAW. Moreover,
+every durated object in a score hierarchy can be described as a timespan,
+allowing score components to engage in abstract time relations.
+In contrast, notated rhythms, composed of note, rest, tie and tuplet objects --
+among others, provide the most \enquote{fine-grained} approach to musical time.
+While incredibly expressive, fully notated rhythms are potentially complex to
+create, and must ultimately be anchored in a score hierarchy. Rhythm maker
+classes ameliorate the complexity of creating notated rhythms by providing a
+high-level interface to the process of rhythmic generation.
 Meter coordinates time and rhythm vertically across score hierarchy, and
-bridges the coarse and fine stages of rhythmic interpretation.
-
-Meter is generated as a by-product of phrase-level composition. It is not
-specified by-hand during composition. This is not out of any desire to valorize
-automaticism, but simply because lacking any other compelling reason to
-generate a series of meters I felt the best way for myself would be to have
-those meters derive from some sort of pre-existent structure in my
-compositional process.
-
-A discussion of these time models and their implications will clarify a later
-analysis of the implementation of Consort's score interpretation
-stage.
+bridges the coarse and fine stages of rhythmic interpretation. Meter sequences
+can be generated from timespan-based phrase structures, and those meter
+sequences used to transform notated rhythms in turn. A thorough discussion of
+the implementations of time models and their implications will clarify a later
+analysis of Consort's score interpretation stage.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Timespans}
@@ -73,7 +69,7 @@ timespan = timespantools.Timespan(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Inspecting timespans}
+\subsection{Inspecting timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -166,7 +162,7 @@ annotated_timespan.annotation
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Time relations}
+\subsection{Time relations} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 - time relations: intersection, congruency etc.
 
@@ -272,7 +268,7 @@ True
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Operations on timespans}
+\subsection{Operations on timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Consider the following three timespans again.
 
@@ -529,7 +525,7 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Inspecting timespan inventories}
+\subsection{Inspecting timespan inventories} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -610,7 +606,7 @@ True
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Unioning, differencing and splitting}
+\subsection{Unioning, differencing and splitting} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -765,7 +761,7 @@ timespantools.TimespanInventory(
 Timespan.split_at_offsets()
 \end{comment}
 
-\subsection{Timewise partitioning}
+\subsection{Timewise partitioning} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -882,7 +878,7 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Other timespan inventory operations}
+\subsection{Other timespan inventory operations} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 TimespanInventory.clip_timespan_durations
@@ -891,7 +887,7 @@ TimespanInventory.explode()
 TimespanInventory.round_offsets()
 \end{comment}
 
-\subsection{Optimized timespan inventories}
+\subsection{Optimized timespan inventories} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Consort provides its own timespan collection class -- the TimespanCollection.
 This class stores timespans internally not as a list, but in a balanced
@@ -910,13 +906,13 @@ datastructure will eventually be merged into Abjad's TimespanInventory.
 We need to discuss the products of timespan makers before we can discuss
 timespan makers themselves.
 
-\subsection{Payloaded timespans}
+\subsection{Payloaded timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 - layer
 
 - voice name
 
-\subsection{\emph{Performed} timespans}
+\subsection{\emph{Performed} timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -961,7 +957,7 @@ performed_timespan = consort.PerformedTimespan(
 
 - music specifier
 
-\subsection{\emph{Silent} timespans}
+\subsection{\emph{Silent} timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -1002,7 +998,7 @@ silent_timespan = consort.SilentTimespan(
 
 - padding
 
-\subsection{FloodedTimespanMaker}
+\subsection{FloodedTimespanMaker} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -1197,7 +1193,7 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{TaleaTimespanMaker}
+\subsection{TaleaTimespanMaker} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -1232,7 +1228,7 @@ timespan_maker = consort.TaleaTimespanMaker(
 
 - repeat and reflect
 
-\subsection{DependentTimespanMaker}
+\subsection{DependentTimespanMaker} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -1286,13 +1282,11 @@ divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
 
 - rhythm maker
 
-\subsection{Rhythm maker configuration}
+\subsection{Rhythm maker configuration} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 - specifiers: tie, duration spelling, beam
 
-\subsection{Examples}
-
-\subsubsection{NoteRhythmMaker}
+\subsection{Examples} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -1313,8 +1307,6 @@ show(note_rhythm_maker, divisions=divisions)
 \includegraphics{assets/lilypond-d0f66021e4860194d32ee0fa226ed174.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
-
-\subsubsection{EvenDivisionsRhythmMaker}
 
 \begin{comment}
 <abjad>
@@ -1337,8 +1329,6 @@ show(even_division_rhythm_maker, divisions=divisions)
 \includegraphics{assets/lilypond-06c5f723997363adb1e3e9391d01892a.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
-
-\subsubsection{IncisedRhythmMaker}
 
 \begin{comment}
 <abjad>
@@ -1372,8 +1362,6 @@ show(incised_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsubsection{TaleaRhythmMaker}
-
 \begin{comment}
 <abjad>
 talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
@@ -1402,7 +1390,7 @@ show(talea_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{\emph{Consort}'s composite rhythm maker}
+\subsection{\emph{Consort}'s composite rhythm maker} %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -1493,7 +1481,7 @@ their parents in the second level into two groups three 1/8 duration nodes. The
 offsets 1/8, 1/4, 1/2 and 5/8 are not shared by any nodes except at the lowest
 metrical level and therefore all receive an accent weight of one.
 
-\subsection{Examples}
+\subsection{Examples of meter} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Consider the following examples of meters modeled in Abjad.
 
@@ -1560,7 +1548,7 @@ graph(twelve_eight_meter)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Alternate meter representations}
+\subsection{Alternate meter representations} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Abjad permits alternate representations of meters with the same numerator and
 denominator. The default interpretation of 4/4 generates a top-level rhythmic
@@ -1757,7 +1745,7 @@ show(staff)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Dot count}
+\subsection{Dot count} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -1855,7 +1843,7 @@ show(measure)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Boundary depth}
+\subsection{Boundary depth} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -1937,7 +1925,7 @@ show(measure)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Example: disambiguating 3/4 \& 6/8}
+\subsection{Example: disambiguating 3/4 \& 6/8} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -2011,7 +1999,7 @@ show(staff)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Recursive meter rewriting}
+\subsection{Recursive meter rewriting} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -2073,7 +2061,7 @@ offsets appears to express that meter.
 
 Abjad's \texttt{metertools} provides a \texttt{MetricAccentKernel} class.
 
-\subsection{Offset counters}
+\subsection{Offset counters} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Before convolving a meter with a collection of offsets, those offsets need to
 be extracted. The \texttt{MetricAccentKernel} class'
@@ -2194,7 +2182,7 @@ for offset, count in sorted(timespan_counter.items()):
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Generating metric accent kernels}
+\subsection{Generating metric accent kernels} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 As demonstrated earlier, meters describe a sequence of offsets with varying
 degrees of weight, or accentedness, attributed to each offset. Downbeats have a
@@ -2233,7 +2221,7 @@ for offset, weight in sorted(kernel_44.kernel.items()):
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Evaluating metric accent kernels}
+\subsection{Evaluating metric accent kernels} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \noindent The 4/4 metric accent kernel can be called against an offset counter
 -- as though it were a function -- to generate a response via a kind of simple
@@ -2350,13 +2338,16 @@ float(kernel_54(piano_staff_counter))
 \noindent Note that the previously recorded response for a 4/4 meter is still
 higher than any of these.
 
-\subsection{Meter fitting}
+\subsection{Meter fitting} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
 permitted_meters = [metertools.Meter(_) for _ in [(3, 4), (4, 4), (5, 4)]]
 offsets = [(0, 4), (4, 4), (8, 4), (12, 4), (16, 4)]
-for x in metertools.Meter.fit_meters_to_expr(offsets, permitted_meters):
+for x in metertools.Meter.fit_meters_to_expr(
+    expr=offsets,
+    meters=permitted_meters,
+    ):
     print(x.implied_time_signature)
 
 </abjad>
@@ -2368,7 +2359,10 @@ for x in metertools.Meter.fit_meters_to_expr(offsets, permitted_meters):
 \begin{lstlisting}
 >>> permitted_meters = [metertools.Meter(_) for _ in [(3, 4), (4, 4), (5, 4)]]
 >>> offsets = [(0, 4), (4, 4), (8, 4), (12, 4), (16, 4)]
->>> for x in metertools.Meter.fit_meters_to_expr(offsets, permitted_meters):
+>>> for x in metertools.Meter.fit_meters_to_expr(
+...     expr=offsets,
+...     meters=permitted_meters,
+...     ):
 ...     print(x.implied_time_signature)
 ...
 4/4
@@ -2382,7 +2376,10 @@ for x in metertools.Meter.fit_meters_to_expr(offsets, permitted_meters):
 \begin{comment}
 <abjad>
 offsets = [(0, 4), (3, 4), (5, 4), (10, 4), (15, 4), (20, 4)]
-for x in metertools.Meter.fit_meters_to_expr(offsets, permitted_meters):
+for x in metertools.Meter.fit_meters_to_expr(
+    expr=offsets,
+    meters=permitted_meters,
+    ):
     print(x.implied_time_signature)
 
 </abjad>
@@ -2393,7 +2390,10 @@ for x in metertools.Meter.fit_meters_to_expr(offsets, permitted_meters):
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> offsets = [(0, 4), (3, 4), (5, 4), (10, 4), (15, 4), (20, 4)]
->>> for x in metertools.Meter.fit_meters_to_expr(offsets, permitted_meters):
+>>> for x in metertools.Meter.fit_meters_to_expr(
+...     expr=offsets,
+...     meters=permitted_meters,
+...     ):
 ...     print(x.implied_time_signature)
 ...
 3/4
@@ -2409,8 +2409,8 @@ for x in metertools.Meter.fit_meters_to_expr(offsets, permitted_meters):
 <abjad>
 offsets = [(0, 4), (3, 4), (5, 4), (10, 4), (15, 4), (20, 4)]
 for x in metertools.Meter.fit_meters_to_expr(
-    offsets,
-    permitted_meters,
+    expr=offsets,
+    meters=permitted_meters,
     maximum_run_length=1,
     ):
     print(x.implied_time_signature)
@@ -2424,8 +2424,8 @@ for x in metertools.Meter.fit_meters_to_expr(
 \begin{lstlisting}
 >>> offsets = [(0, 4), (3, 4), (5, 4), (10, 4), (15, 4), (20, 4)]
 >>> for x in metertools.Meter.fit_meters_to_expr(
-...     offsets,
-...     permitted_meters,
+...     expr=offsets,
+...     meters=permitted_meters,
 ...     maximum_run_length=1,
 ...     ):
 ...     print(x.implied_time_signature)
@@ -2439,3 +2439,7 @@ for x in metertools.Meter.fit_meters_to_expr(
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Implications}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -90,6 +90,7 @@
     ItalicFont=EBGaramond12-Italic,
     BoldItalicFont=EBGaramond12-Italic,
     BoldItalicFeatures={FakeBold=3},
+    Numbers={Lining},
 ]{EBGaramond12-Regular}
 \newfontfamily{\smallcaps}[RawFeature={+c2sc,+scmp}]{EB Garamond}
 %\setromanfont[Numbers=OldStyle, Ligatures={Common}]{EB Garamond}
