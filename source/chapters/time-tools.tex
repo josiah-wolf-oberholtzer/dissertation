@@ -595,18 +595,24 @@ True
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent A wide variety of other time relations are also possible, such as
-testing for intersection with single offsets. These predicates make possible
+\noindent A wide variety of other time relation predicates are also possible,
+such as testing if a timespan intersects with a specific offset, testing if a
+timespan overlaps only the beginning or end of another timespan, or testing if
+a timespan contains another timespan entirely. These predicates make possible
 many of the generative operations carried out on timespans.
 
 \subsection{Operations on timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Many \texttt{Timespan} methods transform and return new timespans.
+Many \texttt{Timespan} methods provide transformations, such as translation,
+scaling or offset rounding. Because timespans are immutable, these methods
+create a new timespan based on the old one and then return the new, leaving
+the old exactly as it was:
 
 \begin{comment}
 <abjad>
 timespan = timespantools.Timespan(0, 15)
 timespan.translate(3)
+timespan.scale(3)
 timespan.round_offsets(2)
 </abjad>
 \end{comment}
@@ -620,18 +626,26 @@ timespan.round_offsets(2)
 Timespan(start_offset=Offset(3, 1), stop_offset=Offset(18, 1))
 \end{lstlisting}
 \begin{lstlisting}
+>>> timespan.scale(3)
+Timespan(start_offset=Offset(0, 1), stop_offset=Offset(45, 1))
+\end{lstlisting}
+\begin{lstlisting}
 >>> timespan.round_offsets(2)
 Timespan(start_offset=Offset(0, 1), stop_offset=Offset(16, 1))
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-Splitting generates a timespan inventory, discussed later.
+\noindent Internally, these generative methods are implemented via templating
+as described earlier, allowing annotated timespan subclasses to partake in the
+same templating functionality -- templating their start and / or stop offsets,
+but maintaining all other previously configured properties:
 
 \begin{comment}
 <abjad>
-result = timespan.split_at_offset(5)
-print(format(result))
+annotated_timespan = timespantools.AnnotatedTimespan(0, 5, 'an annotation')
+scaled_annotated_timespan = annotated_timespan.translate((-1, 3))
+print(format(scaled_annotated_timespan))
 </abjad>
 \end{comment}
 
@@ -639,8 +653,45 @@ print(format(result))
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> result = timespan.split_at_offset(5)
->>> print(format(result))
+>>> annotated_timespan = timespantools.AnnotatedTimespan(0, 5, 'an annotation')
+>>> scaled_annotated_timespan = annotated_timespan.translate((-1, 3))
+>>> print(format(scaled_annotated_timespan))
+timespantools.AnnotatedTimespan(
+    start_offset=durationtools.Offset(-1, 3),
+    stop_offset=durationtools.Offset(14, 3),
+    annotation='an annotation',
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Some generative operations may return zero or more timespans,
+aggregated in a datastructure called a \emph{timespan inventory}, which is
+discussed at length in the following section. Splitting a timespan by an offset
+is one such operation. If the offset to be split by is \emph{properly
+contained}\footnote{\emph{Proper containment} of an offset means that the
+offset is greater than the timespan's start offset and less than the timespan's
+stop offset. \emph{Improper containment} would indicated the offset is greater
+than or equal to the timespan's start offset and less than or equal to its stop
+offset.} by the timespan to be split, two new timespans will be returned,
+otherwise a timespan inventory containing a copy of the original input timespan
+will be returned:
+
+\begin{comment}
+<abjad>
+two_shards = timespan.split_at_offset(5)
+print(format(two_shards))
+one_shard = timespan.split_at_offset(10000)
+print(format(one_shard))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> two_shards = timespan.split_at_offset(5)
+>>> print(format(two_shards))
 timespantools.TimespanInventory(
     [
         timespantools.Timespan(
@@ -654,52 +705,87 @@ timespantools.TimespanInventory(
         ]
     )
 \end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-More complex operations between timespans which result in timespan inventories
-include subtraction, unioning and intersection.
-
-Consider the following three timespans again.
-
-\begin{comment}
-<abjad>
-timespan_1 = timespantools.Timespan(0, 10)
-timespan_2 = timespantools.Timespan(5, 15)
-timespan_3 = timespantools.Timespan(10, 20)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> timespan_1 = timespantools.Timespan(0, 10)
->>> timespan_2 = timespantools.Timespan(5, 15)
->>> timespan_3 = timespantools.Timespan(10, 20)
+>>> one_shard = timespan.split_at_offset(10000)
+>>> print(format(one_shard))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(15, 1),
+            ),
+        ]
+    )
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent More complex operations between timespans which result in timespan
+inventories include subtraction, as well as logical \texttt{AND}, \texttt{OR}
+and \texttt{XOR}. These generative operations are conceptually \emph{set}
+operations -- union, difference, intersection, symmetric difference, etc. --
+performed on the two sets of offsets contained by the two timespan operands.
+Consider these same set operations -- union, difference, intersection,
+symmetric difference -- carried out on trivial sets in Python:
+
 \begin{comment}
 <abjad>
-result = timespan_1 - timespan_1
+set([1, 2, 3]) | set([2, 3, 4])  # union
+set([1, 2, 3]) - set([2, 3, 4])  # difference
+set([1, 2, 3]) & set([2, 3, 4])  # intersection
+set([1, 2, 3]) ^ set([2, 3, 4])  # symmetric difference
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> set([1, 2, 3]) | set([2, 3, 4])  # union
+set([1, 2, 3, 4])
+\end{lstlisting}
+\begin{lstlisting}
+>>> set([1, 2, 3]) - set([2, 3, 4])  # difference
+set([1])
+\end{lstlisting}
+\begin{lstlisting}
+>>> set([1, 2, 3]) & set([2, 3, 4])  # intersection
+set([2, 3])
+\end{lstlisting}
+\begin{lstlisting}
+>>> set([1, 2, 3]) ^ set([2, 3, 4])  # symmetric difference
+set([1, 4])
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Set operations performed on timespans are conceptually identical, but
+operate on infinite but bounded sets of offsets instead of discrete sets of
+objects such as integers. For example, subtracting one timespan from another
+computes the set difference of the offsets contained by both. This operation is
+not commutative -- subtracting one timespan from another will not result in the
+same ouput as subtract the latter from the former. Subtracting a timespan from
+itself always results in the empty set of offsets: no timespan at all:
+
+\begin{comment}
+<abjad>
+result = timespantools.Timespan(0, 10) - timespantools.Timespan(0, 10)
 print(format(result))
-result = timespan_1 - timespan_2
+result = timespantools.Timespan(0, 10) - timespantools.Timespan(5, 15)
 print(format(result))
-result = timespan_1 - timespan_3
+result = timespantools.Timespan(0, 10) - timespantools.Timespan(10, 20)
 print(format(result))
-result = timespan_2 - timespan_1
+result = timespantools.Timespan(5, 15) - timespantools.Timespan(0, 10)
 print(format(result))
-result = timespan_2 - timespan_2
+result = timespantools.Timespan(5, 15) - timespantools.Timespan(5, 15)
 print(format(result))
-result = timespan_2 - timespan_3
+result = timespantools.Timespan(5, 15) - timespantools.Timespan(10, 20)
 print(format(result))
-result = timespan_3 - timespan_1
+result = timespantools.Timespan(10, 20) - timespantools.Timespan(0, 10)
 print(format(result))
-result = timespan_3 - timespan_2
+result = timespantools.Timespan(10, 20) - timespantools.Timespan(5, 15)
 print(format(result))
-result = timespan_3 - timespan_3
+result = timespantools.Timespan(10, 20) - timespantools.Timespan(10, 20)
 print(format(result))
 </abjad>
 \end{comment}
@@ -708,14 +794,14 @@ print(format(result))
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> result = timespan_1 - timespan_1
+>>> result = timespantools.Timespan(0, 10) - timespantools.Timespan(0, 10)
 >>> print(format(result))
 timespantools.TimespanInventory(
     []
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> result = timespan_1 - timespan_2
+>>> result = timespantools.Timespan(0, 10) - timespantools.Timespan(5, 15)
 >>> print(format(result))
 timespantools.TimespanInventory(
     [
@@ -727,7 +813,7 @@ timespantools.TimespanInventory(
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> result = timespan_1 - timespan_3
+>>> result = timespantools.Timespan(0, 10) - timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
     [
@@ -739,7 +825,7 @@ timespantools.TimespanInventory(
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> result = timespan_2 - timespan_1
+>>> result = timespantools.Timespan(5, 15) - timespantools.Timespan(0, 10)
 >>> print(format(result))
 timespantools.TimespanInventory(
     [
@@ -751,14 +837,14 @@ timespantools.TimespanInventory(
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> result = timespan_2 - timespan_2
+>>> result = timespantools.Timespan(5, 15) - timespantools.Timespan(5, 15)
 >>> print(format(result))
 timespantools.TimespanInventory(
     []
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> result = timespan_2 - timespan_3
+>>> result = timespantools.Timespan(5, 15) - timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
     [
@@ -770,7 +856,7 @@ timespantools.TimespanInventory(
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> result = timespan_3 - timespan_1
+>>> result = timespantools.Timespan(10, 20) - timespantools.Timespan(0, 10)
 >>> print(format(result))
 timespantools.TimespanInventory(
     [
@@ -782,7 +868,7 @@ timespantools.TimespanInventory(
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> result = timespan_3 - timespan_2
+>>> result = timespantools.Timespan(10, 20) - timespantools.Timespan(5, 15)
 >>> print(format(result))
 timespantools.TimespanInventory(
     [
@@ -794,7 +880,7 @@ timespantools.TimespanInventory(
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> result = timespan_3 - timespan_3
+>>> result = timespantools.Timespan(10, 20) - timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
     []
@@ -803,16 +889,17 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-Logical \texttt{OR} results in a unioning of the two input timespans, if they
-overlap.
+\noindent Computing the logical \texttt{OR} of two timespans results in an
+offset set union -- a commutative operation, effectively fusing the timespans
+together if they overlap:
 
 \begin{comment}
 <abjad>
-result = timespan_1 | timespan_2
+result = timespantools.Timespan(0, 10) | timespantools.Timespan(5, 15)
 print(format(result))
-result = timespan_1 | timespan_3
+result = timespantools.Timespan(0, 10) | timespantools.Timespan(10, 20)
 print(format(result))
-result = timespan_2 | timespan_3
+result = timespantools.Timespan(5, 15) | timespantools.Timespan(10, 20)
 print(format(result))
 </abjad>
 \end{comment}
@@ -821,7 +908,7 @@ print(format(result))
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> result = timespan_1 | timespan_2
+>>> result = timespantools.Timespan(0, 10) | timespantools.Timespan(5, 15)
 >>> print(format(result))
 timespantools.TimespanInventory(
     [
@@ -833,7 +920,7 @@ timespantools.TimespanInventory(
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> result = timespan_1 | timespan_3
+>>> result = timespantools.Timespan(0, 10) | timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
     [
@@ -845,7 +932,7 @@ timespantools.TimespanInventory(
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> result = timespan_2 | timespan_3
+>>> result = timespantools.Timespan(5, 15) | timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
     [
@@ -859,15 +946,13 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-Logical \texttt{AND} results in the intersection of the two input timespans:
+\noindent Unioning guarantees that all of the offsets contained in the two
+input timespans will appear in the output timespan(s), whether or not any
+overlap occurred:
 
 \begin{comment}
 <abjad>
-result = timespan_1 & timespan_2
-print(format(result))
-result = timespan_1 & timespan_3
-print(format(result))
-result = timespan_2 & timespan_3
+result = timespantools.Timespan(10, 20) | timespantools.Timespan(25, 50)
 print(format(result))
 </abjad>
 \end{comment}
@@ -876,7 +961,43 @@ print(format(result))
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> result = timespan_1 & timespan_2
+>>> result = timespantools.Timespan(10, 20) | timespantools.Timespan(25, 50)
+>>> print(format(result))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(10, 1),
+            stop_offset=durationtools.Offset(20, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(25, 1),
+            stop_offset=durationtools.Offset(50, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent The logical \texttt{AND} -- set intersection -- results in the
+intersection of the two input timespans:
+
+\begin{comment}
+<abjad>
+result = timespantools.Timespan(0, 10) & timespantools.Timespan(5, 15)
+print(format(result))
+result = timespantools.Timespan(0, 10) & timespantools.Timespan(10, 20)
+print(format(result))
+result = timespantools.Timespan(5, 15) & timespantools.Timespan(10, 20)
+print(format(result))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> result = timespantools.Timespan(0, 10) & timespantools.Timespan(5, 15)
 >>> print(format(result))
 timespantools.TimespanInventory(
     [
@@ -888,14 +1009,14 @@ timespantools.TimespanInventory(
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> result = timespan_1 & timespan_3
+>>> result = timespantools.Timespan(0, 10) & timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
     []
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> result = timespan_2 & timespan_3
+>>> result = timespantools.Timespan(5, 15) & timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
     [
@@ -909,16 +1030,18 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-Logical \texttt{XOR} -- exclusive \texttt{OR} -- results in the symmetric
-difference of the two input timespans:
+\noindent Logical \texttt{XOR} -- also known as exclusive \texttt{OR} --
+results in the symmetric difference of the two input timespans. Only those
+offsets which are contained by only one of the two input timespans will occur
+in the output:
 
 \begin{comment}
 <abjad>
-result = timespan_1 ^ timespan_2
+result = timespantools.Timespan(0, 10) ^ timespantools.Timespan(5, 15)
 print(format(result))
-result = timespan_1 ^ timespan_3
+result = timespantools.Timespan(0, 10) ^ timespantools.Timespan(10, 20)
 print(format(result))
-result = timespan_2 ^ timespan_3
+result = timespantools.Timespan(5, 15) ^ timespantools.Timespan(10, 20)
 print(format(result))
 </abjad>
 \end{comment}
@@ -927,7 +1050,7 @@ print(format(result))
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> result = timespan_1 ^ timespan_2
+>>> result = timespantools.Timespan(0, 10) ^ timespantools.Timespan(5, 15)
 >>> print(format(result))
 timespantools.TimespanInventory(
     [
@@ -943,7 +1066,7 @@ timespantools.TimespanInventory(
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> result = timespan_1 ^ timespan_3
+>>> result = timespantools.Timespan(0, 10) ^ timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
     [
@@ -959,7 +1082,7 @@ timespantools.TimespanInventory(
     )
 \end{lstlisting}
 \begin{lstlisting}
->>> result = timespan_2 ^ timespan_3
+>>> result = timespantools.Timespan(5, 15) ^ timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
     [
@@ -976,6 +1099,12 @@ timespantools.TimespanInventory(
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent These operations, while perhaps initially rather abstract, are
+incredibly powerful and artistically useful. They afford composers with the
+functional building blocks to mask temporal objects with one another, fuse them
+together, or create lacunae. When extended to operate on many timespans at
+once, wholesale transformations on massed timespans becomes practical.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Timespan inventories}
@@ -3060,3 +3189,14 @@ for x in metertools.Meter.fit_meters_to_expr(
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Implications}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Factories
+
+Timespans allow for large scale phrasing and density structures
+
+A description of what sort of material should appear in approximate locations
+is possible.
+
+Timespans also allow for overlap, and have affordances for masking. This allows
+timespans to be created by a factories in layers, and those layers resolved
+down to a single non-overlapping layer via masking.
