@@ -1408,7 +1408,15 @@ True
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Unioning, differencing and splitting} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Operations on timespan inventories} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Timespan inventory implement unioning, differencing and splitting methods which
+parallel those implemented on timespans themselves. These methods
+map the desired operation onto the contents of the inventory by, for example,
+splitting every timespan contained in a given inventory by some offset. All of
+these operations act in place. The intersection of all of the timespans in a
+timespan inventory relative another timespan can be computed with the
+\texttt{\&} operator, just like with single timespans:
 
 \begin{comment}
 <abjad>
@@ -1454,6 +1462,10 @@ timespantools.TimespanInventory(
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent Likewise, the offsets bound by a given timespan can be subtracted
+from all of the timespans in a timespan inventory, effectively cutting a hole
+in that inventory's timeline:
 
 \begin{comment}
 <abjad>
@@ -1503,6 +1515,10 @@ timespantools.TimespanInventory(
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent As with a single timespan and an offset, an entire timespan inventory
+can be split into two separate inventories via the \texttt{split\_at\_offset()}
+method:
 
 \begin{comment}
 <abjad>
@@ -1559,7 +1575,88 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{In-place logical operations} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent The \texttt{TimespanInventory} class also provides the convenience
+method \texttt{split\_at\_offsets()} for splitting an inventory by an arbitrary
+number of offsets at once:
+
+\begin{comment}
+<abjad>
+timespan_inventory = timespantools.TimespanInventory([
+    timespantools.Timespan(0, 3),
+    timespantools.Timespan(3, 6),
+    timespantools.Timespan(6, 10),
+    ])
+shards = timespan_inventory.split_at_offsets((2, 4, 7))
+for shard in shards:
+    print(format(shard))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> timespan_inventory = timespantools.TimespanInventory([
+...     timespantools.Timespan(0, 3),
+...     timespantools.Timespan(3, 6),
+...     timespantools.Timespan(6, 10),
+...     ])
+>>> shards = timespan_inventory.split_at_offsets((2, 4, 7))
+>>> for shard in shards:
+...     print(format(shard))
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(2, 1),
+            ),
+        ]
+    )
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(2, 1),
+            stop_offset=durationtools.Offset(3, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(3, 1),
+            stop_offset=durationtools.Offset(4, 1),
+            ),
+        ]
+    )
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(4, 1),
+            stop_offset=durationtools.Offset(6, 1),
+            ),
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(6, 1),
+            stop_offset=durationtools.Offset(7, 1),
+            ),
+        ]
+    )
+timespantools.TimespanInventory(
+    [
+        timespantools.Timespan(
+            start_offset=durationtools.Offset(7, 1),
+            stop_offset=durationtools.Offset(10, 1),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+The mutating methods described above modify a timespan inventory
+by mapping some procedure against its contents and some outside timespan or
+offset. However, timespan inventories may also be modified by applying a
+procedure solely against the contents of the inventory itself, mapping each
+timespan in the collection against each other timespan in that collection.
+
+For example, a timespan inventory can be modified by computing the logical
+\texttt{OR} -- the set union -- of every timespan in the inventory relative
+every other timespan, effectively fusing all overlapping timespans together:
 
 \begin{comment}
 <abjad>
@@ -1596,6 +1693,11 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent A timespan inventory can also be modified by computing the logical
+\texttt{AND} of every timespan in the inventory relative every other timespan.
+This procedure leaves only those offsets where every single timespan
+overlaps:
+
 \begin{comment}
 <abjad>
 timespan_inventory = timespantools.TimespanInventory([
@@ -1630,6 +1732,10 @@ timespantools.TimespanInventory(
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent Lastly, computing the in-place logical \texttt{XOR} removes all
+overlap from the timespan inventory, leaving only those offsets occupied by
+only one timespan:
 
 \begin{comment}
 <abjad>
@@ -1674,7 +1780,9 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Timewise partitioning} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Timespan partitioning separates a timespan inventory into groups of overlapping
+and optionally tangent timespans, aggregated into new timespan inventories.
+This procedure allows composers to isolate contiguous blocks of activity.
 
 \begin{comment}
 <abjad>
@@ -1684,6 +1792,12 @@ timespan_inventory = timespantools.TimespanInventory([
     timespantools.Timespan(15, 20),
     timespantools.Timespan(25, 30),
     ])
+for inventory in timespan_inventory.partition():
+    print(format(inventory))
+
+for inventory in timespan_inventory.partition(include_tangent_timespans=True):
+    print(format(inventory))
+
 </abjad>
 \end{comment}
 
@@ -1697,22 +1811,6 @@ timespan_inventory = timespantools.TimespanInventory([
 ...     timespantools.Timespan(15, 20),
 ...     timespantools.Timespan(25, 30),
 ...     ])
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-for inventory in timespan_inventory.partition():
-    print(format(inventory))
-
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
 >>> for inventory in timespan_inventory.partition():
 ...     print(format(inventory))
 ...
@@ -1745,20 +1843,6 @@ timespantools.TimespanInventory(
         ]
     )
 \end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-for inventory in timespan_inventory.partition(include_tangent_timespans=True):
-    print(format(inventory))
-
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> for inventory in timespan_inventory.partition(include_tangent_timespans=True):
 ...     print(format(inventory))
@@ -1791,39 +1875,113 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Other timespan inventory operations} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{comment}
-TimespanInventory.clip_timespan_durations
-TimespanInventory.count_offsets()
-TimespanInventory.explode()
-TimespanInventory.round_offsets()
-\end{comment}
+The procedures outlined above provide high-level tools for interacting with
+large numbers of timespans at once. All of the techniques described in later
+chapters with regards to Consort's score interpretation algorithm -- timespan
+consolidation, cascading overlap resolution, multiplexing multiple inventories
+into one, demultiplexing one inventory into many, and so forth -- build on and
+extend these techniques.
 
 \subsection{Optimized timespan inventories} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Consort provides its own timespan collection class -- the TimespanCollection.
-This class stores timespans internally not as a list, but in a balanced
-\emph{interval tree}\footnote{An interval tree is an augmented self-balancing
-binary tree which stores both start offsets as well as stop offsets.}
-datastructure which guarantees sorting and allows for highly optimized lookups
-of timespans intersecting specific offsets. This class is used at crucial
-points during Consort's interpretation stage simply for purposes of speed, and
-should be considered an implementation detail. With work, its internal
-datastructure will eventually be merged into Abjad's TimespanInventory.
+Consort provides its own timespan collection class -- the
+\texttt{TimespanCollection}. This class stores timespans internally not as a
+list, but in a balanced \emph{interval tree}\footnote{An interval tree is an
+augmented self-balancing binary tree which stores both start offsets as well as
+stop offsets.} datastructure which guarantees sorting and allows for highly
+optimized lookups of timespans intersecting specific offsets. This class is
+used at crucial points during Consort's interpretation stage simply for
+purposes of speed, and should be considered an implementation detail. It
+implements only a few methods, specifically for affording rapid search and
+retrieval of timespans intersecting other timespans or offsets. With work, its
+internal datastructure may eventually be merged into Abjad's own
+\texttt{TimespanInventory} class.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Annotated timespans in \emph{Consort}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We need to discuss the products of timespan makers before we can discuss
-timespan makers themselves.
+While the above datastructures and operations are potentially very useful, a
+larger question remains: how can composers create enough timespans, and in
+various patterns, to be musically interesting? Consort approaches this problem
+by providing a collection of factory classes -- \emph{timespan makers} -- which
+can be configured and called to create arbitrarily large amounts of timespans.
+However, before turning to a detailed discussion of timespan makers, we must
+discuss the products of the timespan themselves: Consort's annotated timespan
+subclasses.
 
-\subsection{Payloaded timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Consort provides two separate timespan subclasses which are integral, if
+transient, components of its score interpretation algorithm: the
+\texttt{PerformedTimespan} and \texttt{SilentTimespan} classes. These classes
+are never created \enquote{by hand} during Consort's specification stage --
+this is, explicitly instantiated by a composer while specifying a score segment
+--, but are instead generated as transitory objects during interpretation.
+Consort uses \texttt{PerformedTimespan} objects to specify locations in the
+score timeline where some active musical material should appear, while
+\texttt{SilentTimespan} objects specify tacet passages.
 
-- layer
+As will be described in more detail in the following chapters, Consort requires
+composers to specify musical materials in \emph{layers}, and to specify
+specifically in which voices in the score -- vertically -- that material should
+occur in. During the course of interpretation, Consort separates out generated
+timespans by voice name and layer into separate timespan inventories, and then
+progressively masks out timespans in timespan inventories with lower layer
+numbers by timespans in timespan inventories with higher layer numbers. This
+process is somewhat analogous to the use of opaque layers in image editing
+software. Both the \texttt{PerformedTimespan} and \texttt{SilentTimespan}
+classes provide configurable properties for layer and voice name, in addition
+to the start offset and stop offset properties provided by their parent
+\texttt{Timespan} class. These properties allow the processes that generate
+them to record \emph{when} they were created, as well as \emph{where} the
+should appear in the score, should they survive the masking process.
 
-- voice name
+Silent timespans do not appear in the score, but can be created for a
+particular layer and used to simply erase any timespan in a lower layer by
+masking.
+
+\begin{comment}
+<abjad>
+performed_timespan = consort.PerformedTimespan(
+    layer=1,
+    start_offset=(1, 2),
+    stop_offset=(7, 8),
+    voice_name='Clarinet Voice',
+    )
+silent_timespan = consort.SilentTimespan(
+    layer=2,
+    start_offset=Offset(0, 1),
+    stop_offset=Offset(1, 4),
+    voice_name='Oboe Voice',
+    )
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> performed_timespan = consort.PerformedTimespan(
+...     layer=1,
+...     start_offset=(1, 2),
+...     stop_offset=(7, 8),
+...     voice_name='Clarinet Voice',
+...     )
+>>> silent_timespan = consort.SilentTimespan(
+...     layer=2,
+...     start_offset=Offset(0, 1),
+...     stop_offset=Offset(1, 4),
+...     voice_name='Oboe Voice',
+...     )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\subsection{\emph{Silent} timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{comment}
+<abjad>
+</abjad>
+\end{comment}
 
 \subsection{\emph{Performed} timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1869,33 +2027,6 @@ performed_timespan = consort.PerformedTimespan(
 - music
 
 - music specifier
-
-\subsection{\emph{Silent} timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{comment}
-<abjad>
-silent_timespan = consort.SilentTimespan(
-    layer=2,
-    start_offset=Offset(0, 1),
-    stop_offset=Offset(1, 4),
-    voice_name='Violin 1 LH Voice',
-    )
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> silent_timespan = consort.SilentTimespan(
-...     layer=2,
-...     start_offset=Offset(0, 1),
-...     stop_offset=Offset(1, 4),
-...     voice_name='Violin 1 LH Voice',
-...     )
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Timespan makers}
