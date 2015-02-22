@@ -2201,12 +2201,8 @@ timespantools.TimespanInventory(
 
 \begin{comment}
 <abjad>
-timespan_maker = consort.TaleaTimespanMaker(
-    initial_silence_talea=rhythmmakertools.Talea(
-        counts=(0, 4),
-        denominator=16,
-        )
-    )
+talea_timespan_maker = consort.TaleaTimespanMaker()
+print(format(talea_timespan_maker))
 </abjad>
 \end{comment}
 
@@ -2214,13 +2210,185 @@ timespan_maker = consort.TaleaTimespanMaker(
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> timespan_maker = consort.TaleaTimespanMaker(
-...     initial_silence_talea=rhythmmakertools.Talea(
-...         counts=(0, 4),
-...         denominator=16,
+>>> talea_timespan_maker = consort.TaleaTimespanMaker()
+>>> print(format(talea_timespan_maker))
+consort.tools.TaleaTimespanMaker(
+    playing_talea=rhythmmakertools.Talea(
+        counts=(4,),
+        denominator=16,
+        ),
+    playing_groupings=(1,),
+    repeat=True,
+    silence_talea=rhythmmakertools.Talea(
+        counts=(4,),
+        denominator=16,
+        ),
+    step_anchor=Right,
+    synchronize_groupings=False,
+    synchronize_step=False,
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+import collections
+music_specifiers = collections.OrderedDict([
+    ('Voice 1', None),
+    ('Voice 2', None),
+    ('Voice 3', None),
+    ('Voice 4', None),
+    ])
+target_timespan = timespantools.Timespan(0, 4)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> import collections
+>>> music_specifiers = collections.OrderedDict([
+...     ('Voice 1', None),
+...     ('Voice 2', None),
+...     ('Voice 3', None),
+...     ('Voice 4', None),
+...     ])
+>>> target_timespan = timespantools.Timespan(0, 4)
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+result = talea_timespan_maker(
+    music_specifiers=music_specifiers,
+    target_timespan=target_timespan,
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> result = talea_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     target_timespan=target_timespan,
+...     )
+>>> show(result, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-554e035d57f5d822601793130edac722.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+talea_timespan_maker = new(
+    talea_timespan_maker,
+    playing_talea=rhythmmakertools.Talea(
+        counts=(1, 2, 3),
+        denominator=4,
+        )
+    )
+result = talea_timespan_maker(
+    music_specifiers=music_specifiers,
+    target_timespan=target_timespan,
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_timespan_maker = new(
+...     talea_timespan_maker,
+...     playing_talea=rhythmmakertools.Talea(
+...         counts=(1, 2, 3),
+...         denominator=4,
 ...         )
 ...     )
+>>> result = talea_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     target_timespan=target_timespan,
+...     )
+>>> show(result, key='voice_name')
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-13d5cffc2bf6679dbf4bcfb1c802171b.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+talea_timespan_maker = new(
+    talea_timespan_maker,
+    playing_groupings=(1, 2),
+    )
+result = talea_timespan_maker(
+    music_specifiers=music_specifiers,
+    target_timespan=target_timespan,
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_timespan_maker = new(
+...     talea_timespan_maker,
+...     playing_groupings=(1, 2),
+...     )
+>>> result = talea_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     target_timespan=target_timespan,
+...     )
+>>> show(result, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-c21a86f753bbb3e7259d991759d32cfa.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+talea_timespan_maker = new(
+    talea_timespan_maker,
+    initial_silence_talea=rhythmmakertools.Talea(
+        counts=(0, 1, 2),
+        denominator=8,
+        ),
+    )
+result = talea_timespan_maker(
+    music_specifiers=music_specifiers,
+    target_timespan=target_timespan,
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_timespan_maker = new(
+...     talea_timespan_maker,
+...     initial_silence_talea=rhythmmakertools.Talea(
+...         counts=(0, 1, 2),
+...         denominator=8,
+...         ),
+...     )
+>>> result = talea_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     target_timespan=target_timespan,
+...     )
+>>> show(result, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-34257200a1079cda9178f0688c97f505.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2237,14 +2405,14 @@ timespan_maker = consort.TaleaTimespanMaker(
 \begin{comment}
 <abjad>
 timespan_inventory = timespantools.TimespanInventory([
-    consort.PerformedTimespan(0, 10, voice_name='Piano Upper Voice'),
-    consort.PerformedTimespan(10, 20, voice_name='Piano Upper Voice'),
-    consort.PerformedTimespan(25, 30, voice_name='Piano Upper Voice'),
-    consort.PerformedTimespan(50, 60, voice_name='Piano Upper Voice'),
-    consort.PerformedTimespan(0, 10, voice_name='Piano Lower Voice'),
-    consort.PerformedTimespan(15, 35, voice_name='Piano Lower Voice'),
-    consort.PerformedTimespan(40, 45, voice_name='Piano Lower Voice'),
-    consort.PerformedTimespan(45, 75, voice_name='Piano Lower Voice'),
+    consort.PerformedTimespan(0, 10, voice_name='Voice 1'),
+    consort.PerformedTimespan(10, 20, voice_name='Voice 1'),
+    consort.PerformedTimespan(25, 30, voice_name='Voice 1'),
+    consort.PerformedTimespan(50, 60, voice_name='Voice 1'),
+    consort.PerformedTimespan(0, 10, voice_name='Voice 2'),
+    consort.PerformedTimespan(15, 35, voice_name='Voice 2'),
+    consort.PerformedTimespan(40, 45, voice_name='Voice 2'),
+    consort.PerformedTimespan(45, 75, voice_name='Voice 2'),
     ])
 show(timespan_inventory, key='voice_name')
 </abjad>
@@ -2255,28 +2423,28 @@ show(timespan_inventory, key='voice_name')
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> timespan_inventory = timespantools.TimespanInventory([
-...     consort.PerformedTimespan(0, 10, voice_name='Piano Upper Voice'),
-...     consort.PerformedTimespan(10, 20, voice_name='Piano Upper Voice'),
-...     consort.PerformedTimespan(25, 30, voice_name='Piano Upper Voice'),
-...     consort.PerformedTimespan(50, 60, voice_name='Piano Upper Voice'),
-...     consort.PerformedTimespan(0, 10, voice_name='Piano Lower Voice'),
-...     consort.PerformedTimespan(15, 35, voice_name='Piano Lower Voice'),
-...     consort.PerformedTimespan(40, 45, voice_name='Piano Lower Voice'),
-...     consort.PerformedTimespan(45, 75, voice_name='Piano Lower Voice'),
+...     consort.PerformedTimespan(0, 10, voice_name='Voice 1'),
+...     consort.PerformedTimespan(10, 20, voice_name='Voice 1'),
+...     consort.PerformedTimespan(25, 30, voice_name='Voice 1'),
+...     consort.PerformedTimespan(50, 60, voice_name='Voice 1'),
+...     consort.PerformedTimespan(0, 10, voice_name='Voice 2'),
+...     consort.PerformedTimespan(15, 35, voice_name='Voice 2'),
+...     consort.PerformedTimespan(40, 45, voice_name='Voice 2'),
+...     consort.PerformedTimespan(45, 75, voice_name='Voice 2'),
 ...     ])
 >>> show(timespan_inventory, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-cf1cdd48611ac4f872c5b487b4105d41.pdf}
+\noindent\includegraphics{assets/lilypond-13296a148810e7ce3ea272fe0810333d.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
 \begin{comment}
 <abjad>
-music_specifiers = {'Piano Pedals': None}
+music_specifiers = {'Voice 3': None}
 dependent_timespan_maker = consort.DependentTimespanMaker(
     voice_names=(
-        'Piano Upper Voice',
-        'Piano Lower Voice',
+        'Voice 1',
+        'Voice 2',
         )
     )
 result = dependent_timespan_maker(
@@ -2291,11 +2459,11 @@ show(result, key='voice_name')
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> music_specifiers = {'Piano Pedals': None}
+>>> music_specifiers = {'Voice 3': None}
 >>> dependent_timespan_maker = consort.DependentTimespanMaker(
 ...     voice_names=(
-...         'Piano Upper Voice',
-...         'Piano Lower Voice',
+...         'Voice 1',
+...         'Voice 2',
 ...         )
 ...     )
 >>> result = dependent_timespan_maker(
@@ -2304,7 +2472,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-28dc6b5bbc8d9f63b1a17970c4f2f8ee.pdf}
+\noindent\includegraphics{assets/lilypond-b8679d8c67bdc488c9bf7b253ee50093.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2336,7 +2504,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-d7799e9481346f54b40208d29723a2dd.pdf}
+\noindent\includegraphics{assets/lilypond-5e86cbbefe8caab1614b6a926c5fd9a0.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2368,7 +2536,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-089ad1538429a47769793da996bae0c3.pdf}
+\noindent\includegraphics{assets/lilypond-e087e1676265cbf9fe8d0de0c94af3df.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2402,7 +2570,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-1c103bdad2e02d823f99fa27e0b822a2.pdf}
+\noindent\includegraphics{assets/lilypond-083029aa8e7c7aac730d786816a9d7e7.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2428,7 +2596,7 @@ show(result, key='voice_name', range_=(0, 75))
 ...     )
 >>> show(result, key='voice_name', range_=(0, 75))
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-0fc4f5156675db2877a09433bc0db9bf.pdf}
+\noindent\includegraphics{assets/lilypond-0bf90f96e79184e7e174ab1d49f12f63.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2460,7 +2628,7 @@ show(result, key='voice_name', range_=(0, 75))
 ...     )
 >>> show(result, key='voice_name', range_=(0, 75))
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-60519c923ef41d6b01828cfc343d5e7a.pdf}
+\noindent\includegraphics{assets/lilypond-905860797ad3079959b162674b8ef9e6.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2492,7 +2660,7 @@ show(result, key='voice_name', range_=(0, 75))
 ...     )
 >>> show(result, key='voice_name', range_=(0, 75))
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-14091c11e174426073642e39e1b2c87e.pdf}
+\noindent\includegraphics{assets/lilypond-1dddd844f55df74835c9c91d65b4b541.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
