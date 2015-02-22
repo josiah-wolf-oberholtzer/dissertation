@@ -67,6 +67,7 @@ timespan = timespantools.Timespan(
     stop_offset=Offset(3, 2),
     )
 print(timespan)
+show(timespan)
 </abjad>
 \end{comment}
 
@@ -81,6 +82,10 @@ print(timespan)
 >>> print(timespan)
 Timespan(start_offset=Offset(1, 4), stop_offset=Offset(3, 2))
 \end{lstlisting}
+\begin{lstlisting}
+>>> show(timespan)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-fa85930d8e873f6b523722e207b97279.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -494,6 +499,27 @@ timespan_3 = timespantools.Timespan(10, 20)
 >>> timespan_2 = timespantools.Timespan(5, 15)
 >>> timespan_3 = timespantools.Timespan(10, 20)
 \end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent These three timespans could be represented together visually like
+this:
+
+\begin{comment}
+<abjad>[hide=true]
+timespan_inventory = timespantools.TimespanInventory([
+    timespan_1,
+    timespan_2,
+    timespan_3,
+    ])
+show(timespan_inventory)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\noindent\includegraphics{assets/lilypond-a7b6f3bad945a3859499b0b31500de75.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1135,6 +1161,7 @@ timespan_inventory.extend([
     timespantools.Timespan(15, 20),
     ])
 print(format(timespan_inventory))
+show(timespan_inventory)
 </abjad>
 \end{comment}
 
@@ -1172,6 +1199,10 @@ timespantools.TimespanInventory(
         ]
     )
 \end{lstlisting}
+\begin{lstlisting}
+>>> show(timespan_inventory)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-cd51129aa3072dd253c2f3f920f2d8b4.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1341,7 +1372,7 @@ True
 %%% ABJADBOOK END %%%
 
 \noindent The following timespan inventory's timespans are non-overlapping but
-non-contiguous:
+also non-contiguous:
 
 \begin{comment}
 <abjad>
@@ -1350,6 +1381,7 @@ timespan_inventory = timespantools.TimespanInventory([
     timespantools.Timespan(10, 20),
     timespantools.Timespan(30, 40),
     ])
+show(timespan_inventory)
 timespan_inventory.all_are_contiguous
 timespan_inventory.all_are_nonoverlapping
 </abjad>
@@ -1364,6 +1396,10 @@ timespan_inventory.all_are_nonoverlapping
 ...     timespantools.Timespan(10, 20),
 ...     timespantools.Timespan(30, 40),
 ...     ])
+>>> show(timespan_inventory)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-50859aa8333d9988b50e3fccebf11be2.pdf}
+\begin{lstlisting}
 >>> timespan_inventory.all_are_contiguous
 False
 \end{lstlisting}
@@ -1384,6 +1420,7 @@ timespan_inventory = timespantools.TimespanInventory([
     timespantools.Timespan(10, 20),
     timespantools.Timespan(20, 30),
     ])
+show(timespan_inventory)
 timespan_inventory.all_are_contiguous
 timespan_inventory.all_are_nonoverlapping
 </abjad>
@@ -1398,6 +1435,10 @@ timespan_inventory.all_are_nonoverlapping
 ...     timespantools.Timespan(10, 20),
 ...     timespantools.Timespan(20, 30),
 ...     ])
+>>> show(timespan_inventory)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-e5a925aff3202f905b9532d61dd48333.pdf}
+\begin{lstlisting}
 >>> timespan_inventory.all_are_contiguous
 True
 \end{lstlisting}
@@ -1425,9 +1466,10 @@ timespan_inventory = timespantools.TimespanInventory([
     timespantools.Timespan(5, 12),
     timespantools.Timespan(-2, 8),
     ])
-timespan = timespantools.Timespan(5, 10)
-result = timespan_inventory & timespan
-print(format(timespan_inventory))
+show(timespan_inventory)
+timespan_operand = timespantools.Timespan(6, 10)
+result = timespan_inventory & timespan_operand
+show(result, range_=(-2, 16))
 </abjad>
 \end{comment}
 
@@ -1440,26 +1482,15 @@ print(format(timespan_inventory))
 ...     timespantools.Timespan(5, 12),
 ...     timespantools.Timespan(-2, 8),
 ...     ])
->>> timespan = timespantools.Timespan(5, 10)
->>> result = timespan_inventory & timespan
->>> print(format(timespan_inventory))
-timespantools.TimespanInventory(
-    [
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(5, 1),
-            stop_offset=durationtools.Offset(8, 1),
-            ),
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(5, 1),
-            stop_offset=durationtools.Offset(10, 1),
-            ),
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(5, 1),
-            stop_offset=durationtools.Offset(10, 1),
-            ),
-        ]
-    )
+>>> show(timespan_inventory)
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-f03d9fd71c4ad899a8bb8f97b96a9a20.pdf}
+\begin{lstlisting}
+>>> timespan_operand = timespantools.Timespan(6, 10)
+>>> result = timespan_inventory & timespan_operand
+>>> show(result, range_=(-2, 16))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-e790b64c1dc5367b01ea230836a1aebb.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1474,9 +1505,10 @@ timespan_inventory = timespantools.TimespanInventory([
     timespantools.Timespan(5, 12),
     timespantools.Timespan(-2, 8),
     ])
-timespan = timespantools.Timespan(5, 10)
-result = timespan_inventory - timespan
-print(format(timespan_inventory))
+show(timespan_inventory)
+timespan_operand = timespantools.Timespan(6, 10)
+result = timespan_inventory - timespan_operand
+show(result)
 </abjad>
 \end{comment}
 
@@ -1489,30 +1521,15 @@ print(format(timespan_inventory))
 ...     timespantools.Timespan(5, 12),
 ...     timespantools.Timespan(-2, 8),
 ...     ])
->>> timespan = timespantools.Timespan(5, 10)
->>> result = timespan_inventory - timespan
->>> print(format(timespan_inventory))
-timespantools.TimespanInventory(
-    [
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(-2, 1),
-            stop_offset=durationtools.Offset(5, 1),
-            ),
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(0, 1),
-            stop_offset=durationtools.Offset(5, 1),
-            ),
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(10, 1),
-            stop_offset=durationtools.Offset(12, 1),
-            ),
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(10, 1),
-            stop_offset=durationtools.Offset(16, 1),
-            ),
-        ]
-    )
+>>> show(timespan_inventory)
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-f03d9fd71c4ad899a8bb8f97b96a9a20.pdf}
+\begin{lstlisting}
+>>> timespan_operand = timespantools.Timespan(6, 10)
+>>> result = timespan_inventory - timespan_operand
+>>> show(result)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-6dcf12333bdb56181f7236a3109169cd.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1527,9 +1544,10 @@ timespan_inventory = timespantools.TimespanInventory([
     timespantools.Timespan(3, 6),
     timespantools.Timespan(6, 10),
     ])
+show(timespan_inventory)
 left, right = timespan_inventory.split_at_offset(4)
-print(format(left))
-print(format(right))
+show(left, range_=(0, 10))
+show(right, range_=(0, 10))
 </abjad>
 \end{comment}
 
@@ -1542,36 +1560,18 @@ print(format(right))
 ...     timespantools.Timespan(3, 6),
 ...     timespantools.Timespan(6, 10),
 ...     ])
->>> left, right = timespan_inventory.split_at_offset(4)
->>> print(format(left))
-timespantools.TimespanInventory(
-    [
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(0, 1),
-            stop_offset=durationtools.Offset(3, 1),
-            ),
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(3, 1),
-            stop_offset=durationtools.Offset(4, 1),
-            ),
-        ]
-    )
+>>> show(timespan_inventory)
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-c3109fc5942ffdc443243253758482c4.pdf}
 \begin{lstlisting}
->>> print(format(right))
-timespantools.TimespanInventory(
-    [
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(4, 1),
-            stop_offset=durationtools.Offset(6, 1),
-            ),
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(6, 1),
-            stop_offset=durationtools.Offset(10, 1),
-            ),
-        ]
-    )
+>>> left, right = timespan_inventory.split_at_offset(4)
+>>> show(left, range_=(0, 10))
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-5341bb96014dfee6108b9b855b132837.pdf}
+\begin{lstlisting}
+>>> show(right, range_=(0, 10))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-68cae7183705e574fda28b092d13fe3e.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1586,9 +1586,11 @@ timespan_inventory = timespantools.TimespanInventory([
     timespantools.Timespan(3, 6),
     timespantools.Timespan(6, 10),
     ])
+show(timespan_inventory)
 shards = timespan_inventory.split_at_offsets((2, 4, 7))
 for shard in shards:
-    print(format(shard))
+    show(shard, range_=(0, 10))
+
 </abjad>
 \end{comment}
 
@@ -1601,50 +1603,19 @@ for shard in shards:
 ...     timespantools.Timespan(3, 6),
 ...     timespantools.Timespan(6, 10),
 ...     ])
+>>> show(timespan_inventory)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-c3109fc5942ffdc443243253758482c4.pdf}
+\begin{lstlisting}
 >>> shards = timespan_inventory.split_at_offsets((2, 4, 7))
 >>> for shard in shards:
-...     print(format(shard))
-timespantools.TimespanInventory(
-    [
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(0, 1),
-            stop_offset=durationtools.Offset(2, 1),
-            ),
-        ]
-    )
-timespantools.TimespanInventory(
-    [
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(2, 1),
-            stop_offset=durationtools.Offset(3, 1),
-            ),
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(3, 1),
-            stop_offset=durationtools.Offset(4, 1),
-            ),
-        ]
-    )
-timespantools.TimespanInventory(
-    [
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(4, 1),
-            stop_offset=durationtools.Offset(6, 1),
-            ),
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(6, 1),
-            stop_offset=durationtools.Offset(7, 1),
-            ),
-        ]
-    )
-timespantools.TimespanInventory(
-    [
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(7, 1),
-            stop_offset=durationtools.Offset(10, 1),
-            ),
-        ]
-    )
+...     show(shard, range_=(0, 10))
+...
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-27e3402fed83b515745ada579251724c.pdf}\\
+\noindent\includegraphics{assets/lilypond-6e7ebf85d2f18955a5f0abd3d7d8b313.pdf}\\
+\noindent\includegraphics{assets/lilypond-8d75ab1d88dd566393ff3a9050dabef1.pdf}\\
+\noindent\includegraphics{assets/lilypond-58563a29b41c2e27aecf0365da35f817.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1665,8 +1636,10 @@ timespan_inventory = timespantools.TimespanInventory([
     timespantools.Timespan(0, 10),
     timespantools.Timespan(5, 12),
     ])
+show(timespan_inventory)
 result = timespan_inventory.compute_logical_or()
 print(format(result))
+show(result)
 </abjad>
 \end{comment}
 
@@ -1679,6 +1652,10 @@ print(format(result))
 ...     timespantools.Timespan(0, 10),
 ...     timespantools.Timespan(5, 12),
 ...     ])
+>>> show(timespan_inventory)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-4033f9de9798fa5317729d4adc715949.pdf}
+\begin{lstlisting}
 >>> result = timespan_inventory.compute_logical_or()
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1690,6 +1667,10 @@ timespantools.TimespanInventory(
         ]
     )
 \end{lstlisting}
+\begin{lstlisting}
+>>> show(result)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-2dc98dc7d783a5fd65be90b471514f41.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1705,8 +1686,10 @@ timespan_inventory = timespantools.TimespanInventory([
     timespantools.Timespan(0, 10),
     timespantools.Timespan(5, 12),
     ])
+show(timespan_inventory)
 result = timespan_inventory.compute_logical_and()
 print(format(result))
+show(result, range_=(-2, 12))
 </abjad>
 \end{comment}
 
@@ -1719,6 +1702,10 @@ print(format(result))
 ...     timespantools.Timespan(0, 10),
 ...     timespantools.Timespan(5, 12),
 ...     ])
+>>> show(timespan_inventory)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-7c2b53f99dda26e827d1eeb63cd170a7.pdf}
+\begin{lstlisting}
 >>> result = timespan_inventory.compute_logical_and()
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1730,6 +1717,10 @@ timespantools.TimespanInventory(
         ]
     )
 \end{lstlisting}
+\begin{lstlisting}
+>>> show(result, range_=(-2, 12))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-7e0ece5fbe36aa69b1883f0464594b55.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1744,8 +1735,10 @@ timespan_inventory = timespantools.TimespanInventory([
     timespantools.Timespan(0, 10),
     timespantools.Timespan(5, 12),
     ])
+show(timespan_inventory)
 result = timespan_inventory.compute_logical_xor()
 print(format(result))
+show(result, range_=(-2, 12))
 </abjad>
 \end{comment}
 
@@ -1758,6 +1751,10 @@ print(format(result))
 ...     timespantools.Timespan(0, 10),
 ...     timespantools.Timespan(5, 12),
 ...     ])
+>>> show(timespan_inventory)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-4033f9de9798fa5317729d4adc715949.pdf}
+\begin{lstlisting}
 >>> result = timespan_inventory.compute_logical_xor()
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1777,6 +1774,10 @@ timespantools.TimespanInventory(
         ]
     )
 \end{lstlisting}
+\begin{lstlisting}
+>>> show(result, range_=(-2, 12))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-174c4b448bdac5c38814b4909b83fc5d.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1792,11 +1793,12 @@ timespan_inventory = timespantools.TimespanInventory([
     timespantools.Timespan(15, 20),
     timespantools.Timespan(25, 30),
     ])
-for inventory in timespan_inventory.partition():
-    print(format(inventory))
+show(timespan_inventory)
+for shard in timespan_inventory.partition():
+    show(shard, range_=(0, 30))
 
-for inventory in timespan_inventory.partition(include_tangent_timespans=True):
-    print(format(inventory))
+for shard in timespan_inventory.partition(include_tangent_timespans=True):
+    show(shard, range_=(0, 30))
 
 </abjad>
 \end{comment}
@@ -1811,67 +1813,24 @@ for inventory in timespan_inventory.partition(include_tangent_timespans=True):
 ...     timespantools.Timespan(15, 20),
 ...     timespantools.Timespan(25, 30),
 ...     ])
->>> for inventory in timespan_inventory.partition():
-...     print(format(inventory))
-...
-timespantools.TimespanInventory(
-    [
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(0, 1),
-            stop_offset=durationtools.Offset(10, 1),
-            ),
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(5, 1),
-            stop_offset=durationtools.Offset(15, 1),
-            ),
-        ]
-    )
-timespantools.TimespanInventory(
-    [
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(15, 1),
-            stop_offset=durationtools.Offset(20, 1),
-            ),
-        ]
-    )
-timespantools.TimespanInventory(
-    [
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(25, 1),
-            stop_offset=durationtools.Offset(30, 1),
-            ),
-        ]
-    )
+>>> show(timespan_inventory)
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-820a78450aab6a5346d9c3b3467f8be7.pdf}
 \begin{lstlisting}
->>> for inventory in timespan_inventory.partition(include_tangent_timespans=True):
-...     print(format(inventory))
+>>> for shard in timespan_inventory.partition():
+...     show(shard, range_=(0, 30))
 ...
-timespantools.TimespanInventory(
-    [
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(0, 1),
-            stop_offset=durationtools.Offset(10, 1),
-            ),
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(5, 1),
-            stop_offset=durationtools.Offset(15, 1),
-            ),
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(15, 1),
-            stop_offset=durationtools.Offset(20, 1),
-            ),
-        ]
-    )
-timespantools.TimespanInventory(
-    [
-        timespantools.Timespan(
-            start_offset=durationtools.Offset(25, 1),
-            stop_offset=durationtools.Offset(30, 1),
-            ),
-        ]
-    )
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-89b60b1658b6f2641b6572265b982f73.pdf}\\
+\noindent\includegraphics{assets/lilypond-73e111b7a59aab69115dc098c4bd0817.pdf}\\
+\noindent\includegraphics{assets/lilypond-3afca9df70b2a5721107cf7e87037218.pdf}
+\begin{lstlisting}
+>>> for shard in timespan_inventory.partition(include_tangent_timespans=True):
+...     show(shard, range_=(0, 30))
+...
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-eaeaa38d9352d3d1f125c3dce8b7f595.pdf}\\
+\noindent\includegraphics{assets/lilypond-3afca9df70b2a5721107cf7e87037218.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2339,7 +2298,7 @@ show(note_rhythm_maker, divisions=divisions)
 ...     )
 >>> show(note_rhythm_maker, divisions=divisions)
 \end{lstlisting}
-\includegraphics{assets/lilypond-d0f66021e4860194d32ee0fa226ed174.pdf}
+\noindent\includegraphics{assets/lilypond-d0f66021e4860194d32ee0fa226ed174.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2361,7 +2320,7 @@ show(even_division_rhythm_maker, divisions=divisions)
 ...     )
 >>> show(even_division_rhythm_maker, divisions=divisions)
 \end{lstlisting}
-\includegraphics{assets/lilypond-06c5f723997363adb1e3e9391d01892a.pdf}
+\noindent\includegraphics{assets/lilypond-06c5f723997363adb1e3e9391d01892a.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2393,7 +2352,7 @@ show(incised_rhythm_maker, divisions=divisions)
 ...     )
 >>> show(incised_rhythm_maker, divisions=divisions)
 \end{lstlisting}
-\includegraphics{assets/lilypond-f21215b14c3e76d687060a020bdca52a.pdf}
+\noindent\includegraphics{assets/lilypond-f21215b14c3e76d687060a020bdca52a.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2421,7 +2380,7 @@ show(talea_rhythm_maker, divisions=divisions)
 ...     )
 >>> show(talea_rhythm_maker, divisions=divisions)
 \end{lstlisting}
-\includegraphics{assets/lilypond-101e0079ec09025cbd79b4f02fb37c60.pdf}
+\noindent\includegraphics{assets/lilypond-101e0079ec09025cbd79b4f02fb37c60.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2714,7 +2673,7 @@ show(staff)
 >>> staff = Staff(parseable)
 >>> show(staff)
 \end{lstlisting}
-\includegraphics{assets/lilypond-329490b244b088f012cb5146859cdab0.pdf}
+\noindent\includegraphics{assets/lilypond-329490b244b088f012cb5146859cdab0.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2754,7 +2713,7 @@ show(staff)
 >>> mutate(staff[1][:]).rewrite_meter(four_four_meter)
 >>> show(staff)
 \end{lstlisting}
-\includegraphics{assets/lilypond-52ed3c73b623b7b0d9a2c6230084a264.pdf}
+\noindent\includegraphics{assets/lilypond-52ed3c73b623b7b0d9a2c6230084a264.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2776,7 +2735,7 @@ show(staff)
 >>> mutate(staff[1][:]).rewrite_meter(two_two_meter)
 >>> show(staff)
 \end{lstlisting}
-\includegraphics{assets/lilypond-467c7a453dd4de93da0cc1c7acbe0a87.pdf}
+\noindent\includegraphics{assets/lilypond-467c7a453dd4de93da0cc1c7acbe0a87.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2796,7 +2755,7 @@ show(measure)
 >>> measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
 >>> show(measure)
 \end{lstlisting}
-\includegraphics{assets/lilypond-8d4bc784b86bdade27d371532ab358a2.pdf}
+\noindent\includegraphics{assets/lilypond-8d4bc784b86bdade27d371532ab358a2.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2814,7 +2773,7 @@ show(measure)
 >>> mutate(measure[:]).rewrite_meter((3, 4))
 >>> show(measure)
 \end{lstlisting}
-\includegraphics{assets/lilypond-d4d52cf91b08080c4067643d24faaf2a.pdf}
+\noindent\includegraphics{assets/lilypond-d4d52cf91b08080c4067643d24faaf2a.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2834,7 +2793,7 @@ show(measure)
 >>> mutate(measure[:]).rewrite_meter((3, 4), maximum_dot_count=2)
 >>> show(measure)
 \end{lstlisting}
-\includegraphics{assets/lilypond-40b68312fd44f949b40de163b21588c3.pdf}
+\noindent\includegraphics{assets/lilypond-40b68312fd44f949b40de163b21588c3.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2854,7 +2813,7 @@ show(measure)
 >>> mutate(measure[:]).rewrite_meter((3, 4), maximum_dot_count=1)
 >>> show(measure)
 \end{lstlisting}
-\includegraphics{assets/lilypond-5fba6e827130a27fefae4843d2b21248.pdf}
+\noindent\includegraphics{assets/lilypond-5fba6e827130a27fefae4843d2b21248.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2874,7 +2833,7 @@ show(measure)
 >>> mutate(measure[:]).rewrite_meter((3, 4), maximum_dot_count=0)
 >>> show(measure)
 \end{lstlisting}
-\includegraphics{assets/lilypond-2ca50ee6f27ae56bae476fb9dc1faafa.pdf}
+\noindent\includegraphics{assets/lilypond-2ca50ee6f27ae56bae476fb9dc1faafa.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2912,7 +2871,7 @@ show(measure)
 >>> measure = Measure((9, 8), "c'2 d'2 e'8")
 >>> show(measure)
 \end{lstlisting}
-\includegraphics{assets/lilypond-f459f8c64dd96ba762e4bdebba6f4680.pdf}
+\noindent\includegraphics{assets/lilypond-f459f8c64dd96ba762e4bdebba6f4680.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2930,7 +2889,7 @@ show(measure)
 >>> mutate(measure[:]).rewrite_meter(nine_eight_meter)
 >>> show(measure)
 \end{lstlisting}
-\includegraphics{assets/lilypond-63f30ee6e2e244440af9d6f1e0f84a02.pdf}
+\noindent\includegraphics{assets/lilypond-63f30ee6e2e244440af9d6f1e0f84a02.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2956,7 +2915,7 @@ show(measure)
 ...     )
 >>> show(measure)
 \end{lstlisting}
-\includegraphics{assets/lilypond-93c0260083a9ae2ad25a3c7c064e3024.pdf}
+\noindent\includegraphics{assets/lilypond-93c0260083a9ae2ad25a3c7c064e3024.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2980,7 +2939,7 @@ show(staff)
 >>> attach(TimeSignature((3, 4)), staff)
 >>> show(staff)
 \end{lstlisting}
-\includegraphics{assets/lilypond-b4a2116ab0031b6068b1112932629bac.pdf}
+\noindent\includegraphics{assets/lilypond-b4a2116ab0031b6068b1112932629bac.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -3002,7 +2961,7 @@ show(staff)
 ...
 >>> show(staff)
 \end{lstlisting}
-\includegraphics{assets/lilypond-0cef77f45f31e31ad271d15c9c32edf8.pdf}
+\noindent\includegraphics{assets/lilypond-0cef77f45f31e31ad271d15c9c32edf8.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -3030,7 +2989,7 @@ show(staff)
 ...
 >>> show(staff)
 \end{lstlisting}
-\includegraphics{assets/lilypond-58a85c4734fd2a15643aa2409cbff0e5.pdf}
+\noindent\includegraphics{assets/lilypond-58a85c4734fd2a15643aa2409cbff0e5.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -3056,7 +3015,7 @@ show(measure)
 >>> measure = parse(parseable)
 >>> show(measure)
 \end{lstlisting}
-\includegraphics{assets/lilypond-270f471c0052391c9bf1a5df2ccc4474.pdf}
+\noindent\includegraphics{assets/lilypond-270f471c0052391c9bf1a5df2ccc4474.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -3080,7 +3039,7 @@ show(measure)
 ...     )
 >>> show(measure)
 \end{lstlisting}
-\includegraphics{assets/lilypond-f7aa660690e64db249ef36ea1eac5ace.pdf}
+\noindent\includegraphics{assets/lilypond-f7aa660690e64db249ef36ea1eac5ace.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -3132,7 +3091,7 @@ show(piano_staff)
 ...     )
 >>> show(piano_staff)
 \end{lstlisting}
-\includegraphics{assets/lilypond-bf3a249e2b4eac93b1884bab1a122a10.pdf}
+\noindent\includegraphics{assets/lilypond-bf3a249e2b4eac93b1884bab1a122a10.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
