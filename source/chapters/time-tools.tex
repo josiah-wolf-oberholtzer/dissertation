@@ -2038,9 +2038,9 @@ print(format(timespan_inventory))
 timespantools.TimespanInventory(
     [
         consort.tools.PerformedTimespan(
-            music_specifier='violin music',
             start_offset=durationtools.Offset(1, 4),
             stop_offset=durationtools.Offset(11, 8),
+            music_specifier='violin music',
             voice_name='Violin Voice',
             ),
         ]
@@ -2085,17 +2085,17 @@ show(timespan_inventory, key='voice_name')
 timespantools.TimespanInventory(
     [
         consort.tools.PerformedTimespan(
-            layer=3,
-            music_specifier='cello music',
             start_offset=durationtools.Offset(1, 4),
             stop_offset=durationtools.Offset(11, 8),
+            layer=3,
+            music_specifier='cello music',
             voice_name='Cello Voice',
             ),
         consort.tools.PerformedTimespan(
-            layer=3,
-            music_specifier='violin music',
             start_offset=durationtools.Offset(1, 4),
             stop_offset=durationtools.Offset(11, 8),
+            layer=3,
+            music_specifier='violin music',
             voice_name='Violin Voice',
             ),
         ]
@@ -2160,19 +2160,19 @@ timespantools.TimespanInventory(
             voice_name='Cello Voice',
             ),
         consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(1, 4),
+            stop_offset=durationtools.Offset(11, 8),
             layer=5,
             minimum_duration=durationtools.Duration(1, 8),
             music_specifier='cello music',
-            start_offset=durationtools.Offset(1, 4),
-            stop_offset=durationtools.Offset(11, 8),
             voice_name='Cello Voice',
             ),
         consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(1, 4),
+            stop_offset=durationtools.Offset(11, 8),
             layer=5,
             minimum_duration=durationtools.Duration(1, 8),
             music_specifier='violin music',
-            start_offset=durationtools.Offset(1, 4),
-            stop_offset=durationtools.Offset(11, 8),
             voice_name='Violin Voice',
             ),
         consort.tools.SilentTimespan(
@@ -2236,14 +2236,17 @@ timespan_maker = consort.TaleaTimespanMaker(
 
 \begin{comment}
 <abjad>
-dependent_timespan_maker = consort.DependentTimespanMaker(
-    include_inner_starts=True,
-    include_inner_stops=False,
-    voice_names=(
-        'Piano Upper Voice',
-        'Piano Lower Voice',
-        )
-    )
+timespan_inventory = timespantools.TimespanInventory([
+    consort.PerformedTimespan(0, 10, voice_name='Piano Upper Voice'),
+    consort.PerformedTimespan(10, 20, voice_name='Piano Upper Voice'),
+    consort.PerformedTimespan(25, 30, voice_name='Piano Upper Voice'),
+    consort.PerformedTimespan(50, 60, voice_name='Piano Upper Voice'),
+    consort.PerformedTimespan(0, 10, voice_name='Piano Lower Voice'),
+    consort.PerformedTimespan(15, 35, voice_name='Piano Lower Voice'),
+    consort.PerformedTimespan(40, 45, voice_name='Piano Lower Voice'),
+    consort.PerformedTimespan(45, 75, voice_name='Piano Lower Voice'),
+    ])
+show(timespan_inventory, key='voice_name')
 </abjad>
 \end{comment}
 
@@ -2251,15 +2254,245 @@ dependent_timespan_maker = consort.DependentTimespanMaker(
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
+>>> timespan_inventory = timespantools.TimespanInventory([
+...     consort.PerformedTimespan(0, 10, voice_name='Piano Upper Voice'),
+...     consort.PerformedTimespan(10, 20, voice_name='Piano Upper Voice'),
+...     consort.PerformedTimespan(25, 30, voice_name='Piano Upper Voice'),
+...     consort.PerformedTimespan(50, 60, voice_name='Piano Upper Voice'),
+...     consort.PerformedTimespan(0, 10, voice_name='Piano Lower Voice'),
+...     consort.PerformedTimespan(15, 35, voice_name='Piano Lower Voice'),
+...     consort.PerformedTimespan(40, 45, voice_name='Piano Lower Voice'),
+...     consort.PerformedTimespan(45, 75, voice_name='Piano Lower Voice'),
+...     ])
+>>> show(timespan_inventory, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-cf1cdd48611ac4f872c5b487b4105d41.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+music_specifiers = {'Piano Pedals': None}
+dependent_timespan_maker = consort.DependentTimespanMaker(
+    voice_names=(
+        'Piano Upper Voice',
+        'Piano Lower Voice',
+        )
+    )
+result = dependent_timespan_maker(
+    music_specifiers=music_specifiers,
+    timespan_inventory=new(timespan_inventory),
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> music_specifiers = {'Piano Pedals': None}
 >>> dependent_timespan_maker = consort.DependentTimespanMaker(
-...     include_inner_starts=True,
-...     include_inner_stops=False,
 ...     voice_names=(
 ...         'Piano Upper Voice',
 ...         'Piano Lower Voice',
 ...         )
 ...     )
+>>> result = dependent_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     timespan_inventory=new(timespan_inventory),
+...     )
+>>> show(result, key='voice_name')
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-28dc6b5bbc8d9f63b1a17970c4f2f8ee.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+new_dependent_timespan_maker = new(
+    dependent_timespan_maker,
+    include_inner_starts=True,
+    )
+result = new_dependent_timespan_maker(
+    music_specifiers=music_specifiers,
+    timespan_inventory=new(timespan_inventory),
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> new_dependent_timespan_maker = new(
+...     dependent_timespan_maker,
+...     include_inner_starts=True,
+...     )
+>>> result = new_dependent_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     timespan_inventory=new(timespan_inventory),
+...     )
+>>> show(result, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-d7799e9481346f54b40208d29723a2dd.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+new_dependent_timespan_maker = new(
+    dependent_timespan_maker,
+    include_inner_stops=True,
+    )
+result = new_dependent_timespan_maker(
+    music_specifiers=music_specifiers,
+    timespan_inventory=new(timespan_inventory),
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> new_dependent_timespan_maker = new(
+...     dependent_timespan_maker,
+...     include_inner_stops=True,
+...     )
+>>> result = new_dependent_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     timespan_inventory=new(timespan_inventory),
+...     )
+>>> show(result, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-089ad1538429a47769793da996bae0c3.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+new_dependent_timespan_maker = new(
+    dependent_timespan_maker,
+    include_inner_starts=True,
+    include_inner_stops=True,
+    )
+result = new_dependent_timespan_maker(
+    music_specifiers=music_specifiers,
+    timespan_inventory=new(timespan_inventory),
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> new_dependent_timespan_maker = new(
+...     dependent_timespan_maker,
+...     include_inner_starts=True,
+...     include_inner_stops=True,
+...     )
+>>> result = new_dependent_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     timespan_inventory=new(timespan_inventory),
+...     )
+>>> show(result, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-1c103bdad2e02d823f99fa27e0b822a2.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+result = new_dependent_timespan_maker(
+    music_specifiers=music_specifiers,
+    target_timespan=timespantools.Timespan(17, 58),
+    timespan_inventory=new(timespan_inventory),
+    )
+show(result, key='voice_name', range_=(0, 75))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> result = new_dependent_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     target_timespan=timespantools.Timespan(17, 58),
+...     timespan_inventory=new(timespan_inventory),
+...     )
+>>> show(result, key='voice_name', range_=(0, 75))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-0fc4f5156675db2877a09433bc0db9bf.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+rotated_dependent_timespan_maker = new(
+    new_dependent_timespan_maker,
+    rotation_indices=(1,),
+    )
+result = rotated_dependent_timespan_maker(
+    music_specifiers=music_specifiers,
+    timespan_inventory=new(timespan_inventory),
+    )
+show(result, key='voice_name', range_=(0, 75))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> rotated_dependent_timespan_maker = new(
+...     new_dependent_timespan_maker,
+...     rotation_indices=(1,),
+...     )
+>>> result = rotated_dependent_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     timespan_inventory=new(timespan_inventory),
+...     )
+>>> show(result, key='voice_name', range_=(0, 75))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-60519c923ef41d6b01828cfc343d5e7a.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+rotated_dependent_timespan_maker = new(
+    new_dependent_timespan_maker,
+    rotation_indices=(1, -1),
+    )
+result = rotated_dependent_timespan_maker(
+    music_specifiers=music_specifiers,
+    timespan_inventory=new(timespan_inventory),
+    )
+show(result, key='voice_name', range_=(0, 75))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> rotated_dependent_timespan_maker = new(
+...     new_dependent_timespan_maker,
+...     rotation_indices=(1, -1),
+...     )
+>>> result = rotated_dependent_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     timespan_inventory=new(timespan_inventory),
+...     )
+>>> show(result, key='voice_name', range_=(0, 75))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-14091c11e174426073642e39e1b2c87e.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
