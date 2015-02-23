@@ -2240,7 +2240,7 @@ music_specifiers = collections.OrderedDict([
     ('Voice 3', None),
     ('Voice 4', None),
     ])
-target_timespan = timespantools.Timespan(0, 4)
+target_timespan = timespantools.Timespan(0, (19, 4))
 </abjad>
 \end{comment}
 
@@ -2255,7 +2255,7 @@ target_timespan = timespantools.Timespan(0, 4)
 ...     ('Voice 3', None),
 ...     ('Voice 4', None),
 ...     ])
->>> target_timespan = timespantools.Timespan(0, 4)
+>>> target_timespan = timespantools.Timespan(0, (19, 4))
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
@@ -2280,7 +2280,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-554e035d57f5d822601793130edac722.pdf}
+\noindent\includegraphics{assets/lilypond-e6387b7cc94dcc65e15cd96cc452ac89.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2289,7 +2289,7 @@ show(result, key='voice_name')
 talea_timespan_maker = new(
     talea_timespan_maker,
     playing_talea=rhythmmakertools.Talea(
-        counts=(1, 2, 3),
+        counts=(1, 2, 3, 4),
         denominator=4,
         )
     )
@@ -2308,7 +2308,7 @@ show(result, key='voice_name')
 >>> talea_timespan_maker = new(
 ...     talea_timespan_maker,
 ...     playing_talea=rhythmmakertools.Talea(
-...         counts=(1, 2, 3),
+...         counts=(1, 2, 3, 4),
 ...         denominator=4,
 ...         )
 ...     )
@@ -2318,7 +2318,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-13d5cffc2bf6679dbf4bcfb1c802171b.pdf}
+\noindent\includegraphics{assets/lilypond-5ebd9f6cea41f822af93bf205578e76d.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2350,7 +2350,45 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-c21a86f753bbb3e7259d991759d32cfa.pdf}
+\noindent\includegraphics{assets/lilypond-5f68b5dc547494c06b2a9e8cadfffab6.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+talea_timespan_maker = new(
+    talea_timespan_maker,
+    silence_talea=rhythmmakertools.Talea(
+        counts=(3, 1, 1),
+        denominator=8,
+        ),
+    )
+result = talea_timespan_maker(
+    music_specifiers=music_specifiers,
+    target_timespan=target_timespan,
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_timespan_maker = new(
+...     talea_timespan_maker,
+...     silence_talea=rhythmmakertools.Talea(
+...         counts=(3, 1, 1),
+...         denominator=8,
+...         ),
+...     )
+>>> result = talea_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     target_timespan=target_timespan,
+...     )
+>>> show(result, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-05d6eaa176890b95761429277d12a451.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2359,7 +2397,7 @@ show(result, key='voice_name')
 talea_timespan_maker = new(
     talea_timespan_maker,
     initial_silence_talea=rhythmmakertools.Talea(
-        counts=(0, 1, 2),
+        counts=(0, 1, 3),
         denominator=8,
         ),
     )
@@ -2378,7 +2416,7 @@ show(result, key='voice_name')
 >>> talea_timespan_maker = new(
 ...     talea_timespan_maker,
 ...     initial_silence_talea=rhythmmakertools.Talea(
-...         counts=(0, 1, 2),
+...         counts=(0, 1, 3),
 ...         denominator=8,
 ...         ),
 ...     )
@@ -2388,17 +2426,128 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-34257200a1079cda9178f0688c97f505.pdf}
+\noindent\includegraphics{assets/lilypond-bf1ae65e6c27a19def5d2af95bc96146.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-- taleas: playing, silence and initial silence
+\begin{comment}
+<abjad>
+talea_timespan_maker = new(
+    talea_timespan_maker,
+    reflect=True,
+    )
+result = talea_timespan_maker(
+    music_specifiers=music_specifiers,
+    target_timespan=target_timespan,
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
 
-- groupings
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_timespan_maker = new(
+...     talea_timespan_maker,
+...     reflect=True,
+...     )
+>>> result = talea_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     target_timespan=target_timespan,
+...     )
+>>> show(result, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-a056ab693faf200c126ed5415e3dfcc5.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
-- synchronization
+\begin{comment}
+<abjad>
+synchronized_talea_timespan_maker = consort.TaleaTimespanMaker(
+    playing_talea=rhythmmakertools.Talea(
+        counts=(1, 2, 3, 4, 5),
+        denominator=8,
+        ),
+    silence_talea=rhythmmakertools.Talea(
+        counts=(4, 7),
+        denominator=8,
+        ),
+    synchronize_step=True,
+    )
+result = synchronized_talea_timespan_maker(
+    music_specifiers=music_specifiers,
+    target_timespan=target_timespan,
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
 
-- repeat and reflect
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> synchronized_talea_timespan_maker = consort.TaleaTimespanMaker(
+...     playing_talea=rhythmmakertools.Talea(
+...         counts=(1, 2, 3, 4, 5),
+...         denominator=8,
+...         ),
+...     silence_talea=rhythmmakertools.Talea(
+...         counts=(4, 7),
+...         denominator=8,
+...         ),
+...     synchronize_step=True,
+...     )
+>>> result = synchronized_talea_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     target_timespan=target_timespan,
+...     )
+>>> show(result, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-31462885c4eaad77a93063030e868250.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+synchronized_talea_timespan_maker = new(
+    synchronized_talea_timespan_maker,
+    initial_silence_talea=rhythmmakertools.Talea(
+        counts=(0, 1, 2),
+        denominator=8,
+        ),
+    padding=Duration(1, 8),
+    )
+result = synchronized_talea_timespan_maker(
+    music_specifiers=music_specifiers,
+    target_timespan=target_timespan,
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> synchronized_talea_timespan_maker = new(
+...     synchronized_talea_timespan_maker,
+...     initial_silence_talea=rhythmmakertools.Talea(
+...         counts=(0, 1, 2),
+...         denominator=8,
+...         ),
+...     padding=Duration(1, 8),
+...     )
+>>> result = synchronized_talea_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     target_timespan=target_timespan,
+...     )
+>>> show(result, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-c3f20c8c695d4fa106c7fb3ef748bcc3.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 
 \subsection{DependentTimespanMaker} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
