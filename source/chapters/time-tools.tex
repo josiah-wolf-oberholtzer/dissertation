@@ -4034,15 +4034,16 @@ show(timespan_inventory, key='voice_name')
 
 \begin{comment}
 <abjad>
-offset_counter = timespan_inventory.count_offsets()
 permitted_meters = metertools.MeterInventory([
     (5, 8), (3, 4), (6, 8), (7, 8), (4, 4),
     ])
+offset_counter = timespan_inventory.count_offsets()
 fitted_meters = metertools.Meter.fit_meters_to_expr(
     expr=offset_counter,
     meters=permitted_meters,
     maximum_run_length=1,
     )
+show(offset_counter, range_=(0, (19, 4)))
 show(fitted_meters, range_=(0, (19, 4)))
 </abjad>
 \end{comment}
@@ -4051,15 +4052,19 @@ show(fitted_meters, range_=(0, (19, 4)))
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> offset_counter = timespan_inventory.count_offsets()
 >>> permitted_meters = metertools.MeterInventory([
 ...     (5, 8), (3, 4), (6, 8), (7, 8), (4, 4),
 ...     ])
+>>> offset_counter = timespan_inventory.count_offsets()
 >>> fitted_meters = metertools.Meter.fit_meters_to_expr(
 ...     expr=offset_counter,
 ...     meters=permitted_meters,
 ...     maximum_run_length=1,
 ...     )
+>>> show(offset_counter, range_=(0, (19, 4)))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-be25d981b367563167fb0dc45a384d69.pdf}
+\begin{lstlisting}
 >>> show(fitted_meters, range_=(0, (19, 4)))
 \end{lstlisting}
 \noindent\includegraphics{assets/lilypond-aad18416071e17a39304452a4e7610cb.pdf}
