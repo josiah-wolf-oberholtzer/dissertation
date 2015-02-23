@@ -3662,11 +3662,9 @@ selecting the score's leaves and passing that selection to
 \begin{comment}
 <abjad>
 leaves = piano_staff.select_leaves(allow_discontiguous_leaves=True)
-piano_staff_counter = metertools.MetricAccentKernel.count_offsets_in_expr(
-    leaves)
-for offset, count in sorted(piano_staff_counter.items()):
-    offset, count
-
+piano_staff_counter = metertools.OffsetCounter(leaves)
+print(format(piano_staff_counter))
+show(piano_staff_counter)
 </abjad>
 \end{comment}
 
@@ -3675,18 +3673,23 @@ for offset, count in sorted(piano_staff_counter.items()):
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> leaves = piano_staff.select_leaves(allow_discontiguous_leaves=True)
->>> piano_staff_counter = metertools.MetricAccentKernel.count_offsets_in_expr(
-...     leaves)
->>> for offset, count in sorted(piano_staff_counter.items()):
-...     offset, count
-...
-(Offset(0, 1), 2)
-(Offset(1, 8), 2)
-(Offset(1, 4), 2)
-(Offset(1, 2), 4)
-(Offset(5, 8), 2)
-(Offset(1, 1), 2)
+>>> piano_staff_counter = metertools.OffsetCounter(leaves)
+>>> print(format(piano_staff_counter))
+metertools.OffsetCounter(
+    {
+        durationtools.Offset(0, 1): 2,
+        durationtools.Offset(1, 8): 2,
+        durationtools.Offset(1, 4): 2,
+        durationtools.Offset(1, 2): 4,
+        durationtools.Offset(5, 8): 2,
+        durationtools.Offset(1, 1): 2,
+        }
+    )
 \end{lstlisting}
+\begin{lstlisting}
+>>> show(piano_staff_counter)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-e7e0f6dd3388803a5b2918be8cbca787.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -3704,11 +3707,8 @@ timespans = timespantools.TimespanInventory([
     timespantools.Timespan(15, 20),
     timespantools.Timespan(10, 15),
     ])
-timespan_counter = metertools.MetricAccentKernel.count_offsets_in_expr(
-    timespans)
-for offset, count in sorted(timespan_counter.items()):
-    offset, count
-
+timespan_counter = metertools.OffsetCounter(timespans)
+show(timespan_counter)
 </abjad>
 \end{comment}
 
@@ -3722,21 +3722,14 @@ for offset, count in sorted(timespan_counter.items()):
 ...     timespantools.Timespan(15, 20),
 ...     timespantools.Timespan(10, 15),
 ...     ])
->>> timespan_counter = metertools.MetricAccentKernel.count_offsets_in_expr(
-...     timespans)
->>> for offset, count in sorted(timespan_counter.items()):
-...     offset, count
-...
-(Offset(-1, 1), 1)
-(Offset(5, 1), 1)
-(Offset(10, 1), 2)
-(Offset(15, 1), 3)
-(Offset(20, 1), 1)
+>>> timespan_counter = metertools.OffsetCounter(timespans)
+>>> show(timespan_counter)
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-b1bd125d9097c686a9d82b1371c4607b.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Generating metric accent kernels} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Metric accent kernels} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 As demonstrated earlier, meters describe a sequence of offsets with varying
 degrees of weight, or accentedness, attributed to each offset. Downbeats have a
@@ -3775,8 +3768,6 @@ for offset, weight in sorted(kernel_44.kernel.items()):
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Evaluating metric accent kernels} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \noindent The 4/4 metric accent kernel can be called against an offset counter
 -- as though it were a function -- to generate a response via a kind of simple
 offset-wise convolution. The count at each offset in the input offset counter
@@ -3797,7 +3788,7 @@ float(response)
 \begin{lstlisting}
 >>> response = kernel_44(piano_staff_counter)
 >>> float(response)
-1.75
+0.75
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
@@ -3876,15 +3867,15 @@ float(kernel_54(piano_staff_counter))
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> float(kernel_34(piano_staff_counter))
-1.6923076923076923
+0.6923076923076923
 \end{lstlisting}
 \begin{lstlisting}
 >>> float(kernel_78(piano_staff_counter))
-1.2857142857142858
+0.5714285714285714
 \end{lstlisting}
 \begin{lstlisting}
 >>> float(kernel_54(piano_staff_counter))
-1.368421052631579
+0.5789473684210527
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
@@ -4043,8 +4034,9 @@ fitted_meters = metertools.Meter.fit_meters_to_expr(
     meters=permitted_meters,
     maximum_run_length=1,
     )
-show(offset_counter, range_=(0, (19, 4)))
-show(fitted_meters, range_=(0, (19, 4)))
+for illustratable in (offset_counter, fitted_meters):
+    show(illustratable, range_=(0, (19, 4)))
+
 </abjad>
 \end{comment}
 
@@ -4061,12 +4053,11 @@ show(fitted_meters, range_=(0, (19, 4)))
 ...     meters=permitted_meters,
 ...     maximum_run_length=1,
 ...     )
->>> show(offset_counter, range_=(0, (19, 4)))
+>>> for illustratable in (offset_counter, fitted_meters):
+...     show(illustratable, range_=(0, (19, 4)))
+...
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-be25d981b367563167fb0dc45a384d69.pdf}
-\begin{lstlisting}
->>> show(fitted_meters, range_=(0, (19, 4)))
-\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-be25d981b367563167fb0dc45a384d69.pdf}\\
 \noindent\includegraphics{assets/lilypond-aad18416071e17a39304452a4e7610cb.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
