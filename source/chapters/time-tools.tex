@@ -3896,14 +3896,8 @@ higher than any of these.
 
 \begin{comment}
 <abjad>
-permitted_meters = [metertools.Meter(_) for _ in [(3, 4), (4, 4), (5, 4)]]
-offsets = [(0, 4), (4, 4), (8, 4), (12, 4), (16, 4)]
-for x in metertools.Meter.fit_meters_to_expr(
-    expr=offsets,
-    meters=permitted_meters,
-    ):
-    print(x.implied_time_signature)
-
+permitted_meters = metertools.MeterInventory([(3, 4), (4, 4), (5, 4)])
+show(permitted_meters, range_=(0, 5))
 </abjad>
 \end{comment}
 
@@ -3911,31 +3905,47 @@ for x in metertools.Meter.fit_meters_to_expr(
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> permitted_meters = [metertools.Meter(_) for _ in [(3, 4), (4, 4), (5, 4)]]
+>>> permitted_meters = metertools.MeterInventory([(3, 4), (4, 4), (5, 4)])
+>>> show(permitted_meters, range_=(0, 5))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-31dbd605fcbbe87dfbcd07de41bd855c.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+offsets = [(0, 4), (4, 4), (8, 4), (12, 4), (16, 4)]
+fitted_meters = metertools.Meter.fit_meters_to_expr(
+    expr=offsets,
+    meters=permitted_meters,
+    )
+show(fitted_meters, range_=(0, 5))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
 >>> offsets = [(0, 4), (4, 4), (8, 4), (12, 4), (16, 4)]
->>> for x in metertools.Meter.fit_meters_to_expr(
+>>> fitted_meters = metertools.Meter.fit_meters_to_expr(
 ...     expr=offsets,
 ...     meters=permitted_meters,
-...     ):
-...     print(x.implied_time_signature)
-...
-4/4
-4/4
-4/4
-4/4
+...     )
+>>> show(fitted_meters, range_=(0, 5))
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-87d6adf99e6b33011031d78cb538bee0.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
 \begin{comment}
 <abjad>
 offsets = [(0, 4), (3, 4), (5, 4), (10, 4), (15, 4), (20, 4)]
-for x in metertools.Meter.fit_meters_to_expr(
+fitted_meters = metertools.Meter.fit_meters_to_expr(
     expr=offsets,
     meters=permitted_meters,
-    ):
-    print(x.implied_time_signature)
-
+    )
+show(fitted_meters, range_=(0, 5))
 </abjad>
 \end{comment}
 
@@ -3944,31 +3954,25 @@ for x in metertools.Meter.fit_meters_to_expr(
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> offsets = [(0, 4), (3, 4), (5, 4), (10, 4), (15, 4), (20, 4)]
->>> for x in metertools.Meter.fit_meters_to_expr(
+>>> fitted_meters = metertools.Meter.fit_meters_to_expr(
 ...     expr=offsets,
 ...     meters=permitted_meters,
-...     ):
-...     print(x.implied_time_signature)
-...
-3/4
-4/4
-3/4
-5/4
-5/4
+...     )
+>>> show(fitted_meters, range_=(0, 5))
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-0643372c67f34019274214d442a017f5.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
 \begin{comment}
 <abjad>
 offsets = [(0, 4), (3, 4), (5, 4), (10, 4), (15, 4), (20, 4)]
-for x in metertools.Meter.fit_meters_to_expr(
+fitted_meters = metertools.Meter.fit_meters_to_expr(
     expr=offsets,
     meters=permitted_meters,
     maximum_run_length=1,
-    ):
-    print(x.implied_time_signature)
-
+    )
+show(fitted_meters, range_=(0, 5))
 </abjad>
 \end{comment}
 
@@ -3977,20 +3981,88 @@ for x in metertools.Meter.fit_meters_to_expr(
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> offsets = [(0, 4), (3, 4), (5, 4), (10, 4), (15, 4), (20, 4)]
->>> for x in metertools.Meter.fit_meters_to_expr(
+>>> fitted_meters = metertools.Meter.fit_meters_to_expr(
 ...     expr=offsets,
 ...     meters=permitted_meters,
 ...     maximum_run_length=1,
-...     ):
-...     print(x.implied_time_signature)
-...
-3/4
-4/4
-3/4
-5/4
-3/4
-4/4
+...     )
+>>> show(fitted_meters, range_=(0, 5))
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-315840be1333279e3037a5168570f3d2.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\subsection{Example}
+
+\begin{comment}
+<abjad>
+music_specifiers = collections.OrderedDict([
+    ('Voice 1', None),
+    ('Voice 2', None),
+    ('Voice 3', None),
+    ('Voice 4', None),
+    ])
+target_timespan = timespantools.Timespan(0, (19, 4))
+timespan_inventory = talea_timespan_maker(
+    music_specifiers=music_specifiers,
+    target_timespan=target_timespan,
+    )
+show(timespan_inventory, key='voice_name')
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> music_specifiers = collections.OrderedDict([
+...     ('Voice 1', None),
+...     ('Voice 2', None),
+...     ('Voice 3', None),
+...     ('Voice 4', None),
+...     ])
+>>> target_timespan = timespantools.Timespan(0, (19, 4))
+>>> timespan_inventory = talea_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     target_timespan=target_timespan,
+...     )
+>>> show(timespan_inventory, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-a056ab693faf200c126ed5415e3dfcc5.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+offset_counter = timespan_inventory.count_offsets()
+permitted_meters = metertools.MeterInventory([
+    (5, 8), (3, 4), (6, 8), (7, 8), (4, 4),
+    ])
+fitted_meters = metertools.Meter.fit_meters_to_expr(
+    expr=offset_counter,
+    meters=permitted_meters,
+    maximum_run_length=1,
+    )
+show(fitted_meters, range_=(0, (19, 4)))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> offset_counter = timespan_inventory.count_offsets()
+>>> permitted_meters = metertools.MeterInventory([
+...     (5, 8), (3, 4), (6, 8), (7, 8), (4, 4),
+...     ])
+>>> fitted_meters = metertools.Meter.fit_meters_to_expr(
+...     expr=offset_counter,
+...     meters=permitted_meters,
+...     maximum_run_length=1,
+...     )
+>>> show(fitted_meters, range_=(0, (19, 4)))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-aad18416071e17a39304452a4e7610cb.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
