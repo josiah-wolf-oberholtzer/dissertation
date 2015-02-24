@@ -2836,15 +2836,61 @@ divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
 
 - rhythm maker
 
-\subsection{Rhythm maker configuration} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{comment}
+<abjad>
+note_rhythm_maker = rhythmmakertools.NoteRhythmMaker()
+show(note_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
 
-- specifiers: tie, duration spelling, beam
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> note_rhythm_maker = rhythmmakertools.NoteRhythmMaker()
+>>> show(note_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-d0f66021e4860194d32ee0fa226ed174.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
-\subsection{Examples} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{comment}
+<abjad>
+note_rhythm_maker = new(
+    note_rhythm_maker,
+    tie_specifier=rhythmmakertools.TieSpecifier(
+        tie_across_divisions=True,
+        ),
+    )
+show(note_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> note_rhythm_maker = new(
+...     note_rhythm_maker,
+...     tie_specifier=rhythmmakertools.TieSpecifier(
+...         tie_across_divisions=True,
+...         ),
+...     )
+>>> show(note_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-1c2192761535f741178fd5fc2ed22ed7.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \begin{comment}
 <abjad>
 note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(
+    output_masks=[
+        rhythmmakertools.BooleanPattern(
+            indices=[0],
+            period=2,
+            ),
+        ],
     )
 show(note_rhythm_maker, divisions=divisions)
 </abjad>
@@ -2855,19 +2901,30 @@ show(note_rhythm_maker, divisions=divisions)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(
+...     output_masks=[
+...         rhythmmakertools.BooleanPattern(
+...             indices=[0],
+...             period=2,
+...             ),
+...         ],
 ...     )
 >>> show(note_rhythm_maker, divisions=divisions)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-d0f66021e4860194d32ee0fa226ed174.pdf}
+\noindent\includegraphics{assets/lilypond-fb60261fce39a6a8bed29c6bc1a39b14.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
 \begin{comment}
 <abjad>
-even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker(
-    denominators=[8, 16, 4],
+note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(
+    output_masks=[
+        rhythmmakertools.BooleanPattern(
+            indices=[0],
+            period=1,
+            ),
+        ],
     )
-show(even_division_rhythm_maker, divisions=divisions)
+show(note_rhythm_maker, divisions=divisions)
 </abjad>
 \end{comment}
 
@@ -2875,12 +2932,17 @@ show(even_division_rhythm_maker, divisions=divisions)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker(
-...     denominators=[8, 16, 4],
+>>> note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(
+...     output_masks=[
+...         rhythmmakertools.BooleanPattern(
+...             indices=[0],
+...             period=1,
+...             ),
+...         ],
 ...     )
->>> show(even_division_rhythm_maker, divisions=divisions)
+>>> show(note_rhythm_maker, divisions=divisions)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-06c5f723997363adb1e3e9391d01892a.pdf}
+\noindent\includegraphics{assets/lilypond-b8d4d2abe1d0cabd1dba685a0e5a2bcc.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2888,7 +2950,6 @@ show(even_division_rhythm_maker, divisions=divisions)
 <abjad>
 incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
     incise_specifier=rhythmmakertools.InciseSpecifier(
-        prefix_counts=[0],
         suffix_talea=[-1],
         suffix_counts=[1],
         talea_denominator=16,
@@ -2904,7 +2965,6 @@ show(incised_rhythm_maker, divisions=divisions)
 \begin{lstlisting}
 >>> incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
 ...     incise_specifier=rhythmmakertools.InciseSpecifier(
-...         prefix_counts=[0],
 ...         suffix_talea=[-1],
 ...         suffix_counts=[1],
 ...         talea_denominator=16,
@@ -2918,9 +2978,249 @@ show(incised_rhythm_maker, divisions=divisions)
 
 \begin{comment}
 <abjad>
+incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
+    incise_specifier=rhythmmakertools.InciseSpecifier(
+        fill_with_notes=False,
+        prefix_counts=[2, 1],
+        prefix_talea=[1],
+        talea_denominator=16,
+        ),
+    )
+show(incised_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
+...     incise_specifier=rhythmmakertools.InciseSpecifier(
+...         fill_with_notes=False,
+...         prefix_counts=[2, 1],
+...         prefix_talea=[1],
+...         talea_denominator=16,
+...         ),
+...     )
+>>> show(incised_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-d22f16b98a9a0b7dc379c37be145f71f.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
+    incise_specifier=rhythmmakertools.InciseSpecifier(
+        outer_divisions_only=True,
+        prefix_counts=[1],
+        prefix_talea=[-1],
+        suffix_counts=[1],
+        suffix_talea=[-1],
+        talea_denominator=8,
+        ),
+    )
+show(incised_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
+...     incise_specifier=rhythmmakertools.InciseSpecifier(
+...         outer_divisions_only=True,
+...         prefix_counts=[1],
+...         prefix_talea=[-1],
+...         suffix_counts=[1],
+...         suffix_talea=[-1],
+...         talea_denominator=8,
+...         ),
+...     )
+>>> show(incised_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-8245f754d4c0b647786ba2c3e22988f3.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+incised_rhythm_maker = new(
+    incised_rhythm_maker,
+    tie_specifier=rhythmmakertools.TieSpecifier(
+        tie_across_divisions=True,
+        ),
+    )
+show(incised_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> incised_rhythm_maker = new(
+...     incised_rhythm_maker,
+...     tie_specifier=rhythmmakertools.TieSpecifier(
+...         tie_across_divisions=True,
+...         ),
+...     )
+>>> show(incised_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-9890ffbc1115862a9479f6a97bf677e3.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker()
+show(even_division_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker()
+>>> show(even_division_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-2bcea48859d1e8378a750341c3315103.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+even_division_rhythm_maker = new(
+    even_division_rhythm_maker,
+    denominators=[8, 16],
+    )
+show(even_division_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> even_division_rhythm_maker = new(
+...     even_division_rhythm_maker,
+...     denominators=[8, 16],
+...     )
+>>> show(even_division_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-042a232c8ba3c9adb624c404980efe18.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+even_division_rhythm_maker = new(
+    even_division_rhythm_maker,
+    denominators=[8, 4, 16],
+    )
+show(even_division_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> even_division_rhythm_maker = new(
+...     even_division_rhythm_maker,
+...     denominators=[8, 4, 16],
+...     )
+>>> show(even_division_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-18b3464ab66c7d829de5417e6e668687.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+even_division_rhythm_maker = new(
+    even_division_rhythm_maker,
+    denominators=[8],
+    extra_counts_per_division=(0, 1),
+    )
+show(even_division_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> even_division_rhythm_maker = new(
+...     even_division_rhythm_maker,
+...     denominators=[8],
+...     extra_counts_per_division=(0, 1),
+...     )
+>>> show(even_division_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-7bd6867c75e18e48ebf2c898a35a53b9.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+even_division_rhythm_maker = new(
+    even_division_rhythm_maker,
+    tie_specifier=rhythmmakertools.TieSpecifier(
+        tie_across_divisions=True,
+        ),
+    )
+show(even_division_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> even_division_rhythm_maker = new(
+...     even_division_rhythm_maker,
+...     tie_specifier=rhythmmakertools.TieSpecifier(
+...         tie_across_divisions=True,
+...         ),
+...     )
+>>> show(even_division_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-4cc7ba58b448cb7add8a0024b1e90f9b.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+even_division_rhythm_maker = new(
+    even_division_rhythm_maker,
+    denominators=[8, 4, 16],
+    )
+show(even_division_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> even_division_rhythm_maker = new(
+...     even_division_rhythm_maker,
+...     denominators=[8, 4, 16],
+...     )
+>>> show(even_division_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-af43995b8651db6fd08d7d3e42ff809b.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
 talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
     talea=rhythmmakertools.Talea(
-        counts=[1, 2, 3, 4],
+        counts=[1],
         denominator=16,
         ),
     )
@@ -2934,13 +3234,143 @@ show(talea_rhythm_maker, divisions=divisions)
 \begin{lstlisting}
 >>> talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
 ...     talea=rhythmmakertools.Talea(
-...         counts=[1, 2, 3, 4],
+...         counts=[1],
 ...         denominator=16,
 ...         ),
 ...     )
 >>> show(talea_rhythm_maker, divisions=divisions)
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-a8d7d6245553b2c4f5d2e404e62ae27b.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+talea_rhythm_maker = new(
+    talea_rhythm_maker,
+    talea__counts=[1, 2],
+    )
+show(talea_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_rhythm_maker = new(
+...     talea_rhythm_maker,
+...     talea__counts=[1, 2],
+...     )
+>>> show(talea_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-a91e80c7459af113e517ef98d44608db.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+talea_rhythm_maker = new(
+    talea_rhythm_maker,
+    talea__counts=[1, 2, 3, 4],
+    )
+show(talea_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_rhythm_maker = new(
+...     talea_rhythm_maker,
+...     talea__counts=[1, 2, 3, 4],
+...     )
+>>> show(talea_rhythm_maker, divisions=divisions)
+\end{lstlisting}
 \noindent\includegraphics{assets/lilypond-101e0079ec09025cbd79b4f02fb37c60.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+talea_rhythm_maker = new(
+    talea_rhythm_maker,
+    extra_counts_per_division=[0, 1, 1],
+    )
+show(talea_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_rhythm_maker = new(
+...     talea_rhythm_maker,
+...     extra_counts_per_division=[0, 1, 1],
+...     )
+>>> show(talea_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-02eb5487975f8445cefb4b61deef34ff.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+talea_rhythm_maker = new(
+    talea_rhythm_maker,
+    tie_specifier=rhythmmakertools.TieSpecifier(
+        tie_across_divisions=True,
+        ),
+    )
+show(talea_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_rhythm_maker = new(
+...     talea_rhythm_maker,
+...     tie_specifier=rhythmmakertools.TieSpecifier(
+...         tie_across_divisions=True,
+...         ),
+...     )
+>>> show(talea_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-98638e7bc3f5e68f0b625083aeb87bd3.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+talea_rhythm_maker = new(
+    talea_rhythm_maker,
+    burnish_specifier=rhythmmakertools.BurnishSpecifier(
+        left_classes=[Rest, Note],
+        left_counts=[1],
+        ),
+    )
+show(talea_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_rhythm_maker = new(
+...     talea_rhythm_maker,
+...     burnish_specifier=rhythmmakertools.BurnishSpecifier(
+...         left_classes=[Rest, Note],
+...         left_counts=[1],
+...         ),
+...     )
+>>> show(talea_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-61a4a24d2a5c1723853eb5642113f887.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
