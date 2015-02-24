@@ -85,7 +85,7 @@ Timespan(start_offset=Offset(1, 4), stop_offset=Offset(3, 2))
 \begin{lstlisting}
 >>> show(timespan)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-12ab026823f0716cee59e2f80e77a4e9.pdf}
+\noindent\includegraphics{assets/lilypond-fa220c0bdf20ccb906598dda70759c10.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -519,7 +519,7 @@ show(timespan_inventory)
 %%% ABJADBOOK START %%%
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\noindent\includegraphics{assets/lilypond-a75a0f25e64c4b1f6c8f78544f5e028d.pdf}
+\noindent\includegraphics{assets/lilypond-c722436e9b83384770458f75316214d5.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1202,7 +1202,7 @@ timespantools.TimespanInventory(
 \begin{lstlisting}
 >>> show(timespan_inventory)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-ae5c9d1428c32d953939a845f498e90e.pdf}
+\noindent\includegraphics{assets/lilypond-eb604364494369e9f1413d56629bcd72.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1398,7 +1398,7 @@ timespan_inventory.all_are_nonoverlapping
 ...     ])
 >>> show(timespan_inventory)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-ca27b6b4f676e7b346d961ba8e93e58b.pdf}
+\noindent\includegraphics{assets/lilypond-bd2acc135f1aabbde1f0f1bbc6de5309.pdf}
 \begin{lstlisting}
 >>> timespan_inventory.all_are_contiguous
 False
@@ -1437,7 +1437,7 @@ timespan_inventory.all_are_nonoverlapping
 ...     ])
 >>> show(timespan_inventory)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-13312f49d0e1c1dec7a381054d7b94d8.pdf}
+\noindent\includegraphics{assets/lilypond-8a90139a59053ccf9c429a18d9be21cd.pdf}
 \begin{lstlisting}
 >>> timespan_inventory.all_are_contiguous
 True
@@ -1484,13 +1484,13 @@ show(result, range_=(-2, 16))
 ...     ])
 >>> show(timespan_inventory)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-cbd3cbca83a5656f43180e6511028af0.pdf}
+\noindent\includegraphics{assets/lilypond-3c8c64e6e0587a502cfe0c83ecfbdbc3.pdf}
 \begin{lstlisting}
 >>> timespan_operand = timespantools.Timespan(6, 10)
 >>> result = timespan_inventory & timespan_operand
 >>> show(result, range_=(-2, 16))
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-a3c32e864752416833c66585a4f1413a.pdf}
+\noindent\includegraphics{assets/lilypond-e35dac5349059b6e66338e735ff94111.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1523,13 +1523,13 @@ show(result)
 ...     ])
 >>> show(timespan_inventory)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-cbd3cbca83a5656f43180e6511028af0.pdf}
+\noindent\includegraphics{assets/lilypond-3c8c64e6e0587a502cfe0c83ecfbdbc3.pdf}
 \begin{lstlisting}
 >>> timespan_operand = timespantools.Timespan(6, 10)
 >>> result = timespan_inventory - timespan_operand
 >>> show(result)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-a0f158778c0f6c7689d964434632ff30.pdf}
+\noindent\includegraphics{assets/lilypond-52ce72881b050dadbd2b005628a5f5c2.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1562,16 +1562,16 @@ show(right, range_=(0, 10))
 ...     ])
 >>> show(timespan_inventory)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-100769e0b051f5de2aa3a3e8100c7d5d.pdf}
+\noindent\includegraphics{assets/lilypond-c3d6b60e63c7977c694e734c7e4a53c8.pdf}
 \begin{lstlisting}
 >>> left, right = timespan_inventory.split_at_offset(4)
 >>> show(left, range_=(0, 10))
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-f358ba2b9306e731e9b69f6fc3a3e106.pdf}
+\noindent\includegraphics{assets/lilypond-d3236ed4d087e9fe22844f4f303dca5c.pdf}
 \begin{lstlisting}
 >>> show(right, range_=(0, 10))
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-3567cf6646cc5ba40ce9e55b99682928.pdf}
+\noindent\includegraphics{assets/lilypond-5cad641fd043c1fe6cdc7cdc726dccdf.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1605,17 +1605,17 @@ for shard in shards:
 ...     ])
 >>> show(timespan_inventory)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-100769e0b051f5de2aa3a3e8100c7d5d.pdf}
+\noindent\includegraphics{assets/lilypond-c3d6b60e63c7977c694e734c7e4a53c8.pdf}
 \begin{lstlisting}
 >>> shards = timespan_inventory.split_at_offsets((2, 4, 7))
 >>> for shard in shards:
 ...     show(shard, range_=(0, 10))
 ...
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-f7b69c8dc6fba7368db0ea25a17c218e.pdf}\\
-\noindent\includegraphics{assets/lilypond-3f4afb8ad19d35255735454103227441.pdf}\\
-\noindent\includegraphics{assets/lilypond-6b963de07270b5bb2d1b81e144019430.pdf}\\
-\noindent\includegraphics{assets/lilypond-39c01eb3f890b7ee91826b855f0bc1e1.pdf}
+\noindent\includegraphics{assets/lilypond-25cd763d372419425f70f5817c2f8ee7.pdf}\\
+\noindent\includegraphics{assets/lilypond-aa4077eba642a30564233548fb70522d.pdf}\\
+\noindent\includegraphics{assets/lilypond-503e634cb49948c0f1b71e76d93728d5.pdf}\\
+\noindent\includegraphics{assets/lilypond-fc0324488835ab1b12ff95ac28cad548.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1654,7 +1654,7 @@ show(result)
 ...     ])
 >>> show(timespan_inventory)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-9f5b5ced3211ef9a0f052881548540fb.pdf}
+\noindent\includegraphics{assets/lilypond-71b1d4d692a4026c8e44be3637cc345a.pdf}
 \begin{lstlisting}
 >>> result = timespan_inventory.compute_logical_or()
 >>> print(format(result))
@@ -1670,7 +1670,7 @@ timespantools.TimespanInventory(
 \begin{lstlisting}
 >>> show(result)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-008d70ca2e1404753a24ea2cad81359e.pdf}
+\noindent\includegraphics{assets/lilypond-e51b425259bd5b2cd94d2aacdf8071be.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1704,7 +1704,7 @@ show(result, range_=(-2, 12))
 ...     ])
 >>> show(timespan_inventory)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-06292ff0f7245f849664f8e785a20d1e.pdf}
+\noindent\includegraphics{assets/lilypond-1b59a5c09d11ae76899beaa65d052167.pdf}
 \begin{lstlisting}
 >>> result = timespan_inventory.compute_logical_and()
 >>> print(format(result))
@@ -1720,7 +1720,7 @@ timespantools.TimespanInventory(
 \begin{lstlisting}
 >>> show(result, range_=(-2, 12))
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-3112b4df401698e59129f95d93aea29b.pdf}
+\noindent\includegraphics{assets/lilypond-67625602ed2b286283accb6440bba056.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1753,7 +1753,7 @@ show(result, range_=(-2, 12))
 ...     ])
 >>> show(timespan_inventory)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-9f5b5ced3211ef9a0f052881548540fb.pdf}
+\noindent\includegraphics{assets/lilypond-71b1d4d692a4026c8e44be3637cc345a.pdf}
 \begin{lstlisting}
 >>> result = timespan_inventory.compute_logical_xor()
 >>> print(format(result))
@@ -1777,7 +1777,7 @@ timespantools.TimespanInventory(
 \begin{lstlisting}
 >>> show(result, range_=(-2, 12))
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-8d338eff91c4451288a8c4c678aa85e9.pdf}
+\noindent\includegraphics{assets/lilypond-5d0e4b674c74a24e76a13808ef713b9e.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1815,22 +1815,22 @@ for shard in timespan_inventory.partition(include_tangent_timespans=True):
 ...     ])
 >>> show(timespan_inventory)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-c512cb21503c082e03964f3390524269.pdf}
+\noindent\includegraphics{assets/lilypond-0b97402b040937a802136e6cc1d9b3c9.pdf}
 \begin{lstlisting}
 >>> for shard in timespan_inventory.partition():
 ...     show(shard, range_=(0, 30))
 ...
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-6db08ebb4475fff2bce45f46b03ecc6a.pdf}\\
-\noindent\includegraphics{assets/lilypond-2beb1c2af46f19b84f1205821b2a3222.pdf}\\
-\noindent\includegraphics{assets/lilypond-6b6bff0c030aebd141b40d59bde344e1.pdf}
+\noindent\includegraphics{assets/lilypond-a8edffdbabb769a87421a62068ccbdfe.pdf}\\
+\noindent\includegraphics{assets/lilypond-8d640a7e14ef9c2a45a54d57d87e75d3.pdf}\\
+\noindent\includegraphics{assets/lilypond-0eeb4c4bcaa2e35549fc25bd746d363d.pdf}
 \begin{lstlisting}
 >>> for shard in timespan_inventory.partition(include_tangent_timespans=True):
 ...     show(shard, range_=(0, 30))
 ...
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-6b11da605f1c2131d077db201b1ae7d0.pdf}\\
-\noindent\includegraphics{assets/lilypond-6b6bff0c030aebd141b40d59bde344e1.pdf}
+\noindent\includegraphics{assets/lilypond-ca6a7001744b63cb7114df4ca165ed24.pdf}\\
+\noindent\includegraphics{assets/lilypond-0eeb4c4bcaa2e35549fc25bd746d363d.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2104,7 +2104,7 @@ timespantools.TimespanInventory(
 \begin{lstlisting}
 >>> show(timespan_inventory, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-24fe3b830cb2266c67ad664db69742ff.pdf}
+\noindent\includegraphics{assets/lilypond-5ad4d571c64e7c0d528efc9bb0e52bf6.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2193,7 +2193,7 @@ timespantools.TimespanInventory(
 \begin{lstlisting}
 >>> show(timespan_inventory, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-2d33a3f89ce475ea23b0afa80f5291ad.pdf}
+\noindent\includegraphics{assets/lilypond-107c4293714563a76ea86c7749fd165b.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2280,7 +2280,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-e6387b7cc94dcc65e15cd96cc452ac89.pdf}
+\noindent\includegraphics{assets/lilypond-dd5cf1f9fed1660fb34ef8baf6b982ba.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2318,7 +2318,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-5ebd9f6cea41f822af93bf205578e76d.pdf}
+\noindent\includegraphics{assets/lilypond-95094b0fbfa77503caab5a98650aa90b.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2350,7 +2350,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-5f68b5dc547494c06b2a9e8cadfffab6.pdf}
+\noindent\includegraphics{assets/lilypond-29fc7bab0090d6f83b451d6aaef3d1ca.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2388,7 +2388,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-05d6eaa176890b95761429277d12a451.pdf}
+\noindent\includegraphics{assets/lilypond-ebfe4bcdcd0032abd64ccffef3dc95f1.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2426,7 +2426,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-bf1ae65e6c27a19def5d2af95bc96146.pdf}
+\noindent\includegraphics{assets/lilypond-4fe195fa2b2dc2413cc5000c89708c86.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2458,7 +2458,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-a056ab693faf200c126ed5415e3dfcc5.pdf}
+\noindent\includegraphics{assets/lilypond-c2e1104c0684f5b0aded98e388a86438.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2504,7 +2504,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-31462885c4eaad77a93063030e868250.pdf}
+\noindent\includegraphics{assets/lilypond-c35cbcaa968125b7506ef312d67313a9.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2544,7 +2544,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-c3f20c8c695d4fa106c7fb3ef748bcc3.pdf}
+\noindent\includegraphics{assets/lilypond-170533f1a422bf91d07752a6ea988a77.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2583,7 +2583,7 @@ show(timespan_inventory, key='voice_name')
 ...     ])
 >>> show(timespan_inventory, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-13296a148810e7ce3ea272fe0810333d.pdf}
+\noindent\includegraphics{assets/lilypond-ea4a8d625ec5cff147971385782ad4fa.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2621,7 +2621,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-b8679d8c67bdc488c9bf7b253ee50093.pdf}
+\noindent\includegraphics{assets/lilypond-2baab34c05fe919d0ad215596216ebfe.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2653,7 +2653,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-5e86cbbefe8caab1614b6a926c5fd9a0.pdf}
+\noindent\includegraphics{assets/lilypond-49021012141cb1915a522513027c9669.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2685,7 +2685,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-e087e1676265cbf9fe8d0de0c94af3df.pdf}
+\noindent\includegraphics{assets/lilypond-7ac2eb9f5b49d8ec280ac302e228d893.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2719,7 +2719,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-083029aa8e7c7aac730d786816a9d7e7.pdf}
+\noindent\includegraphics{assets/lilypond-104e02de51fdbc97d98f5e7955d9cc40.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2745,7 +2745,7 @@ show(result, key='voice_name', range_=(0, 75))
 ...     )
 >>> show(result, key='voice_name', range_=(0, 75))
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-0bf90f96e79184e7e174ab1d49f12f63.pdf}
+\noindent\includegraphics{assets/lilypond-c26bc6f954817e4a03b25470bee9a388.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2777,7 +2777,7 @@ show(result, key='voice_name', range_=(0, 75))
 ...     )
 >>> show(result, key='voice_name', range_=(0, 75))
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-905860797ad3079959b162674b8ef9e6.pdf}
+\noindent\includegraphics{assets/lilypond-a2de614d48b65fecd8c7380c54ca2482.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -2809,7 +2809,7 @@ show(result, key='voice_name', range_=(0, 75))
 ...     )
 >>> show(result, key='voice_name', range_=(0, 75))
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-1dddd844f55df74835c9c91d65b4b541.pdf}
+\noindent\includegraphics{assets/lilypond-6b4a8f422d3171a78ba0e2dfae0eb448.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -3379,10 +3379,11 @@ show(talea_rhythm_maker, divisions=divisions)
 \begin{comment}
 <abjad>
 composite_rhythm_maker = consort.CompositeRhythmMaker(
-    default=note_rhythm_maker,
-    last=incised_rhythm_maker,
-    first=even_division_rhythm_maker,
+    default=talea_rhythm_maker,
+    last=note_rhythm_maker,
+    first=incised_rhythm_maker,
     )
+show(composite_rhythm_maker, divisions=divisions)
 </abjad>
 \end{comment}
 
@@ -3391,11 +3392,13 @@ composite_rhythm_maker = consort.CompositeRhythmMaker(
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> composite_rhythm_maker = consort.CompositeRhythmMaker(
-...     default=note_rhythm_maker,
-...     last=incised_rhythm_maker,
-...     first=even_division_rhythm_maker,
+...     default=talea_rhythm_maker,
+...     last=note_rhythm_maker,
+...     first=incised_rhythm_maker,
 ...     )
+>>> show(composite_rhythm_maker, divisions=divisions)
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-7d145c57388b785eeffaaccd509a9595.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -3909,7 +3912,57 @@ show(measure)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Example: disambiguating 3/4 \& 6/8} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Recursive meter rewriting} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{comment}
+<abjad>
+parseable = "abj: | 4/4 c'16 ~ c'4 d'8. ~ "
+parseable += "2/3 { d'8. ~ 3/5 { d'16 e'8 ~ e'16 f'16 ~ } } "
+parseable += "f'4 |"
+measure = parse(parseable)
+show(measure)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> parseable = "abj: | 4/4 c'16 ~ c'4 d'8. ~ "
+>>> parseable += "2/3 { d'8. ~ 3/5 { d'16 e'8 ~ e'16 f'16 ~ } } "
+>>> parseable += "f'4 |"
+>>> measure = parse(parseable)
+>>> show(measure)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-270f471c0052391c9bf1a5df2ccc4474.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+mutate(measure[:]).rewrite_meter(
+    measure,
+    boundary_depth=1,
+    )
+show(measure)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> mutate(measure[:]).rewrite_meter(
+...     measure,
+...     boundary_depth=1,
+...     )
+>>> show(measure)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-f7aa660690e64db249ef36ea1eac5ace.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\subsection{Examples} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -3983,15 +4036,11 @@ show(staff)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Recursive meter rewriting} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \begin{comment}
 <abjad>
-parseable = "abj: | 4/4 c'16 ~ c'4 d'8. ~ "
-parseable += "2/3 { d'8. ~ 3/5 { d'16 e'8 ~ e'16 f'16 ~ } } "
-parseable += "f'4 |"
-measure = parse(parseable)
-show(measure)
+selections = talea_rhythm_maker(divisions)
+lilypond_file = rhythmmakertools.make_lilypond_file(selections, divisions)
+show(staff)
 </abjad>
 \end{comment}
 
@@ -3999,37 +4048,11 @@ show(measure)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> parseable = "abj: | 4/4 c'16 ~ c'4 d'8. ~ "
->>> parseable += "2/3 { d'8. ~ 3/5 { d'16 e'8 ~ e'16 f'16 ~ } } "
->>> parseable += "f'4 |"
->>> measure = parse(parseable)
->>> show(measure)
+>>> selections = talea_rhythm_maker(divisions)
+>>> lilypond_file = rhythmmakertools.make_lilypond_file(selections, divisions)
+>>> show(staff)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-270f471c0052391c9bf1a5df2ccc4474.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-mutate(measure[:]).rewrite_meter(
-    measure,
-    boundary_depth=1,
-    )
-show(measure)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> mutate(measure[:]).rewrite_meter(
-...     measure,
-...     boundary_depth=1,
-...     )
->>> show(measure)
-\end{lstlisting}
-\noindent\includegraphics{assets/lilypond-f7aa660690e64db249ef36ea1eac5ace.pdf}
+\noindent\includegraphics{assets/lilypond-58a85c4734fd2a15643aa2409cbff0e5.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -4119,7 +4142,7 @@ metertools.OffsetCounter(
 \begin{lstlisting}
 >>> show(piano_staff_counter)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-e7e0f6dd3388803a5b2918be8cbca787.pdf}
+\noindent\includegraphics{assets/lilypond-b2c45afc4a29ecdf622c76195f1251ae.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -4155,7 +4178,7 @@ show(timespan_counter)
 >>> timespan_counter = metertools.OffsetCounter(timespans)
 >>> show(timespan_counter)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-b1bd125d9097c686a9d82b1371c4607b.pdf}
+\noindent\includegraphics{assets/lilypond-92e87e63b34df27878f535ac2f8e07ac.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -4329,7 +4352,7 @@ show(permitted_meters, range_=(0, 5))
 >>> permitted_meters = metertools.MeterInventory([(3, 4), (4, 4), (5, 4)])
 >>> show(permitted_meters, range_=(0, 5))
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-31dbd605fcbbe87dfbcd07de41bd855c.pdf}
+\noindent\includegraphics{assets/lilypond-0ac1fb2a040083a0f5b9220d6a474624.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -4355,7 +4378,7 @@ show(fitted_meters, range_=(0, 5))
 ...     )
 >>> show(fitted_meters, range_=(0, 5))
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-87d6adf99e6b33011031d78cb538bee0.pdf}
+\noindent\includegraphics{assets/lilypond-c97ffe8f472845185a9174ac12dd1052.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -4381,7 +4404,7 @@ show(fitted_meters, range_=(0, 5))
 ...     )
 >>> show(fitted_meters, range_=(0, 5))
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-0643372c67f34019274214d442a017f5.pdf}
+\noindent\includegraphics{assets/lilypond-3b92e7f4886997a45c979d196d2bd6d9.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -4409,7 +4432,7 @@ show(fitted_meters, range_=(0, 5))
 ...     )
 >>> show(fitted_meters, range_=(0, 5))
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-315840be1333279e3037a5168570f3d2.pdf}
+\noindent\includegraphics{assets/lilypond-04d74a3e66a76ac9c75413cdaafaa9d3.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -4449,7 +4472,7 @@ show(timespan_inventory, key='voice_name')
 ...     )
 >>> show(timespan_inventory, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-a056ab693faf200c126ed5415e3dfcc5.pdf}
+\noindent\includegraphics{assets/lilypond-c2e1104c0684f5b0aded98e388a86438.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -4487,8 +4510,8 @@ for illustratable in (offset_counter, fitted_meters):
 ...     show(illustratable, range_=(0, (19, 4)))
 ...
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-be25d981b367563167fb0dc45a384d69.pdf}\\
-\noindent\includegraphics{assets/lilypond-aad18416071e17a39304452a4e7610cb.pdf}
+\noindent\includegraphics{assets/lilypond-0be2900a4872bf90fe9bfb22c1e66b72.pdf}\\
+\noindent\includegraphics{assets/lilypond-b9137093db94d65c86a0618a8203a982.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
