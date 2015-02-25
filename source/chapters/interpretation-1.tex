@@ -215,7 +215,6 @@ for layer, triple in enumerate(triples, 1):
         timespan_inventory=timespan_inventory,
         )
 
-show(timespan_inventory, range_=(0, (21, 4)))
 show(timespan_inventory, key='voice_name', range_=(0, (21, 4)))
 </abjad>
 \end{comment}
@@ -249,13 +248,47 @@ show(timespan_inventory, key='voice_name', range_=(0, (21, 4)))
 ...         timespan_inventory=timespan_inventory,
 ...         )
 ...
->>> show(timespan_inventory, range_=(0, (21, 4)))
-\end{lstlisting}
-\noindent\includegraphics{assets/lilypond-39bc7fc954dbcc692b2517c8195b821e.pdf}
-\begin{lstlisting}
 >>> show(timespan_inventory, key='voice_name', range_=(0, (21, 4)))
 \end{lstlisting}
 \noindent\includegraphics{assets/lilypond-cd13e1c03522127ffbfba2623f59a7fb.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+show(timespan_inventory, range_=(0, (21, 4)))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> show(timespan_inventory, range_=(0, (21, 4)))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-39bc7fc954dbcc692b2517c8195b821e.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+demultiplexed_timespans = consort.TimeManager.demultiplex_timespans(
+    timespan_inventory,
+    )
+show(demultiplexed_timespans, range_=(0, (21, 4)))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> demultiplexed_timespans = consort.TimeManager.demultiplex_timespans(
+...     timespan_inventory,
+...     )
+>>> show(demultiplexed_timespans, range_=(0, (21, 4)))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-8d7921006d6bce021d9a284d12ed2e90.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
