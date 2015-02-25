@@ -7,6 +7,7 @@
 
 \usepackage{color}
 \usepackage{csquotes}
+\usepackage{excludeonly}
 \usepackage{listings}
 \usepackage{pdfpages}
 \usepackage{textcomp}
@@ -41,15 +42,23 @@
 %\titleformat*{\paragraph}{\large\bfseries}
 %\titleformat*{\subparagraph}{\large\bfseries}
 
-\includeonly{
-    source/chapters/introduction,
-    source/chapters/a-model-of-composition,
-    source/chapters/a-model-of-notation,
-    source/chapters/time-tools,
-    source/chapters/consort-analysis,
-    source/chapters/project,
-    source/chapters/conclusion,
-}
+%\includeonly{
+%    source/chapters/introduction,
+%    source/chapters/a-model-of-composition,
+%    source/chapters/a-model-of-notation,
+%    source/chapters/time-tools,
+%    source/chapters/consort-analysis,
+%    source/chapters/practicalities,
+%    source/chapters/conclusion,
+%}
+
+%\excludeonly{
+%    source/chapters/score-aurora,
+%    source/chapters/score-plague-water,
+%    source/chapters/score-zaira,
+%    source/chapters/score-armilla,
+%    source/chapters/score-ersilia,
+%}
 
 \begin{document}
 
@@ -57,12 +66,12 @@
 \pagenumbering{roman}
 \input{source/frontmatter/personalize}
 \maketitle
-%\copyrightpage
-%\abstractpage
+\copyrightpage
+\abstractpage
 \tableofcontents
 %\listoffigures
-%\dedicationpage
-%\acknowledgments
+\dedicationpage
+\acknowledgments
 
 \mainmatter
 \doublespacing
@@ -77,7 +86,7 @@
 \include{source/chapters/a-model-of-notation}
 \include{source/chapters/time-tools}
 \include{source/chapters/consort-analysis}
-\include{source/chapters/project}
+\include{source/chapters/practicalities}
 
 \include{source/chapters/score-aurora}
 \include{source/chapters/score-plague-water}
