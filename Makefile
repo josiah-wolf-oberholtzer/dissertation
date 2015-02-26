@@ -32,8 +32,14 @@ abjad/clean:
 		source/chapters/*.tex
 
 compile:
-	xelatex dissertation.tex
-	xelatex dissertation.tex
+	xelatex \
+		-shell-escape \
+		-shell-restricted \
+		dissertation.tex
+	xelatex \
+		-shell-escape \
+		-shell-restricted \
+		dissertation.tex
 	#bibtex dissertation.aux
 	#xelatex dissertation.tex
 	#xelatex dissertation.tex

@@ -11,6 +11,16 @@
 \usepackage{listings}
 \usepackage{pdfpages}
 \usepackage{textcomp}
+\usepackage{fancyvrb}
+
+\newenvironment{markdown}{
+    \VerbatimEnvironment
+    \begin{VerbatimOut}{tmp/tmp.markdown}%
+}{  
+    \end{VerbatimOut}
+    \immediate\write18{pandoc tmp/tmp.markdown -t latex -o tmp/tmp.tex}
+    \input{tmp/tmp.tex}
+}
 
 \definecolor{bluekeywords}{rgb}{0.13,0.13,1}
 \definecolor{greencomments}{rgb}{0,0.5,0}
@@ -52,13 +62,13 @@
 %    source/chapters/conclusion,
 %}
 
-%\excludeonly{
-%    source/chapters/score-aurora,
-%    source/chapters/score-plague-water,
-%    source/chapters/score-zaira,
-%    source/chapters/score-armilla,
-%    source/chapters/score-ersilia,
-%}
+\excludeonly{
+    source/chapters/score-aurora,
+    source/chapters/score-plague-water,
+    source/chapters/score-zaira,
+    source/chapters/score-armilla,
+    source/chapters/score-ersilia,
+}
 
 \begin{document}
 
@@ -117,7 +127,7 @@
 
 \singlespacing
 \begin{appendices}
-    \include{source/appendices/appendices}
+%    \include{source/appendices/appendices}
 \end{appendices}
 \clearpage
 %\bibliography{references}
