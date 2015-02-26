@@ -97,14 +97,14 @@ Templating as variation.
 -   Rhythm-makers:
     -   Creates rhythms in the divisions defined by a series of contiguous
         timespans.
--   Grace-handlers: 
+-   Grace-handlers:
     -   Adds grace notes to the start of logical ties in a patterned way.
     -   Processes the score timewise by logical tie.
--   Pitch-handlers: 
-    -   Applies pitches to logical ties in a patterned way. 
+-   Pitch-handlers:
+    -   Applies pitches to logical ties in a patterned way.
     -   Applies pitches to grace notes associated with a logical tie.
     -   Applies logical-tie-expressions which can convert logical ties from
-        notes into chords, key-clusters or harmonics. 
+        notes into chords, key-clusters or harmonics.
     -   Processes the score timewise by logical tie.
         -   The goal is to limit pitch class repetition both vertically and
             horizontally, but *only* with regard to phrases in the score scoped
@@ -209,6 +209,267 @@ Templating as variation.
 -   Voice copying
 
 \end{markdown}
+
+\section{Examples}
+
+\subsection{Music specifier labels}
+
+\begin{comment}
+<abjad>
+unlabeled_music_specifier = consort.MusicSpecifier()
+labeled_music_specifier = consort.MusicSpecifier(labels=['labeled'])
+timespan_inventory = timespantools.TimespanInventory([
+    consort.PerformedTimespan(
+        layer=1,
+        start_offset=0,
+        stop_offset=4,
+        music_specifier=labeled_music_specifier,
+        voice_name='Voice 1',
+        ),
+    consort.PerformedTimespan(
+        layer=1,
+        start_offset=2,
+        stop_offset=7,
+        music_specifier=labeled_music_specifier,
+        voice_name='Voice 2',
+        ),
+    consort.PerformedTimespan(
+        layer=2,
+        start_offset=6,
+        stop_offset=8,
+        music_specifier=unlabeled_music_specifier,
+        voice_name='Voice 1',
+        ),
+    consort.PerformedTimespan(
+        layer=2,
+        start_offset=10,
+        stop_offset=(25, 2),
+        music_specifier=unlabeled_music_specifier,
+        voice_name='Voice 2',
+        ),
+    consort.PerformedTimespan(
+        layer=1,
+        start_offset=11,
+        stop_offset=14,
+        music_specifier=labeled_music_specifier,
+        voice_name='Voice 1',
+        ),
+    consort.PerformedTimespan(
+        layer=1,
+        start_offset=14,
+        stop_offset=16,
+        music_specifier=labeled_music_specifier,
+        voice_name='Voice 1',
+        ),
+    consort.PerformedTimespan(
+        layer=1,
+        start_offset=15,
+        stop_offset=16,
+        music_specifier=labeled_music_specifier,
+        voice_name='Voice 2',
+        ),
+    ])
+show(timespan_inventory, key='voice_name')
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> unlabeled_music_specifier = consort.MusicSpecifier()
+>>> labeled_music_specifier = consort.MusicSpecifier(labels=['labeled'])
+>>> timespan_inventory = timespantools.TimespanInventory([
+...     consort.PerformedTimespan(
+...         layer=1,
+...         start_offset=0,
+...         stop_offset=4,
+...         music_specifier=labeled_music_specifier,
+...         voice_name='Voice 1',
+...         ),
+...     consort.PerformedTimespan(
+...         layer=1,
+...         start_offset=2,
+...         stop_offset=7,
+...         music_specifier=labeled_music_specifier,
+...         voice_name='Voice 2',
+...         ),
+...     consort.PerformedTimespan(
+...         layer=2,
+...         start_offset=6,
+...         stop_offset=8,
+...         music_specifier=unlabeled_music_specifier,
+...         voice_name='Voice 1',
+...         ),
+...     consort.PerformedTimespan(
+...         layer=2,
+...         start_offset=10,
+...         stop_offset=(25, 2),
+...         music_specifier=unlabeled_music_specifier,
+...         voice_name='Voice 2',
+...         ),
+...     consort.PerformedTimespan(
+...         layer=1,
+...         start_offset=11,
+...         stop_offset=14,
+...         music_specifier=labeled_music_specifier,
+...         voice_name='Voice 1',
+...         ),
+...     consort.PerformedTimespan(
+...         layer=1,
+...         start_offset=14,
+...         stop_offset=16,
+...         music_specifier=labeled_music_specifier,
+...         voice_name='Voice 1',
+...         ),
+...     consort.PerformedTimespan(
+...         layer=1,
+...         start_offset=15,
+...         stop_offset=16,
+...         music_specifier=labeled_music_specifier,
+...         voice_name='Voice 2',
+...         ),
+...     ])
+>>> show(timespan_inventory, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-8ff4b7fe83d5db8fb0d01627be42da4b.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+dependent_timespan_maker = consort.DependentTimespanMaker(
+    include_inner_starts=True,
+    voice_names=('Voice 1', 'Voice 2'),
+    )
+result = dependent_timespan_maker(
+    layer=3,
+    music_specifiers={'Voice 3': None},
+    timespan_inventory=timespan_inventory[:],
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> dependent_timespan_maker = consort.DependentTimespanMaker(
+...     include_inner_starts=True,
+...     voice_names=('Voice 1', 'Voice 2'),
+...     )
+>>> result = dependent_timespan_maker(
+...     layer=3,
+...     music_specifiers={'Voice 3': None},
+...     timespan_inventory=timespan_inventory[:],
+...     )
+>>> show(result, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-cacf84e69a9aeb754e2908597bc776a2.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+dependent_timespan_maker = new(
+    dependent_timespan_maker,
+    labels=['labeled'],
+    )
+result = dependent_timespan_maker(
+    layer=3,
+    music_specifiers={'Voice 3': None},
+    timespan_inventory=timespan_inventory[:],
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> dependent_timespan_maker = new(
+...     dependent_timespan_maker,
+...     labels=['labeled'],
+...     )
+>>> result = dependent_timespan_maker(
+...     layer=3,
+...     music_specifiers={'Voice 3': None},
+...     timespan_inventory=timespan_inventory[:],
+...     )
+>>> show(result, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-9382d23b443fa753fb33e78d0e7a805f.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\subsection{Ratio-parts expression}
+
+\begin{comment}
+<abjad>
+timespan = timespantools.Timespan(0, 8)
+show(timespan)
+ratio_parts_expression = consort.RatioPartsExpression(
+    ratio=[1, 2, 1],
+    parts=[0, 2],
+    )
+result = ratio_parts_expression(timespan)
+show(result)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> timespan = timespantools.Timespan(0, 8)
+>>> show(timespan)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-a34adb1cfbda637e38739ddd84494442.pdf}
+\begin{lstlisting}
+>>> ratio_parts_expression = consort.RatioPartsExpression(
+...     ratio=[1, 2, 1],
+...     parts=[0, 2],
+...     )
+>>> result = ratio_parts_expression(timespan)
+>>> show(result)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-53d850fdf03d8308e4c1a9b0c39b239a.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+ratio_parts_expression = new(
+    ratio_parts_expression,
+    timespan=timespantools.Timespan(
+        start_offset=Offset(1, 4),
+        ),
+    )
+result = ratio_parts_expression(timespan)
+show(result, range_=(0, 8))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> ratio_parts_expression = new(
+...     ratio_parts_expression,
+...     timespan=timespantools.Timespan(
+...         start_offset=Offset(1, 4),
+...         ),
+...     )
+>>> result = ratio_parts_expression(timespan)
+>>> show(result, range_=(0, 8))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-79f16a4a8418396c8645b819bd11c617.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\subsection{Timespan resolution}
 
 \begin{comment}
 <abjad>
