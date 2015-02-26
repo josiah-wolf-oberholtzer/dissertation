@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Analyzing \emph{Consort}}
+\chapter{\emph{Consort}: a model of composition}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
@@ -9,57 +9,206 @@ import consort
 </abjad>
 \end{comment}
 
-foo
+\begin{markdown}
 
-\section{Music settings}
+#   Specification & Interpretation
 
-foo
+-   Materials
+-   Configuration
+-   Templating
+-   Layers
+-   Coarse to fine
+-   Rhythm first
 
-\section{Music specifiers}
+What is specification? What is a specifier? What is configuration and
+aggregation?
 
-foo
+What should happen musically, where should it happen?
 
-\subsection{Composite music specifiers}
+What is material?
 
-foo
+What is music?
 
-\section{Timespan identifiers and makers}
+Rhythm is interpreted first, as all other parameters depend on it.
 
-foo
+Rhythm is interpreted from "coarse" to "fine": from the level of phrase
+boundaries to the level of individual notes, rests, tuplets and ties.
 
-\section{Score templates}
+This discussion only focuses on notation, nothing related to aesthetic
+experience, physical modeling or anything else. This is a tool for a specific
+composer to create scores, not a discussion explicitly of why they would work
+this way (although that should be discussed in the conclusion).
 
-foo
+Specification and interpretation conceive of the score as a single, hugely
+complex expression.
 
-\section{A very high level description}
+Templating as variation.
 
-- Populating independent timespans
+#   Overview: specification
 
-- Populating dependent timespans
+-   Segments
 
-- Populating silent timespans
+#   Segment-makers
 
-- Validating timespans
+-   Permitted time signatures
+-   Tempo
+-   Desired duration
+-   Score template
+    -   LilyPond will automatically concatenate scores with identical
+        context hierarchies. All contexts need to be present in every
+        concatenated segment, otherwise LilyPond will concatentate
+        incorrectly. However, we can use various typographic overrides to
+        make it appear that a context has disappeared.
+    -   Consort's ScoreTemplateManager helps create regularized score
+        templates.
+-   Music settings
 
-- Rewriting meter
+#   Music settings
 
-- Populating the score
+-   What kind of music, laid out in what pattern, in which general
+    timeframe, for which voices, in what layer?
+-   A timespanMaker
+-   A target timespan
+    -   A timespan.
+    -   A timespan inventory.
+    -   A ratio/parts expression.
+        -   Demonstrate.
+-   Voice abbreviation / music specifier pairs
+    -   Why abbreviate? It's because of Python's key=value syntax for
+        keyword arguments.
+    -   How do we convert abbreviation to an actual context name?
+        -   Score templates need to define a mapping. Demonstrate.
+    -   What is the context name for?
+        -   Name-wise indexing in an actual score. Demonstrate.
+    -   Also, composite music specifiers: when two contexts need to be
+        discussed as a single unit.
+        -   Composite music specifiers need to convert one abbreviation into
+            two more abbreviations, each mapped to an actual context name.
+        -   Consort's ScoreTemplateManager takes care of calculating and
+            caching the appropriate names and abbreviations.
+-   Layer is implicit, derived from the order of setting definitions.
+    -   Recall the discussion of timespan layer from earlier chapters.
 
-- Collecting attack points
+# Music specifiers
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Timespan population}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+-   A bundle of descriptors for what kind of music should fill a series of
+    1 or more timespans.
+-   All of the descriptors are optional.
+-   Rhythm-makers:
+    -   Creates rhythms in the divisions defined by a series of contiguous
+        timespans.
+-   Grace-handlers: 
+    -   Adds grace notes to the start of logical ties in a patterned way.
+    -   Processes the score timewise by logical tie.
+-   Pitch-handlers: 
+    -   Applies pitches to logical ties in a patterned way. 
+    -   Applies pitches to grace notes associated with a logical tie.
+    -   Applies logical-tie-expressions which can convert logical ties from
+        notes into chords, key-clusters or harmonics. 
+    -   Processes the score timewise by logical tie.
+        -   The goal is to limit pitch class repetition both vertically and
+            horizontally, but *only* with regard to phrases in the score scoped
+            by each music specifier. Other phrases are not considered.
+    -   Application rate: by logical tie, division, phrase
+        -   This requires the SeedSession class for keeping track of many
+            seeds, each advancing at a potentially different rate.
+        -   This also requires the AttackPointSignature class, which caches
+            information about each logical tie's position in its parent
+            division, phrase and overall segment.
+    -   MusicSpecifier: pitches are nonsemantic (is this even used?)
+    -   Maps different patterns of pitches and different patterns of operations
+        across the timeline.
+        -   PitchHandler: `get_pitch_choice_timespans()`
+        -   Demonstrate.
+    -   Can act on absolute pitches, or registered pitch classes.
+    -   Other formulations are possible: selecting from vertical sonorities
+        based on register curves. (This is not currently implemented, but maybe
+        for Ersilia.)
+-   Attachment-handlers:
+    -   Attaches things to the score.
+    -   Aggregates AttachmentExpressions together.
+        -   A bundle of a selector and an iterable of attachments or
+            expressions.
+        -   Reprise discussion of selectors.
+        -   Discuss expressions: DynamicExpression, etc.
+    -   Processes the score by voice, then by *phrase*.
+        -   Unlike the other handlers, attachment handlers require the entire
+            phrase to operate on, and selectors should be designed with that in
+            mind.
+    -   Demonstrate a gallery of selectors.
+        -   by duration
+        -   by leaves
+        -   by length
+        -   by logical tie
+        -   by counts (with negative counts too)
+    -   Expressive attachments
+        -   Idiomatic indicators
+        -   DynamicExpression
+        -   BowContactSpanner
+        -   StringContactSpanner
+-   Other music specifier properties of note?
+    -   *labels*
+        -   This works in tandem with DependentTimespanMaker.
+        -   Example? Piano music with two hands and pedaling. The
+            hand-performed music might involve key presses, or it might involve
+            percussive techniques. All of the techniques that require pedaling
+            should be labeled 'pedaled'. A DependentTimespanMaker for the pedal
+            context can then be configured to look at timespans for both the LH
+            and RH of the piano, but only those timespans configured with a
+            music specifier labeled 'pedaled'.
+        -   Demonstrate.
+    -   *minimum phrase duration*
+        -   (should this be hoisted into PerformedTimespan?
+    -   *seed*
+    -   *is_sentinel* (maybe remove from consort altogether)
 
-foo
+# Composite music specifiers
 
-\subsection{Multiplexing \& demultiplexing}
+# Overview: interpretation
 
-foo
+-   Populating independent timespans
+-   Populating dependent timespans
+-   Populating silent timespans
+-   Validating timespans
+-   Rewriting meter
+-   Populating the score
+-   Collecting attack points
 
-\subsection{Resolving cascading overlap}
+# Timespan population
 
-foo
+-   Multiplexing & demultiplexing
+-   Resolving cascading overlap
+
+# Timespan inscription
+
+-   Divisions
+-   Rhythm creation
+-   Rest consolidation
+-   Rhythmic post-processing
+    -   attaching a GeneralizedBeam
+    -   attaching the scoped music specifier
+-   Meter rewriting
+    Cleaning up logical ties
+-   Attack-point collection
+
+# Post-rhythm-creation processing
+
+-   Score traversal revisited
+-   Grace handling
+-   Pitch handling
+    -   SeedSession
+    -   Pitch operations
+    -   Logical tie expressions
+    -   Pitch application rate
+    -   Pitch specifier
+    -   Grace expressions
+-   Attachment handling
+
+# Score post-processing
+
+-   Voice copying
+
+\end{markdown}
 
 \begin{comment}
 <abjad>
@@ -342,104 +491,3 @@ show(demultiplexed_timespans, range_=(0, (21, 4)))
 \noindent\includegraphics{assets/lilypond-8d7921006d6bce021d9a284d12ed2e90.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Timespan inscription}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-foo
-
-- Divisions
-
-\subsection{Rhythm creation}
-
-\subsection{Rest consolidation}
-
-\subsection{Rhythmic post-processing}
-
-- attaching a GeneralizedBeam
-
-- attaching the scoped music specifier
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Meter rewriting}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-foo
-
-\subsection{Cleaning up logical ties}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Attack-point collection}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-foo
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Score traversal revisited}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Grace handling}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-foo
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Pitch handling}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-foo
-
-\subsection{SeedSession}
-
-\subsection{Pitch operations}
-
-\subsection{Logical tie expressions}
-
-\subsection{Pitch application rate}
-
-\subsection{Pitch specifier}
-
-\subsection{Grace expressions}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Attachment handling}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-foo
-
-\subsection{Attachment expressions}
-
-\subsection{Component selectors \& selector callbacks}
-
-- by duration
-
-- by leaves
-
-- by length
-
-- by logical tie
-
-- by counts
-
-\subsection{Expressive attachments}
-
-- Idiomatic indicators
-
-- DynamicExpression
-
-- BowContactSpanner
-
-- StringContactSpanner
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Score post-processing}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-foo
-
-\subsection{Voice copying}
-
-foo
