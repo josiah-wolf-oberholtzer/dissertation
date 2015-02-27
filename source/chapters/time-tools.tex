@@ -4539,8 +4539,8 @@ permitted_meters = metertools.MeterInventory([
     ])
 fitted_meters = metertools.Meter.fit_meters_to_expr(
     expr=offset_counter,
-    meters=permitted_meters,
     maximum_run_length=1,
+    meters=permitted_meters,
     )
 for illustratable in (offset_counter, fitted_meters):
     show(illustratable, range_=(0, (19, 4)))
@@ -4557,8 +4557,8 @@ for illustratable in (offset_counter, fitted_meters):
 ...     ])
 >>> fitted_meters = metertools.Meter.fit_meters_to_expr(
 ...     expr=offset_counter,
-...     meters=permitted_meters,
 ...     maximum_run_length=1,
+...     meters=permitted_meters,
 ...     )
 >>> for illustratable in (offset_counter, fitted_meters):
 ...     show(illustratable, range_=(0, (19, 4)))
@@ -4595,6 +4595,43 @@ for illustratable in (offset_counter, fitted_meters):
 \end{lstlisting}
 \noindent\includegraphics{assets/lilypond-0be2900a4872bf90fe9bfb22c1e66b72.pdf}\\
 \noindent\includegraphics{assets/lilypond-4dea6222540afc3cf0b84d79ca2bc728.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+permitted_meters = metertools.MeterInventory([
+    (2, 4), (4, 8), (3, 4), (6, 8), (7, 8), (4, 4),
+    ])
+fitted_meters = metertools.Meter.fit_meters_to_expr(
+    expr=offset_counter,
+    maximum_run_length=1,
+    meters=permitted_meters,
+    )
+for illustratable in (offset_counter, fitted_meters):
+    show(illustratable, range_=(0, (19, 4)))
+
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> permitted_meters = metertools.MeterInventory([
+...     (2, 4), (4, 8), (3, 4), (6, 8), (7, 8), (4, 4),
+...     ])
+>>> fitted_meters = metertools.Meter.fit_meters_to_expr(
+...     expr=offset_counter,
+...     maximum_run_length=1,
+...     meters=permitted_meters,
+...     )
+>>> for illustratable in (offset_counter, fitted_meters):
+...     show(illustratable, range_=(0, (19, 4)))
+...
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-0be2900a4872bf90fe9bfb22c1e66b72.pdf}\\
+\noindent\includegraphics{assets/lilypond-a1f558ce38e84f316c17684a30bd0fac.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 

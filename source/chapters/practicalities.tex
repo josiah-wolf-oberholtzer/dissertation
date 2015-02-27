@@ -8,19 +8,193 @@ foo
 \section{Score directory layout}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-foo
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+.
++-- build/
++-- distribution/
++-- etc/
++-- makers/
++-- materials/
+|   +-- dense_timespan_maker/
+|   +-- intermittent_accents/
+|   +-- intermittent_circular/
+|   +-- intermittent_glissandi/
+|   +-- intermittent_tremoli/
+|   +-- intermittent_trills/
+|   +-- left_hand_diads_music_specifier/
+|   +-- left_hand_dietro_music_specifier/
+|   +-- left_hand_glissandi_music_specifier/
+|   +-- left_hand_pizzicati_music_specifier/
+|   +-- left_hand_stasis_music_specifier/
+|   +-- right_hand_circular_music_specifier/
+|   +-- right_hand_jete_music_specifier/
+|   +-- right_hand_overpressure_music_specifier/
+|   +-- right_hand_pizzicati_music_specifier/
+|   +-- right_hand_stasis_music_specifier/
+|   +-- sparse_timespan_maker/
+|   +-- sustained_timespan_maker/
+|   +-- synchronized_timespan_maker/
+|   +-- time_signatures/
++-- segments/
+|   +-- segment_a_far_sorr/
+|   +-- segment_b_selidor_a/
+|   +-- segment_c_wellogy/
+|   +-- segment_d_the_long_dune_a/
+|   +-- segment_e_selidor_b/
+|   +-- segment_f_the_isle_of_the_ear/
+|   +-- segment_g_selidor_c/
+|   +-- segment_h_the_long_dune_b/
++-- stylesheets/
++-- test/
+\end{lstlisting}
+\end{singlespacing}
 
 \subsection{Python packaging}
 
-foo
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+.
++-- .git/
++-- .gitignore
++-- .travis.yml
++-- README.md
++-- armilla/
+|   +-- __init__.py
+|   +-- build/
+|   +-- distribution/
+|   +-- etc/
+|   +-- makers/
+|   +-- materials/
+|   +-- segments/
+|   +-- stylesheets/
+|   +-- test/
++-- requirements.txt
++-- setup.cfg
++-- setup.py
+\end{lstlisting}
+\end{singlespacing}
 
 \subsection{Material packages}
 
-foo
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+# -*- encoding: utf-8 -*-
+from abjad.tools import systemtools
+
+systemtools.ImportManager.import_material_packages(
+    __path__[0],
+    globals(),
+    )
+\end{lstlisting}
+\end{singlespacing}
+
+\begin{comment}
+<abjad>
+import armilla
+for package_name in dir(armilla.materials):
+    if package_name[0].isalpha():
+        package_name
+
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> import armilla
+>>> for package_name in dir(armilla.materials):
+...     if package_name[0].isalpha():
+...         package_name
+...
+'dense_timespan_maker'
+'intermittent_accents'
+'intermittent_circular'
+'intermittent_glissandi'
+'intermittent_tremoli'
+'intermittent_trills'
+'left_hand_diads_music_specifier'
+'left_hand_dietro_music_specifier'
+'left_hand_glissandi_music_specifier'
+'left_hand_pizzicati_music_specifier'
+'left_hand_stasis_music_specifier'
+'right_hand_circular_music_specifier'
+'right_hand_jete_music_specifier'
+'right_hand_overpressure_music_specifier'
+'right_hand_pizzicati_music_specifier'
+'right_hand_stasis_music_specifier'
+'sparse_timespan_maker'
+'sustained_timespan_maker'
+'synchronized_timespan_maker'
+'time_signatures'
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+__init__.py
+definition.py
+\end{lstlisting}
+\end{singlespacing}
 
 \subsection{Segment packages}
 
-foo
+The definitions in segment packages do not need to be imported into any other
+module. They are \emph{stand-alone}.
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+__init__.py
+definition.py
+illustration.ly
+illustration.pdf
+\end{lstlisting}
+\end{singlespacing}
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+# -*- encoding: utf-8 -*-
+import os
+import sys
+import traceback
+from abjad import persist
+
+
+if __name__ == '__main__':
+    try:
+        from definition import segment_maker
+    except ImportError:
+        traceback.print_exc()
+        sys.exit(1)
+
+    try:
+        lilypond_file = segment_maker()
+    except:
+        traceback.print_exc()
+        sys.exit(1)
+
+    try:
+        current_directory = os.path.dirname(__file__)
+        candidate_path = os.path.join(
+            current_directory,
+            'illustration.candidate.pdf',
+            )
+        persist(lilypond_file).as_pdf(candidate_path)
+    except:
+        traceback.print_exc()
+        sys.exit(1)
+
+    sys.exit(0)
+\end{lstlisting}
+\end{singlespacing}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Document preparation workflow}

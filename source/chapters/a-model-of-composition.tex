@@ -72,14 +72,16 @@ Templating as variation.
     -   A timespan.
     -   A timespan inventory.
     -   A ratio/parts expression.
-        -   Demonstrate.
+        -   Demonstrate. Check.
 -   Voice abbreviation / music specifier pairs
     -   Why abbreviate? It's because of Python's key=value syntax for
         keyword arguments.
     -   How do we convert abbreviation to an actual context name?
-        -   Score templates need to define a mapping. Demonstrate.
+        -   Score templates need to define a mapping.
+        -   Demonstrate. Check.
     -   What is the context name for?
-        -   Name-wise indexing in an actual score. Demonstrate.
+        -   Name-wise indexing in an actual score.
+        -   Demonstrate. Check.
     -   Also, composite music specifiers: when two contexts need to be
         discussed as a single unit.
         -   Composite music specifiers need to convert one abbreviation into
@@ -211,6 +213,208 @@ Templating as variation.
 \end{markdown}
 
 \section{Examples}
+
+\subsection{Ratio-parts expression}
+
+\begin{comment}
+<abjad>
+timespan = timespantools.Timespan(0, 8)
+show(timespan)
+ratio_parts_expression = consort.RatioPartsExpression(
+    ratio=[1, 2, 1],
+    parts=[0, 2],
+    )
+result = ratio_parts_expression(timespan)
+show(result)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> timespan = timespantools.Timespan(0, 8)
+>>> show(timespan)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-a34adb1cfbda637e38739ddd84494442.pdf}
+\begin{lstlisting}
+>>> ratio_parts_expression = consort.RatioPartsExpression(
+...     ratio=[1, 2, 1],
+...     parts=[0, 2],
+...     )
+>>> result = ratio_parts_expression(timespan)
+>>> show(result)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-53d850fdf03d8308e4c1a9b0c39b239a.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+ratio_parts_expression = new(
+    ratio_parts_expression,
+    timespan=timespantools.Timespan(
+        start_offset=Offset(1, 4),
+        ),
+    )
+result = ratio_parts_expression(timespan)
+show(result, range_=(0, 8))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> ratio_parts_expression = new(
+...     ratio_parts_expression,
+...     timespan=timespantools.Timespan(
+...         start_offset=Offset(1, 4),
+...         ),
+...     )
+>>> result = ratio_parts_expression(timespan)
+>>> show(result, range_=(0, 8))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-79f16a4a8418396c8645b819bd11c617.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\subsection{Score templates and abbreviations}
+
+\begin{comment}
+<abjad>
+import armilla
+armilla_score_template = armilla.makers.ArmillaScoreTemplate()
+armilla_score = armilla_score_template()
+print(format(armilla_score))
+for item in armilla_score_template.context_name_abbreviations.items():
+    abbreviation, context_name = item
+    print(abbreviation, context_name)
+
+for item in armilla_score_template.composite_context_pairs.items():
+    grouping_abbreviation, grouped_abbreviations = item
+    print(grouping_abbreviation, grouped_abbreviations)
+
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> import armilla
+>>> armilla_score_template = armilla.makers.ArmillaScoreTemplate()
+>>> armilla_score = armilla_score_template()
+>>> print(format(armilla_score))
+\context Score = "Armilla Score" <<
+    \tag #'time
+    \context TimeSignatureContext = "TimeSignatureContext" {
+    }
+    \tag #'viola-1
+    \context StringPerformerGroup = "Viola 1 Performer Group" \with {
+        instrumentName = \markup {
+            \hcenter-in
+                #10
+                "Viola 1"
+            }
+        shortInstrumentName = \markup {
+            \hcenter-in
+                #10
+                "Va. 1"
+            }
+    } <<
+        \context BowingStaff = "Viola 1 Bowing Staff" {
+            \clef "percussion"
+            \context Voice = "Viola 1 Bowing Voice" {
+            }
+        }
+        \context FingeringStaff = "Viola 1 Fingering Staff" {
+            \clef "alto"
+            \context Voice = "Viola 1 Fingering Voice" {
+            }
+        }
+    >>
+    \tag #'viola-2
+    \context StringPerformerGroup = "Viola 2 Performer Group" \with {
+        instrumentName = \markup {
+            \hcenter-in
+                #10
+                "Viola 2"
+            }
+        shortInstrumentName = \markup {
+            \hcenter-in
+                #10
+                "Va. 2"
+            }
+    } <<
+        \context BowingStaff = "Viola 2 Bowing Staff" {
+            \clef "percussion"
+            \context Voice = "Viola 2 Bowing Voice" {
+            }
+        }
+        \context FingeringStaff = "Viola 2 Fingering Staff" {
+            \clef "alto"
+            \context Voice = "Viola 2 Fingering Voice" {
+            }
+        }
+    >>
+>>
+\end{lstlisting}
+\begin{lstlisting}
+>>> for item in armilla_score_template.context_name_abbreviations.items():
+...     abbreviation, context_name = item
+...     print(abbreviation, context_name)
+...
+('viola_1', 'Viola 1 Performer Group')
+('viola_1_rh', 'Viola 1 Bowing Voice')
+('viola_1_lh', 'Viola 1 Fingering Voice')
+('viola_2', 'Viola 2 Performer Group')
+('viola_2_rh', 'Viola 2 Bowing Voice')
+('viola_2_lh', 'Viola 2 Fingering Voice')
+\end{lstlisting}
+\begin{lstlisting}
+>>> for item in armilla_score_template.composite_context_pairs.items():
+...     grouping_abbreviation, grouped_abbreviations = item
+...     print(grouping_abbreviation, grouped_abbreviations)
+...
+('viola_1', ('viola_1_rh', 'viola_1_lh'))
+('viola_2', ('viola_2_rh', 'viola_2_lh'))
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+armilla_score['Viola 1 Fingering Voice']
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> armilla_score['Viola 1 Fingering Voice']
+Voice()
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\subsection{Pitch choice timespans}
+
+\begin{comment}
+<abjad>
+
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>>
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \subsection{Music specifier labels}
 
@@ -401,71 +605,6 @@ show(result, key='voice_name')
 >>> show(result, key='voice_name')
 \end{lstlisting}
 \noindent\includegraphics{assets/lilypond-9382d23b443fa753fb33e78d0e7a805f.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\subsection{Ratio-parts expression}
-
-\begin{comment}
-<abjad>
-timespan = timespantools.Timespan(0, 8)
-show(timespan)
-ratio_parts_expression = consort.RatioPartsExpression(
-    ratio=[1, 2, 1],
-    parts=[0, 2],
-    )
-result = ratio_parts_expression(timespan)
-show(result)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> timespan = timespantools.Timespan(0, 8)
->>> show(timespan)
-\end{lstlisting}
-\noindent\includegraphics{assets/lilypond-a34adb1cfbda637e38739ddd84494442.pdf}
-\begin{lstlisting}
->>> ratio_parts_expression = consort.RatioPartsExpression(
-...     ratio=[1, 2, 1],
-...     parts=[0, 2],
-...     )
->>> result = ratio_parts_expression(timespan)
->>> show(result)
-\end{lstlisting}
-\noindent\includegraphics{assets/lilypond-53d850fdf03d8308e4c1a9b0c39b239a.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-ratio_parts_expression = new(
-    ratio_parts_expression,
-    timespan=timespantools.Timespan(
-        start_offset=Offset(1, 4),
-        ),
-    )
-result = ratio_parts_expression(timespan)
-show(result, range_=(0, 8))
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> ratio_parts_expression = new(
-...     ratio_parts_expression,
-...     timespan=timespantools.Timespan(
-...         start_offset=Offset(1, 4),
-...         ),
-...     )
->>> result = ratio_parts_expression(timespan)
->>> show(result, range_=(0, 8))
-\end{lstlisting}
-\noindent\includegraphics{assets/lilypond-79f16a4a8418396c8645b819bd11c617.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
