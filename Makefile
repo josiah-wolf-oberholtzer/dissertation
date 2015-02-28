@@ -46,7 +46,9 @@ compile:
 
 clean:
 	rm -Rif assets/graphviz-*.pdf
+	rm -Rif assets/graphviz-*.dot
 	rm -Rif assets/lilypond-*.pdf
+	rm -Rif assets/lilypond-*.ly
 	find . -name "*.aux" -exec rm -rf {} \;
 	find . -name "*.bbl" -exec rm -rf {} \;
 	find . -name "*.blg" -exec rm -rf {} \;
