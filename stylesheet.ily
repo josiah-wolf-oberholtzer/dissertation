@@ -1,4 +1,4 @@
-\version "2.19.15"
+\version "2.19.0"
 
 #(set-global-staff-size 12)
 
@@ -66,7 +66,6 @@
     }
     \context {
         \Score
-        \accepts TimeSignatureContext
         \remove Bar_number_engraver
         \override Beam.positions = #'(4 . 4)
         %\override SpacingSpanner.strict-grace-spacing = ##t
@@ -85,6 +84,19 @@
         \override TupletNumber.text = #tuplet-number::calc-fraction-text
         proportionalNotationDuration = #(ly:make-moment 1 24)
         tupletFullLength = ##t
+    }
+    \context {
+        \Score
+        \name DissertationScore
+        \alias Score
+        \accepts TimeSignatureContext
+        \remove Bar_number_engraver
+        \remove Mark_engraver
+        \remove Metronome_mark_engraver
+    }
+    \context {
+        \Global
+        \accepts DissertationScore
     }
 }
 
