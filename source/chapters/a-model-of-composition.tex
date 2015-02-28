@@ -989,6 +989,7 @@ show(unconsolidated_staff)
 ...         {
 ...             c8
 ...             c4.
+...             \break
 ...             \times 2/3 {
 ...                 \time 2/4
 ...                 c4
@@ -1007,11 +1008,11 @@ show(unconsolidated_staff)
 ...     }
 ... }
 ... '''
->>> unconstaff = Staff(parseable, context_name='RhythmicStaff')
->>> staff = consort.annotate(staff)
->>> show(staff)
+>>> unconsolidated_staff = Staff(parseable, context_name='RhythmicStaff')
+>>> unconsolidated_staff = consort.annotate(unconsolidated_staff)
+>>> show(unconsolidated_staff)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-9bf1b889b9f6751272082599e590d272.pdf}
+\noindent\includegraphics{assets/lilypond-11534771c9485052bc1fbed77a1cb625.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1032,12 +1033,15 @@ show(staff_group)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> staff = Staff(parseable, context_name='RhythmicStaff')
->>> phrase = staff[0][0]
->>> phrase = consort.TimeManager.consolidate_rests(phrase)
->>> staff = consort.annotate(staff)
->>> show(staff)
+>>> consolidated_staff = Staff(parseable, context_name='RhythmicStaff')
+>>> for voice in consolidated_staff:
+...     for phrase in voice:
+...         phrase = consort.TimeManager.consolidate_rests(phrase)
+...
+>>> consolidated_staff = consort.annotate(consolidated_staff)
+>>> staff_group = StaffGroup([unconsolidated_staff, consolidated_staff])
+>>> show(staff_group)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-2a5729965c52d755ea5484b28e5f6dd1.pdf}
+\noindent\includegraphics{assets/lilypond-fbb56d91e7ae2464105663677006fe8e.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
