@@ -912,14 +912,14 @@ parseable = r'''
             r4
         }
         {
-            \time 5/4
+            \time 4/4
             r4
-            c2 ~
-            c8
+            c4.
             r8
         }
         {
             r4
+            \break
         }
         {
             \time 3/4
@@ -928,13 +928,14 @@ parseable = r'''
         {
             c8
             c4.
-            \break
-            \times 2/3 {
-                \time 2/4
-                c4
-                r4
-                c4
-            }
+        }
+        \times 2/3 {
+            \time 2/4
+            r4
+            c4
+            c4
+        }
+        {
             \time 4/4
             c4.
             r8
@@ -973,14 +974,14 @@ show(unconsolidated_staff)
 ...             r4
 ...         }
 ...         {
-...             \time 5/4
+...             \time 4/4
 ...             r4
-...             c2 ~
-...             c8
+...             c4.
 ...             r8
 ...         }
 ...         {
 ...             r4
+...             \break
 ...         }
 ...         {
 ...             \time 3/4
@@ -989,13 +990,14 @@ show(unconsolidated_staff)
 ...         {
 ...             c8
 ...             c4.
-...             \break
-...             \times 2/3 {
-...                 \time 2/4
-...                 c4
-...                 r4
-...                 c4
-...             }
+...         }
+...         \times 2/3 {
+...             \time 2/4
+...             r4
+...             c4
+...             c4
+...         }
+...         {
 ...             \time 4/4
 ...             c4.
 ...             r8
@@ -1012,7 +1014,7 @@ show(unconsolidated_staff)
 >>> unconsolidated_staff = consort.annotate(unconsolidated_staff)
 >>> show(unconsolidated_staff)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-841bd1e2609f6b090e77733ffbbdd2dd.pdf}
+\noindent\includegraphics{assets/lilypond-89037f6ab1d4b0ffccf52dbc4acb2602.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1042,6 +1044,6 @@ show(staff_group)
 >>> staff_group = StaffGroup([unconsolidated_staff, consolidated_staff])
 >>> show(staff_group)
 \end{lstlisting}
-\noindent\includegraphics{assets/lilypond-26397fd71560666c940b23314562d4a5.pdf}
+\noindent\includegraphics{assets/lilypond-8a52322db7d9e3d866dd95565f3b8940.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
