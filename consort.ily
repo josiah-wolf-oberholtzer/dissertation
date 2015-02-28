@@ -7,6 +7,7 @@
 }
 
 \layout {
+    \accidentalStyle forget
     indent = 0\mm
     ragged-right = ##t
     \context {
