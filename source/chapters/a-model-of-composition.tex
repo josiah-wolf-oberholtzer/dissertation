@@ -523,3 +523,55 @@ print(format(music))
 show(music)
 </abjad>
 \end{comment}
+
+\begin{comment}
+<abjad>
+parseable = r'''
+\new Voice {
+    {
+        \time 4/4
+        r4
+        c4
+    }
+    \times 2/3 {
+        c4
+        r8
+    }
+    {
+        \time 5/4
+        r4
+        c2 ~
+        c8
+        r8
+    }
+    {
+        r4
+    }
+    {
+        \time 3/4
+        r4
+    }
+    {
+        c8
+        c4.
+        \times 2/3 {
+            \time 2/4
+            c4
+            r4
+            c4
+        }
+        \time 4/4
+        c4.
+        r8
+    }
+    {
+        r8
+        c4
+        r8
+    }
+}
+'''
+staff = Staff(parseable, context_name='RhythmicStaff')
+show(staff)
+</abjad>
+\end{comment}
