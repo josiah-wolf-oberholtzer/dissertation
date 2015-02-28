@@ -2,3 +2,4 @@ graphviz-*.pdf
 lilypond-*.pdf
 *.ly
 *.dot
+*.ps
