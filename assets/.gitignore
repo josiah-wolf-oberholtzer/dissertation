@@ -1,2 +1,4 @@
 graphviz-*.pdf
 lilypond-*.pdf
+*.ly
+*.dot
