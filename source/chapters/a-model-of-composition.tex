@@ -229,6 +229,26 @@ show(result)
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> timespan = timespantools.Timespan(0, 8)
+>>> show(timespan)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-a34adb1cfbda637e38739ddd84494442.pdf}
+\begin{lstlisting}
+>>> ratio_parts_expression = consort.RatioPartsExpression(
+...     ratio=[1, 2, 1],
+...     parts=[0, 2],
+...     )
+>>> result = ratio_parts_expression(timespan)
+>>> show(result)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-53d850fdf03d8308e4c1a9b0c39b239a.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 ratio_parts_expression = new(
@@ -241,6 +261,23 @@ result = ratio_parts_expression(timespan)
 show(result, range_=(0, 8))
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> ratio_parts_expression = new(
+...     ratio_parts_expression,
+...     timespan=timespantools.Timespan(
+...         start_offset=Offset(1, 4),
+...         ),
+...     )
+>>> result = ratio_parts_expression(timespan)
+>>> show(result, range_=(0, 8))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-79f16a4a8418396c8645b819bd11c617.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \subsection{Score templates and abbreviations}
 
@@ -261,11 +298,106 @@ for item in armilla_score_template.composite_context_pairs.items():
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> import armilla
+>>> armilla_score_template = armilla.makers.ArmillaScoreTemplate()
+>>> armilla_score = armilla_score_template()
+>>> print(format(armilla_score))
+\context Score = "Armilla Score" <<
+    \tag #'time
+    \context TimeSignatureContext = "TimeSignatureContext" {
+    }
+    \tag #'viola-1
+    \context StringPerformerGroup = "Viola 1 Performer Group" \with {
+        instrumentName = \markup {
+            \hcenter-in
+                #10
+                "Viola 1"
+            }
+        shortInstrumentName = \markup {
+            \hcenter-in
+                #10
+                "Va. 1"
+            }
+    } <<
+        \context BowingStaff = "Viola 1 Bowing Staff" {
+            \clef "percussion"
+            \context Voice = "Viola 1 Bowing Voice" {
+            }
+        }
+        \context FingeringStaff = "Viola 1 Fingering Staff" {
+            \clef "alto"
+            \context Voice = "Viola 1 Fingering Voice" {
+            }
+        }
+    >>
+    \tag #'viola-2
+    \context StringPerformerGroup = "Viola 2 Performer Group" \with {
+        instrumentName = \markup {
+            \hcenter-in
+                #10
+                "Viola 2"
+            }
+        shortInstrumentName = \markup {
+            \hcenter-in
+                #10
+                "Va. 2"
+            }
+    } <<
+        \context BowingStaff = "Viola 2 Bowing Staff" {
+            \clef "percussion"
+            \context Voice = "Viola 2 Bowing Voice" {
+            }
+        }
+        \context FingeringStaff = "Viola 2 Fingering Staff" {
+            \clef "alto"
+            \context Voice = "Viola 2 Fingering Voice" {
+            }
+        }
+    >>
+>>
+\end{lstlisting}
+\begin{lstlisting}
+>>> for item in armilla_score_template.context_name_abbreviations.items():
+...     abbreviation, context_name = item
+...     print(abbreviation, context_name)
+...
+('viola_1', 'Viola 1 Performer Group')
+('viola_1_rh', 'Viola 1 Bowing Voice')
+('viola_1_lh', 'Viola 1 Fingering Voice')
+('viola_2', 'Viola 2 Performer Group')
+('viola_2_rh', 'Viola 2 Bowing Voice')
+('viola_2_lh', 'Viola 2 Fingering Voice')
+\end{lstlisting}
+\begin{lstlisting}
+>>> for item in armilla_score_template.composite_context_pairs.items():
+...     grouping_abbreviation, grouped_abbreviations = item
+...     print(grouping_abbreviation, grouped_abbreviations)
+...
+('viola_1', ('viola_1_rh', 'viola_1_lh'))
+('viola_2', ('viola_2_rh', 'viola_2_lh'))
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 armilla_score['Viola 1 Fingering Voice']
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> armilla_score['Viola 1 Fingering Voice']
+Voice()
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \subsection{Pitch choice timespans}
 
@@ -274,6 +406,15 @@ armilla_score['Viola 1 Fingering Voice']
 
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>>
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \subsection{Music specifier labels}
 
@@ -336,6 +477,69 @@ show(timespan_inventory, key='voice_name')
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> unlabeled_music_specifier = consort.MusicSpecifier()
+>>> labeled_music_specifier = consort.MusicSpecifier(labels=['labeled'])
+>>> timespan_inventory = timespantools.TimespanInventory([
+...     consort.PerformedTimespan(
+...         layer=1,
+...         start_offset=0,
+...         stop_offset=4,
+...         music_specifier=labeled_music_specifier,
+...         voice_name='Voice 1',
+...         ),
+...     consort.PerformedTimespan(
+...         layer=1,
+...         start_offset=2,
+...         stop_offset=7,
+...         music_specifier=labeled_music_specifier,
+...         voice_name='Voice 2',
+...         ),
+...     consort.PerformedTimespan(
+...         layer=2,
+...         start_offset=6,
+...         stop_offset=8,
+...         music_specifier=unlabeled_music_specifier,
+...         voice_name='Voice 1',
+...         ),
+...     consort.PerformedTimespan(
+...         layer=2,
+...         start_offset=10,
+...         stop_offset=(25, 2),
+...         music_specifier=unlabeled_music_specifier,
+...         voice_name='Voice 2',
+...         ),
+...     consort.PerformedTimespan(
+...         layer=1,
+...         start_offset=11,
+...         stop_offset=14,
+...         music_specifier=labeled_music_specifier,
+...         voice_name='Voice 1',
+...         ),
+...     consort.PerformedTimespan(
+...         layer=1,
+...         start_offset=14,
+...         stop_offset=16,
+...         music_specifier=labeled_music_specifier,
+...         voice_name='Voice 1',
+...         ),
+...     consort.PerformedTimespan(
+...         layer=1,
+...         start_offset=15,
+...         stop_offset=16,
+...         music_specifier=labeled_music_specifier,
+...         voice_name='Voice 2',
+...         ),
+...     ])
+>>> show(timespan_inventory, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-8ff4b7fe83d5db8fb0d01627be42da4b.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 dependent_timespan_maker = consort.DependentTimespanMaker(
@@ -351,6 +555,25 @@ show(result, key='voice_name')
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> dependent_timespan_maker = consort.DependentTimespanMaker(
+...     include_inner_starts=True,
+...     voice_names=('Voice 1', 'Voice 2'),
+...     )
+>>> result = dependent_timespan_maker(
+...     layer=3,
+...     music_specifiers={'Voice 3': None},
+...     timespan_inventory=timespan_inventory[:],
+...     )
+>>> show(result, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-cacf84e69a9aeb754e2908597bc776a2.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 dependent_timespan_maker = new(
@@ -365,6 +588,25 @@ result = dependent_timespan_maker(
 show(result, key='voice_name')
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> dependent_timespan_maker = new(
+...     dependent_timespan_maker,
+...     labels=['labeled'],
+...     )
+>>> result = dependent_timespan_maker(
+...     layer=3,
+...     music_specifiers={'Voice 3': None},
+...     timespan_inventory=timespan_inventory[:],
+...     )
+>>> show(result, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-9382d23b443fa753fb33e78d0e7a805f.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \subsection{Timespan resolution}
 
@@ -384,6 +626,27 @@ layer_1 = layer_1_timespan_maker(
 show(layer_1, key='voice_name', range_=(0, (21, 4)))
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> layer_1_timespan_maker = consort.FloodedTimespanMaker()
+>>> layer_1_target_timespan = timespantools.Timespan(0, (19, 4))
+>>> layer_1_music_specifiers = collections.OrderedDict([
+...     ('Voice 2', None),
+...     ('Voice 3', None),
+...     ])
+>>> layer_1 = layer_1_timespan_maker(
+...     layer=1,
+...     music_specifiers=layer_1_music_specifiers,
+...     target_timespan=layer_1_target_timespan,
+...     )
+>>> show(layer_1, key='voice_name', range_=(0, (21, 4)))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-f86c3ef83d7c5ffbef9e47999bb478a9.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \begin{comment}
 <abjad>
@@ -418,6 +681,43 @@ show(layer_2, key='voice_name', range_=(0, (21, 4)))
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> layer_2_timespan_maker = consort.TaleaTimespanMaker(
+...     initial_silence_talea=rhythmmakertools.Talea(
+...         counts=(0, 1, 3),
+...         denominator=8,
+...         ),
+...     playing_groupings=(1, 2),
+...     playing_talea=rhythmmakertools.Talea(
+...         counts=(1, 2, 3, 4),
+...         denominator=4,
+...         ),
+...     silence_talea=rhythmmakertools.Talea(
+...         counts=(5, 3, 1),
+...         denominator=8,
+...         ),
+...     )
+>>> layer_2_target_timespan = timespantools.Timespan((3, 4), (19, 4))
+>>> layer_2_music_specifiers = collections.OrderedDict([
+...     ('Voice 1', None),
+...     ('Voice 2', None),
+...     ('Voice 3', None),
+...     ('Voice 4', None),
+...     ])
+>>> layer_2 = layer_2_timespan_maker(
+...     layer=2,
+...     music_specifiers=layer_2_music_specifiers,
+...     target_timespan=layer_2_target_timespan,
+...     )
+>>> show(layer_2, key='voice_name', range_=(0, (21, 4)))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-e49b088ae657fd66299d7b78da251b1a.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 layer_3_timespan_maker = consort.TaleaTimespanMaker(
@@ -451,6 +751,43 @@ show(layer_3, key='voice_name', range_=(0, (21, 4)))
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> layer_3_timespan_maker = consort.TaleaTimespanMaker(
+...     initial_silence_talea=rhythmmakertools.Talea(
+...         counts=(0, 0, 0, 1),
+...         denominator=8,
+...         ),
+...     padding=Duration(1, 4),
+...     playing_talea=rhythmmakertools.Talea(
+...         counts=(2, 3, 4),
+...         denominator=8,
+...         ),
+...     silence_talea=rhythmmakertools.Talea(
+...         counts=(6,),
+...         denominator=4,
+...         ),
+...     synchronize_step=True,
+...     )
+>>> layer_3_target_timespan = timespantools.Timespan((6, 4), (21, 4))
+>>> layer_3_music_specifiers = collections.OrderedDict([
+...     ('Voice 1', None),
+...     ('Voice 3', None),
+...     ('Voice 4', None),
+...     ])
+>>> layer_3 = layer_3_timespan_maker(
+...     layer=3,
+...     music_specifiers=layer_3_music_specifiers,
+...     target_timespan=layer_3_target_timespan,
+...     )
+>>> show(layer_3, key='voice_name', range_=(0, (21, 4)))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-941b5746ac1f0adcadef1f907d8ffb78.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 timespan_makers = (
@@ -482,11 +819,56 @@ show(timespan_inventory, key='voice_name', range_=(0, (21, 4)))
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> timespan_makers = (
+...     layer_1_timespan_maker,
+...     layer_2_timespan_maker,
+...     layer_3_timespan_maker,
+...     )
+>>> music_specifiers = (
+...     layer_1_music_specifiers,
+...     layer_2_music_specifiers,
+...     layer_3_music_specifiers,
+...     )
+>>> target_timespans = (
+...     layer_1_target_timespan,
+...     layer_2_target_timespan,
+...     layer_3_target_timespan,
+...     )
+>>> triples = zip(timespan_makers, music_specifiers, target_timespans)
+>>> timespan_inventory = timespantools.TimespanInventory()
+>>> for layer, triple in enumerate(triples, 1):
+...     timespan_inventory = triple[0](
+...         layer=layer,
+...         music_specifiers=triple[1],
+...         target_timespan=triple[2],
+...         timespan_inventory=timespan_inventory,
+...         )
+...
+>>> show(timespan_inventory, key='voice_name', range_=(0, (21, 4)))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-cd13e1c03522127ffbfba2623f59a7fb.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 show(timespan_inventory, range_=(0, (21, 4)))
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> show(timespan_inventory, range_=(0, (21, 4)))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-39bc7fc954dbcc692b2517c8195b821e.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \begin{comment}
 <abjad>
@@ -497,81 +879,165 @@ show(demultiplexed_timespans, range_=(0, (21, 4)))
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> demultiplexed_timespans = consort.TimeManager.demultiplex_timespans(
+...     timespan_inventory,
+...     )
+>>> show(demultiplexed_timespans, range_=(0, (21, 4)))
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-8d7921006d6bce021d9a284d12ed2e90.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \subsection{Rest consolidation}
-
-\begin{comment}
-<abjad>
-music = scoretools.Container(r'''
-    { r4 c'8 }
-    \times 2/3 { d'4 r8 }
-    { r4 e'4 f'4 r4 }
-    { r4 g8 r8 }
-    { r4 }
-    { r4 }
-    { a'4 \times 2/3 { b'4 r8 } }
-    { c''4 r8 }
-    ''')
-print(format(music))
-show(music)
-</abjad>
-\end{comment}
-
-\begin{comment}
-<abjad>
-music = consort.TimeManager.consolidate_rests(music)
-print(format(music))
-show(music)
-</abjad>
-\end{comment}
 
 \begin{comment}
 <abjad>
 parseable = r'''
 \new Voice {
     {
-        \time 4/4
-        r4
-        c4
-    }
-    \times 2/3 {
-        c4
-        r8
-    }
-    {
-        \time 5/4
-        r4
-        c2 ~
-        c8
-        r8
-    }
-    {
-        r4
-    }
-    {
-        \time 3/4
-        r4
-    }
-    {
-        c8
-        c4.
-        \times 2/3 {
-            \time 2/4
-            c4
+        {
+            \time 4/4
             r4
             c4
         }
-        \time 4/4
-        c4.
-        r8
-    }
-    {
-        r8
-        c4
-        r8
+        {
+            \times 2/3 {
+                c4
+                r8
+            }
+            r4
+        }
+        {
+            \time 5/4
+            r4
+            c2 ~
+            c8
+            r8
+        }
+        {
+            r4
+        }
+        {
+            \time 3/4
+            r4
+        }
+        {
+            c8
+            c4.
+            \break
+            \times 2/3 {
+                \time 2/4
+                c4
+                r4
+                c4
+            }
+            \time 4/4
+            c4.
+            r8
+        }
+        {
+            r8
+            c4
+            r8
+        }
     }
 }
 '''
-staff = Staff(parseable, context_name='RhythmicStaff')
-show(staff)
+unconsolidated_staff = Staff(parseable, context_name='RhythmicStaff')
+unconsolidated_staff = consort.annotate(unconsolidated_staff)
+show(unconsolidated_staff)
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> parseable = r'''
+... \new Voice {
+...     {
+...         {
+...             \time 4/4
+...             r4
+...             c4
+...         }
+...         {
+...             \times 2/3 {
+...                 c4
+...                 r8
+...             }
+...             r4
+...         }
+...         {
+...             \time 5/4
+...             r4
+...             c2 ~
+...             c8
+...             r8
+...         }
+...         {
+...             r4
+...         }
+...         {
+...             \time 3/4
+...             r4
+...         }
+...         {
+...             c8
+...             c4.
+...             \times 2/3 {
+...                 \time 2/4
+...                 c4
+...                 r4
+...                 c4
+...             }
+...             \time 4/4
+...             c4.
+...             r8
+...         }
+...         {
+...             r8
+...             c4
+...             r8
+...         }
+...     }
+... }
+... '''
+>>> unconstaff = Staff(parseable, context_name='RhythmicStaff')
+>>> staff = consort.annotate(staff)
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-9bf1b889b9f6751272082599e590d272.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+consolidated_staff = Staff(parseable, context_name='RhythmicStaff')
+for voice in consolidated_staff:
+    for phrase in voice:
+        phrase = consort.TimeManager.consolidate_rests(phrase)
+
+consolidated_staff = consort.annotate(consolidated_staff)
+staff_group = StaffGroup([unconsolidated_staff, consolidated_staff])
+show(staff_group)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff = Staff(parseable, context_name='RhythmicStaff')
+>>> phrase = staff[0][0]
+>>> phrase = consort.TimeManager.consolidate_rests(phrase)
+>>> staff = consort.annotate(staff)
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics{assets/lilypond-2a5729965c52d755ea5484b28e5f6dd1.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
