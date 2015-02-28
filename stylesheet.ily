@@ -6,6 +6,10 @@
     indent = 0\mm
     ragged-right = ##t
     \context {
+        \Voice
+        \remove Forbid_line_break_engraver
+    }
+    \context {
         \Score
         \remove Bar_number_engraver
         \override Beam.positions = #'(4 . 4)
