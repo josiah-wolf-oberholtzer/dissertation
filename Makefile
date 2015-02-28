@@ -50,6 +50,7 @@ clean:
 	rm -Rif assets/lilypond-*.pdf
 	rm -Rif assets/lilypond-*.ly
 	rm -Rif assets/tmp*
+	rm -Rif tmp/tmp*
 	find . -name "*.aux" -exec rm -rf {} \;
 	find . -name "*.bbl" -exec rm -rf {} \;
 	find . -name "*.blg" -exec rm -rf {} \;
