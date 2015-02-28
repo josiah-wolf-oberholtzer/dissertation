@@ -14,6 +14,7 @@
         \override SpacingSpanner.uniform-stretching = ##t
         \override Stem.length = 8.25
         \override TextScript.outside-staff-padding = 1
+        \override TimeSignature.style = #'numbered
         \override TupletBracket.bracket-visibility = ##t
         \override TupletBracket.minimum-length = 3
         \override TupletBracket.outside-staff-padding = 1.5
