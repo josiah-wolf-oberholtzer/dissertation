@@ -19,6 +19,7 @@
         \override TupletBracket.minimum-length = 3
         \override TupletBracket.outside-staff-padding = 1.5
         \override TupletBracket.padding = 1.5
+        \override TupletBracket.breakable = ##t
         \override TupletBracket.springs-and-rods = #ly:spanner::set-spacing-rods
         \override TupletBracket.staff-padding = 2.25
         \override TupletNumber.text = #tuplet-number::calc-fraction-text
