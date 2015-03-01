@@ -61,6 +61,7 @@
     }
     \context {
         \RhythmicStaff
+        \consists Clef_engraver
         \remove Time_signature_engraver
         \accepts AnnotatedDivisionsVoice
         \accepts AnnotatedPhrasesVoice
@@ -85,7 +86,7 @@
         \override MetronomeMark.X-extent = #'(0 . 0)
         \override MetronomeMark.Y-extent = #'(0 . 0)
         \override MetronomeMark.break-align-symbols = #'(left-edge)
-        \override MetronomeMark.extra-offset = #'(0 . 4)
+        \override MetronomeMark.extra-offset = #'(4 . -6)
         \override MetronomeMark.font-size = 3
         \override RehearsalMark.X-extent = #'(0 . 0)
         \override RehearsalMark.X-offset = 6
