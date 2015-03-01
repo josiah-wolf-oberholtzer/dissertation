@@ -27,7 +27,26 @@ foo
 \section{Components, leaves \& containers}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-foo
+\begin{comment}
+<abjad>
+upper_staff = Staff(name='Upper Staff')
+lower_staff = Staff(name='Lower Staff')
+staff_group = StaffGroup([upper_staff, lower_staff])
+score = Score([staff_group])
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> upper_staff = Staff(name='Upper Staff')
+>>> lower_staff = Staff(name='Lower Staff')
+>>> staff_group = StaffGroup([upper_staff, lower_staff])
+>>> score = Score([staff_group])
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Durations, offsets \& timespans}
