@@ -13,6 +13,7 @@
     \context {
         \Voice
         \remove Forbid_line_break_engraver
+        \override TupletBracket.direction = #up
     }
     \context {
         \Voice
@@ -26,11 +27,12 @@
         \override NoteHead.no-ledgers = ##t
         \override NoteHead.transparent = ##t
         \override Stem.stencil = ##f
+        \override TupletBracket.staff-padding = 3
         \override TupletBracket.outside-staff-padding = 1
         \override TupletBracket.outside-staff-priority = 999
         \override TupletNumber.stencil = ##f
         \override TupletBracket.direction = #down
-        \override TupletBracket.thickness = 3
+        \override TupletBracket.thickness = 2
     }
     \context {
         \Voice
@@ -44,11 +46,12 @@
         \override NoteHead.transparent = ##t
         \override Stem.stencil = ##f
         \override TupletNumber.stencil = ##f
+        \override TupletBracket.staff-padding = 3
         \override TupletBracket.outside-staff-padding = 1
         \override TupletBracket.outside-staff-priority = 1000
         \override NoteColumn.ignore-collision = ##t
         \override TupletBracket.direction = #down
-        \override TupletBracket.thickness = 3
+        \override TupletBracket.thickness = 2
     }
     \context {
         \Staff
@@ -78,6 +81,7 @@
         \override BarNumber.font-size = 1
         \override BarNumber.padding = 4
         \override BarNumber.stencil = #(make-stencil-circler 0.1 0.7 ly:text-interface::print)
+        \override Beam.direction = #up
         \override MetronomeMark.X-extent = #'(0 . 0)
         \override MetronomeMark.Y-extent = #'(0 . 0)
         \override MetronomeMark.break-align-symbols = #'(left-edge)
@@ -91,9 +95,12 @@
         \override RehearsalMark.font-name = "Didot"
         \override RehearsalMark.font-size = 8
         \override RehearsalMark.outside-staff-priority = 500
+        \override Rest.direction = #up
+        \override Rest.staff-position = -100
         \override RehearsalMark.self-alignment-X = #center
         \override Script.extra-offset = #'(4 . -9)
         \override Script.font-size = 6
+        \override Stem.direction = #up
         \override TextScript.font-size = 3
         \override TextScript.outside-staff-priority = 600
         \override TextScript.padding = 6
@@ -141,6 +148,7 @@
         \override Glissando.thickness = 3
         \override GraceSpacing.common-shortest-duration = #(ly:make-moment 1 8)
         \override NoteCollision.merge-differently-dotted = ##t
+        \override NoteCollision.merge-differently-headed = ##t
         \override NoteColumn.ignore-collision = ##t
         \override OttavaBracket.add-stem-support = ##t
         \override OttavaBracket.padding = 2
@@ -148,6 +156,8 @@
         %\override SpacingSpanner.strict-grace-spacing = ##f
         %\override SpacingSpanner.strict-note-spacing = ##f
         \override SpacingSpanner.uniform-stretching = ##t
+        \override Beam.direction = #up
+        \override Beam.positions = #'(5 . 5)
         \override Stem.details.beamed-lengths = #'(6)
         \override Stem.details.lengths = #'(6)
         \override Stem.stemlet-length = 1.5

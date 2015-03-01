@@ -22,15 +22,17 @@
         \override Accidental.stencil = ##f
         \override Dots.stencil = ##f
         \override Flag.stencil = ##f
+        \override NoteCollision.merge-differently-dotted = ##t
+        \override NoteCollision.merge-differently-headed = ##t
         \override NoteColumn.ignore-collision = ##t
         \override NoteHead.no-ledgers = ##t
         \override NoteHead.transparent = ##t
         \override Stem.stencil = ##f
+        \override TupletBracket.direction = #down
         \override TupletBracket.outside-staff-padding = 1
         \override TupletBracket.outside-staff-priority = 999
+        \override TupletBracket.thickness = 2
         \override TupletNumber.stencil = ##f
-        \override TupletBracket.direction = #down
-        \override TupletBracket.thickness = 3
     }
     \context {
         \Voice
@@ -40,15 +42,17 @@
         \override Accidental.stencil = ##f
         \override Dots.stencil = ##f
         \override Flag.stencil = ##f
+        \override NoteCollision.merge-differently-dotted = ##t
+        \override NoteCollision.merge-differently-headed = ##t
+        \override NoteColumn.ignore-collision = ##t
         \override NoteHead.no-ledgers = ##t
         \override NoteHead.transparent = ##t
         \override Stem.stencil = ##f
-        \override TupletNumber.stencil = ##f
+        \override TupletBracket.direction = #down
         \override TupletBracket.outside-staff-padding = 1
         \override TupletBracket.outside-staff-priority = 1000
-        \override NoteColumn.ignore-collision = ##t
-        \override TupletBracket.direction = #down
-        \override TupletBracket.thickness = 3
+        \override TupletBracket.thickness = 2
+        \override TupletNumber.stencil = ##f
     }
     \context {
         \Staff
@@ -64,6 +68,9 @@
         \Score
         \remove Bar_number_engraver
         \override Beam.positions = #'(4 . 4)
+        \override NoteCollision.merge-differently-dotted = ##t
+        \override NoteCollision.merge-differently-headed = ##t
+        \override NoteColumn.ignore-collision = ##t
         %\override SpacingSpanner.strict-grace-spacing = ##t
         %\override SpacingSpanner.strict-note-spacing = ##t
         \override SpacingSpanner.uniform-stretching = ##t
