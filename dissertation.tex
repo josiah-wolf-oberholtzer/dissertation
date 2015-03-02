@@ -5,15 +5,16 @@
 
 \geometry{a4paper, margin=1in}
 
+\usepackage[export]{adjustbox}
 \usepackage{color}
 \usepackage{csquotes}
 \usepackage{excludeonly}
 \usepackage{fancyvrb}
 \usepackage{listings}
+\usepackage{imakeidx}
 \usepackage{multicol}
 \usepackage{pdfpages}
 \usepackage{textcomp}
-\usepackage[export]{adjustbox}
 
 \newenvironment{markdown}{
     \VerbatimEnvironment
@@ -52,12 +53,6 @@
     language=[LaTeX]TeX,
 }
 
-%\titleformat*{\section}{\large\bfseries}
-%\titleformat*{\subsection}{\normalsize\bfseries}
-%\titleformat*{\subsubsection}{\normalsize\bfseries}
-%\titleformat*{\paragraph}{\large\bfseries}
-%\titleformat*{\subparagraph}{\large\bfseries}
-
 %\includeonly{
 %    source/chapters/introduction,
 %    source/chapters/a-model-of-notation,
@@ -67,13 +62,15 @@
 %    source/chapters/conclusion,
 %}
 
-\excludeonly{
-    source/chapters/score-aurora,
-    source/chapters/score-plague-water,
-    source/chapters/score-zaira,
-    source/chapters/score-armilla,
-    source/chapters/score-ersilia,
-}
+%\excludeonly{
+%    source/chapters/score-aurora,
+%    source/chapters/score-plague-water,
+%    source/chapters/score-zaira,
+%    source/chapters/score-armilla,
+%    source/chapters/score-ersilia,
+%}
+
+\makeindex[columns=3, title=Index, intoc]
 
 \begin{document}
 
@@ -128,12 +125,16 @@
 
 \singlespacing
 \begin{appendices}
-%    \include{source/appendices/appendices}
+    \include{source/appendices/appendices}
 \end{appendices}
-\clearpage
-%\bibliography{references}
+
+\cleardoublepage
+\printindex
+
+\cleardoublepage
 \addcontentsline{toc}{chapter}{References}
 \bibliographystyle{apalike2}
+\bibliography{references}
 
 \include{source/endmatter/colophon}
 

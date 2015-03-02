@@ -13,14 +13,14 @@ import consort
 
 Consort implements a model of composition which relies on a number of
 interrelated but distinct approaches to working with musical time. Abjad's
-\emph{timespan} object suggests a \enquote{coarse} approach to musical time.
+\emph{\index{timespan}} object suggests a \enquote{coarse} approach to musical time.
 Timespans represent arbitrary durated events on a timeline, without respect for
 score hierarchy or meter. They are well-suited for modeling large scale
 phrasing or gestural density structures and can handle overlap, splitting,
 stretching and other transformations without requiring any notational reality.
-Annotated timespans allow composers to position metadata anywhere on a
+Annotated \index{timespan}s allow composers to position metadata anywhere on a
 timeline, much like arranging audio regions in a DAW. Moreover, every durated
-object in a score hierarchy can be described as a timespan, allowing score
+object in a score hierarchy can be described as a \index{timespan}, allowing score
 components to engage in abstract time relations. In contrast, notated rhythms,
 composed of note, rest, tie and tuplet objects -- among others, provide the
 most \enquote{fine-grained} approach to musical time. While incredibly
@@ -29,7 +29,7 @@ ultimately be anchored in a score hierarchy. Rhythm maker classes ameliorate
 the complexity of creating notated rhythms by providing a high-level interface
 to the process of rhythmic generation. Meter coordinates time and rhythm
 vertically across score hierarchy, and bridges the coarse and fine stages of
-rhythmic interpretation. Meter sequences can be generated from timespan-based
+rhythmic interpretation. Meter sequences can be generated from \index{timespan}-based
 phrase structures, and those meter sequences used to transform notated rhythms
 in turn. A thorough discussion of the implementations of time models and their
 implications will clarify a later analysis of Consort's score interpretation
@@ -40,7 +40,7 @@ stage.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \emph{Timespans} model left-closed / right-open intervals of time positioned
-absolutely along a timeline. This means that every timespan describes an
+absolutely along a timeline. This means that every \index{timespan} describes an
 interval of time starting with -- and including -- some start offset and
 leading up to -- but not including -- some stop offset. Note that all leaves in
 a score describe such half-bounded interval of time. Adjacent notes in a score
@@ -701,7 +701,7 @@ offset is greater than the timespan's start offset and less than the timespan's
 stop offset. \emph{Improper containment} would indicated the offset is greater
 than or equal to the timespan's start offset and less than or equal to its stop
 offset.} by the timespan to be split, two new timespans will be returned,
-otherwise a timespan inventory containing a copy of the original input timespan
+otherwise a \index{timespan inventory} containing a copy of the original input timespan
 will be returned:
 
 \begin{comment}
@@ -1148,7 +1148,7 @@ relation, splitting all timespans which interact with a given offset or
 partitioning one inventory into multiple separate inventories of overlapping
 timespans.
 
-A timespan inventory can be created with a list of zero or more timespans as an
+A \index{timespan inventory} can be created with a list of zero or more timespans as an
 argument, be appended to, or extended into:
 
 \begin{comment}
@@ -1245,7 +1245,7 @@ Timespan(start_offset=Offset(15, 1), stop_offset=Offset(20, 1))
 
 \noindent Similarly, one timespan inventory can be created from another -- just
 like one can create a Python list simply by calling \texttt{list()} on another
-iterable object -- by passing the first timespan inventory as an instantiation
+iterable object -- by passing the first \index{timespan inventory} as an instantiation
 argument to the second. As many of the mutating methods implemented on timespan
 inventories operate in place, this instantiation pattern provides a simple
 means of \enquote{copying}, allowing composers to duplicate a timespan
@@ -1343,7 +1343,7 @@ timespans. \emph{Contiguity} tests if every timespan in the inventory is
 tangent to another timespan, and does not overlap any other timespan,
 \emph{overlap} tests if any timespan intersects any other timespan, and
 \emph{well-formedness} tests that all timespans' durations are greater than 0.
-A timespan inventory whose timespans are contiguous is necessarily
+A \index{timespan inventory} whose timespans are contiguous is necessarily
 also non-overlapping.
 
 \begin{comment}
@@ -1457,7 +1457,7 @@ parallel those implemented on timespans themselves. These methods
 map the desired operation onto the contents of the inventory by, for example,
 splitting every timespan contained in a given inventory by some offset. All of
 these operations act in place. The intersection of all of the timespans in a
-timespan inventory relative another timespan can be computed with the
+\index{timespan inventory} relative another timespan can be computed with the
 \texttt{\&} operator, just like with single timespans:
 
 \begin{comment}
@@ -1496,7 +1496,7 @@ show(result, range_=(-2, 16))
 %%% ABJADBOOK END %%%
 
 \noindent Likewise, the offsets bound by a given timespan can be subtracted
-from all of the timespans in a timespan inventory, effectively cutting a hole
+from all of the timespans in a \index{timespan inventory}, effectively cutting a hole
 in that inventory's timeline:
 
 \begin{comment}
