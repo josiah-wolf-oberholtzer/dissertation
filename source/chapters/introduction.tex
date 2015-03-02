@@ -49,15 +49,41 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 \subsection{LilyPond}
 
+foo
+
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{lstlisting}
-\end{lstlisting}
+\begin{multicols}{2}
+\lstinputlisting[language=]{assets/example-es-ist-genug.ly}
+\vfill
+\columnbreak
+\setlength\fboxsep{0pt}
+\setlength\fboxrule{0.5pt}
+\noindent\fbox{
+    \includegraphics[scale=0.3875]{assets/example-es-ist-genug.pdf}
+}
+\end{multicols}
 \end{singlespacing}
+
+foo
 
 \subsection{LaTeX}
 
 foo
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{multicols}{2}
+\lstinputlisting[style=beep]{assets/example-document.tex}
+\vfill
+\columnbreak
+\setlength\fboxsep{0pt}
+\setlength\fboxrule{0.5pt}
+\noindent\fbox{
+    \includegraphics[scale=0.3875]{assets/example-document.pdf}
+}
+\end{multicols}
+\end{singlespacing}
 
 \subsection{Abjad}
 
