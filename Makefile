@@ -63,15 +63,15 @@ compile:
 		-shell-escape \
 		-shell-restricted \
 		dissertation.tex
-	bibtex dissertation.aux
-	xelatex \
-		-shell-escape \
-		-shell-restricted \
-		dissertation.tex
-	xelatex \
-		-shell-escape \
-		-shell-restricted \
-		dissertation.tex
+	#bibtex dissertation.aux
+	#xelatex \
+	#	-shell-escape \
+	#	-shell-restricted \
+	#	dissertation.tex
+	#xelatex \
+    #   -shell-escape \
+	#   -shell-restricted \
+	#   dissertation.tex
 	#xelatex dissertation.tex
 	#makeindex dissertation.tex
 	#xelatex dissertation.tex
