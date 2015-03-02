@@ -3,3 +3,5 @@ lilypond-*.pdf
 *.ly
 *.dot
 *.ps
+!example*.ly
+!example*.tex

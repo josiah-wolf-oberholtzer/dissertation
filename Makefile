@@ -14,6 +14,9 @@ collect:
 	scripts/collect-modules
 	scripts/collect-scores
 
+examples:
+	$(MAKE) -C assets examples
+
 abjad/book/clean:
 	abjad-book \
 		--clean \
