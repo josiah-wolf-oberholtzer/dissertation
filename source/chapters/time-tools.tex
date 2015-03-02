@@ -4908,6 +4908,66 @@ def make_performed_music(rhythm_maker, timespans, meter_boundaries, seed=0):
 
 \begin{comment}
 <abjad>[strip_prompt=true]
+def add_time_signature_context(score, meters):
+    time_signatures = [_.implied_time_signature for _ in meters]
+    measures = scoretools.make_spacer_skip_measures(time_signatures)
+    time_signature_context = scoretools.Context(
+        [measures],
+        context_name='TimeSignatureContext',
+        name='TimeSignatureContext',
+        )
+    score.insert(0, time_signature_context)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+def add_time_signature_context(score, meters):
+    time_signatures = [_.implied_time_signature for _ in meters]
+    measures = scoretools.make_spacer_skip_measures(time_signatures)
+    time_signature_context = scoretools.Context(
+        [measures],
+        context_name='TimeSignatureContext',
+        name='TimeSignatureContext',
+        )
+    score.insert(0, time_signature_context)
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>[strip_prompt=true]
+def get_all_voicewise_timespans(timespan_inventory):
+    voicewise_timespans = {}
+    for timespan in timespan_inventory:
+        voice_name = timespan.voice_name
+        if voice_name not in voicewise_timespans:
+            voicewise_timespans[voice_name] = timespantools.TimespanInventory()
+        voicewise_timespans[voice_name].append(timespan)
+    return voicewise_timespans
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+def get_all_voicewise_timespans(timespan_inventory):
+    voicewise_timespans = {}
+    for timespan in timespan_inventory:
+        voice_name = timespan.voice_name
+        if voice_name not in voicewise_timespans:
+            voicewise_timespans[voice_name] = timespantools.TimespanInventory()
+        voicewise_timespans[voice_name].append(timespan)
+    return voicewise_timespans
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>[strip_prompt=true]
 def build_score(
     performed_rhythm_maker,
     permitted_meters,
@@ -4917,11 +4977,10 @@ def build_score(
     score = score_template()
     fitted_meters, meter_boundaries = get_meters_and_meter_boundaries(
         timespan_inventory, permitted_meters)
+    all_voicewise_timespans = get_all_voicewise_timespans(timespan_inventory)
     seed = 0
     for voice in iterate(score).by_class(Voice):
-        voice_timespans = timespantools.TimespanInventory([
-            _ for _ in timespan_inventory if _.voice_name == voice.name
-            ])
+        voice_timespans = all_voicewise_timespans[voice.name]
         previous_stop_offset = Offset(0)
         for shard in voice_timespans.partition(include_tangent_timespans=True):
             if shard.start_offset != previous_stop_offset:
@@ -4940,13 +4999,14 @@ def build_score(
             voice.append(performed_music)
             seed += 1
             previous_stop_offset = shard.stop_offset
-        if previous_stop_offset != timespan_inventory.stop_offset:
+        if previous_stop_offset != meter_boundaries[-1]:
             silence_music = make_silence_music(
                 meter_boundaries=meter_boundaries,
                 start_offset=previous_stop_offset,
-                stop_offset=timespan_inventory.stop_offset,
+                stop_offset=meter_boundaries[-1],
                 )
             voice.append(silence_music)
+    add_time_signature_context(score, fitted_meters)
     return score
 </abjad>
 \end{comment}
@@ -4964,11 +5024,10 @@ def build_score(
     score = score_template()
     fitted_meters, meter_boundaries = get_meters_and_meter_boundaries(
         timespan_inventory, permitted_meters)
+    all_voicewise_timespans = get_all_voicewise_timespans(timespan_inventory)
     seed = 0
     for voice in iterate(score).by_class(Voice):
-        voice_timespans = timespantools.TimespanInventory([
-            _ for _ in timespan_inventory if _.voice_name == voice.name
-            ])
+        voice_timespans = all_voicewise_timespans[voice.name]
         previous_stop_offset = Offset(0)
         for shard in voice_timespans.partition(include_tangent_timespans=True):
             if shard.start_offset != previous_stop_offset:
@@ -4987,20 +5046,21 @@ def build_score(
             voice.append(performed_music)
             seed += 1
             previous_stop_offset = shard.stop_offset
-        if previous_stop_offset != timespan_inventory.stop_offset:
+        if previous_stop_offset != meter_boundaries[-1]:
             silence_music = make_silence_music(
                 meter_boundaries=meter_boundaries,
                 start_offset=previous_stop_offset,
-                stop_offset=timespan_inventory.stop_offset,
+                stop_offset=meter_boundaries[-1],
                 )
             voice.append(silence_music)
+    add_time_signature_context(score, fitted_meters)
     return score
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
 \begin{comment}
-<abjad>
+<abjad>[stylesheet=../consort-small.ily]
 score = build_score(
     performed_rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
         talea=rhythmmakertools.Talea([1], 16),
@@ -5013,6 +5073,7 @@ score = build_score(
         ),
     timespan_inventory=timespan_inventory,
     )
+show(score)
 </abjad>
 \end{comment}
 
@@ -5032,7 +5093,9 @@ score = build_score(
 ...         ),
 ...     timespan_inventory=timespan_inventory,
 ...     )
+>>> show(score)
 \end{lstlisting}
+\noindent\includegraphics{assets/lilypond-e3ac0227ecefea4af706c5bbbb0a5d0f.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
