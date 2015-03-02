@@ -1,9 +1,9 @@
 %!TEX TS-program = xelatex
 %!TEX encoding = UTF-8 Unicode
 
-\documentclass[School=Harvard]{Dissertate}
+\documentclass[oneside,School=Harvard]{Dissertate}
 
-\geometry{a4paper, margin=1in}
+\geometry{a4paper,margin=1in,showframe=true}
 
 \usepackage[export]{adjustbox}
 \usepackage{color}
@@ -15,6 +15,18 @@
 \usepackage{multicol}
 \usepackage{pdfpages}
 \usepackage{textcomp}
+
+\usepackage[
+    labelfont={sc,scriptsize},
+    textfont={rm,scriptsize},
+    singlelinecheck=off,
+]{caption}
+
+%\usepackage[margincaption,outercaption,raggedright]{sidecap}
+%\sidecaptionvpos{figure}{t} 
+%\sidecaptionvpos{table}{t}
+
+\usepackage{sidenotes}
 
 \newenvironment{markdown}{
     \VerbatimEnvironment
@@ -92,17 +104,17 @@
 \setcounter{page}{1}
 \setcounter{chapter}{-1}
 
-\include{source/chapters/introduction}
+%\include{source/chapters/introduction}
 \include{source/chapters/a-model-of-notation}
 \include{source/chapters/time-tools}
 \include{source/chapters/a-model-of-composition}
-\include{source/chapters/practicalities}
-\include{source/chapters/score-aurora}
-\include{source/chapters/score-plague-water}
-\include{source/chapters/score-zaira}
-\include{source/chapters/score-armilla}
-\include{source/chapters/score-ersilia}
-\include{source/chapters/conclusion}
+%\include{source/chapters/practicalities}
+%\include{source/chapters/score-aurora}
+%\include{source/chapters/score-plague-water}
+%\include{source/chapters/score-zaira}
+%\include{source/chapters/score-armilla}
+%\include{source/chapters/score-ersilia}
+%\include{source/chapters/conclusion}
 
 \lstset{
     basicstyle=\scriptsize\ttfamily,
@@ -123,10 +135,10 @@
     upquote=true,
 }
 
-\singlespacing
-\begin{appendices}
-    \include{source/appendices/appendices}
-\end{appendices}
+%\singlespacing
+%\begin{appendices}
+%    \include{source/appendices/appendices}
+%\end{appendices}
 
 \cleardoublepage
 \printindex
