@@ -153,9 +153,6 @@
         \override NoteColumn.ignore-collision = ##t
         \override OttavaBracket.add-stem-support = ##t
         \override OttavaBracket.padding = 2
-        %\override SpacingSpanner.base-shortest-duration = #(ly:make-moment 1 64)
-        %\override SpacingSpanner.strict-grace-spacing = ##f
-        %\override SpacingSpanner.strict-note-spacing = ##f
         \override SpacingSpanner.uniform-stretching = ##t
         \override Beam.direction = #up
         \override Beam.positions = #'(5 . 5)
