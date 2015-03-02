@@ -14,6 +14,15 @@ collect:
 	scripts/collect-modules
 	scripts/collect-scores
 
+abjad/book/clean:
+	abjad-book \
+		--clean \
+		-a ./assets \
+		-g ./abjadbook.cfg \
+		-l . \
+		-y ./stylesheet.ily \
+		source/chapters/*.tex
+
 abjad/book:
 	abjad-book \
 		-a ./assets \
@@ -22,14 +31,29 @@ abjad/book:
 		-y ./stylesheet.ily \
 		source/chapters/*.tex
 
-abjad/clean:
+abjad/book/composition:
 	abjad-book \
-		--clean \
 		-a ./assets \
 		-g ./abjadbook.cfg \
 		-l . \
 		-y ./stylesheet.ily \
-		source/chapters/*.tex
+		source/chapters/a-model-of-composition.tex
+
+abjad/book/notation:
+	abjad-book \
+		-a ./assets \
+		-g ./abjadbook.cfg \
+		-l . \
+		-y ./stylesheet.ily \
+		source/chapters/a-model-of-notation.tex
+
+abjad/book/time-tools:
+	abjad-book \
+		-a ./assets \
+		-g ./abjadbook.cfg \
+		-l . \
+		-y ./stylesheet.ily \
+		source/chapters/time-tools.tex
 
 compile:
 	xelatex \
