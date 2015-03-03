@@ -13,35 +13,35 @@ import consort
 
 Consort implements a model of composition which relies on a number of
 interrelated but distinct approaches to working with musical time. Abjad's
-\emph{\index{timespan}} object suggests a \enquote{coarse} approach to musical time.
-Timespans represent arbitrary durated events on a timeline, without respect for
-score hierarchy or meter. They are well-suited for modeling large scale
-phrasing or gestural density structures and can handle overlap, splitting,
-stretching and other transformations without requiring any notational reality.
-Annotated \index{timespan}s allow composers to position metadata anywhere on a
-timeline, much like arranging audio regions in a DAW. Moreover, every durated
-object in a score hierarchy can be described as a \index{timespan}, allowing score
-components to engage in abstract time relations. In contrast, notated rhythms,
-composed of note, rest, tie and tuplet objects -- among others, provide the
-most \enquote{fine-grained} approach to musical time. While incredibly
-expressive, fully notated rhythms are potentially complex to create, and must
-ultimately be anchored in a score hierarchy. Rhythm maker classes ameliorate
-the complexity of creating notated rhythms by providing a high-level interface
-to the process of rhythmic generation. Meter coordinates time and rhythm
-vertically across score hierarchy, and bridges the coarse and fine stages of
-rhythmic interpretation. Meter sequences can be generated from \index{timespan}-based
-phrase structures, and those meter sequences used to transform notated rhythms
-in turn. A thorough discussion of the implementations of time models and their
-implications will clarify a later analysis of Consort's score interpretation
-stage.
+\emph{\index{timespan}} object suggests a \enquote{coarse} approach to musical
+time. Timespans represent arbitrary durated events on a timeline, without
+respect for score hierarchy or meter. They are well-suited for modeling large
+scale phrasing or gestural density structures and can handle overlap,
+splitting, stretching and other transformations without requiring any
+notational reality. Annotated \index{timespan}s allow composers to position
+metadata anywhere on a timeline, much like arranging audio regions in a DAW.
+Moreover, every durated object in a score hierarchy can be described as a
+\index{timespan}, allowing score components to engage in abstract time
+relations. In contrast, notated rhythms, composed of note, rest, tie and tuplet
+objects -- among others, provide the most \enquote{fine-grained} approach to
+musical time. While incredibly expressive, fully notated rhythms are
+potentially complex to create, and must ultimately be anchored in a score
+hierarchy. Rhythm maker classes ameliorate the complexity of creating notated
+rhythms by providing a high-level interface to the process of rhythmic
+generation. Meter coordinates time and rhythm vertically across score
+hierarchy, and bridges the coarse and fine stages of rhythmic interpretation.
+Meter sequences can be generated from \index{timespan}-based phrase structures,
+and those meter sequences used to transform notated rhythms in turn. A thorough
+discussion of the implementations of time models and their implications will
+clarify a later analysis of Consort's score interpretation stage.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Timespans}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \emph{Timespans} model left-closed / right-open intervals of time positioned
-absolutely along a timeline. This means that every \index{timespan} describes an
-interval of time starting with -- and including -- some start offset and
+absolutely along a timeline. This means that every \index{timespan} describes
+an interval of time starting with -- and including -- some start offset and
 leading up to -- but not including -- some stop offset. Note that all leaves in
 a score describe such half-bounded interval of time. Adjacent notes in a score
 do not overlap, but rather abut one another because their timespans do not
@@ -4781,21 +4781,7 @@ Comments?
 \end{markdown}
 
 \begin{comment}
-<abjad>[strip_prompt=true]
-def get_meters_and_meter_boundaries(timespan_inventory, permitted_meters):
-    offset_counter = metertools.OffsetCounter(timespan_inventory)
-    fitted_meters = metertools.Meter.fit_meters_to_expr(
-        expr=offset_counter,
-        maximum_run_length=1,
-        meters=permitted_meters,
-        )
-    meter_durations = [Duration(_) for _ in fitted_meters]
-    meter_boundaries = mathtools.cumulative_sums(
-        meter_durations,
-        start=Offset(0),
-        )
-    return fitted_meters, meter_boundaries
-</abjad>
+<abjadextract dissertation.py.time_tools:get_meters_and_meter_boundaries />[strip_prompt]
 \end{comment}
 
 %%% ABJADBOOK START %%%
@@ -4820,17 +4806,7 @@ def get_meters_and_meter_boundaries(timespan_inventory, permitted_meters):
 %%% ABJADBOOK END %%%
 
 \begin{comment}
-<abjad>[strip_prompt=true]
-def make_music(rhythm_maker, durations, seed=0):
-    music = rhythm_maker(durations, seeds=seed)
-    for i, x in enumerate(music):
-        if len(x) == 1 and isinstance(x[0], scoretools.Tuplet):
-            music[i] = x[0]
-        else:
-            music[i] = scoretools.Container(x)
-    music = scoretools.Container(music)
-    return music
-</abjad>
+<abjadextract dissertation.py.time_tools:make_music />[strip_prompt]
 \end{comment}
 
 %%% ABJADBOOK START %%%
@@ -4851,16 +4827,7 @@ def make_music(rhythm_maker, durations, seed=0):
 %%% ABJADBOOK END %%%
 
 \begin{comment}
-<abjad>[strip_prompt=true]
-def make_silence_music(start_offset, stop_offset, meter_boundaries):
-    silence_timespan = timespantools.Timespan(start_offset, stop_offset)
-    shards = silence_timespan.split_at_offsets(meter_boundaries)
-    durations = [_.duration for _ in shards if _.duration]
-    mask = rhythmmakertools.mask_all()
-    rhythm_maker = rhythmmakertools.NoteRhythmMaker(output_masks=[mask])
-    music = make_music(rhythm_maker, durations)
-    return music
-</abjad>
+<abjadextract dissertation.py.time_tools:make_silence_music />[strip_prompt]
 \end{comment}
 
 %%% ABJADBOOK START %%%
@@ -4880,15 +4847,7 @@ def make_silence_music(start_offset, stop_offset, meter_boundaries):
 %%% ABJADBOOK END %%%
 
 \begin{comment}
-<abjad>[strip_prompt=true]
-def make_performed_music(rhythm_maker, timespans, meter_boundaries, seed=0):
-    split_timespans = timespantools.TimespanInventory()
-    for shard in timespans.split_at_offsets(meter_boundaries):
-        split_timespans.extend(shard)
-    durations = [_.duration for _ in split_timespans if _.duration]
-    music = make_music(rhythm_maker, durations, seed=seed)
-    return music
-</abjad>
+<abjadextract dissertation.py.time_tools:make_performed_music />[strip_prompt]
 \end{comment}
 
 %%% ABJADBOOK START %%%
@@ -4907,17 +4866,7 @@ def make_performed_music(rhythm_maker, timespans, meter_boundaries, seed=0):
 %%% ABJADBOOK END %%%
 
 \begin{comment}
-<abjad>[strip_prompt=true]
-def add_time_signature_context(score, meters):
-    time_signatures = [_.implied_time_signature for _ in meters]
-    measures = scoretools.make_spacer_skip_measures(time_signatures)
-    time_signature_context = scoretools.Context(
-        [measures],
-        context_name='TimeSignatureContext',
-        name='TimeSignatureContext',
-        )
-    score.insert(0, time_signature_context)
-</abjad>
+<abjadextract dissertation.py.time_tools:add_time_signature_context />[strip_prompt]
 \end{comment}
 
 %%% ABJADBOOK START %%%
@@ -4938,16 +4887,7 @@ def add_time_signature_context(score, meters):
 %%% ABJADBOOK END %%%
 
 \begin{comment}
-<abjad>[strip_prompt=true]
-def get_all_voicewise_timespans(timespan_inventory):
-    voicewise_timespans = {}
-    for timespan in timespan_inventory:
-        voice_name = timespan.voice_name
-        if voice_name not in voicewise_timespans:
-            voicewise_timespans[voice_name] = timespantools.TimespanInventory()
-        voicewise_timespans[voice_name].append(timespan)
-    return voicewise_timespans
-</abjad>
+<abjadextract dissertation.py.time_tools:get_all_voicewise_timespans />[strip_prompt]
 \end{comment}
 
 %%% ABJADBOOK START %%%
@@ -4967,48 +4907,7 @@ def get_all_voicewise_timespans(timespan_inventory):
 %%% ABJADBOOK END %%%
 
 \begin{comment}
-<abjad>[strip_prompt=true]
-def build_score(
-    performed_rhythm_maker,
-    permitted_meters,
-    score_template,
-    timespan_inventory,
-    ):
-    score = score_template()
-    fitted_meters, meter_boundaries = get_meters_and_meter_boundaries(
-        timespan_inventory, permitted_meters)
-    all_voicewise_timespans = get_all_voicewise_timespans(timespan_inventory)
-    seed = 0
-    for voice in iterate(score).by_class(Voice):
-        voice_timespans = all_voicewise_timespans[voice.name]
-        previous_stop_offset = Offset(0)
-        for shard in voice_timespans.partition(include_tangent_timespans=True):
-            if shard.start_offset != previous_stop_offset:
-                silence_music = make_silence_music(
-                    meter_boundaries=meter_boundaries,
-                    start_offset=previous_stop_offset,
-                    stop_offset=shard.start_offset,
-                    )
-                voice.append(silence_music)
-            performed_music = make_performed_music(
-                meter_boundaries=meter_boundaries,
-                rhythm_maker=performed_rhythm_maker,
-                seed=seed,
-                timespans=shard,
-                )
-            voice.append(performed_music)
-            seed += 1
-            previous_stop_offset = shard.stop_offset
-        if previous_stop_offset != meter_boundaries[-1]:
-            silence_music = make_silence_music(
-                meter_boundaries=meter_boundaries,
-                start_offset=previous_stop_offset,
-                stop_offset=meter_boundaries[-1],
-                )
-            voice.append(silence_music)
-    add_time_signature_context(score, fitted_meters)
-    return score
-</abjad>
+<abjadextract dissertation.py.time_tools:build_score />[strip_prompt]
 \end{comment}
 
 %%% ABJADBOOK START %%%
