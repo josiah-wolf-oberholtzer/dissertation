@@ -4770,15 +4770,163 @@ Comments?
 \section{Synthesizing time techniques}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{markdown}
-- Create a score template
-- Create a timespan inventory
-- Fit meters against it
-- Explode by voice name
-- Partition by contiguity
-- Split shards by meter boundaries
-- Populate score
-\end{markdown}
+The techniques outlined in this chapter -- timespan inventories,
+timespan-makers, rhythm-makers, meter fitting and rewriting -- describe various
+ways of modeling, creating and manipulating aspects of musical score. Taken
+separately, none of them can ever result in the rhythmic framework for a
+polyphonic piece of music. However, by combining all of them together, it is
+possible to construct powerful tools for generating arbitrarily large amounts
+of notation.
+
+The following \texttt{build\_score()} function outlines one possible approach
+to combining these techniques. This function creates a score from a
+rhythm-maker, a sequence of permitted meters, a score template and a timespan
+inventory. The timespan inventory must contain performed timespans whose voice
+names align with the voice names in the score produced by the score template.
+For example, Abjad's \texttt{GroupedRhythmicStavesScoreTemplate} class can
+produce scores containing voices with names like \enquote{Voice 1},
+\enquote{Voice 2} and so forth. The timespan inventory used for this example --
+created earlier in this chapter -- contains performed timespans with the voice
+names \enquote{Voice 1}, \enquote{Voice 2}, \enquote{Voice 3} and
+\enquote{Voice 4}, requiring a score template capabable of creating scores with
+four staves of one voice each.
+
+\begin{comment}
+<abjad>
+show(timespan_inventory, key='voice_name')
+score_template = templatetools.GroupedRhythmicStavesScoreTemplate(
+    staff_count=4, with_clefs=True,
+    )
+score = score_template()
+print(format(score))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> show(timespan_inventory, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-54d2fa8b64e488a84ee52a488caf28df.pdf}
+\begin{lstlisting}
+>>> score_template = templatetools.GroupedRhythmicStavesScoreTemplate(
+...     staff_count=4, with_clefs=True,
+...     )
+>>> score = score_template()
+>>> print(format(score))
+\context Score = "Grouped Rhythmic Staves Score" <<
+    \context StaffGroup = "Grouped Rhythmic Staves Staff Group" <<
+        \context RhythmicStaff = "Staff 1" {
+            \clef "percussion"
+            \context Voice = "Voice 1" {
+            }
+        }
+        \context RhythmicStaff = "Staff 2" {
+            \clef "percussion"
+            \context Voice = "Voice 2" {
+            }
+        }
+        \context RhythmicStaff = "Staff 3" {
+            \clef "percussion"
+            \context Voice = "Voice 3" {
+            }
+        }
+        \context RhythmicStaff = "Staff 4" {
+            \clef "percussion"
+            \context Voice = "Voice 4" {
+            }
+        }
+    >>
+>>
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+Score building proceeds by first fitting the permitted meters against the
+timespan inventory and calculating their meter boundaries -- the offsets of
+each downbeat as well as the virtual downbeat after the final meter. Then the
+timespans in the timespan inventory are grouped into a dictionary of separate
+inventories according to their associated voice names. A score is produced by
+the score template in order to be populated, and the voice components in this
+score are iterated over. For each iterated voice, an inventory of timespans is
+retrieved from the \texttt{all\_voicewise\_timespans} dictionary. If no
+inventory exists, an empty one is created. The associated performed timespans
+are partitioned into contiguous groups in order to facilitate rhythm
+generation. Each partitioned group is passed, along with the input rhythm
+maker, the fitted meter boundaries, and a seed value -- the number of performed
+timespan groups encountered so far -- to a rhythm generation subroutine, with
+the resulting phrase container appended into the current voice. If a gap is
+encountered between two partitioned groups, between the beginning of the first
+partitioned group and the beginning of the score -- the offset 0, or between
+the end of the last partitioned group and the final meter boundary, "silent
+music" will be created in the form of rests grouped into a container, with that
+container then inserted into the current voice.
+
+\begin{comment}
+<abjadextract dissertation.py.time_tools:build_score />[strip_prompt]
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+def build_score(
+    performed_rhythm_maker,
+    permitted_meters,
+    score_template,
+    timespan_inventory,
+    ):
+    fitted_meters, meter_boundaries = get_meters_and_meter_boundaries(
+        timespan_inventory, permitted_meters)
+    all_voicewise_timespans = get_all_voicewise_timespans(timespan_inventory)
+    seed = 0
+    score = score_template()
+    for voice in iterate(score).by_class(Voice):
+        if voice.name not in all_voicewise_timespans:
+            all_voicewise_timespans[voice.name] = \
+                timespantools.TimespanInventory()
+        voice_timespans = all_voicewise_timespans[voice.name]
+        previous_stop_offset = Offset(0)
+        for shard in voice_timespans.partition(include_tangent_timespans=True):
+            if shard.start_offset != previous_stop_offset:
+                silent_music = make_silent_music(
+                    meter_boundaries=meter_boundaries,
+                    start_offset=previous_stop_offset,
+                    stop_offset=shard.start_offset,
+                    )
+                voice.append(silent_music)
+            performed_music = make_performed_music(
+                meter_boundaries=meter_boundaries,
+                rhythm_maker=performed_rhythm_maker,
+                seed=seed,
+                timespans=shard,
+                )
+            voice.append(performed_music)
+            seed += 1
+            previous_stop_offset = shard.stop_offset
+        if previous_stop_offset != meter_boundaries[-1]:
+            silent_music = make_silent_music(
+                meter_boundaries=meter_boundaries,
+                start_offset=previous_stop_offset,
+                stop_offset=meter_boundaries[-1],
+                )
+            voice.append(silent_music)
+        for phrase in voice:
+            rewrite_meters(phrase, fitted_meters, meter_boundaries)
+    add_time_signature_context(score, fitted_meters)
+    return score
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent A meter sequence of equal or greater duration to the input timespan
+inventory can be produced through fitting a collection of permitted meters
+against that same input timespan inventory. The sequence of offsets found at
+the boundaries of each fitted meter can then be determined by computing the
+cumulative sums of the durations of the fitted meters. These boundary offsets
+will be used to split timespans before they are fed to rhythm-makers for rhythm
+generation in order to ensure that no generated rhythm crosses any barlines.
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:get_meters_and_meter_boundaries />[strip_prompt]
@@ -4805,46 +4953,84 @@ def get_meters_and_meter_boundaries(timespan_inventory, permitted_meters):
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Each of the performed timespans in the input timespan inventory was
+configured with a voice name, allowing that timespan to be associated with a
+voice context in the score hierarchy produced by the input score template. As
+demonstrated earlier, Abjad components can be indexed by context name
+regardlesss of the depth of the named context in the score hierarchy.
+
 \begin{comment}
-<abjadextract dissertation.py.time_tools:make_music />[strip_prompt]
+<abjad>
+timespan = timespan_inventory[0]
+print(format(timespan))
+score = score_template()
+voice = score[timespan.voice_name]
+for component in inspect_(voice).get_parentage():
+    component
+
+</abjad>
 \end{comment}
 
 %%% ABJADBOOK START %%%
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
-def make_music(rhythm_maker, durations, seed=0):
-    music = rhythm_maker(durations, seeds=seed)
-    for i, x in enumerate(music):
-        if len(x) == 1 and isinstance(x[0], scoretools.Tuplet):
-            music[i] = x[0]
-        else:
-            music[i] = scoretools.Container(x)
-    music = scoretools.Container(music)
-    return music
+>>> timespan = timespan_inventory[0]
+>>> print(format(timespan))
+consort.tools.PerformedTimespan(
+    start_offset=durationtools.Offset(0, 1),
+    stop_offset=durationtools.Offset(1, 4),
+    original_start_offset=durationtools.Offset(9, 2),
+    original_stop_offset=durationtools.Offset(19, 4),
+    voice_name='Voice 3',
+    )
+\end{lstlisting}
+\begin{lstlisting}
+>>> score = score_template()
+>>> voice = score[timespan.voice_name]
+>>> for component in inspect_(voice).get_parentage():
+...     component
+...
+Voice()
+<RhythmicStaff-"Staff 3"{1}>
+<StaffGroup-"Grouped Rhythmic Staves Staff Group"<<4>>>
+<Score-"Grouped Rhythmic Staves Score"<<1>>>
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent In order to populate each voice in the score, the timespans in the
+timespan inventory need to be separated into \emph{voice-wise} timespan
+inventories, each only containing timespans associated with the same voice.
+This can be accomplished by building a dictionary whose keys are voice names
+and whose values are timespan inventories.
+
 \begin{comment}
-<abjadextract dissertation.py.time_tools:make_silence_music />[strip_prompt]
+<abjadextract dissertation.py.time_tools:get_all_voicewise_timespans />[strip_prompt]
 \end{comment}
 
 %%% ABJADBOOK START %%%
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
-def make_silence_music(start_offset, stop_offset, meter_boundaries):
-    silence_timespan = timespantools.Timespan(start_offset, stop_offset)
-    shards = silence_timespan.split_at_offsets(meter_boundaries)
-    durations = [_.duration for _ in shards if _.duration]
-    mask = rhythmmakertools.mask_all()
-    rhythm_maker = rhythmmakertools.NoteRhythmMaker(output_masks=[mask])
-    music = make_music(rhythm_maker, durations)
-    return music
+def get_all_voicewise_timespans(timespan_inventory):
+    voicewise_timespans = {}
+    for timespan in timespan_inventory:
+        voice_name = timespan.voice_name
+        if voice_name not in voicewise_timespans:
+            voicewise_timespans[voice_name] = timespantools.TimespanInventory()
+        voicewise_timespans[voice_name].append(timespan)
+    return voicewise_timespans
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent Creating \emph{performed} music requires first splitting a contiguous
+inventory of performed timespans by meter boundaries, collecting the shards
+together into a new inventory and then calculating the durations of those
+timespans. The resulting sequence of durations, along with an input
+rhythm-maker and an optional seed value can be sent to another function for
+rhythm generation.
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:make_performed_music />[strip_prompt]
@@ -4864,6 +5050,132 @@ def make_performed_music(rhythm_maker, timespans, meter_boundaries, seed=0):
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent Similarly, \emph{silent} music -- rests between groups of performed
+timespans in each voice -- can be created by constructing a timespan which
+outlines the gap between other performed timespans, splitting that timespan by
+meter boundaries, collecting the durations of the split shards, and finally
+passing those durations along with a rest-generating rhythm-maker to another
+function for rhythm generation.
+
+\begin{comment}
+<abjadextract dissertation.py.time_tools:make_silent_music />[strip_prompt]
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+def make_silent_music(start_offset, stop_offset, meter_boundaries):
+    silence_timespan = timespantools.Timespan(start_offset, stop_offset)
+    shards = silence_timespan.split_at_offsets(meter_boundaries)
+    durations = [_.duration for _ in shards if _.duration]
+    mask = rhythmmakertools.mask_all()
+    rhythm_maker = rhythmmakertools.NoteRhythmMaker(output_masks=[mask])
+    music = make_music(rhythm_maker, durations)
+    return music
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Both silent and performed music generation relies on the same core
+rhythm generating function. This function calls its input rhythm-maker with a
+sequence of durations and an optional seed value, which may be interpreted
+variably depending on what kind of rhythm-maker was used, but which generally
+results in the rotation of any sequence-like configured value in that
+rhythm-maker, such as talea. The product of this first operation is a sequence
+of component selections. Some massaging converts this selections into a
+sequence of trivially-prolated containers and non-trivially prolated tuplets
+which can then be wrapped inside a larger container representing a complete
+phrase.
+
+\begin{comment}
+<abjadextract dissertation.py.time_tools:make_music />[strip_prompt]
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+def make_music(rhythm_maker, durations, seed=0):
+    music = rhythm_maker(durations, seeds=seed)
+    for i, division in enumerate(music):
+        if len(division) == 1 and isinstance(division[0], scoretools.Tuplet):
+            music[i] = division[0]
+        else:
+            music[i] = scoretools.Container(division)
+    music = scoretools.Container(music)
+    return music
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent After all phrases for a voice have been generated, their meters are
+rewritten. This process involves simultaneously iterating through both the
+divisions in each phrase along with pairs of meters and meter downbeat
+offsets -- that is, the offset from the origin of the score where each meter
+begins.\footnote{More optimizations to this joint container / meter iteration
+are obviously possible. Some have even been implemented in Consort's source.
+Such optimization include associating meters with their own timespans, and
+storing these meter-timespans in an optimized interval-tree datastructure
+allowing rapid retrieval by both offset and timespan intersection. For the sake
+of pedagogical clarity, a more naive approach is used here.} Un-prolated
+division containers are rewritten according to the meter active when they
+begin. Because a division may start \emph{after} a meter has begun it is
+necessary to calculate the difference between each un-prolated division's start
+offset and each meter's start offset. This difference is passed to the
+\texttt{MutationAgent}'s \texttt{rewrite\_meter()} method via the
+\texttt{initial\_offset} keyword, allowing the division to be properly aligned
+against the desired meter. Prolated divisions -- tuplets -- are rewritten
+solely with respect to the duration of their contents, not to the prevailing
+meter. That is, a 5:4 tuplet in a 4/8 measure is rewritten with a meter of 5/8,
+not of 4/8.
+
+\begin{comment}
+<abjadextract dissertation.py.time_tools:rewrite_meters />[strip_prompt]
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+def rewrite_meters(phrase, meters, meter_boundaries):
+    pairs = list(zip(meters, meter_boundaries))
+    for division in phrase:
+        division_offset = inspect_(division).get_timespan().start_offset
+        while 1 < len(pairs) and pairs[1][1] <= division_offset:
+            pairs.pop(0)
+        if isinstance(division, scoretools.Tuplet):
+            contents_duration = division._contents_duration
+            meter = metertools.Meter(contents_duration)
+            mutate(division[:]).rewrite_meter(
+                meter,
+                boundary_depth=1,
+                )
+        else:
+            meter, meter_boundary = pairs[0]
+            initial_offset = division_offset - meter_boundary
+            mutate(division[:]).rewrite_meter(
+                meter,
+                boundary_depth=1,
+                initial_offset=initial_offset,
+                )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent The final step in this score building process adds a \enquote{floating time
+signature context} to the score, filled with typographic spacer skips and time
+signature commands, one for each of the fitted meters. This context appears as
+a row of time signatures floating above the topmost staff in the score,
+allowing time signatures to be omitted from every staff in the score and
+thereby improving proportional notation spacing. The time signature context's
+\texttt{context\_name} property instructs LilyPond to look for a context
+definition with that name and apply any typographic overrides found there
+during the typesetting process. While LilyPond does not come packaged with a
+\texttt{TimeSignatureContext} definition, examples of what such a definition
+looks like can be found in the various \texttt{stylesheet} sections of the
+source code appendices to this document.
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:add_time_signature_context />[strip_prompt]
@@ -4886,95 +5198,62 @@ def add_time_signature_context(score, meters):
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Calling the \texttt{build\_score()} function generates a score as
+described above. In this example, the function's arguments comprise a talea
+rhythm-maker, an inventory of meters, as well as the previously defined score
+template and timespan inventory.
+
 \begin{comment}
-<abjadextract dissertation.py.time_tools:get_all_voicewise_timespans />[strip_prompt]
+<abjad>
+permitted_meters = metertools.MeterInventory([
+    (2, 4), (4, 8), (3, 4), (6, 8), (7, 8), (4, 4),
+    ])
+performed_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
+    beam_specifier=rhythmmakertools.BeamSpecifier(
+        beam_each_division=True,
+        beam_divisions_together=True,
+        ),
+    extra_counts_per_division=(0, 1),
+    talea=rhythmmakertools.Talea([1, 2, 3, 4, 5], 16),
+    )
+show(performed_rhythm_maker, divisions=divisions)
+</abjad>
 \end{comment}
 
 %%% ABJADBOOK START %%%
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
-def get_all_voicewise_timespans(timespan_inventory):
-    voicewise_timespans = {}
-    for timespan in timespan_inventory:
-        voice_name = timespan.voice_name
-        if voice_name not in voicewise_timespans:
-            voicewise_timespans[voice_name] = timespantools.TimespanInventory()
-        voicewise_timespans[voice_name].append(timespan)
-    return voicewise_timespans
+>>> permitted_meters = metertools.MeterInventory([
+...     (2, 4), (4, 8), (3, 4), (6, 8), (7, 8), (4, 4),
+...     ])
+>>> performed_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
+...     beam_specifier=rhythmmakertools.BeamSpecifier(
+...         beam_each_division=True,
+...         beam_divisions_together=True,
+...         ),
+...     extra_counts_per_division=(0, 1),
+...     talea=rhythmmakertools.Talea([1, 2, 3, 4, 5], 16),
+...     )
+>>> show(performed_rhythm_maker, divisions=divisions)
 \end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-12a3ce90ede7ebf565493e80cd2b641b.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\begin{comment}
-<abjadextract dissertation.py.time_tools:build_score />[strip_prompt]
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
-def build_score(
-    performed_rhythm_maker,
-    permitted_meters,
-    score_template,
-    timespan_inventory,
-    ):
-    score = score_template()
-    fitted_meters, meter_boundaries = get_meters_and_meter_boundaries(
-        timespan_inventory, permitted_meters)
-    all_voicewise_timespans = get_all_voicewise_timespans(timespan_inventory)
-    seed = 0
-    for voice in iterate(score).by_class(Voice):
-        voice_timespans = all_voicewise_timespans[voice.name]
-        previous_stop_offset = Offset(0)
-        for shard in voice_timespans.partition(include_tangent_timespans=True):
-            if shard.start_offset != previous_stop_offset:
-                silence_music = make_silence_music(
-                    meter_boundaries=meter_boundaries,
-                    start_offset=previous_stop_offset,
-                    stop_offset=shard.start_offset,
-                    )
-                voice.append(silence_music)
-            performed_music = make_performed_music(
-                meter_boundaries=meter_boundaries,
-                rhythm_maker=performed_rhythm_maker,
-                seed=seed,
-                timespans=shard,
-                )
-            voice.append(performed_music)
-            seed += 1
-            previous_stop_offset = shard.stop_offset
-        if previous_stop_offset != meter_boundaries[-1]:
-            silence_music = make_silence_music(
-                meter_boundaries=meter_boundaries,
-                start_offset=previous_stop_offset,
-                stop_offset=meter_boundaries[-1],
-                )
-            voice.append(silence_music)
-    add_time_signature_context(score, fitted_meters)
-    return score
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
+\noindent For clarity, the phrases and their internal divisions have been
+annotated via Consort's \texttt{annotate} function. This function draws thick
+brackets underneath each staff, with the lower bracket indicating the overall
+phrase grouping and the inner brackets indicating divisions within each phrase.
+Entirely silent phrasing brackets are drawn with dashed rather than solid
+lines.
 
 \begin{comment}
 <abjad>[stylesheet=../consort-small.ily]
 score = build_score(
-    performed_rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
-        beam_specifier=rhythmmakertools.BeamSpecifier(
-            beam_each_division=True,
-            beam_divisions_together=True,
-            ),
-        extra_counts_per_division=(0, 1),
-        talea=rhythmmakertools.Talea([1, 2, 3], 16),
-        ),
-    permitted_meters=metertools.MeterInventory([
-        (2, 4), (4, 8), (3, 4), (6, 8), (7, 8), (4, 4),
-        ]),
-    score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
-        staff_count=4, with_clefs=True,
-        ),
+    performed_rhythm_maker=performed_rhythm_maker,
+    permitted_meters=permitted_meters,
+    score_template=score_template,
     timespan_inventory=timespan_inventory,
     )
 consort.annotate(score)
@@ -4987,28 +5266,71 @@ show(score)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> score = build_score(
-...     performed_rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
-...         beam_specifier=rhythmmakertools.BeamSpecifier(
-...             beam_each_division=True,
-...             beam_divisions_together=True,
-...             ),
-...         extra_counts_per_division=(0, 1),
-...         talea=rhythmmakertools.Talea([1, 2, 3], 16),
-...         ),
-...     permitted_meters=metertools.MeterInventory([
-...         (2, 4), (4, 8), (3, 4), (6, 8), (7, 8), (4, 4),
-...         ]),
-...     score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
-...         staff_count=4, with_clefs=True,
-...         ),
+...     performed_rhythm_maker=performed_rhythm_maker,
+...     permitted_meters=permitted_meters,
+...     score_template=score_template,
 ...     timespan_inventory=timespan_inventory,
 ...     )
 >>> consort.annotate(score)
 >>> show(score)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-24f1ff3921c0157e59a866cabd4691e3.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8ece1468ead3048f49429d2eead03474.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent Large-scale variations are possible simply by altering the arguments
+to the \texttt{build\_score()} function. For example, the timespan inventory
+can be reflected around its axis and stretched from a duration of 19/4 to 25/4.
+This will change the overall duration and phrase density of the resulting score
+while maintaining the character of its surface rhythms.
+
+\begin{comment}
+<abjad>[stylesheet=../consort-small.ily]
+multiplier = Duration(24, 4) / Duration(19, 4)
+timespan_inventory = timespan_inventory.reflect()
+timespan_inventory = timespan_inventory.stretch(multiplier)
+timespan_inventory = timespan_inventory.round_offsets(Duration(1, 8))
+score = build_score(
+    performed_rhythm_maker=performed_rhythm_maker,
+    permitted_meters=permitted_meters,
+    score_template=score_template,
+    timespan_inventory=timespan_inventory,
+    )
+consort.annotate(score)
+show(score)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> multiplier = Duration(24, 4) / Duration(19, 4)
+>>> timespan_inventory = timespan_inventory.reflect()
+>>> timespan_inventory = timespan_inventory.stretch(multiplier)
+>>> timespan_inventory = timespan_inventory.round_offsets(Duration(1, 8))
+>>> score = build_score(
+...     performed_rhythm_maker=performed_rhythm_maker,
+...     permitted_meters=permitted_meters,
+...     score_template=score_template,
+...     timespan_inventory=timespan_inventory,
+...     )
+>>> consort.annotate(score)
+>>> show(score)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-95fbbd917e003934806c4cf066250909.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Other variations and extensions are possible. The input rhythm-maker
+could be varied or replaced by a composite rhythm-maker. The score generation
+process could be extended so that rhythm-makers could be stored on the
+performed timespans themselves, allowing each performed timespan to specify its
+local rhythmic language. Multiple timespan inventories could be combined
+together using the various logical operations to implement masking or fusing
+when timespans from one inventory overlap those from another. In fact, all of
+these extensions and variations are employed in Consort's own score generation
+process.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Implications}
