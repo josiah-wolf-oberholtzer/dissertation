@@ -4288,7 +4288,7 @@ for offset, count in sorted(piano_staff_counter.items()):
         weight = kernel_44.kernel[offset]
     weighted_count = weight * count
     total += weighted_count
-    message = '{!s}: count: {}, weight: {!s}, multiplied: {!s}, total: {!s}'
+    message = '{!s}:\tcount: {}, weight: {!s}, multiplied: {!s}, total: {!s}'
     message = message.format(offset, count, weight, weighted_count, total)
     print(message)
 
@@ -4306,16 +4306,16 @@ for offset, count in sorted(piano_staff_counter.items()):
 ...         weight = kernel_44.kernel[offset]
 ...     weighted_count = weight * count
 ...     total += weighted_count
-...     message = '{!s}: count: {}, weight: {!s}, multiplied: {!s}, total: {!s}'
+...     message = '{!s}:\tcount: {}, weight: {!s}, multiplied: {!s}, total: {!s}'
 ...     message = message.format(offset, count, weight, weighted_count, total)
 ...     print(message)
 ...
-0: count: 2, weight: 4/33, multiplied: 8/33, total: 8/33
-1/8: count: 2, weight: 2/33, multiplied: 4/33, total: 4/11
-1/4: count: 2, weight: 1/11, multiplied: 2/11, total: 6/11
-1/2: count: 4, weight: 1/11, multiplied: 4/11, total: 10/11
-5/8: count: 2, weight: 2/33, multiplied: 4/33, total: 34/33
-1: count: 2, weight: 4/33, multiplied: 8/33, total: 14/11
+0:	count: 2, weight: 4/33, multiplied: 8/33, total: 8/33
+1/8:	count: 2, weight: 2/33, multiplied: 4/33, total: 4/11
+1/4:	count: 2, weight: 1/11, multiplied: 2/11, total: 6/11
+1/2:	count: 4, weight: 1/11, multiplied: 4/11, total: 10/11
+5/8:	count: 2, weight: 2/33, multiplied: 4/33, total: 34/33
+1:	count: 2, weight: 4/33, multiplied: 8/33, total: 14/11
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
@@ -4573,7 +4573,8 @@ show(timespan_inventory, key='voice_name')
 %%% ABJADBOOK END %%%
 
 \noindent Constructing an offset counter from this timespan inventory shows
-several offsets with strong simultaneities, notably at 11/8, 17/8.
+several offsets with strong simultaneities, notably at 11/8, 13/8, 17/8 and
+25/8.
 
 \begin{comment}
 <abjad>
@@ -4902,23 +4903,24 @@ print(format(score))
 
 Score building proceeds by first fitting the permitted meters against the
 timespan inventory and calculating their meter boundaries -- the offsets of
-each downbeat as well as the virtual downbeat after the final meter. Then the
-timespans in the timespan inventory are grouped into a dictionary of separate
-inventories according to their associated voice names. A score is produced by
-the score template in order to be populated, and the voice components in this
-score are iterated over. For each iterated voice, an inventory of timespans is
-retrieved from the \texttt{all\_voicewise\_timespans} dictionary. If no
-inventory exists, an empty one is created. The associated performed timespans
-are partitioned into contiguous groups in order to facilitate rhythm
-generation. Each partitioned group is passed, along with the input rhythm
-maker, the fitted meter boundaries, and a seed value -- the number of performed
-timespan groups encountered so far -- to a rhythm generation subroutine, with
-the resulting phrase container appended into the current voice. If a gap is
-encountered between two partitioned groups, between the beginning of the first
-partitioned group and the beginning of the score -- the offset 0, or between
-the end of the last partitioned group and the final meter boundary, "silent
-music" will be created in the form of rests grouped into a container, with that
-container then inserted into the current voice.
+each downbeat, as well as the virtual downbeat, the \enquote{end-beat}, after
+the final meter. Then the timespans in the input timespan inventory are
+separated into new timespan inventories according to their associated voice
+names, with these new inventories stored in a dictionary whose keys are those
+same voice name. The score template generates an un-populated score and the
+voice components in this score are iterated over. For each iterated voice, an
+inventory of timespans is retrieved from the \texttt{all\_voicewise\_timespans}
+dictionary. If no inventory exists, an empty one is created. The associated
+performed timespans are partitioned into contiguous groups in order to
+facilitate rhythm generation. Each partitioned group is passed, along with the
+input rhythm maker, the fitted meter boundaries, and a seed value -- the number
+of performed timespan groups encountered so far -- to a rhythm generation
+subroutine, with the resulting phrase container appended into the current
+voice. If a gap is encountered between two partitioned groups, between the
+beginning of the first partitioned group and the beginning of the score -- the
+offset 0, or between the end of the last partitioned group and the final meter
+boundary, "silent music" will be created in the form of rests grouped into a
+container, with that container then inserted into the current voice.
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:build_score />[strip_prompt]
