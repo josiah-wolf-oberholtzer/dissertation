@@ -2852,24 +2852,27 @@ show(result, key='voice_name', range_=(0, 75))
 \section{Rhythm-makers}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{markdown}
-- rhythm-makers mirror timespan-makers
-- they come in a variety of classes
-- they are highly configurable via keywords
-- their configuration is clarified through specifier classes
-- specifier classes group related configuration properties together
-- recall that keys in nested configuration can still be changed via `new()`
-- they act as frozen functions
-- they all have an identical interface for input and output
-\end{markdown}
+Abjad's rhythm-makers, like Consort's timespan-makers, are highly-configurable
+factory classes which behave like partially evaluated functions, taking
+as input sequences of \emph{divisions} -- positive duration tokens representing
+the divisions in some phrase of music -- and producing selections of score
+components as output. Abjad's \texttt{rhythmmakertools} subpackage contains a
+variety of such classes, each providing a different strategy for rhythm
+generation, but unified by the same callable interface. Additionally,
+\texttt{rhythmmakertools} provides a collection of \emph{specifier} classes
+which group related configuration values together for controlling the behavior
+of ties, beams, duration spelling and other notational aspects of each
+rhythm-maker's output. Like many other classes in Abjad -- timespans, for
+example -- both these specifiers and the rhythm-makers themselves can be
+templated via calls to \texttt{new()}. A tour of these rhythm-maker classes
+demonstrates how a wide range of rhythmic textures can be produced.
 
 \subsection{Note rhythm-makers}
 
-Like many objects implemented in Abjad and its extensions, rhythm-makers can be
-illustrated via a call to \texttt{show()}. Rhythm-maker illustrations take an
-optional \texttt{divisions} argument, specifying what durations should be used
-for the rhythm output, grouping each of those divisions into measures for ease
-of understanding.
+Note rhythm-makers, arguably the simplest class of rhythm-maker, take a
+sequence of input divisions and \enquote{fill} them with notes, tied as
+necessary, such that the duration of each logical tie in each output division
+equals the duration of each input division.
 
 \begin{comment}
 <abjad>
@@ -2891,10 +2894,18 @@ show(note_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Rhythm-makers can be configured with a variety of specifiers,
-allowing for optional customization of their rhythm-generating behavior. For
-example, a \texttt{TieSpecifier} instance can be used to force the rhythm-maker
-to tie the last note of each division to the first note of the next division.
+\noindent Like many objects implemented in Abjad and its extensions,
+rhythm-makers can be illustrated via a call to \texttt{show()}. Rhythm-maker
+illustrations take an optional \texttt{divisions} argument, specifying what
+durations should be used for the generated rhythmic output, grouping each of
+those divisions into measures for ease of visualization.
+
+Rhythm-makers can be configured with a variety of specifiers, allowing for
+optional customization of their rhythm-generating behavior. For example, a
+\texttt{TieSpecifier} can be used to force a rhythm-maker to tie the last note
+of each output division to the first note of the next output division. When
+used with a note rhythm-maker, this effectively ties all notes in the output
+together.
 
 \begin{comment}
 <abjad>
@@ -2924,17 +2935,16 @@ show(note_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Other rhythm-maker specifiers influence beaming, duration spelling
-and tuplet spelling, or can cause a rhythm-maker to convert patterned groups of
-leaves in its output from notes to rests or vice versa. Outputs masks are one
-such specifier. Configuring rhythm-makers with an \texttt{output\_masks}
-argument causes their output to be \emph{masked} by silences on a patterned
+\noindent Other rhythm-maker specifiers influence beaming, tuplet spelling, or
+can cause a rhythm-maker to convert patterned groups of leaves in its output
+from notes to rests or vice versa. Rhythm-makers configured with \emph{output
+masks} replace the contents of their output divisions with rests in a patterned
 per-division basis. A sequence of one or more \texttt{BooleanPattern} instances
 control the masking pattern. These patterns partition the rhythm-maker's output
 divisions into segments of a given period, and then mask out divisions
 specified by indices within that period. For example, a note rhythm-maker
-configured with a single output mask of a period of length 2 and the index 0
-will cause the first of every two divisions to be silenced.
+configured with a single output mask of a period of length 2 and a masking
+index 0 will cause the first of every two divisions to be silenced.
 
 \begin{comment}
 <abjad>
@@ -2956,9 +2966,9 @@ show(note_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Reducing the period of the boolean pattern from 2 to 1 forces all
-output divisions to be cast as rests, effectively turning a note-generating
-rhythm-maker into a rest-generating rhythm-maker.
+\noindent Reducing the period of the boolean pattern from 2 to 1 silences every
+output division, effectively turning a note-generating rhythm-maker into a
+rest-generating rhythm-maker.
 
 \begin{comment}
 <abjad>
@@ -2985,9 +2995,9 @@ show(note_rhythm_maker, divisions=divisions)
 Talea rhythm-makers, like talea timespan-makers, create rhythmic output through
 the use of a talea -- an infinitely cyclic pattern of durations. Talea
 rhythm-makers fill their output divisions with durations from their talea,
-splitting durations across division boundaries when overful. The following
-trivial talea rhythm-maker uses a length-1 talea comprised of a single 1/16
-duration.
+splitting those durations across division boundaries when the divisions are
+overful. The following trivial talea rhythm-maker uses a length-1 talea
+comprised of a single 1/16 duration.
 
 \begin{comment}
 <abjad>
@@ -3047,7 +3057,7 @@ show(talea_rhythm_maker, divisions=divisions)
 %%% ABJADBOOK END %%%
 
 \noindent With the talea counts changed to a descending sequence of durations,
-the pattern of split and tied durations changes.
+the pattern of split and tied durations also changes.
 
 \begin{comment}
 <abjad>
@@ -3450,6 +3460,14 @@ show(incised_rhythm_maker, divisions=divisions)
 
 \subsection{Even-division rhythm-makers}
 
+Even-division rhythm-makers attempt to divide each input division into runs of
+notes with a basic duration \texttt{1/denominator}, where the \texttt{denominator}
+is specified on a per-division basis by the rhythm-maker's configurable
+\texttt{denominator} sequence property. When an input division does not
+exactly fit some multiple of this basic duration, some combination of
+augmentation or tupletting will be used to produce notes with durations as
+close to that basic duration as possible.
+
 \begin{comment}
 <abjad>
 even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker()
@@ -3468,9 +3486,9 @@ show(even_division_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-Extending the even-division rhythm-maker's denominator sequence to a 2-length
-pattern produces divisions filled alternatingly with 1/8 and 1/16 notes. Note
-that the 3/16 measure is filled with a dotted 1/8 note.
+\noindent Extending the even-division rhythm-maker's denominator sequence to a
+2-length pattern produces divisions filled alternatingly with 1/8 and 1/16
+notes. Note that the 3/16 measure is filled with a dotted 1/8 note.
 
 \begin{comment}
 <abjad>
@@ -3496,8 +3514,8 @@ show(even_division_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-Extending the denominator sequence even further results in more complex output.
-Note here how the 5/8 division is rendered as a tuplet.
+\noindent Extending the denominator sequence even further results in more
+complex output. Note here how the 5/8 division is rendered as a tuplet.
 
 \begin{comment}
 <abjad>
@@ -3523,12 +3541,13 @@ show(even_division_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-Like the talea rhythm-maker, even-division rhythm-makers can be configured with
-a \texttt{extra\_counts\_per\_division} property, forcing the rhythm-maker to
-treat input divisions as longer than the actually. Artificially lengthened
-divisions are rendered as tuplets. With the following rhythm-maker, every other
-division is extended by one count, causing the 4/8 and 2/4 divisions to be
-rendered as 5:4 tuplets, and the 4/16 division to be rendered as a 3:2 tuplet.
+\noindent Like the talea rhythm-maker, even-division rhythm-makers can be
+configured with a \texttt{extra\_counts\_per\_division} property, forcing the
+rhythm-maker to treat input divisions as longer than the actually. Artificially
+lengthened divisions are rendered as tuplets. With the following rhythm-maker,
+every other division is extended by one count, causing the 4/8 and 2/4
+divisions to be rendered as 5:4 tuplets, and the 4/16 division to be rendered
+as a 3:2 tuplet.
 
 \begin{comment}
 <abjad>
@@ -3556,8 +3575,8 @@ show(even_division_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-When configured with a tie specifier, this even-division rhythm-maker obscures
-the downbeat of every output division.
+\noindent When configured with a tie specifier, the even-division rhythm-maker
+obscures the downbeat of every output division.
 
 \begin{comment}
 <abjad>
@@ -3587,8 +3606,8 @@ show(even_division_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-And when reconfigured with the earlier 8-4-16 denominator pattern, this
-rhythm-maker produces rich tupletted rhythmic output.
+\noindent And when reconfigured with the earlier 8-4-16 denominator pattern,
+the even-division rhythm-maker produces rich tupletted rhythmic output.
 
 \begin{comment}
 <abjad>
@@ -3614,11 +3633,16 @@ show(even_division_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Tuplet rhythm-makers}
-
-
-
 \subsection{Composite rhythm-makers} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Consort provides a class for aggregating multiple rhythm-maker instances
+together into a \emph{composite} rhythm-maker, which applies its aggregated
+rhythm-makers conditionally against input divisions to generate rhythmic
+output. The following contrived composite rhythm-maker uses the previously note
+rhythm-maker -- which only generates rests -- for the last of any sequence of
+input divisions, the previously defined incised rhythm-maker for the first of
+any sequence of input divisions, and the previously defined talea rhythm-maker
+for all other input divisions.
 
 \begin{comment}
 <abjad>
