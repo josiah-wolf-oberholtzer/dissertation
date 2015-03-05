@@ -26,7 +26,7 @@ relations. In contrast, notated rhythms, composed of note, rest, tie and tuplet
 objects -- among others, provide the most \enquote{fine-grained} approach to
 musical time. While incredibly expressive, fully notated rhythms are
 potentially complex to create, and must ultimately be anchored in a score
-hierarchy. Rhythm maker classes ameliorate the complexity of creating notated
+hierarchy. Rhythm-maker classes ameliorate the complexity of creating notated
 rhythms by providing a high-level interface to the process of rhythmic
 generation. Meter coordinates time and rhythm vertically across score
 hierarchy, and bridges the coarse and fine stages of rhythmic interpretation.
@@ -1864,9 +1864,9 @@ internal datastructure may eventually be merged into Abjad's own
 While the above datastructures and operations are potentially very useful, a
 larger question remains: how can composers create enough timespans, and in
 various patterns, to be musically interesting? Consort approaches this problem
-by providing a collection of factory classes -- \emph{timespan makers} -- which
+by providing a collection of factory classes -- \emph{timespan-makers} -- which
 can be configured and called to create arbitrarily large amounts of timespans.
-However, before turning to a detailed discussion of timespan makers, we must
+However, before turning to a detailed discussion of timespan-makers, we must
 discuss the products of the timespan themselves: Consort's annotated timespan
 subclasses.
 
@@ -1980,20 +1980,15 @@ performed_timespan = consort.PerformedTimespan(
 - music specifier
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Timespan makers}
+\section{Timespan-makers}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{markdown}
 - timespan specifier
-
 - independent vs dependent
+\end{markdown}
 
-- target timespans
-
-- talea
-
-- padding
-
-\subsection{FloodedTimespanMaker} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Flooded timespan-makers} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -2109,7 +2104,7 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-A new flooded timespan maker, configured with padding and a timespan specifier
+A new flooded timespan-maker, configured with padding and a timespan specifier
 which will further configure each generated timespan.
 
 \begin{comment}
@@ -2198,7 +2193,7 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{TaleaTimespanMaker} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Talea timespan-makers} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -2550,7 +2545,7 @@ show(result, key='voice_name')
 %%% ABJADBOOK END %%%
 
 
-\subsection{DependentTimespanMaker} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Dependent timespan-makers} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -2815,10 +2810,10 @@ show(result, key='voice_name', range_=(0, 75))
 %%% ABJADBOOK END %%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Rhythm makers}
+\section{Rhythm-makers}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-- divisions
+\subsection{Note rhythm-makers}
 
 \begin{comment}
 <abjad>
@@ -2834,8 +2829,6 @@ divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
-
-- rhythm maker
 
 \begin{comment}
 <abjad>
@@ -2854,6 +2847,11 @@ show(note_rhythm_maker, divisions=divisions)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-d0f66021e4860194d32ee0fa226ed174.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent Rhythm-makers can be configured with a variety of specifiers,
+allowing for optional customization of their rhythm-generating behavior. For
+example, a \texttt{TieSpecifier} instance can be used to force the rhythm-maker
+to tie the last note of each division to the first note of the next division.
 
 \begin{comment}
 <abjad>
@@ -2883,16 +2881,22 @@ show(note_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Other rhythm-maker specifiers influence beaming, duration spelling
+and tuplet spelling, or can cause a rhythm-maker to convert patterned groups of
+leaves in its output from notes to rests or vice versa. Outputs masks are one
+such specifier. Configuring rhythm-makers with an \texttt{output\_masks}
+argument causes their output to be \emph{masked} by silences on a patterned
+per-division basis. A sequence of one or more \texttt{BooleanPattern} instances
+control the masking pattern. These patterns partition the rhythm-maker's output
+divisions into segments of a given period, and then mask out divisions
+specified by indices within that period. For example, a note rhythm-maker
+configured with a single output mask of a period of length 2 and the index 0
+will cause the first of every two divisions to be silenced.
+
 \begin{comment}
 <abjad>
-note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(
-    output_masks=[
-        rhythmmakertools.BooleanPattern(
-            indices=[0],
-            period=2,
-            ),
-        ],
-    )
+mask = rhythmmakertools.BooleanPattern(indices=[0], period=2)
+note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(output_masks=[mask])
 show(note_rhythm_maker, divisions=divisions)
 </abjad>
 \end{comment}
@@ -2901,30 +2905,22 @@ show(note_rhythm_maker, divisions=divisions)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(
-...     output_masks=[
-...         rhythmmakertools.BooleanPattern(
-...             indices=[0],
-...             period=2,
-...             ),
-...         ],
-...     )
+>>> mask = rhythmmakertools.BooleanPattern(indices=[0], period=2)
+>>> note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(output_masks=[mask])
 >>> show(note_rhythm_maker, divisions=divisions)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fb60261fce39a6a8bed29c6bc1a39b14.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Reducing the period of the boolean pattern from 2 to 1 forces all
+output divisions to be cast as rests, effectively turning a note-generating
+rhythm-maker into a rest-generating rhythm-maker.
+
 \begin{comment}
 <abjad>
-note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(
-    output_masks=[
-        rhythmmakertools.BooleanPattern(
-            indices=[0],
-            period=1,
-            ),
-        ],
-    )
+mask = rhythmmakertools.BooleanPattern(indices=[0], period=1)
+note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(output_masks=[mask])
 show(note_rhythm_maker, divisions=divisions)
 </abjad>
 \end{comment}
@@ -2933,26 +2929,55 @@ show(note_rhythm_maker, divisions=divisions)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(
-...     output_masks=[
-...         rhythmmakertools.BooleanPattern(
-...             indices=[0],
-...             period=1,
-...             ),
-...         ],
-...     )
+>>> mask = rhythmmakertools.BooleanPattern(indices=[0], period=1)
+>>> note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(output_masks=[mask])
 >>> show(note_rhythm_maker, divisions=divisions)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-b8d4d2abe1d0cabd1dba685a0e5a2bcc.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\subsection{Incised rhythm-makers}
+
+Incised rhythm-makers behave similarly to note rhythm-makers, but allow for
+\emph{incising} patterned sequences of notes and rests from the beginnings and
+ends of each output division, or even from the beginning and end of the entire
+sequence of divisions -- the rhythm-maker \emph{output}. Configuring an incised
+rhythm-maker to perform incision requires an \texttt{InciseSpecifier} instance.
+An unconfigured incised rhythm-maker behaves identically to unconfigured note
+rhythm-maker.
+
+\begin{comment}
+<abjad>
+incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker()
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker()
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Incise specifiers define talea and group counts for prefix and suffix
+incision. The talea -- as determined by the numerators given in the
+\texttt{prefix\_talea} and \texttt{suffix\_talea} sequences combined with the
+\texttt{talea\_denominator} -- define the durations to be selected from, as
+well as the \emph{sign} of the component to be incised. Negative talea items
+indicate rests, while positive talea items indicate notes. The count properties
+-- \texttt{suffix\_counts} and \texttt{prefix\_counts} -- indicate how many
+talea durations should be selected at each pass. The following incised
+rhythm-maker incises a single 1/16 rest at the end of each division.
+
 \begin{comment}
 <abjad>
 incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
     incise_specifier=rhythmmakertools.InciseSpecifier(
-        suffix_talea=[-1],
         suffix_counts=[1],
+        suffix_talea=[-1],
         talea_denominator=16,
         ),
     )
@@ -2966,8 +2991,8 @@ show(incised_rhythm_maker, divisions=divisions)
 \begin{lstlisting}
 >>> incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
 ...     incise_specifier=rhythmmakertools.InciseSpecifier(
-...         suffix_talea=[-1],
 ...         suffix_counts=[1],
+...         suffix_talea=[-1],
 ...         talea_denominator=16,
 ...         ),
 ...     )
@@ -2977,13 +3002,43 @@ show(incised_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Extending the suffix talea results in a more complex incision
+pattern.
+
+\begin{comment}
+<abjad>
+incised_rhythm_maker = new(
+    incised_rhythm_maker,
+    incise_specifier__suffix_talea=[-1, -2, -3],
+    )
+show(incised_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> incised_rhythm_maker = new(
+...     incised_rhythm_maker,
+...     incise_specifier__suffix_talea=[-1, -2, -3],
+...     )
+>>> show(incised_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fafb95028809a8071ef2a59e4da26ec9.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Prefix incision occurs in an identical fashion, by specifying
+sequences of group counts and talea numerators. Here, alternating groups of
+length-1 and length-2 are incised from the beginning of each division.
+
 \begin{comment}
 <abjad>
 incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
     incise_specifier=rhythmmakertools.InciseSpecifier(
-        fill_with_notes=False,
         prefix_counts=[2, 1],
-        prefix_talea=[1],
+        prefix_talea=[2, 1],
         talea_denominator=16,
         ),
     )
@@ -2997,17 +3052,49 @@ show(incised_rhythm_maker, divisions=divisions)
 \begin{lstlisting}
 >>> incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
 ...     incise_specifier=rhythmmakertools.InciseSpecifier(
-...         fill_with_notes=False,
 ...         prefix_counts=[2, 1],
-...         prefix_talea=[1],
+...         prefix_talea=[2, 1],
 ...         talea_denominator=16,
 ...         ),
 ...     )
 >>> show(incised_rhythm_maker, divisions=divisions)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-d22f16b98a9a0b7dc379c37be145f71f.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c2461da064af411639e8a2608af00305.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent Setting the incise specifier's \texttt{fill\_with\_notes} property to
+false causes the rhythm-maker to fill the unincised durations of its divisions
+with rests rather notes.
+
+\begin{comment}
+<abjad>
+incised_rhythm_maker = new(
+    incised_rhythm_maker,
+    incise_specifier__fill_with_notes=False,
+    )
+show(incised_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> incised_rhythm_maker = new(
+...     incised_rhythm_maker,
+...     incise_specifier__fill_with_notes=False,
+...     )
+>>> show(incised_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-25581a22cd4059e8966b0ff386bbbcc6.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Incised rhythm-makers can be configured to only incise the outer
+divisions of their output. The following rhythm-maker cuts 1/8 rests from the
+beginning of the first division in its output, and the end of the last
+division.
 
 \begin{comment}
 <abjad>
@@ -3045,6 +3132,12 @@ show(incised_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Incised rhythm-makers also respect many of the same rhythm-maker
+specifiers as the other rhythm-maker classes defined in Abjad's
+\texttt{rhythmmakertools} subpackage. Like note rhythm-makers, they can be
+configured to tie the last note of each output division to the first note of
+the next output division via an instance of the \texttt{TieSpecifier} class.
+
 \begin{comment}
 <abjad>
 incised_rhythm_maker = new(
@@ -3073,149 +3166,7 @@ show(incised_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\begin{comment}
-<abjad>
-even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker()
-show(even_division_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker()
->>> show(even_division_rhythm_maker, divisions=divisions)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-2bcea48859d1e8378a750341c3315103.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-even_division_rhythm_maker = new(
-    even_division_rhythm_maker,
-    denominators=[8, 16],
-    )
-show(even_division_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> even_division_rhythm_maker = new(
-...     even_division_rhythm_maker,
-...     denominators=[8, 16],
-...     )
->>> show(even_division_rhythm_maker, divisions=divisions)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-042a232c8ba3c9adb624c404980efe18.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-even_division_rhythm_maker = new(
-    even_division_rhythm_maker,
-    denominators=[8, 4, 16],
-    )
-show(even_division_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> even_division_rhythm_maker = new(
-...     even_division_rhythm_maker,
-...     denominators=[8, 4, 16],
-...     )
->>> show(even_division_rhythm_maker, divisions=divisions)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-18b3464ab66c7d829de5417e6e668687.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-even_division_rhythm_maker = new(
-    even_division_rhythm_maker,
-    denominators=[8],
-    extra_counts_per_division=(0, 1),
-    )
-show(even_division_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> even_division_rhythm_maker = new(
-...     even_division_rhythm_maker,
-...     denominators=[8],
-...     extra_counts_per_division=(0, 1),
-...     )
->>> show(even_division_rhythm_maker, divisions=divisions)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7bd6867c75e18e48ebf2c898a35a53b9.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-even_division_rhythm_maker = new(
-    even_division_rhythm_maker,
-    tie_specifier=rhythmmakertools.TieSpecifier(
-        tie_across_divisions=True,
-        ),
-    )
-show(even_division_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> even_division_rhythm_maker = new(
-...     even_division_rhythm_maker,
-...     tie_specifier=rhythmmakertools.TieSpecifier(
-...         tie_across_divisions=True,
-...         ),
-...     )
->>> show(even_division_rhythm_maker, divisions=divisions)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-4cc7ba58b448cb7add8a0024b1e90f9b.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-even_division_rhythm_maker = new(
-    even_division_rhythm_maker,
-    denominators=[8, 4, 16],
-    )
-show(even_division_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> even_division_rhythm_maker = new(
-...     even_division_rhythm_maker,
-...     denominators=[8, 4, 16],
-...     )
->>> show(even_division_rhythm_maker, divisions=divisions)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-af43995b8651db6fd08d7d3e42ff809b.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
+\subsection{Talea rhythm-makers}
 
 \begin{comment}
 <abjad>
@@ -3375,7 +3326,153 @@ show(talea_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Composite rhythm makers} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Even division rhythm-makers}
+
+\begin{comment}
+<abjad>
+even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker()
+show(even_division_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker()
+>>> show(even_division_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-2bcea48859d1e8378a750341c3315103.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+even_division_rhythm_maker = new(
+    even_division_rhythm_maker,
+    denominators=[8, 16],
+    )
+show(even_division_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> even_division_rhythm_maker = new(
+...     even_division_rhythm_maker,
+...     denominators=[8, 16],
+...     )
+>>> show(even_division_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-042a232c8ba3c9adb624c404980efe18.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+even_division_rhythm_maker = new(
+    even_division_rhythm_maker,
+    denominators=[8, 4, 16],
+    )
+show(even_division_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> even_division_rhythm_maker = new(
+...     even_division_rhythm_maker,
+...     denominators=[8, 4, 16],
+...     )
+>>> show(even_division_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-18b3464ab66c7d829de5417e6e668687.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+even_division_rhythm_maker = new(
+    even_division_rhythm_maker,
+    denominators=[8],
+    extra_counts_per_division=(0, 1),
+    )
+show(even_division_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> even_division_rhythm_maker = new(
+...     even_division_rhythm_maker,
+...     denominators=[8],
+...     extra_counts_per_division=(0, 1),
+...     )
+>>> show(even_division_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7bd6867c75e18e48ebf2c898a35a53b9.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+even_division_rhythm_maker = new(
+    even_division_rhythm_maker,
+    tie_specifier=rhythmmakertools.TieSpecifier(
+        tie_across_divisions=True,
+        ),
+    )
+show(even_division_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> even_division_rhythm_maker = new(
+...     even_division_rhythm_maker,
+...     tie_specifier=rhythmmakertools.TieSpecifier(
+...         tie_across_divisions=True,
+...         ),
+...     )
+>>> show(even_division_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-4cc7ba58b448cb7add8a0024b1e90f9b.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+even_division_rhythm_maker = new(
+    even_division_rhythm_maker,
+    denominators=[8, 4, 16],
+    )
+show(even_division_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> even_division_rhythm_maker = new(
+...     even_division_rhythm_maker,
+...     denominators=[8, 4, 16],
+...     )
+>>> show(even_division_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-af43995b8651db6fd08d7d3e42ff809b.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\subsection{Composite rhythm-makers} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 <abjad>
@@ -4913,7 +5010,7 @@ inventory of timespans is retrieved from the \texttt{all\_voicewise\_timespans}
 dictionary. If no inventory exists, an empty one is created. The associated
 performed timespans are partitioned into contiguous groups in order to
 facilitate rhythm generation. Each partitioned group is passed, along with the
-input rhythm maker, the fitted meter boundaries, and a seed value -- the number
+input rhythm-maker, the fitted meter boundaries, and a seed value -- the number
 of performed timespan groups encountered so far -- to a rhythm generation
 subroutine, with the resulting phrase container appended into the current
 voice. If a gap is encountered between two partitioned groups, between the
@@ -5349,6 +5446,7 @@ multiplier = Duration(24, 4) / Duration(19, 4)
 timespan_inventory = timespan_inventory.reflect()
 timespan_inventory = timespan_inventory.stretch(multiplier)
 timespan_inventory = timespan_inventory.round_offsets(Duration(1, 8))
+show(timespan_inventory, key='voice_name')
 score = build_score(
     performed_rhythm_maker=performed_rhythm_maker,
     permitted_meters=permitted_meters,
@@ -5368,6 +5466,10 @@ show(score)
 >>> timespan_inventory = timespan_inventory.reflect()
 >>> timespan_inventory = timespan_inventory.stretch(multiplier)
 >>> timespan_inventory = timespan_inventory.round_offsets(Duration(1, 8))
+>>> show(timespan_inventory, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-2946788e9f258035fb10f3011cd4a737.pdf}
+\begin{lstlisting}
 >>> score = build_score(
 ...     performed_rhythm_maker=performed_rhythm_maker,
 ...     permitted_meters=permitted_meters,

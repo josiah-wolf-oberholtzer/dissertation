@@ -17,7 +17,7 @@ collect:
 examples:
 	$(MAKE) -C assets examples
 
-abjad/book/clean:
+abjad/clean:
 	abjad-book \
 		--clean \
 		-a ./assets \
@@ -25,6 +25,15 @@ abjad/book/clean:
 		-l . \
 		-y ./stylesheet.ily \
 		source/chapters/*.tex
+
+abjad/clean/time-tools:
+	abjad-book \
+		--clean \
+		-a ./assets \
+		-g ./abjadbook.cfg \
+		-l . \
+		-y ./stylesheet.ily \
+		source/chapters/time-tools.tex
 
 abjad/book:
 	abjad-book \
