@@ -2195,6 +2195,45 @@ timespantools.TimespanInventory(
 
 \subsection{Talea timespan-makers} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Talea -- infinitely cyclic patterns of durations.
+
+\begin{comment}
+<abjad>
+talea = rhythmmakertools.Talea(
+    counts=[1, 2, 3, 4],
+    denominator=16,
+    )
+for index in range(10):
+    talea[index]
+
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea = rhythmmakertools.Talea(
+...     counts=[1, 2, 3, 4],
+...     denominator=16,
+...     )
+>>> for index in range(10):
+...     talea[index]
+...
+NonreducedFraction(1, 16)
+NonreducedFraction(2, 16)
+NonreducedFraction(3, 16)
+NonreducedFraction(4, 16)
+NonreducedFraction(1, 16)
+NonreducedFraction(2, 16)
+NonreducedFraction(3, 16)
+NonreducedFraction(4, 16)
+NonreducedFraction(1, 16)
+NonreducedFraction(2, 16)
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>
 talea_timespan_maker = consort.TaleaTimespanMaker()
@@ -2813,26 +2852,29 @@ show(result, key='voice_name', range_=(0, 75))
 \section{Rhythm-makers}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{markdown}
+- rhythm-makers mirror timespan-makers
+- they come in a variety of classes
+- they are highly configurable via keywords
+- their configuration is clarified through specifier classes
+- specifier classes group related configuration properties together
+- recall that keys in nested configuration can still be changed via `new()`
+- they act as frozen functions
+- they all have an identical interface for input and output
+\end{markdown}
+
 \subsection{Note rhythm-makers}
 
-\begin{comment}
-<abjad>
-divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
+Like many objects implemented in Abjad and its extensions, rhythm-makers can be
+illustrated via a call to \texttt{show()}. Rhythm-maker illustrations take an
+optional \texttt{divisions} argument, specifying what durations should be used
+for the rhythm output, grouping each of those divisions into measures for ease
+of understanding.
 
 \begin{comment}
 <abjad>
 note_rhythm_maker = rhythmmakertools.NoteRhythmMaker()
+divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
 show(note_rhythm_maker, divisions=divisions)
 </abjad>
 \end{comment}
@@ -2842,6 +2884,7 @@ show(note_rhythm_maker, divisions=divisions)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> note_rhythm_maker = rhythmmakertools.NoteRhythmMaker()
+>>> divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
 >>> show(note_rhythm_maker, divisions=divisions)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-d0f66021e4860194d32ee0fa226ed174.pdf}
@@ -2937,6 +2980,242 @@ show(note_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\subsection{Talea rhythm-makers}
+
+Talea rhythm-makers, like talea timespan-makers, create rhythmic output through
+the use of a talea -- an infinitely cyclic pattern of durations. Talea
+rhythm-makers fill their output divisions with durations from their talea,
+splitting durations across division boundaries when overful. The following
+trivial talea rhythm-maker uses a length-1 talea comprised of a single 1/16
+duration.
+
+\begin{comment}
+<abjad>
+talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
+    talea=rhythmmakertools.Talea(
+        counts=[1],
+        denominator=16,
+        ),
+    )
+show(talea_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
+...     talea=rhythmmakertools.Talea(
+...         counts=[1],
+...         denominator=16,
+...         ),
+...     )
+>>> show(talea_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a8d7d6245553b2c4f5d2e404e62ae27b.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Extending the talea counts to a sequence of alternating 1/16 and 1/8
+notes produces more complex results. Note how the 1/8 durations break over the
+boundaries of the 3/16 measure, but remain tied together. Talea rhythm-makers
+handle talea splitting and tying transparently.
+
+\begin{comment}
+<abjad>
+talea_rhythm_maker = new(
+    talea_rhythm_maker,
+    talea__counts=[1, 2],
+    )
+show(talea_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_rhythm_maker = new(
+...     talea_rhythm_maker,
+...     talea__counts=[1, 2],
+...     )
+>>> show(talea_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a91e80c7459af113e517ef98d44608db.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent With the talea counts changed to a descending sequence of durations,
+the pattern of split and tied durations changes.
+
+\begin{comment}
+<abjad>
+talea_rhythm_maker = new(
+    talea_rhythm_maker,
+    talea__counts=[4, 3, 2, 1],
+    )
+show(talea_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_rhythm_maker = new(
+...     talea_rhythm_maker,
+...     talea__counts=[4, 3, 2, 1],
+...     )
+>>> show(talea_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8d6fdf555decf2c32991c6d1f43307af.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Talea rhythm-makers can be configured to treat input divisions as
+though they had more counts than they actually do via their
+\texttt{extra\_counts\_per\_division} property, potentially causing tuplets to
+appear in the output. The following talea, reconfigured from the previous, adds
+an extra count to every second and third input division. This causes the 4/8
+and 3/16 as well as the 5/8 and 2/4 divisions to become tuplets, each with a
+pre-prolated duration 1/16 longer than their prolated duration. That is, the
+4/8 division contains a tuplet whose contents sum to 9/16, but scaled into a
+duration of 8/16. Likewise, the 3/16 division contains a tuplet whose contents
+sum to 4/16, but scaled into a duration of 3/16. Note how this tupletting
+causes the pattern of split and tied talea durations to shift. In the previous
+example, the second instance of the talea's 3/16 duration occurred entirely
+during the 3/16 division. Here, that same 3/16 talea duration begins on the
+final 1/16 of the 4/8 divisions's 9:8 tuplet, tied into the 4:3 tuplet in the
+following division.
+
+\begin{comment}
+<abjad>
+talea_rhythm_maker = new(
+    talea_rhythm_maker,
+    extra_counts_per_division=[0, 1, 1],
+    )
+show(talea_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_rhythm_maker = new(
+...     talea_rhythm_maker,
+...     extra_counts_per_division=[0, 1, 1],
+...     )
+>>> show(talea_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f868ef7342d21df2f091666e876b44e7.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Like note rhythm-makers, talea rhythm-makers can be configured with a
+tie specifier, causing the last note of each division to be tied to the first
+note of the next division. In note rhythm-makers, the contents of each
+un-masked division is guaranteed to be a single logical tie and tying across
+divisions results in the entire output of the note rhythm-maker merging into
+the same logical tie. The output divisions of talea rhythm-makers generally
+contain more than one logical tie, and therefore tying across divisions tends
+to produce the effect of ellided downbeats with intermittent attacks.
+
+\begin{comment}
+<abjad>
+talea_rhythm_maker = new(
+    talea_rhythm_maker,
+    tie_specifier=rhythmmakertools.TieSpecifier(
+        tie_across_divisions=True,
+        ),
+    )
+show(talea_rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_rhythm_maker = new(
+...     talea_rhythm_maker,
+...     tie_specifier=rhythmmakertools.TieSpecifier(
+...         tie_across_divisions=True,
+...         ),
+...     )
+>>> show(talea_rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0aa7f18c24b9676851fc7ace0fbb408e.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Talea rhythm-makers can also be configured to produce intermittent
+silences, either by specifying negative count values in the rhythm-maker's
+talea, or by configuring the rhythm-maker with a special \emph{burnish}
+specifier which casts logical ties generated by the rhythm-maker as either
+notes or rests, in a patterned way. Here, the 3-count in the talea
+rhythm-maker's talea is changed to -3, resulting in the production of
+3/16-duration silences.
+
+\begin{comment}
+<abjad>
+talea_rhythm_maker_with_rests = new(
+    talea_rhythm_maker,
+    talea__counts=[4, -3, 2, 1],
+    )
+show(talea_rhythm_maker_with_rests, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_rhythm_maker_with_rests = new(
+...     talea_rhythm_maker,
+...     talea__counts=[4, -3, 2, 1],
+...     )
+>>> show(talea_rhythm_maker_with_rests, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f4acf8cc0f640f8afb7dbc701a8bbc82.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Alternatively, configuring the rhythm-maker with the following
+\texttt{BurnishSpecifier} allows the first logical tie of every other division
+to be converted to rests.
+
+\begin{comment}
+<abjad>
+talea_rhythm_maker_with_rests = new(
+    talea_rhythm_maker,
+    burnish_specifier=rhythmmakertools.BurnishSpecifier(
+        left_classes=[Rest],
+        left_counts=[1, 0],
+        ),
+    )
+show(talea_rhythm_maker_with_rests, divisions=divisions)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_rhythm_maker_with_rests = new(
+...     talea_rhythm_maker,
+...     burnish_specifier=rhythmmakertools.BurnishSpecifier(
+...         left_classes=[Rest],
+...         left_counts=[1, 0],
+...         ),
+...     )
+>>> show(talea_rhythm_maker_with_rests, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-56c4a8d2c9d313021bf1f182ccb3a96e.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \subsection{Incised rhythm-makers}
 
 Incised rhythm-makers behave similarly to note rhythm-makers, but allow for
@@ -2950,6 +3229,7 @@ rhythm-maker.
 \begin{comment}
 <abjad>
 incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker()
+show(incised_rhythm_maker, divisions=divisions)
 </abjad>
 \end{comment}
 
@@ -2958,7 +3238,9 @@ incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker()
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker()
+>>> show(incised_rhythm_maker, divisions=divisions)
 \end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-d0f66021e4860194d32ee0fa226ed174.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -3166,167 +3448,7 @@ show(incised_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Talea rhythm-makers}
-
-\begin{comment}
-<abjad>
-talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
-    talea=rhythmmakertools.Talea(
-        counts=[1],
-        denominator=16,
-        ),
-    )
-show(talea_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
-...     talea=rhythmmakertools.Talea(
-...         counts=[1],
-...         denominator=16,
-...         ),
-...     )
->>> show(talea_rhythm_maker, divisions=divisions)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a8d7d6245553b2c4f5d2e404e62ae27b.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-talea_rhythm_maker = new(
-    talea_rhythm_maker,
-    talea__counts=[1, 2],
-    )
-show(talea_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> talea_rhythm_maker = new(
-...     talea_rhythm_maker,
-...     talea__counts=[1, 2],
-...     )
->>> show(talea_rhythm_maker, divisions=divisions)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a91e80c7459af113e517ef98d44608db.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-talea_rhythm_maker = new(
-    talea_rhythm_maker,
-    talea__counts=[1, 2, 3, 4],
-    )
-show(talea_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> talea_rhythm_maker = new(
-...     talea_rhythm_maker,
-...     talea__counts=[1, 2, 3, 4],
-...     )
->>> show(talea_rhythm_maker, divisions=divisions)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-101e0079ec09025cbd79b4f02fb37c60.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-talea_rhythm_maker = new(
-    talea_rhythm_maker,
-    extra_counts_per_division=[0, 1, 1],
-    )
-show(talea_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> talea_rhythm_maker = new(
-...     talea_rhythm_maker,
-...     extra_counts_per_division=[0, 1, 1],
-...     )
->>> show(talea_rhythm_maker, divisions=divisions)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-02eb5487975f8445cefb4b61deef34ff.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-talea_rhythm_maker = new(
-    talea_rhythm_maker,
-    tie_specifier=rhythmmakertools.TieSpecifier(
-        tie_across_divisions=True,
-        ),
-    )
-show(talea_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> talea_rhythm_maker = new(
-...     talea_rhythm_maker,
-...     tie_specifier=rhythmmakertools.TieSpecifier(
-...         tie_across_divisions=True,
-...         ),
-...     )
->>> show(talea_rhythm_maker, divisions=divisions)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-98638e7bc3f5e68f0b625083aeb87bd3.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-talea_rhythm_maker = new(
-    talea_rhythm_maker,
-    burnish_specifier=rhythmmakertools.BurnishSpecifier(
-        left_classes=[Rest, Note],
-        left_counts=[1],
-        ),
-    )
-show(talea_rhythm_maker, divisions=divisions)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> talea_rhythm_maker = new(
-...     talea_rhythm_maker,
-...     burnish_specifier=rhythmmakertools.BurnishSpecifier(
-...         left_classes=[Rest, Note],
-...         left_counts=[1],
-...         ),
-...     )
->>> show(talea_rhythm_maker, divisions=divisions)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-61a4a24d2a5c1723853eb5642113f887.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\subsection{Even division rhythm-makers}
+\subsection{Even-division rhythm-makers}
 
 \begin{comment}
 <abjad>
@@ -3345,6 +3467,10 @@ show(even_division_rhythm_maker, divisions=divisions)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-2bcea48859d1e8378a750341c3315103.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+Extending the even-division rhythm-maker's denominator sequence to a 2-length
+pattern produces divisions filled alternatingly with 1/8 and 1/16 notes. Note
+that the 3/16 measure is filled with a dotted 1/8 note.
 
 \begin{comment}
 <abjad>
@@ -3370,6 +3496,9 @@ show(even_division_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+Extending the denominator sequence even further results in more complex output.
+Note here how the 5/8 division is rendered as a tuplet.
+
 \begin{comment}
 <abjad>
 even_division_rhythm_maker = new(
@@ -3393,6 +3522,13 @@ show(even_division_rhythm_maker, divisions=divisions)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-18b3464ab66c7d829de5417e6e668687.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+Like the talea rhythm-maker, even-division rhythm-makers can be configured with
+a \texttt{extra\_counts\_per\_division} property, forcing the rhythm-maker to
+treat input divisions as longer than the actually. Artificially lengthened
+divisions are rendered as tuplets. With the following rhythm-maker, every other
+division is extended by one count, causing the 4/8 and 2/4 divisions to be
+rendered as 5:4 tuplets, and the 4/16 division to be rendered as a 3:2 tuplet.
 
 \begin{comment}
 <abjad>
@@ -3419,6 +3555,9 @@ show(even_division_rhythm_maker, divisions=divisions)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7bd6867c75e18e48ebf2c898a35a53b9.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+When configured with a tie specifier, this even-division rhythm-maker obscures
+the downbeat of every output division.
 
 \begin{comment}
 <abjad>
@@ -3448,6 +3587,9 @@ show(even_division_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+And when reconfigured with the earlier 8-4-16 denominator pattern, this
+rhythm-maker produces rich tupletted rhythmic output.
+
 \begin{comment}
 <abjad>
 even_division_rhythm_maker = new(
@@ -3471,6 +3613,10 @@ show(even_division_rhythm_maker, divisions=divisions)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-af43995b8651db6fd08d7d3e42ff809b.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\subsection{Tuplet rhythm-makers}
+
+
 
 \subsection{Composite rhythm-makers} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -3496,7 +3642,7 @@ show(composite_rhythm_maker, divisions=divisions)
 ...     )
 >>> show(composite_rhythm_maker, divisions=divisions)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7d145c57388b785eeffaaccd509a9595.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-b1e38a72e659f0b2878d87c5401d2cd5.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
