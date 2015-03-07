@@ -4308,7 +4308,7 @@ show(measure)
 %%% ABJADBOOK END %%%
 
 \noindent After meter rewriting, the final F-sharp is notated as a
-triple-dotted quarter note, valid because its stop offset aligns perfectly with
+triple-dotted quarter-note, valid because its stop offset aligns perfectly with
 the containing measure's stop offset.
 
 \begin{comment}
@@ -4330,7 +4330,7 @@ show(measure)
 %%% ABJADBOOK END %%%
 
 \noindent Capping the maximum number of dots to 2 causes the F-sharp to be
-rewritten with as a double-dotted eighth note tied to a quarter note.
+rewritten with as a double-dotted eighth-note tied to a quarter-note.
 
 \begin{comment}
 <abjad>
@@ -4400,6 +4400,17 @@ show(measure)
 
 \subsection{Boundary depth} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+In meter rewriting, \emph{boundary depth} forces emphasis of offsets found at
+different \emph{depths} in a meter's rhythm-tree by marking as invalid logical
+ties which do not immediately align to those offsets on the very first pass of
+the recursive meter rewriting process. Use of boundary depth often clarifies
+distinctive groupings in more deeply nested meters, such as the 3-ness inherent
+to a 9/8 meter. The nodes with a depth of 1 in the following 9/8 meter's
+rhythm-tree -- the three 3/8 inner nodes marked by triangles -- outline the
+offsets 0/8, 3/8, 6/8 and 9/8. When rewriting a 9/8 rhythm with a boundary
+depth of 1, any logical ties not aligning with -- including overlapping --
+those offsets would be marked as invalid and therefore rewritten.
+
 \begin{comment}
 <abjad>
 nine_eight_meter = metertools.Meter((9, 8))
@@ -4443,6 +4454,15 @@ show(measure)
 </abjad>
 \end{comment}
 
+\noindent After rewriting, without any boundary depth specified, the D half
+note in the above 9/8 measure has been split into two quarter-notes, tied
+together. The second of these quarter-notes begins at 6/8, therefore aligning
+with the start of the third 3/8 node at depth 1 in the 9/8 meter's rhythm tree.
+Likewise, the first half of the split half-note ends at the same 6/8 offset.
+However, the initial C half-note, while aligning with the beginning of the
+meter and therefore treated as valid, does not emphasize any of the meter's
+inner offsets as outlined by the offsets 3/8 and 6/8.
+
 %%% ABJADBOOK START %%%
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
@@ -4479,6 +4499,14 @@ show(measure)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-93c0260083a9ae2ad25a3c7c064e3024.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent After rewriting with boundary depth set to 1, not only has the D
+half-note been split in half, but the initial C half-note has been split at its
+3/8 offset. Because the initial half note aligned at the 0/8 offset -- as
+outlined by the root node in the 9/8 meter's rhythm tree --, but not at
+the 3/8 offset -- as outlined by the first and second 3/8-duration nodes at
+depth 1 of the same meter's rhythm tree --, it was marked invalid and therefor
+split at the first available offset: 3/8.
 
 \subsection{Recursive meter rewriting} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
