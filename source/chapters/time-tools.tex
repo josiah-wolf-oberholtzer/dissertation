@@ -4286,8 +4286,12 @@ show(staff)
 
 Meter rewriting can control for various qualities of how rhythms are notated.
 For example, the maximum number of dots allowed for any notated rhythmic value
-can be constrained. Consider this series of progressively rewritten rhythms,
-beginning with the following unrewritten 3/4 measure.
+can be constrained. Logical ties encountered during the rewriting process whose
+individual notes exceed the maximum number of permitted dots will be rewritten,
+if a maximum dot count has been specified.
+
+Consider this series of progressively rewritten rhythms, beginning with the
+following unrewritten 3/4 measure.
 
 \begin{comment}
 <abjad>
@@ -4376,7 +4380,7 @@ show(measure)
 %%% ABJADBOOK END %%%
 
 Finally, with no dots permitted at all, the rhythmic presentation of the
-measure changes considerably.
+measure changes considerably. Every dotted rhythm has been subdivided.
 
 \begin{comment}
 <abjad>
@@ -4398,6 +4402,10 @@ show(measure)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Prudent application of dot count constraints can clarify awkward
+rhythmic spellings by forcing the appearance of offsets in logical ties
+inherent to the rewriting meter.
+
 \subsection{Boundary depth} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 In meter rewriting, \emph{boundary depth} forces emphasis of offsets found at
@@ -4408,8 +4416,9 @@ distinctive groupings in more deeply nested meters, such as the 3-ness inherent
 to a 9/8 meter. The nodes with a depth of 1 in the following 9/8 meter's
 rhythm-tree -- the three 3/8 inner nodes marked by triangles -- outline the
 offsets 0/8, 3/8, 6/8 and 9/8. When rewriting a 9/8 rhythm with a boundary
-depth of 1, any logical ties not aligning with -- including overlapping --
-those offsets would be marked as invalid and therefore rewritten.
+depth of 1, any logical ties not aligning with -- \emph{both} starting and
+stopping at -- those offsets would be marked as invalid and therefore
+rewritten.
 
 \begin{comment}
 <abjad>
