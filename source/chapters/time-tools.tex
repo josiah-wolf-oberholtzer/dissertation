@@ -1,6 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Tools for modeling time, rhythm and meter}
+\label{chap:time-tools}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -10,6 +11,18 @@ import collections
 import consort
 </abjad>
 \end{comment}
+
+\todo[inline]{\textbf{TODO:} Add section labels.}
+
+\todo[inline]{\textbf{TODO:} Investigate adding indexing commands.}
+
+\todo[inline]{\textbf{TODO:} Investigate additional citations.}
+
+\todo[inline]{\textbf{TODO:} Investigate use of colons to introduce examples.}
+
+\todo[inline]{\textbf{TODO:} Determine appropriate pronoun usage.}
+
+\todo[inline]{\textbf{TODO:} Verify hyphenated lowercase class names.}
 
 Consort implements a model of composition which relies on a number of
 interrelated but distinct approaches to working with musical time. Abjad's
@@ -56,6 +69,9 @@ variety of computational reference problems. Multiple objects can reference the
 same timespan without fear of that timespan changing state, much as multiple
 objects can reference the integer 11 without fear that it will change into the
 integer 5.
+
+\todo[inline]{\textbf{TODO:} Emphasize and clarify set-theoretic definition of
+timespans in terms of offsets.}
 
 Abjad implements timespans via the \texttt{timespantools.Timespan} class. The
 following timespan begins at the offset 1/4 and continues up until the offset
@@ -1137,6 +1153,9 @@ once, wholesale transformations on massed timespans becomes practical.
 \section{Timespan inventories}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\todo[inline]{\textbf{TODO:} Cite \emph{Introduction to Algorithms} for
+interval trees.}
+
 Abjad provides a \texttt{TimespanInventory} class specifically for aggregating
 together a collection of \texttt{Timespan} objects.\footnote{ Consort provides
 its own timespan collection class -- the \texttt{TimespanCollection}. This
@@ -1932,11 +1951,11 @@ for shard in timespan_inventory.explode(inventory_count=2):
 %%% ABJADBOOK END %%%
 
 The procedures outlined above provide high-level tools for interacting with
-large numbers of timespans at once. All of the techniques described in later
-chapters with regards to Consort's score interpretation algorithm -- timespan
-consolidation, cascading overlap resolution, multiplexing multiple inventories
-into one, demultiplexing one inventory into many, and so forth -- build on and
-extend these techniques.
+large numbers of timespans at once. All of the techniques described in
+\autoref{chap:a-model-of-composition} with regards to Consort's score
+interpretation algorithm -- timespan consolidation, cascading overlap
+resolution, multiplexing multiple inventories into one, demultiplexing one
+inventory into many, and so forth -- build on and extend these techniques.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Annotated timespans in Consort}
@@ -1948,8 +1967,8 @@ various patterns, to be musically interesting? Consort approaches this problem
 by providing a collection of factory classes -- \emph{timespan-makers} -- which
 can be configured and called to create arbitrarily large amounts of timespans.
 However, before turning to a detailed discussion of timespan-makers, we must
-discuss the products of the timespan themselves: Consort's annotated timespan
-subclasses.
+first describe the products of the timespan themselves: Consort's annotated
+timespan subclasses.
 
 Consort provides two separate timespan subclasses which are integral, if
 transient, components of its score interpretation algorithm: the
@@ -1961,24 +1980,21 @@ Consort uses \texttt{PerformedTimespan} objects to specify locations in the
 score timeline where some active musical material should appear, while
 \texttt{SilentTimespan} objects specify tacet passages.
 
-As will be described in more detail in the following chapters, Consort requires
-composers to specify musical materials in \emph{layers}, and to specify
-specifically in which voices in the score -- vertically -- that material should
-occur in. During the course of interpretation, Consort separates out generated
-timespans by voice name and layer into separate timespan inventories, and then
-progressively masks out timespans in timespan inventories with lower layer
-numbers by timespans in timespan inventories with higher layer numbers. This
-process is somewhat analogous to the use of opaque layers in image editing
-software. Both the \texttt{PerformedTimespan} and \texttt{SilentTimespan}
-classes provide configurable properties for layer and voice name, in addition
-to the start offset and stop offset properties provided by their parent
-\texttt{Timespan} class. These properties allow the processes that generate
-them to record \emph{when} they were created, as well as \emph{where} the
-should appear in the score, should they survive the masking process.
-
-Silent timespans do not appear in the score, but can be created for a
-particular layer and used to simply erase any timespan in a lower layer by
-masking.
+As will be described in more detail in \autoref{chap:a-model-of-composition},
+Consort requires composers to specify musical materials in \emph{layers}, and
+to specify specifically in which voice contexts in the score -- vertically --
+that material should occur in. During the course of interpretation, Consort
+separates out generated timespans by voice name and layer into separate
+timespan inventories, and then progressively masks out timespans in timespan
+inventories with lower layer numbers by those timespans with higher layer
+numbers. One can imagine this process as analogous to the use of opaque
+overlapping layers in image editing software. Both the
+\texttt{PerformedTimespan} and \texttt{SilentTimespan} classes provide
+configurable properties for layer and voice name, in addition to the start
+offset and stop offset properties provided by their parent \texttt{Timespan}
+class. These properties allow the processes that generate them to record
+\emph{when} they were created, as well as \emph{where} the should appear in the
+score, should they survive the masking process.
 
 \begin{comment}
 <abjad>
@@ -1987,12 +2003,6 @@ performed_timespan = consort.PerformedTimespan(
     start_offset=(1, 2),
     stop_offset=(7, 8),
     voice_name='Clarinet Voice',
-    )
-silent_timespan = consort.SilentTimespan(
-    layer=2,
-    start_offset=Offset(0, 1),
-    stop_offset=Offset(1, 4),
-    voice_name='Oboe Voice',
     )
 </abjad>
 \end{comment}
@@ -2007,6 +2017,33 @@ silent_timespan = consort.SilentTimespan(
 ...     stop_offset=(7, 8),
 ...     voice_name='Clarinet Voice',
 ...     )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Unlike performed timespans, silent timespans have no explicit reality
+in score, but can still be created for a particular voice context and layer.
+They act to simply erase any timespan in a lower layer through masking. This
+allows timespan-making processes to demand not only when a musical event should
+happen, but also when musical events should \emph{not}. For example, silent
+timespans make it possible to demand silence before music events involving
+instrument or mallet changes.
+
+\begin{comment}
+<abjad>
+silent_timespan = consort.SilentTimespan(
+    layer=2,
+    start_offset=Offset(0, 1),
+    stop_offset=Offset(1, 4),
+    voice_name='Oboe Voice',
+    )
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
 >>> silent_timespan = consort.SilentTimespan(
 ...     layer=2,
 ...     start_offset=Offset(0, 1),
@@ -2016,6 +2053,16 @@ silent_timespan = consort.SilentTimespan(
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent Performed timespans possess a number of other configurable properties
+used during score interpretation. These include \texttt{minimum\_duration} --
+used to force erasure of timespans considered too short, often because they
+have been partially masked, \texttt{music\_specifier} -- used to attach
+information about how to generate notation from a timespan, \texttt{divisions}
+-- a memento of the original duration structure of a contiguous sequence of
+performed timespans which have been consolidated into a single performed
+timespan after the masking process ends, and \texttt{music} -- used to attach
+any generated notation prior to maquetting.
 
 \begin{comment}
 <abjad>
@@ -2046,19 +2093,12 @@ performed_timespan = consort.PerformedTimespan(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-- forbid fusing
-
-- forbid splitting
-
-- minimum duration
-
-- (additionally, music specifier: minimum phrase duration)
-
-- divisions
-
-- music
-
-- music specifier
+\noindent All of the above properties are explained in more depth in
+\autoref{chap:a-model-of-composition}, in context of Consort's interpretation
+process. For the sake of demonstrating timespan-creation principles pithily,
+the \texttt{music\_specifier} property of any performed timespan can be set to
+an arbitrary object such as Python's \texttt{None} rather than a
+\texttt{MusicSpecifier} instance as actually done in practice.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Timespan-makers}
@@ -2096,13 +2136,14 @@ specific to performed timespans, such as \texttt{minimum\_duration} and
 
 \subsection{Flooded timespan-makers} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\todo[inline]{\textbf{TODO:} Find a citation for flood fill. MacPaint?}
+
 Flooded timespan-makers are perhaps the simplest in the timespan-maker class
 family. Their name derives from ubiquitous graphic-design \enquote{flood fill}
-tools, used for filling an entire connected area.\footnote{Find a nice
-reference to MacPaint, better than https://en.wikipedia.org/wiki/Flood\_fill}.
-Flooded timespan-makers create one timespan for each voice in the input
-voice-name-to-music-specifier mapping, filling the entirety of the provide
-target timespan from beginning to end.
+tools, used for filling an entire connected area. Flooded timespan-makers
+create one timespan for each voice in the input voice-name-to-music-specifier
+mapping, filling the entirety of the provide target timespan from beginning to
+end.
 
 The following flooded timespan-maker will create a timespan inventory populated
 by a single performed timespan associated with a \enquote{Violin Voice}
@@ -3952,9 +3993,14 @@ show(composite_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\todo[inline]{\textbf{TODO:} Conclude composite rhythm-maker discussion with a
+motivating example.}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Modeling meter}
+\section{Meter}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\todo[inline]{\textbf{TODO:} Provide a definition of meter. Cite Lerdahl.}
 
 Abjad models meter as a \emph{rhythm-tree} of nested, durated nodes which
 outline a series of strongly and weakly accented offsets. The accent strength
@@ -4192,9 +4238,106 @@ graph(arbitrary_meter_2)
 Notated rhythms can be expressed in multiple ways while maintaining the same
 attack-point and duration structure. \emph{Meter rewriting} formalizes the
 process of re-notating a rhythm according to the offset structure inherent to
-some meter while maintaining the original attack-points and durations.
+some meter while maintaining the original attack-points and durations. Logical
+ties are fused or split depending on their \emph{validity}. In the context of
+meter rewriting, validity expresses whether any logical tie -- trivial or not
+-- \emph{aligns} to offsets found in nodes at a particular depth in a meter's
+rhythm-tree. Alignment requires that a logical tie both starts and stops at
+offsets found in some collection of offsets. Meter rewriting proceeds by
+testing logical ties against offsets outlined first by the root node of a
+meter and, if found invalid, against those offsets found in nodes progressively
+deeper in the meter's rhythm-tree.
 
-Consider the following rhythm:
+For example, the offsets outlined by the root node of a 6/8 meter can be found
+by examining its depth-wise offset inventory.
+
+\begin{comment}
+<abjad>
+six_eight_meter = metertools.Meter((6, 8))
+six_eight_meter.depthwise_offset_inventory[0]
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> six_eight_meter = metertools.Meter((6, 8))
+>>> six_eight_meter.depthwise_offset_inventory[0]
+(Offset(0, 1), Offset(3, 4))
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+A logical tie three-quarters in duration starting at the offset 0 would be
+considered valid in the context of 6/8 because it aligns to the offsets
+outlined at depth-0 of the meter's rhythm-tree. In contrast, a logical tie two
+quarters in duration starting at 1/8 -- therefore outlining the timespan of
+1/8:5/8 -- would be considered invalid due to misalignment.
+
+\begin{comment}
+<abjad>
+six_eight_measure = Measure((6, 8), "r8 c'2 r8")
+show(six_eight_measure)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> six_eight_measure = Measure((6, 8), "r8 c'2 r8")
+>>> show(six_eight_measure)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-2dd583c36ffd0a13968eee4ac11dcfb5.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+Meter rewriting splits misaligned
+logical ties at any possible offset found in the currently considered depth. If
+no offsets at that depth intersect with the misaligned tie, the depth is
+increased and the process repeats. At a depth of 1 in a 6/8 meter we finally
+find an offset intersecting the timespan of the misaligned 1/8:5/8 logical tie:
+3/8.
+
+\begin{comment}
+<abjad>
+six_eight_meter.depthwise_offset_inventory[1]
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> six_eight_meter.depthwise_offset_inventory[1]
+(Offset(0, 1), Offset(3, 8), Offset(3, 4))
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Rewriting the contents of the 6/8 measure against a 6/8 meter splits
+the inner half-note at the 3/8 offset boundary.
+
+\begin{comment}
+<abjad>
+mutate(six_eight_measure).rewrite_meter(six_eight_meter)
+show(six_eight_measure)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> mutate(six_eight_measure).rewrite_meter(six_eight_meter)
+>>> show(six_eight_measure)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c0edb6ffb12fe0ee5fb467e0bfefecdd.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+As another example, consider the following rhythm:
 
 \begin{comment}
 <abjad>
@@ -4242,9 +4385,12 @@ graph(four_four_meter)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Rewriting the inner measure against a 4/4 meter breaks the inner
+logical tie at 1/4 and 3/4, slightly improving readibility.
+
 \begin{comment}
 <abjad>
-mutate(staff[1][:]).rewrite_meter(four_four_meter)
+mutate(staff[1]).rewrite_meter(four_four_meter)
 show(staff)
 </abjad>
 \end{comment}
@@ -4253,18 +4399,22 @@ show(staff)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> mutate(staff[1][:]).rewrite_meter(four_four_meter)
+>>> mutate(staff[1]).rewrite_meter(four_four_meter)
 >>> show(staff)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-52ed3c73b623b7b0d9a2c6230084a264.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Rewriting the same measure against a 2/2 meter breaks the inner
+logical tie at the offset 1/2, as two double-dotted quarter notes. While
+identical to 4/4 in duration, 2/2 strongly emphasizes this duple division.
+
 \begin{comment}
 <abjad>
 two_two_meter = metertools.Meter((2, 2))
 staff = Staff(parseable)
-mutate(staff[1][:]).rewrite_meter(two_two_meter)
+mutate(staff[1]).rewrite_meter(two_two_meter)
 show(staff)
 </abjad>
 \end{comment}
@@ -4275,7 +4425,7 @@ show(staff)
 \begin{lstlisting}
 >>> two_two_meter = metertools.Meter((2, 2))
 >>> staff = Staff(parseable)
->>> mutate(staff[1][:]).rewrite_meter(two_two_meter)
+>>> mutate(staff[1]).rewrite_meter(two_two_meter)
 >>> show(staff)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-467c7a453dd4de93da0cc1c7acbe0a87.pdf}
@@ -4379,8 +4529,8 @@ show(measure)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-Finally, with no dots permitted at all, the rhythmic presentation of the
-measure changes considerably. Every dotted rhythm has been subdivided.
+\noindent Finally, with no dots permitted at all, the rhythmic presentation of
+the measure changes considerably. Every dotted rhythm has been subdivided.
 
 \begin{comment}
 <abjad>
@@ -4463,15 +4613,6 @@ show(measure)
 </abjad>
 \end{comment}
 
-\noindent After rewriting, without any boundary depth specified, the D half
-note in the above 9/8 measure has been split into two quarter-notes, tied
-together. The second of these quarter-notes begins at 6/8, therefore aligning
-with the start of the third 3/8 node at depth 1 in the 9/8 meter's rhythm tree.
-Likewise, the first half of the split half-note ends at the same 6/8 offset.
-However, the initial C half-note, while aligning with the beginning of the
-meter and therefore treated as valid, does not emphasize any of the meter's
-inner offsets as outlined by the offsets 3/8 and 6/8.
-
 %%% ABJADBOOK START %%%
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
@@ -4482,6 +4623,15 @@ inner offsets as outlined by the offsets 3/8 and 6/8.
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-63f30ee6e2e244440af9d6f1e0f84a02.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent After rewriting, without any boundary depth specified, the D half
+note in the above 9/8 measure has been split into two quarter-notes, tied
+together. The second of these quarter-notes begins at 6/8, therefore aligning
+with the start of the third 3/8 node at depth 1 in the 9/8 meter's rhythm tree.
+Likewise, the first half of the split half-note ends at the same 6/8 offset.
+However, the initial C half-note, while aligning with the beginning of the
+meter and therefore treated as valid, does not emphasize any of the meter's
+inner offsets as outlined by the offsets 3/8 and 6/8.
 
 \begin{comment}
 <abjad>
@@ -4519,12 +4669,24 @@ split at the first available offset: 3/8.
 
 \subsection{Recursive meter rewriting} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Meter rewriting treats the contents of tuplets with non-trivial prolation as
+existing within their own metrical scope, isolated from any other meter. The
+numerator and denominator of the tuplet's pre-prolated contents duration act as
+the numerator and denominator of their \enquote{virtual} meter. Thus, a 6:5
+tuplet encountered in any context will be rewritten as though under some
+6-numerator meter.
+
 \begin{comment}
 <abjad>
 parseable = "abj: | 4/4 c'16 ~ c'4 d'8. ~ "
 parseable += "2/3 { d'8. ~ 3/5 { d'16 e'8 ~ e'16 f'16 ~ } } "
 parseable += "f'4 |"
 measure = parse(parseable)
+show(measure)
+mutate(measure[:]).rewrite_meter(
+    measure,
+    boundary_depth=1,
+    )
 show(measure)
 </abjad>
 \end{comment}
@@ -4540,22 +4702,6 @@ show(measure)
 >>> show(measure)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-270f471c0052391c9bf1a5df2ccc4474.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-mutate(measure[:]).rewrite_meter(
-    measure,
-    boundary_depth=1,
-    )
-show(measure)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> mutate(measure[:]).rewrite_meter(
 ...     measure,
@@ -4567,7 +4713,20 @@ show(measure)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Examples} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent If, while rewriting the contents of one tuplet, a second tuplet is
+encountered as a child of that first tuplet, the meter rewriting algorithm will
+recursively descend into that second tuplet -- and any further tuplet children
+at any depth. This recursive descent allows any encountered component to be
+rewritten in a relevant metrical context.
+
+\subsection{Examples of meter rewriting: 3/4 \& 6/8} %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Meter rewriting can clarify structural differences between meters with
+identical durations, such as 3/4 and 6/8, or between various possible
+representations of other prime-numerator meters like 5/4, 7/8 and so forth.
+The following series of 3/4 measures contain rhythms which emphasize 3/4-ness
+or 6/8-ness to different degrees. While perfectly valid and totally legible,
+they can still be rewritten to more strongly express one meter over the other.
 
 \begin{comment}
 <abjad>
@@ -4591,6 +4750,12 @@ show(staff)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Rewriting under a 3/4 meter with a boundary depth of 1 forces
+emphasis of the offsets found in the 3/4 meter's depth-1 group of three
+quarter-duration nodes: 0/4, 1/4, 2/4 and 3/4. Both the outer measures'
+contents align to these offsets, but the inner measure's hemiola contents do
+not, and are rewritten.
+
 \begin{comment}
 <abjad>
 for container in staff:
@@ -4612,6 +4777,12 @@ show(staff)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0cef77f45f31e31ad271d15c9c32edf8.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent Conversely, rewriting with a 6/8 meter -- again with a boundary depth
+of 1 -- forces emphasis of the offsets outlined by 6/8's two depth-1
+3/8-duration nodes: 0/8, 3/8 and 6/8. Only the inner measure's contents align
+perfectly these offsets, so the outer measures are rewritten, better
+demonstrating 6/8's duple-ness.
 
 \begin{comment}
 <abjad>
@@ -4635,26 +4806,6 @@ show(staff)
 >>> for container in staff:
 ...     mutate(container[:]).rewrite_meter((6, 8), boundary_depth=1)
 ...
->>> show(staff)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-58a85c4734fd2a15643aa2409cbff0e5.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-selections = talea_rhythm_maker(divisions)
-lilypond_file = rhythmmakertools.make_lilypond_file(selections, divisions)
-show(staff)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> selections = talea_rhythm_maker(divisions)
->>> lilypond_file = rhythmmakertools.make_lilypond_file(selections, divisions)
 >>> show(staff)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-58a85c4734fd2a15643aa2409cbff0e5.pdf}

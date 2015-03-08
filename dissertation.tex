@@ -14,12 +14,13 @@
 \usepackage{csquotes}
 \usepackage{excludeonly}
 \usepackage{fancyvrb}
-\usepackage{listings}
 \usepackage{imakeidx}
+\usepackage{listings}
+\usepackage{microtype}
 \usepackage{multicol}
 \usepackage{pdfpages}
 \usepackage{textcomp}
-\usepackage{microtype}
+\usepackage[color=yellow]{todonotes}
 
 \usepackage[
     labelfont={sc,scriptsize},
@@ -70,14 +71,14 @@
     language=[LaTeX]TeX,
 }
 
-%\includeonly{
+\includeonly{
 %    source/chapters/introduction,
 %    source/chapters/a-model-of-notation,
-%    source/chapters/time-tools,
+    source/chapters/time-tools,
 %    source/chapters/a-model-of-composition,
 %    source/chapters/practicalities,
 %    source/chapters/conclusion,
-%}
+}
 
 %\excludeonly{
 %    source/chapters/score-aurora,
@@ -95,12 +96,12 @@
 \pagenumbering{roman}
 \input{source/frontmatter/personalize}
 \maketitle
-\copyrightpage
-\abstractpage
+%\copyrightpage
+%\abstractpage
 \tableofcontents
 %\listoffigures
-\dedicationpage
-\acknowledgments
+%\dedicationpage
+%\acknowledgments
 
 \mainmatter
 \doublespacing
@@ -109,17 +110,17 @@
 \setcounter{page}{1}
 \setcounter{chapter}{-1}
 
-%\include{source/chapters/introduction}
+\include{source/chapters/introduction}
 \include{source/chapters/a-model-of-notation}
 \include{source/chapters/time-tools}
 \include{source/chapters/a-model-of-composition}
-%\include{source/chapters/practicalities}
-%\include{source/chapters/score-aurora}
-%\include{source/chapters/score-plague-water}
-%\include{source/chapters/score-zaira}
-%\include{source/chapters/score-armilla}
-%\include{source/chapters/score-ersilia}
-%\include{source/chapters/conclusion}
+\include{source/chapters/practicalities}
+\include{source/chapters/score-aurora}
+\include{source/chapters/score-plague-water}
+\include{source/chapters/score-zaira}
+\include{source/chapters/score-armilla}
+\include{source/chapters/score-ersilia}
+\include{source/chapters/conclusion}
 
 \lstset{
     basicstyle=\scriptsize\ttfamily,
@@ -145,14 +146,14 @@
 %    \include{source/appendices/appendices}
 %\end{appendices}
 
-\cleardoublepage
-\printindex
+%\cleardoublepage
+%\printindex
 
-\cleardoublepage
-\addcontentsline{toc}{chapter}{References}
-\bibliographystyle{apalike2}
-\bibliography{references}
+%\cleardoublepage
+%\addcontentsline{toc}{chapter}{References}
+%\bibliographystyle{apalike2}
+%\bibliography{references}
 
-\include{source/endmatter/colophon}
+%\include{source/endmatter/colophon}
 
 \end{document}
