@@ -31,22 +31,23 @@ time. Timespans represent arbitrary durated events on a timeline, without
 respect for score hierarchy or meter. They are well-suited for modeling large
 scale phrasing or gestural density structures and can handle overlap,
 splitting, stretching and other transformations without requiring any
-notational reality. Annotated \index{timespan}s allow composers to position
+notational reality. Timespans may be annotated, allowing composers to position
 metadata anywhere on a timeline, much like arranging audio regions in a DAW.
 Moreover, every durated object in a score hierarchy can be described as a
 \index{timespan}, allowing score components to engage in abstract time
 relations. In contrast, notated rhythms, composed of note, rest, tie and tuplet
-objects -- among others, provide the most \enquote{fine-grained} approach to
+objects -- among others--, provide the most \enquote{fine-grained} approach to
 musical time. While incredibly expressive, fully notated rhythms are
 potentially complex to create, and must ultimately be anchored in a score
-hierarchy. Rhythm-maker classes ameliorate the complexity of creating notated
-rhythms by providing a high-level interface to the process of rhythmic
-generation. Meter coordinates time and rhythm vertically across score
-hierarchy, and bridges the coarse and fine stages of rhythmic interpretation.
-Meter sequences can be generated from \index{timespan}-based phrase structures,
-and those meter sequences used to transform notated rhythms in turn. A thorough
-discussion of the implementations of time models and their implications will
-clarify a later analysis of Consort's score interpretation stage.
+hierarchy. Highly configurable rhythm-maker classes ameliorate the complexity
+of creating notated rhythms by providing a high-level interface to the process
+of rhythmic generation. Meter coordinates time and rhythm vertically across
+score hierarchy, and bridges the coarse and fine stages of rhythmic
+interpretation. Meter sequences can be generated from \index{timespan}-based
+phrase structures, and those meter sequences used to transform notated rhythms
+in turn. A thorough discussion of the implementation of these time models and
+their implications will clarify a later analysis of Consort's score
+interpretation stage.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Timespans}
@@ -6154,8 +6155,37 @@ process.
 \section{Implications}
 
 \begin{markdown}
+-   Recapitulate introduction
+    -   Timespan provide a coarse-grained model
+    -   Rhythm -- *music* -- provides a fine-grained model
+    -   Meter can be derived from one and applied to the other
+    -   Timespans exist without score
+    -   Rhythm exists with score
+    -   Factories can be used to programmatically generate either
+    -   All can be used together to generate rich scores
+-   Discuss patterns and randomness
+    -   Why the extensive use of patterns rather than anything else?
+    -   Patterns are sufficient
+    -   They are also testable
+-   Discuss extensibility
+    -   More factories are possible
+    -   Those outlined here are neither the *only* nor the *best* possible
+        factories one could design
+    -   New factories can make use of the interfaces implemented by these
+        factory families (timespan- and rhythm-makers)
+    -   New factories can also propose entirely new ways of working
+        (such as...)
+    -   Extensibility is afforded because the basic building blocks --
+        timespans, timespan inventories, meter and Abjad's model of score --
+        are rock solid
+\end{markdown}
+
+\begin{markdown}
 
 -   Timespans allow for large scale phrasing and density structures.
+
+-   They simply model attack points and durations, making attack and overlap
+    density easy to play with.
 
 -   Timespan annotations allow for maquette-like composition techniques, or
     working in a way that conceptually mirrors working with a DAW, even though
