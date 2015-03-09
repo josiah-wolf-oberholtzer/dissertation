@@ -62,7 +62,7 @@ do not overlap, but rather abut one another because their timespans do not
 overlap. In fact, every durated object in a score -- every note, chord, rest,
 measure, staff, and even the score itself -- can be described in terms of
 timespans. Yet while score objects can always be described in terms of
-timespans, timespans themselved do not -- by definition -- refer to any score
+timespans, timespans themselves do not -- by definition -- refer to any score
 objects. Abjad implements timespans as immutable constants, much like Abjad's
 \texttt{Pitch} and \texttt{Duration} objects, and similarly to Python's
 implementation of numbers or strings. Constancy allows timespans to avoid a
@@ -285,7 +285,7 @@ annotated_timespan.annotation
 
 \noindent Annotated timespans let composers position annotations or other
 metadata arbitrarily along a timeline. If the annotation is itself a mutable
-datastructure like a dictionary, that annotation can be used to store
+data structure like a dictionary, that annotation can be used to store
 increasing amounts of arbitrary information during the compositional process.
 Abjad's top-level \texttt{new()} function can also be used to template new
 annotated timespans from old ones, replacing one annotation with another:
@@ -710,7 +710,7 @@ timespantools.AnnotatedTimespan(
 %%% ABJADBOOK END %%%
 
 \noindent Some generative operations may return zero or more timespans,
-aggregated in a datastructure called a \emph{timespan inventory}, which is
+aggregated in a data structure called a \emph{timespan inventory}, which is
 discussed at length in the following section. Splitting a timespan by an offset
 is one such operation. If the offset to be split by is \emph{properly
 contained}\footnote{\emph{Proper containment} of an offset means that the
@@ -808,8 +808,8 @@ operate on infinite but bounded sets of offsets instead of discrete sets of
 objects such as integers. For example, subtracting one timespan from another
 computes the set difference of the offsets contained by both. This operation is
 not commutative -- subtracting one timespan from another will not result in the
-same ouput as subtract the latter from the former. Subtracting a timespan from
-itself always results in the empty set of offsets: no timespan at all:
+same output as subtracting the latter from the former. Subtracting a timespan
+from itself always results in the empty set of offsets: no timespan at all:
 
 \begin{comment}
 <abjad>
@@ -991,8 +991,8 @@ timespantools.TimespanInventory(
 %%% ABJADBOOK END %%%
 
 \noindent Unioning guarantees that all of the offsets contained in the two
-input timespans will appear in the output timespan(s), whether or not any
-overlap occurred:
+input timespans will appear in the output timespan or timespans, whether or not
+any overlap occurred:
 
 \begin{comment}
 <abjad>
@@ -1162,14 +1162,14 @@ together a collection of \texttt{Timespan} objects.\footnote{ Consort provides
 its own timespan collection class -- the \texttt{TimespanCollection}. This
 class stores timespans internally not as a list, but in a balanced
 \emph{interval tree}. An interval tree is an augmented, self-balancing binary
-tree which stores start offsets and stop offsets. Such a datastructure
+tree which stores start offsets and stop offsets. Such a data structure
 guarantees its contents are always sorted, and allows for highly optimized
 lookups for timespan matching various search criteria. The
 \texttt{TimespanCollection} class is used at crucial points during Consort's
 interpretation stage simply for purposes of speed, and should be considered an
 implementation detail. It provides only a few methods, specifically for
 affording rapid search and retrieval of timespans intersecting other timespans
-or offsets. With work, its internal datastructure may eventually be merged into
+or offsets. With work, its internal data structure may eventually be merged into
 Abjad's own \texttt{TimespanInventory} class.} Timespan inventories implement
 Python's \emph{mutable sequence protocol} which allow them to behave exactly
 like lists, supporting appension, extension, insertion, indexing, sorting,
@@ -1962,7 +1962,7 @@ inventory into many, and so forth -- build on and extend these techniques.
 \section{Annotated timespans in Consort}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-While the above datastructures and operations are potentially very useful, a
+While the above data structures and operations are potentially very useful, a
 larger question remains: how can composers create enough timespans, and in
 various patterns, to be musically interesting? Consort approaches this problem
 by providing a collection of factory classes -- \emph{timespan-makers} -- which
@@ -2845,12 +2845,12 @@ Dependent timespan-makers create timespans based on the disposition of
 timespans in an input timespan inventory, selecting the start and stop offsets
 of their generated timespans by filtering and inspecting timespans from the
 input according to their voice name or music specifier label. This behavior
-helps model how timespans used to generate phrasing for a pianists's pedaling
+helps model how timespans used to generate phrasing for a pianist's pedaling
 voice can be derived by selecting only those timespans in a timespan inventory
 for entire ensemble which pertain to the pianists right and left-hand voices.
 
 Consider the following timespan inventory, comprised of overlapping and
-nonoverlapping timespans created for the contexts \enquote{Voice 1},
+non-overlapping timespans created for the contexts \enquote{Voice 1},
 \enquote{Voice 2} and \enquote{Ignored Voice}.
 
 \begin{comment}
@@ -3320,7 +3320,7 @@ Talea rhythm-makers, like talea timespan-makers, create rhythmic output through
 the use of a talea -- an infinitely cyclic pattern of durations. Talea
 rhythm-makers fill their output divisions with durations from their talea,
 splitting those durations across division boundaries when the divisions are
-overful. The following trivial talea rhythm-maker uses a length-1 talea
+over-full. The following trivial talea rhythm-maker uses a length-1 talea
 comprised of a single 1/16 duration.
 
 \begin{comment}
@@ -3420,7 +3420,7 @@ sum to 4/16, but scaled into a duration of 3/16. Note how this tupletting
 causes the pattern of split and tied talea durations to shift. In the previous
 example, the second instance of the talea's 3/16 duration occurred entirely
 during the 3/16 division. Here, that same 3/16 talea duration begins on the
-final 1/16 of the 4/8 divisions's 9:8 tuplet, tied into the 4:3 tuplet in the
+final 1/16 of the 4/8 division's 9:8 tuplet, tied into the 4:3 tuplet in the
 following division.
 
 \begin{comment}
@@ -3450,11 +3450,12 @@ show(talea_rhythm_maker, divisions=divisions)
 \noindent Like note rhythm-makers, talea rhythm-makers can be configured with a
 tie specifier, causing the last note of each division to be tied to the first
 note of the next division. In note rhythm-makers, the contents of each
-un-masked division is guaranteed to be a single logical tie and tying across
-divisions results in the entire output of the note rhythm-maker merging into
-the same logical tie. The output divisions of talea rhythm-makers generally
-contain more than one logical tie, and therefore tying across divisions tends
-to produce the effect of ellided downbeats with intermittent attacks.
+non-masked division is guaranteed to be a single logical tie. Therefore, tying
+across divisions results in the entire output of the note rhythm-maker merging
+into the same logical tie. The output divisions of talea rhythm-makers
+generally contain more than one logical tie, and therefore tying across
+divisions tends to produce the effect of elided downbeats with intermittent
+attacks.
 
 \begin{comment}
 <abjad>
@@ -4112,7 +4113,7 @@ graph(seven_eight_meter)
 %%% ABJADBOOK END %%%
 
 \noindent A 12/8 meter subdivides into four 3/8 duration groupings, each
-containining three 1/8 duration beats:
+containing three 1/8 duration beats:
 
 \begin{comment}
 <abjad>
@@ -4161,8 +4162,8 @@ graph(four_four_meter)
 
 \noindent While meter objects are usually instantiated from numerator /
 denominator pairs, with their rhythm-tree structure determined programmatically
-from that input pair, they can also be instantiated from strings parseable as
-rhythm-trees, or from RhythmTree objects themselves. All meters, because they
+from that input pair, they can also be instantiated from strings parsable as
+rhythm-trees, or from rhythm-tree objects themselves. All meters, because they
 are implemented in terms of rhythm-trees, can be represented by a Lisp-like
 rhythm-tree syntax:
 
@@ -4389,7 +4390,7 @@ graph(four_four_meter)
 %%% ABJADBOOK END %%%
 
 \noindent Rewriting the inner measure against a 4/4 meter breaks the inner
-logical tie at 1/4 and 3/4, slightly improving readibility.
+logical tie at 1/4 and 3/4, slightly improving readability.
 
 \begin{comment}
 <abjad>
@@ -5604,7 +5605,7 @@ produce scores containing voices with names like \enquote{Voice 1},
 \enquote{Voice 2} and so forth. The timespan inventory used for this example --
 created earlier in this chapter -- contains performed timespans with the voice
 names \enquote{Voice 1}, \enquote{Voice 2}, \enquote{Voice 3} and
-\enquote{Voice 4}, requiring a score template capabable of creating scores with
+\enquote{Voice 4}, requiring a score template capable of creating scores with
 four staves of one voice each.
 
 \begin{comment}
@@ -5665,7 +5666,7 @@ each downbeat, as well as the virtual downbeat, the \enquote{end-beat}, after
 the final meter. Then the timespans in the input timespan inventory are
 separated into new timespan inventories according to their associated voice
 names, with these new inventories stored in a dictionary whose keys are those
-same voice name. The score template generates an un-populated score and the
+same voice name. The score template generates an unpopulated score and the
 voice components in this score are iterated over. For each iterated voice, an
 inventory of timespans is retrieved from the \texttt{all\_voicewise\_timespans}
 dictionary. If no inventory exists, an empty one is created. The associated
@@ -5743,7 +5744,7 @@ against that same input timespan inventory. The sequence of offsets found at
 the boundaries of each fitted meter can then be determined by computing the
 cumulative sums of the durations of the fitted meters. These boundary offsets
 will be used to split timespans before they are fed to rhythm-makers for rhythm
-generation in order to ensure that no generated rhythm crosses any barlines.
+generation in order to ensure that no generated rhythm crosses any bar-lines.
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:get_meters_and_meter_boundaries />[strip_prompt]
@@ -5774,7 +5775,7 @@ def get_meters_and_meter_boundaries(timespan_inventory, permitted_meters):
 configured with a voice name, allowing that timespan to be associated with a
 voice context in the score hierarchy produced by the input score template. As
 demonstrated earlier, Abjad components can be indexed by context name
-regardlesss of the depth of the named context in the score hierarchy.
+regardless of the depth of the named context in the score hierarchy.
 
 \begin{comment}
 <abjad>
@@ -5934,12 +5935,12 @@ offsets -- that is, the offset from the origin of the score where each meter
 begins.\footnote{More optimizations to this joint container / meter iteration
 are obviously possible. Some have even been implemented in Consort's source.
 Such optimization include associating meters with their own timespans, and
-storing these meter-timespans in an optimized interval-tree datastructure
+storing these meter-timespans in an optimized interval-tree data structure
 allowing rapid retrieval by both offset and timespan intersection. For the sake
-of pedagogical clarity, a more naive approach is used here.} Un-prolated
+of pedagogical clarity, a more naive approach is used here.} Unprolated
 division containers are rewritten according to the meter active when they
 begin. Because a division may start \emph{after} a meter has begun it is
-necessary to calculate the difference between each un-prolated division's start
+necessary to calculate the difference between each unprolated division's start
 offset and each meter's start offset. This difference is passed to the
 \texttt{MutationAgent}'s \texttt{rewrite\_meter()} method via the
 \texttt{initial\_offset} keyword, allowing the division to be properly aligned
@@ -5981,18 +5982,18 @@ def rewrite_meters(phrase, meters, meter_boundaries):
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent The final step in this score building process adds a \enquote{floating time
-signature context} to the score, filled with typographic spacer skips and time
-signature commands, one for each of the fitted meters. This context appears as
-a row of time signatures floating above the topmost staff in the score,
-allowing time signatures to be omitted from every staff in the score and
-thereby improving proportional notation spacing. The time signature context's
-\texttt{context\_name} property instructs LilyPond to look for a context
-definition with that name and apply any typographic overrides found there
-during the typesetting process. While LilyPond does not come packaged with a
-\texttt{TimeSignatureContext} definition, examples of what such a definition
-looks like can be found in the various \texttt{stylesheet} sections of the
-source code appendices to this document.
+\noindent The final step in this score building process adds a
+\enquote{floating time signature context} to the score, filled with typographic
+spacer skips and time signature commands, one for each of the fitted meters.
+This context appears as a row of time signatures floating above the topmost
+staff in the score, allowing time signatures to be omitted from every staff in
+the score and thereby improving proportional notation spacing. The time
+signature context's \texttt{context\_name} property instructs LilyPond to look
+for a context definition with that name and apply any typographic overrides
+found there during the typesetting process. While LilyPond does not come
+packaged with a \texttt{TimeSignatureContext} definition, examples of what such
+a definition looks like can be found in the various \texttt{stylesheet}
+sections of the source code appendices to this document.
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:add_time_signature_context />[strip_prompt]
