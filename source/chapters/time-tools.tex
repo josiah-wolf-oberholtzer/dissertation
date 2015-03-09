@@ -4236,6 +4236,8 @@ graph(arbitrary_meter_2)
 \section{Rewriting meters}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\todo[inline]{\textbf{TODO:} Remove subscripts in rewrite\_meter() calls.}
+
 Notated rhythms can be expressed in multiple ways while maintaining the same
 attack-point and duration structure. \emph{Meter rewriting} formalizes the
 process of re-notating a rhythm according to the offset structure inherent to
@@ -4468,7 +4470,7 @@ the containing measure's stop offset.
 
 \begin{comment}
 <abjad>
-mutate(measure[:]).rewrite_meter((3, 4))
+mutate(measure).rewrite_meter((3, 4))
 show(measure)
 </abjad>
 \end{comment}
@@ -4477,7 +4479,7 @@ show(measure)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> mutate(measure[:]).rewrite_meter((3, 4))
+>>> mutate(measure).rewrite_meter((3, 4))
 >>> show(measure)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-d4d52cf91b08080c4067643d24faaf2a.pdf}
@@ -4490,7 +4492,7 @@ rewritten with as a double-dotted eighth-note tied to a quarter-note.
 \begin{comment}
 <abjad>
 measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
-mutate(measure[:]).rewrite_meter((3, 4), maximum_dot_count=2)
+mutate(measure).rewrite_meter((3, 4), maximum_dot_count=2)
 show(measure)
 </abjad>
 \end{comment}
@@ -4500,7 +4502,7 @@ show(measure)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
->>> mutate(measure[:]).rewrite_meter((3, 4), maximum_dot_count=2)
+>>> mutate(measure).rewrite_meter((3, 4), maximum_dot_count=2)
 >>> show(measure)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-40b68312fd44f949b40de163b21588c3.pdf}
@@ -4513,7 +4515,7 @@ F-sharp logical tie.
 \begin{comment}
 <abjad>
 measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
-mutate(measure[:]).rewrite_meter((3, 4), maximum_dot_count=1)
+mutate(measure).rewrite_meter((3, 4), maximum_dot_count=1)
 show(measure)
 </abjad>
 \end{comment}
@@ -4523,7 +4525,7 @@ show(measure)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
->>> mutate(measure[:]).rewrite_meter((3, 4), maximum_dot_count=1)
+>>> mutate(measure).rewrite_meter((3, 4), maximum_dot_count=1)
 >>> show(measure)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5fba6e827130a27fefae4843d2b21248.pdf}
@@ -4536,7 +4538,7 @@ the measure changes considerably. Every dotted rhythm has been subdivided.
 \begin{comment}
 <abjad>
 measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
-mutate(measure[:]).rewrite_meter((3, 4), maximum_dot_count=0)
+mutate(measure).rewrite_meter((3, 4), maximum_dot_count=0)
 show(measure)
 </abjad>
 \end{comment}
@@ -4546,7 +4548,7 @@ show(measure)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
->>> mutate(measure[:]).rewrite_meter((3, 4), maximum_dot_count=0)
+>>> mutate(measure).rewrite_meter((3, 4), maximum_dot_count=0)
 >>> show(measure)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-2ca50ee6f27ae56bae476fb9dc1faafa.pdf}
@@ -4609,7 +4611,7 @@ show(measure)
 
 \begin{comment}
 <abjad>
-mutate(measure[:]).rewrite_meter(nine_eight_meter)
+mutate(measure).rewrite_meter(nine_eight_meter)
 show(measure)
 </abjad>
 \end{comment}
@@ -4618,7 +4620,7 @@ show(measure)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> mutate(measure[:]).rewrite_meter(nine_eight_meter)
+>>> mutate(measure).rewrite_meter(nine_eight_meter)
 >>> show(measure)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-63f30ee6e2e244440af9d6f1e0f84a02.pdf}
@@ -4637,7 +4639,7 @@ inner offsets as outlined by the offsets 3/8 and 6/8.
 \begin{comment}
 <abjad>
 measure = Measure((9, 8), "c'2 d'2 e'8")
-mutate(measure[:]).rewrite_meter(
+mutate(measure).rewrite_meter(
     nine_eight_meter,
     boundary_depth=1,
     )
@@ -4650,7 +4652,7 @@ show(measure)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> measure = Measure((9, 8), "c'2 d'2 e'8")
->>> mutate(measure[:]).rewrite_meter(
+>>> mutate(measure).rewrite_meter(
 ...     nine_eight_meter,
 ...     boundary_depth=1,
 ...     )
@@ -4684,7 +4686,7 @@ parseable += "2/3 { d'8. ~ 3/5 { d'16 e'8 ~ e'16 f'16 ~ } } "
 parseable += "f'4 |"
 measure = parse(parseable)
 show(measure)
-mutate(measure[:]).rewrite_meter(
+mutate(measure).rewrite_meter(
     measure,
     boundary_depth=1,
     )
@@ -4704,7 +4706,7 @@ show(measure)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-270f471c0052391c9bf1a5df2ccc4474.pdf}
 \begin{lstlisting}
->>> mutate(measure[:]).rewrite_meter(
+>>> mutate(measure).rewrite_meter(
 ...     measure,
 ...     boundary_depth=1,
 ...     )
@@ -4760,7 +4762,7 @@ not, and are rewritten.
 \begin{comment}
 <abjad>
 for container in staff:
-    mutate(container[:]).rewrite_meter((3, 4), boundary_depth=1)
+    mutate(container).rewrite_meter((3, 4), boundary_depth=1)
 
 show(staff)
 </abjad>
@@ -4771,7 +4773,7 @@ show(staff)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> for container in staff:
-...     mutate(container[:]).rewrite_meter((3, 4), boundary_depth=1)
+...     mutate(container).rewrite_meter((3, 4), boundary_depth=1)
 ...
 >>> show(staff)
 \end{lstlisting}
@@ -4791,7 +4793,7 @@ staff = Staff(context_name='RhythmicStaff')
 staff.extend("{ c'2 c'4 } { c'4. c'4. } { c'2 ~ c'8 c'8 }")
 attach(TimeSignature((6, 8)), staff)
 for container in staff:
-    mutate(container[:]).rewrite_meter((6, 8), boundary_depth=1)
+    mutate(container).rewrite_meter((6, 8), boundary_depth=1)
 
 show(staff)
 </abjad>
@@ -4805,7 +4807,7 @@ show(staff)
 >>> staff.extend("{ c'2 c'4 } { c'4. c'4. } { c'2 ~ c'8 c'8 }")
 >>> attach(TimeSignature((6, 8)), staff)
 >>> for container in staff:
-...     mutate(container[:]).rewrite_meter((6, 8), boundary_depth=1)
+...     mutate(container).rewrite_meter((6, 8), boundary_depth=1)
 ...
 >>> show(staff)
 \end{lstlisting}
@@ -5963,14 +5965,14 @@ def rewrite_meters(phrase, meters, meter_boundaries):
         if isinstance(division, scoretools.Tuplet):
             contents_duration = division._contents_duration
             meter = metertools.Meter(contents_duration)
-            mutate(division[:]).rewrite_meter(
+            mutate(division).rewrite_meter(
                 meter,
                 boundary_depth=1,
                 )
         else:
             meter, meter_boundary = pairs[0]
             initial_offset = division_offset - meter_boundary
-            mutate(division[:]).rewrite_meter(
+            mutate(division).rewrite_meter(
                 meter,
                 boundary_depth=1,
                 initial_offset=initial_offset,
@@ -6142,88 +6144,12 @@ show(score)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Other variations and extensions are possible. The input rhythm-maker
-could be varied or replaced by a composite rhythm-maker. The score generation
-process could be extended so that rhythm-makers could be stored on the
-performed timespans themselves, allowing each performed timespan to specify its
-local rhythmic language. Multiple timespan inventories could be combined
-together using the various logical operations to implement masking or fusing
-when timespans from one inventory overlap those from another. In fact, all of
-these extensions and variations are employed in Consort's own score generation
-process.
-
-\section{Implications}
-
-\begin{markdown}
--   Recapitulate introduction
-    -   Timespan provide a coarse-grained model
-    -   Rhythm -- *music* -- provides a fine-grained model
-    -   Meter can be derived from one and applied to the other
-    -   Timespans exist without score
-    -   Rhythm exists with score
-    -   Factories can be used to programmatically generate either
-    -   All can be used together to generate rich scores
--   Discuss patterns and randomness
-    -   Why the extensive use of patterns rather than anything else?
-    -   Patterns are sufficient
-    -   They are also testable
--   Discuss extensibility
-    -   More factories are possible
-    -   Those outlined here are neither the *only* nor the *best* possible
-        factories one could design
-    -   New factories can make use of the interfaces implemented by these
-        factory families (timespan- and rhythm-makers)
-    -   New factories can also propose entirely new ways of working
-        (such as...)
-    -   Extensibility is afforded because the basic building blocks --
-        timespans, timespan inventories, meter and Abjad's model of score --
-        are rock solid
-\end{markdown}
-
-\begin{markdown}
-
--   Timespans allow for large scale phrasing and density structures.
-
--   They simply model attack points and durations, making attack and overlap
-    density easy to play with.
-
--   Timespan annotations allow for maquette-like composition techniques, or
-    working in a way that conceptually mirrors working with a DAW, even though
-    there is no real graphic output except for notation itself.
-
--   Annotations can act as a description of what sort of material should appear
-    in what locations -- both horizontally in time and vertically in the score
-    hierarchy.
-
--   Timespans also allow for overlap, and have affordances for masking.
-
--   This allows timespans to be created by a factories in layers, and those
-    layers resolved down to a single non-overlapping layer via masking.
-
--   All of the maker tools described here (and in the next chapter) emphasize
-    working with patterns.
-
--   Sufficiently complex patterns of discrete numbers (and combinations of
-    patterns) are perceptually indistinguishable from randomness. It doesn't
-    take much.
-
--   Likewise, randomness -- no matter how it is arrived at, windowed, weighted
-    and so forth -- is a kind of maintenance burden. How can you know that
-    your compositional machinery is behaving correctly when the results are
-    always different by design?
-
--   Only a few recipes for timespan and rhythm creation have been outlined
-    here. Obviously, many more are possible, with other paradigms. The models
-    described here generally rely on patterns. Other work could create
-    rhythm-makers which take pitches as input, or which follow breakpoints, or
-    mimic some other external structure. Likewise with timespan-makers. More
-    work could be done to create stronger intentional interrelations between
-    timespans.
-
--   One of the strengths in the overall design philosophy described throughout
-    this chapter is extensibility. Just because I *haven't* yet created a
-    derived-from-bird-song rhythm-maker doesn't mean I can't. Such a maker
-    could be created and follow the same interface as all other rhythm-makers,
-    benefitting from their foundation of shared notational logics.
-
-\end{markdown}
+\noindent Many other variations and extensions to the basic score-building
+algorithm outlined above are possible. The input rhythm-maker could be varied
+or replaced by a composite rhythm-maker. The score generation process could be
+extended so that rhythm-makers could be stored on the performed timespans
+themselves, allowing each performed timespan to specify its local rhythmic
+language. Multiple timespan inventories could be combined together using the
+various logical operations to implement masking or fusing when timespans from
+one inventory overlap those from another. In fact, all of these extensions and
+variations are employed in Consort's own score generation process.

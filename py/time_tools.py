@@ -137,14 +137,14 @@ def rewrite_meters(phrase, meters, meter_boundaries):
         if isinstance(division, scoretools.Tuplet):
             contents_duration = division._contents_duration
             meter = metertools.Meter(contents_duration)
-            mutate(division[:]).rewrite_meter(
+            mutate(division).rewrite_meter(
                 meter,
                 boundary_depth=1,
                 )
         else:
             meter, meter_boundary = pairs[0]
             initial_offset = division_offset - meter_boundary
-            mutate(division[:]).rewrite_meter(
+            mutate(division).rewrite_meter(
                 meter,
                 boundary_depth=1,
                 initial_offset=initial_offset,
