@@ -57,28 +57,34 @@ interpretation stage.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \emph{Timespans} model left-closed / right-open intervals of time positioned
-absolutely along a timeline. This means that every timespan describes
-an interval of time starting with -- and including -- some start offset and
-leading up to -- but not including -- some stop offset. Note that all leaves in
-a score describe such half-bounded interval of time. Adjacent notes in a score
-do not overlap, but rather abut one another because their timespans do not
-overlap. In fact, every durated object in a score -- every note, chord, rest,
-measure, staff, and even the score itself -- can be described in terms of
-timespans. Yet while score objects can always be described in terms of
-timespans, timespans themselves do not -- by definition -- refer to any score
-objects. Abjad implements timespans as immutable constants, much like Abjad's
-\texttt{Pitch} and \texttt{Duration} objects, and similarly to Python's
-implementation of numbers or strings. Constancy allows timespans to avoid a
-variety of computational reference problems. Multiple objects can reference the
-same timespan without fear of that timespan changing state, much as multiple
-objects can reference the integer 11 without fear that it will change into the
-integer 5.
+absolutely along a timeline. This means that every timespan describes a range
+of offsets $x$ starting with -- and including -- some start offset $A$ and
+leading up to -- but \emph{not} including -- some stop offset $B$:
+
+\begin{equation}
+A \leq x < B
+\end{equation}
+
+Note that all leaves in a score describe such half-bounded intervals of time.
+Adjacent notes in a score do not overlap but rather abut one another because
+their timespans do not overlap. In fact, every durated object in a score --
+every note, chord, rest, measure, staff, and even the score itself -- can be
+described in terms of timespans. Yet, while score objects can always be
+expressed as timespans, those timespans themselves do not -- by definition
+-- refer to any score objects. Abjad implements timespans as immutable
+constants, much like Abjad's \texttt{Pitch} and \texttt{Duration} objects, and
+similarly to Python's implementation of numbers and strings. Constancy allows
+timespans to avoid a variety of computational reference problems. For example,
+multiple objects can reference the same timespan without fear of that timespan
+changing state, much as multiple objects can reference the integer 11 without
+fear that that same integer will change into the integer 5.
 
 \todo[inline]{\textbf{TODO:} Emphasize and clarify set-theoretic definition of
 timespans in terms of offsets.}
 
-Abjad implements timespans via the \texttt{timespantools.Timespan} class. The
-following timespan begins at the offset 1/4 and continues up until the offset
+Abjad implements timespans via the \texttt{Timespan} class in its
+\texttt{timespantools} subpackage. The following code shows the definition of a
+timespan object beginning at the offset 1/4 and continues up until the offset
 3/2:
 
 \begin{comment}
@@ -87,8 +93,6 @@ timespan = timespantools.Timespan(
     start_offset=Offset(1, 4),
     stop_offset=Offset(3, 2),
     )
-print(timespan)
-show(timespan)
 </abjad>
 \end{comment}
 
@@ -100,8 +104,29 @@ show(timespan)
 ...     start_offset=Offset(1, 4),
 ...     stop_offset=Offset(3, 2),
 ...     )
->>> print(timespan)
-Timespan(start_offset=Offset(1, 4), stop_offset=Offset(3, 2))
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Like many objects in Abjad, timespan can be formatted for
+human-readable textual inspection, or displayed as a graphic illustration.
+
+\begin{comment}
+<abjad>
+print(format(timespan))
+show(timespan)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> print(format(timespan))
+timespantools.Timespan(
+    start_offset=durationtools.Offset(1, 4),
+    stop_offset=durationtools.Offset(3, 2),
+    )
 \end{lstlisting}
 \begin{lstlisting}
 >>> show(timespan)
@@ -113,7 +138,7 @@ Timespan(start_offset=Offset(1, 4), stop_offset=Offset(3, 2))
 \noindent The \texttt{Timespan} class provides a large number of methods and
 properties for inspecting timespans, comparing them to other timespans or
 offsets, and for operating on timespans to generate new timespans. Once
-instantiated, the timespan can be examined for its start offset, stop offset
+instantiated, a timespan can be examined for its start offset, stop offset
 and duration. Because of the \texttt{Timespan} class' immutability, these
 properties are read-only and therefore can only be accessed, but not changed.
 
@@ -146,7 +171,7 @@ Duration(5, 4)
 \noindent A timespan's start offset must be equal to or less than its stop
 offset. Timespans with identical start and stop offsets have a duration of 0
 and effectively model a single time-point. Such timespans are considered not
-\enquote{well-formed}:
+\enquote{well-formed}.
 
 \begin{comment}
 <abjad>
@@ -176,7 +201,7 @@ the \texttt{Timespan} class' initializer are optional, and default to Abjad's
 built-in rational constants \texttt{NegativeInfinity} and \texttt{Infinity}
 respectively. A timespan created without specifying either a start or stop
 offset effectively describes the timespan which encompasses all possible
-offsets in time:
+offsets in time.
 
 \begin{comment}
 <abjad>
@@ -208,7 +233,7 @@ Infinity
 
 \noindent By specifying only a start or stop offset, timespans can also be
 created which encompass the infinite set of offsets up until some stop offset,
-or the infinite set of offsets starting at and following some start-offset:
+or the infinite set of offsets starting at and following some start-offset.
 
 \begin{comment}
 <abjad>
@@ -233,7 +258,7 @@ Timespan(start_offset=Offset(0, 1), stop_offset=Infinity)
 
 \noindent \texttt{Timespan} objects also partake in Abjad's templating regime.
 New timespans can be created from old ones through the use of the top-level
-\texttt{new()} function:
+\texttt{new()} function.
 
 \begin{comment}
 <abjad>
@@ -251,14 +276,23 @@ Timespan(start_offset=Offset(1, 4), stop_offset=Offset(5, 16))
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Note that the above timespans have been configured from input in
+various formats, such as explicit \texttt{Offset} objects, integers, and even
+numerator/denominator pairs. Timespans always coerce arguments given for their
+\texttt{start\_offset} and \texttt{stop_offset} properties into explicit
+\texttt{Offset} instances. Abjad's other classes and functions implement
+similar offset, duration, and even pitch-coercion behavior pervasively.
+
 \subsection{Annotated timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 While the \texttt{Timespan} class only has two configurable properties -- its
-start offset and stop offset -- subclassing allows for the creation of new
-classes with the same core functionality as \texttt{Timespan} but expanded to
-allow for other configurable properties. As an example, \texttt{timespantools}
-provides an \texttt{AnnotatedTimespan} class which subclasses \texttt{Timespan}
-and adds a third read-only \texttt{annotation} property:
+start offset and stop offset --, subclassing allows for the creation of new
+classes with the same core functionality as \texttt{Timespan} but extended to
+support new behaviors and configurations. As an example, Abjad's
+\texttt{timespantools} subpackage provides an \texttt{AnnotatedTimespan} class
+which subclasses \texttt{Timespan} but adds a third read-only
+\texttt{annotation} property, which can be configured with any arbitrary
+object.
 
 \begin{comment}
 <abjad>
@@ -286,12 +320,13 @@ annotated_timespan.annotation
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Annotated timespans let composers position annotations or other
-metadata arbitrarily along a timeline. If the annotation is itself a mutable
-data structure like a dictionary, that annotation can be used to store
-increasing amounts of arbitrary information during the compositional process.
+\noindent Annotated timespans allow composers to position annotations or any
+other metadata along a timeline. If the annotation object is itself a mutable
+data structure such as a Python list or dictionary, that annotation can be used
+to store increasing amounts of information during the compositional process.
 Abjad's top-level \texttt{new()} function can also be used to template new
-annotated timespans from old ones, replacing one annotation with another:
+annotated timespans from old ones, replacing one annotation with another while
+preserving temporal information.
 
 \begin{comment}
 <abjad>
@@ -354,7 +389,7 @@ timespantools.AnnotatedTimespan(
 configurable properties, as well as new methods. Two \texttt{Timespan}
 subclasses discussed later, \texttt{consort.PerformedTimespan} and
 \texttt{consort.SilentTimespan}, are core components in Consort's score
-interpretation algorithm.
+interpretation stage.
 
 \subsection{Time relations} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
