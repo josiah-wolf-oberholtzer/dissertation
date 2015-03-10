@@ -1611,7 +1611,7 @@ show(result, range_=(-2, 16))
 
 \noindent Likewise, the offsets bound by a given timespan can be subtracted
 from all of the timespans in a timespan inventory, effectively cutting a hole
-in that inventory's timeline:
+in that inventory's timeline.
 
 \begin{comment}
 <abjad>
@@ -1650,7 +1650,7 @@ show(result)
 
 \noindent As with a single timespan and an offset, an entire timespan inventory
 can be split into two separate inventories via the \texttt{split\_at\_offset()}
-method:
+method.
 
 \begin{comment}
 <abjad>
@@ -1692,7 +1692,7 @@ show(right, range_=(0, 10))
 
 \noindent The \texttt{TimespanInventory} class also provides the convenience
 method \texttt{split\_at\_offsets()} for splitting an inventory by an arbitrary
-number of offsets at once:
+number of offsets at once.
 
 \begin{comment}
 <abjad>
@@ -1734,15 +1734,14 @@ for shard in shards:
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-The mutating methods described above modify a timespan inventory
+\noindent The mutating methods described above modify a timespan inventory
 by mapping some procedure against its contents and some outside timespan or
 offset. However, timespan inventories may also be modified by applying a
 procedure solely against the contents of the inventory itself, mapping each
 timespan in the collection against each other timespan in that collection.
-
 For example, a timespan inventory can be modified by computing the logical
 \texttt{OR} -- the set union -- of every timespan in the inventory relative
-every other timespan, effectively fusing all overlapping timespans together:
+every other timespan, effectively fusing all overlapping timespans together.
 
 \begin{comment}
 <abjad>
@@ -1792,7 +1791,7 @@ timespantools.TimespanInventory(
 \noindent A timespan inventory can also be modified by computing the logical
 \texttt{AND} of every timespan in the inventory relative every other timespan.
 This procedure leaves only those offsets where every single timespan
-overlaps:
+overlaps.
 
 \begin{comment}
 <abjad>
@@ -1841,7 +1840,7 @@ timespantools.TimespanInventory(
 
 \noindent Lastly, computing the in-place logical \texttt{XOR} removes all
 overlap from the timespan inventory, leaving only those offsets occupied by
-only one timespan:
+only one timespan.
 
 \begin{comment}
 <abjad>
@@ -1896,9 +1895,10 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-Timespan partitioning separates a timespan inventory into groups of overlapping
-and optionally tangent timespans, aggregated into new timespan inventories.
-This procedure allows composers to isolate contiguous blocks of activity.
+\noindent Timespan \emph{partitioning} separates a timespan inventory into
+groups of overlapping and optionally tangent timespans, aggregated into new
+timespan inventories. This procedure allows composers to isolate contiguous
+blocks of activity.
 
 \begin{comment}
 <abjad>
@@ -1949,12 +1949,15 @@ for shard in timespan_inventory.partition(include_tangent_timespans=True):
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-Explosion separates a timespan inventory into one or more new inventories in an
-attempt to limit the amount of overlap in each inventory. The number of output
-inventories can be left unspecified, in which case explosion will generate as
-many inventories as necessary to remove all overlap in every output inventory.
-Explosion is also one the techniques used to create all of the timespan
-inventory illustrations in this document.
+\noindent Conversely, \emph{explosion} separates a timespan inventory into one
+or more new inventories in an attempt to limit the amount of overlap in each
+resulting inventory. The number of output inventories can be left unspecified,
+in which case explosion will generate as many inventories as necessary to
+prevent overlap entirely in every resulting inventory.\footnote{ Explosion is
+one of the techniques used to create timespan inventory illustrations,
+providing the mechanism by which arbitrary collections of timespans are
+automatically separated into non-overlapping inventories, which can then be
+rendered graphically as \enquote{rows} of line segments.}.
 
 \begin{comment}
 <abjad>
