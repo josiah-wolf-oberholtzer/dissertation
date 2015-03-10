@@ -706,6 +706,7 @@ a timespan contains another timespan entirely. These predicates make possible
 the many generative operations carried out on timespans.
 
 \subsection{Operations on timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:operations-on-timespans}
 
 Many \texttt{Timespan} methods provide transformations, such as translation,
 scaling or offset rounding. Because timespans are immutable, these methods
@@ -1224,7 +1225,7 @@ interval trees.}
 Abjad provides a \texttt{TimespanInventory} class specifically for aggregating
 together a collection of \texttt{Timespan} objects.\footnote{ Consort provides
 its own timespan collection class -- the \texttt{TimespanCollection}. This
-class stores timespans internally not as a list, but in a balanced
+class stores timespans internally not in a list, but in a balanced
 \emph{interval tree}. An interval tree is an augmented, self-balancing binary
 tree which stores start offsets and stop offsets. Such a data structure
 guarantees its contents are always sorted, and allows for highly optimized
@@ -1240,11 +1241,14 @@ like lists, supporting appension, extension, insertion, indexing, sorting,
 iteration and other procedures pertinent to list-like objects. They also
 provide a wide variety of properties and methods for interacting with massed
 groups of timespans such as searching for timespans matching a time relation,
-splitting all timespans which interact with a given offset or partitioning one
-inventory into multiple separate inventories of overlapping timespans.
+splitting all timespans which intersect with a given offset, mapping a logical
+operation against all timespans in the inventory, or partitioning an
+inventory containing overlapping timespans into multiple separate inventories
+containing non-overlapping timespans.
 
-A timespan inventory can be created with a list of zero or more
-timespans as an argument, be appended to, or extended into:
+Like a Python list, a timespan inventory can be created with an iterable of
+zero or more timespans as an instantiation argument, be appended to, or
+extended into.
 
 \begin{comment}
 <abjad>
@@ -1302,8 +1306,8 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Timespan inventories can also be queried for their length -- just
-like any other sequence in Python --, be indexed into, or iterated over:
+\noindent Timespan inventories can also be queried for their length, be indexed
+into, or iterated over like any other sequence-like object in Python.
 
 \begin{comment}
 <abjad>
@@ -1338,14 +1342,14 @@ Timespan(start_offset=Offset(15, 1), stop_offset=Offset(20, 1))
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Similarly, one timespan inventory can be created from another -- just
-like one can create a Python list simply by calling \texttt{list()} on another
-iterable object -- by passing the first timespan inventory as an
-instantiation argument to the second. As many of the mutating methods
-implemented on timespan inventories operate in place, this instantiation
-pattern provides a simple means of \enquote{copying}, allowing composers to
-duplicate a timespan structure before operating on it, thereby preserving the
-original.
+\noindent One timespan inventory can be created from another by passing the
+first timespan inventory as an instantiation argument to the second, just like
+one can create a Python list simply by calling \texttt{list()} on another
+iterable object, including another list. Unlike timespans, timespan inventories
+are mutable. As many of the operations implemented on timespan inventories
+mutate the inventory \emph{in-place}, this instantiation pattern provides a
+simple means of \enquote{copying}, allowing composers to duplicate a timespan
+structure before operating on it, thereby preserving the original.
 
 \begin{comment}
 <abjad>
@@ -1400,7 +1404,8 @@ timespans, and a stop offset equal to the maximum stop offset of any of their
 contained timespans. Their start and stop offset properties allow them to
 express a duration, as well as provide a concrete timespan representation.
 Because timespan inventories can be modeled as timespans, they can even be
-inserted into other timespan inventories.
+inserted into other timespan inventories, effectively masquerading as
+timespans.
 
 \begin{comment}
 <abjad>
@@ -1436,11 +1441,11 @@ Timespan(start_offset=Offset(-2, 1), stop_offset=Offset(20, 1))
 \noindent Because timespan inventories aggregate multiple timespans together,
 they also provide properties for describing collective qualities of those
 timespans. \emph{Contiguity} tests if every timespan in the inventory is
-tangent to another timespan, and does not overlap any other timespan,
-\emph{overlap} tests if any timespan intersects any other timespan, and
-\emph{well-formedness} tests that all timespans' durations are greater than 0.
-A timespan inventory whose timespans are contiguous is necessarily
-also non-overlapping.
+tangent to another timespan and also does not overlap any other timespan.
+\emph{Overlap} tests if any timespan intersects any other timespan.
+\emph{Well-formedness} tests that all timespans' durations are greater than 0.
+A timespan inventory whose timespans are contiguous is necessarily also
+non-overlapping.
 
 \begin{comment}
 <abjad>
@@ -1469,7 +1474,7 @@ True
 %%% ABJADBOOK END %%%
 
 \noindent The following timespan inventory's timespans are non-overlapping but
-also non-contiguous:
+also non-contiguous.
 
 \begin{comment}
 <abjad>
@@ -1508,7 +1513,7 @@ True
 %%% ABJADBOOK END %%%
 
 \noindent In contrast, this timespan inventory's timespans are both
-non-overlapping and contiguous:
+non-overlapping and contiguous.
 
 \begin{comment}
 <abjad>
@@ -1548,13 +1553,26 @@ True
 
 \subsection{Operations on timespan inventories} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Timespan inventory implement unioning, differencing and splitting methods which
-parallel those implemented on timespans themselves. These methods
-map the desired operation onto the contents of the inventory by, for example,
-splitting every timespan contained in a given inventory by some offset. All of
-these operations act in place. The intersection of all of the timespans in a
-timespan inventory relative another timespan can be computed with the
-\texttt{\&} operator, just like with single timespans:
+Timespan inventories implement unioning, differencing and splitting methods
+which parallel those implemented on timespans themselves. These methods map the
+desired operation onto the contents of the inventory by, for example, splitting
+every timespan contained in a given inventory by some offset. All of these
+operations act in place. The intersection of all of the timespans in a timespan
+inventory relative another timespan can be computed with the Python \texttt{\&}
+operator, the same syntax used when operating on individual timespans, as
+demonstrated in \autoref{sec:operations-on-timespans}.\footnote{ The call to
+\texttt{show()} in the code example here contains the keyword argument
+\texttt{range\_}. This argument controls the horizontal scaling and spacing of
+the timespan illustration, allowing different illustrations to be aligned
+against one another in a document even if the timespan inventories they
+illustrate have different start and stop offsets. The name \texttt{range\_} --
+with a trailing underscore -- is used instead of \texttt{range}, a
+commonly-used built-in Python function. It is common practice in the Python
+community to append underscores to names when they would otherwise conflict
+with reserved words in Python's grammar or global built-in namespace. For
+example, one would use the names \texttt{break\_}, \texttt{object\_},
+\texttt{set\_} and \texttt{type\_} instead of the reserved word \texttt{break},
+or the built-in names \texttt{object}, \texttt{set} and \texttt{type}.}
 
 \begin{comment}
 <abjad>
