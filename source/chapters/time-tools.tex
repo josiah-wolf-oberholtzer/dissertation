@@ -54,10 +54,11 @@ interpretation stage.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Timespans}
+\label{sec:timespans}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \emph{Timespans} model left-closed / right-open intervals of time positioned
-absolutely along a timeline. This means that every timespan describes a range
+absolutely along a timeline. Every timespan describes a range
 of offsets $x$ starting with -- and including -- some start offset $A$ and
 leading up to -- but \emph{not} including -- some stop offset $B$:
 
@@ -83,7 +84,7 @@ fear that that same integer will change into the integer 5.
 timespans in terms of offsets.}
 
 Abjad implements timespans via the \texttt{Timespan} class in its
-\texttt{timespantools} subpackage. The following code shows the definition of a
+\texttt{timespantools} library. The following code shows the definition of a
 timespan object beginning at the offset 1/4 and continues up until the offset
 3/2:
 
@@ -279,7 +280,7 @@ Timespan(start_offset=Offset(1, 4), stop_offset=Offset(5, 16))
 \noindent Note that the above timespans have been configured from input in
 various formats, such as explicit \texttt{Offset} objects, integers, and even
 numerator/denominator pairs. Timespans always coerce arguments given for their
-\texttt{start\_offset} and \texttt{stop_offset} properties into explicit
+\texttt{start\_offset} and \texttt{stop\_offset} properties into explicit
 \texttt{Offset} instances. Abjad's other classes and functions implement
 similar offset, duration, and even pitch-coercion behavior pervasively.
 
@@ -289,7 +290,7 @@ While the \texttt{Timespan} class only has two configurable properties -- its
 start offset and stop offset --, subclassing allows for the creation of new
 classes with the same core functionality as \texttt{Timespan} but extended to
 support new behaviors and configurations. As an example, Abjad's
-\texttt{timespantools} subpackage provides an \texttt{AnnotatedTimespan} class
+\texttt{timespantools} library provides an \texttt{AnnotatedTimespan} class
 which subclasses \texttt{Timespan} but adds a third read-only
 \texttt{annotation} property, which can be configured with any arbitrary
 object.
@@ -324,9 +325,10 @@ annotated_timespan.annotation
 other metadata along a timeline. If the annotation object is itself a mutable
 data structure such as a Python list or dictionary, that annotation can be used
 to store increasing amounts of information during the compositional process.
-Abjad's top-level \texttt{new()} function can also be used to template new
-annotated timespans from old ones, replacing one annotation with another while
-preserving temporal information.
+Additionally, Abjad's top-level \texttt{new()} function can be used to template
+new annotated timespans from old ones, replacing one annotation with another
+while preserving temporal information. If that same annotation object supports
+templating, nested reconfiguration can be performed.
 
 \begin{comment}
 <abjad>
@@ -385,18 +387,21 @@ timespantools.AnnotatedTimespan(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Other subclasses are also possible, allowing for even more
-configurable properties, as well as new methods. Two \texttt{Timespan}
+\noindent Other \texttt{Timespan} subclasses are possible, allowing for even
+more configurable properties, as well as new methods. Two \texttt{Timespan}
 subclasses discussed later, \texttt{consort.PerformedTimespan} and
 \texttt{consort.SilentTimespan}, are core components in Consort's score
 interpretation stage.
 
 \subsection{Time relations} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Abjad's \texttt{timespantools} provides a \texttt{TimeRelation} class and a
-collection of factory methods for configuring \texttt{TimeRelation} instances
-which formalize all possible dispositions of a timespan relative another
-timespan or relative an offset\footnote{ The thirty-three time relation factory
+\emph{Time relations} model the disposition of one timespan relative to
+another timespan or offset. These relationships include intersection,
+containment, simultaneous start offsets or stop offsets, and many others.
+Abjad's \texttt{timespantools} library provides a \texttt{TimeRelation} class
+and a collection of factory methods for configuring \texttt{TimeRelation}
+instances which formalize all possible dispositions of a timespan relative
+another timespan or offset\footnote{The thirty-three time relation factory
 functions contained in \texttt{timespantools} are
 \texttt{offset\_happens\_after\_timespan\_starts()},
 \texttt{offset\_happens\_after\_timespan\_stops()},
@@ -472,9 +477,18 @@ timespantools.TimespanTimespanTimeRelation(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent A \enquote{half-configured} time relation is also possible. Such
-object acts like a kind of \enquote{frozen} predicate function, and can be
-called like a function on another timespan or offset to return a truth value.
+\noindent The above intersection relationship between the timespans $[a, b)$
+and $[c, d)$ can be described more pithily by the following predicate:
+
+\begin{equation}
+(a \leq c \land c < b) \lor (c \leq a \land a < d)
+\end{equation}
+
+\noindent A \enquote{half-configured} time relation is also possible. Such an
+object acts as a kind of \enquote{frozen} predicate. Calling the time
+relation as though it was a function\footnote{Any class in Python can be made
+treatable as a function by implementing a \texttt{\_\_call\_\_()} method.} on
+another timespan or offset returns a truth value.
 
 \begin{comment}
 <abjad>
@@ -503,8 +517,11 @@ False
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Time relations which are \enquote{fully loaded} will be evaluated
-immediately:
+\noindent Providing two timespans -- or one timespan and an offset, as required
+-- to one of the various time relation factory functions found in
+\texttt{timespantools} will configure and then immediately evaluate the
+generated time relation object, allowing the factory function itself to behave
+as a predicate.
 
 \begin{comment}
 <abjad>
@@ -529,9 +546,9 @@ True
 %%% ABJADBOOK END %%%
 
 \noindent The time relation factory functions in \texttt{timespantools} are
-also implemented as methods on the \texttt{Timespan} class itself, allowing
-composers to determine the various relations of any timespan relative any other
-timespan or offset in an object-oriented fashion. The \texttt{Timespan} object
+mirrored as methods on the \texttt{Timespan} class itself, allowing composers
+to determine the various relations of any timespan relative any other timespan
+or offset in an object-oriented fashion. The \texttt{Timespan} object
 automatically \enquote{fills in} the \texttt{timespan\_1} argument to the
 \texttt{TimeRelation} with itself, and can pass the optional argument to its
 method call as the other object in the relation, allowing for the immediate
@@ -558,8 +575,11 @@ timespan_3 = timespantools.Timespan(10, 20)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent These three timespans could be represented together visually like
-this:
+\noindent After being collected into a \emph{timespan inventory}, discussed
+further in \autoref{sec:timespan-inventories}, the three timespans can be
+illustrated. Note that the beginning and end of each timespan is demarcated by
+a short vertical line, and that only non-intersecting timespans are shown in
+each \enquote{row} in the illustration.
 
 \begin{comment}
 <abjad>[hide=true]
@@ -1190,6 +1210,7 @@ once, wholesale transformations on massed timespans becomes practical.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Timespan inventories}
+\label{sec:timespan-inventories}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \todo[inline]{\textbf{TODO:} Cite \emph{Introduction to Algorithms} for
@@ -1992,12 +2013,13 @@ for shard in timespan_inventory.explode(inventory_count=2):
 The procedures outlined above provide high-level tools for interacting with
 large numbers of timespans at once. All of the techniques described in
 \autoref{chap:a-model-of-composition} with regards to Consort's score
-interpretation algorithm -- timespan consolidation, cascading overlap
+interpretation stage -- timespan consolidation, cascading overlap
 resolution, multiplexing multiple inventories into one, demultiplexing one
 inventory into many, and so forth -- build on and extend these techniques.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Annotated timespans in Consort}
+\label{sec:annotated-timespans-in-consort}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 While the above data structures and operations are potentially very useful, a
@@ -2010,7 +2032,7 @@ first describe the products of the timespan themselves: Consort's annotated
 timespan subclasses.
 
 Consort provides two separate timespan subclasses which are integral, if
-transient, components of its score interpretation algorithm: the
+transient, components of its score interpretation stage: the
 \texttt{PerformedTimespan} and \texttt{SilentTimespan} classes. These classes
 are never created \enquote{by hand} during Consort's specification stage --
 this is, explicitly instantiated by a composer while specifying a score segment
@@ -2141,6 +2163,7 @@ an arbitrary object such as Python's \texttt{None} rather than a
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Timespan-makers}
+\label{sec:timespan-makers}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Consort provides a family of factory classes for producing timespans, each
@@ -2386,7 +2409,7 @@ timespantools.TimespanInventory(
 Consort's \texttt{TaleaTimespanMaker} class creates rich timespan textures
 through the use of \emph{talea} -- infinitely cyclic duration patterns. Abjad
 implements the concept of talea via the \texttt{Talea} class in its
-\texttt{rhythmmakertools} subpackage. \texttt{Talea} defines a sequence of
+\texttt{rhythmmakertools} library. \texttt{Talea} defines a sequence of
 durations in terms of a finite sequence of numerators paired with a
 denominator. Once defined, they can be iterated over and indexed like an
 infinite sequence.
@@ -3212,13 +3235,14 @@ show(result, key='voice_name', range_=(0, 75))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Rhythm-makers}
+\label{sec:rhythm-makers}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Abjad's rhythm-makers, like Consort's timespan-makers, are highly-configurable
 factory classes which behave like partially evaluated functions, taking
 as input sequences of \emph{divisions} -- positive duration tokens representing
 the divisions in some phrase of music -- and producing selections of score
-components as output. Abjad's \texttt{rhythmmakertools} subpackage contains a
+components as output. Abjad's \texttt{rhythmmakertools} library contains a
 variety of such classes, each providing a different strategy for rhythm
 generation, but unified by the same callable interface. Additionally,
 \texttt{rhythmmakertools} provides a collection of \emph{specifier} classes
@@ -3789,7 +3813,7 @@ show(incised_rhythm_maker, divisions=divisions)
 
 \noindent Incised rhythm-makers also respect many of the same rhythm-maker
 specifiers as the other rhythm-maker classes defined in Abjad's
-\texttt{rhythmmakertools} subpackage. Like note rhythm-makers, they can be
+\texttt{rhythmmakertools} library. Like note rhythm-makers, they can be
 configured to tie the last note of each output division to the first note of
 the next output division via an instance of the \texttt{TieSpecifier} class.
 
@@ -4038,6 +4062,7 @@ motivating example.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Meter}
+\label{sec:meter}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \todo[inline]{\textbf{TODO:} Provide a definition of meter. Cite Lerdahl.}
@@ -4273,6 +4298,7 @@ graph(arbitrary_meter_2)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Rewriting meters}
+\label{sec:rewriting-meters}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \todo[inline]{\textbf{TODO:} Remove subscripts in rewrite\_meter() calls.}
@@ -4856,6 +4882,7 @@ show(staff)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Finding meters}
+\label{sec:finding-meters}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Not only can meters be used to alter rhythmic structures, they can also be
@@ -5623,6 +5650,7 @@ backwards from them are also possible avenues for improvement.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Synthesizing time techniques}
+\label{sec:synthesizing-time-techniques}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 The techniques outlined in this chapter -- timespan inventories,
