@@ -3330,6 +3330,7 @@ rhythm-maker classes demonstrates how a wide range of rhythmic textures can be
 produced.
 
 \subsection{Note rhythm-makers}
+\label{ssec:note-rhythm-makers}
 
 \emph{Note} rhythm-makers, arguably the simplest class of rhythm-maker, take a
 sequence of input divisions and \enquote{fill} them with notes, tied as
@@ -4861,7 +4862,7 @@ recursively descend into that second tuplet -- and any further tuplet children
 at any depth. This recursive descent allows any encountered component to be
 rewritten in a relevant metrical context.
 
-\subsection{Examples of meter rewriting: 3/4 \& 6/8} %%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Examples}
 
 Meter rewriting can clarify structural differences between meters with
 identical durations, such as 3/4 and 6/8, or between various possible
@@ -5099,15 +5100,17 @@ represent an even lower level of leaves on the rhythm-tree for 6/8. Likewise,
 offsets with a denominator of 32 or 64 should be explainable in an identical
 fashion.
 
-Abjad's \texttt{MetricAccentKernel} provides an object model for both the act
-of progressively subdividing the weighted offsets of a meter down to some
-arbitrary denominator, and for convolving those offsets as a one-dimensional
-convolution kernel against an offset counter. This allows meters to be fitted
-against offset counters containing offsets not explicitly modeled by those same
-meters. Here a metric accent kernel is generated from a 4/4 meter, extending
-its denominator to a limit of 1/16. The weights at each offset are normalized
-such that they sum to 1. Normalization prevents very long meters from having
-undue influence during meter fitting.
+Abjad's \texttt{MetricAccentKernel} class provides an object model for both the
+act of progressively subdividing the weighted offsets of a meter down to some
+arbitrary denominator, and for the process of convolving those offsets as a
+one-dimensional convolution kernel against an offset counter. Metric accent
+kernels allow meters to be fitted against offset counters containing offsets
+not explicitly modeled by the rhythm-trees of those same meters.
+
+Here a metric accent kernel is generated from a 4/4 meter, extending its
+denominator to a \emph{limit} of 1/16. The weights at each offset are
+normalized such that they sum to 1. Normalization prevents very long meters
+from having undue influence during meter fitting.
 
 \begin{comment}
 <abjad>
@@ -5175,7 +5178,7 @@ float(response)
 %%% ABJADBOOK END %%%
 
 \noindent The following loop demonstrates the logic underlying the above meter
-convolution process example:
+convolution process example.
 
 \begin{comment}
 <abjad>
@@ -5218,7 +5221,7 @@ for offset, count in sorted(piano_staff_counter.items()):
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Now consider the metric accent kernels for 3/4, 7/8 and 5/4 meters:
+\noindent Now consider the metric accent kernels for 3/4, 7/8 and 5/4 meters.
 
 \begin{comment}
 <abjad>
@@ -5239,8 +5242,8 @@ kernel_54 = metertools.MetricAccentKernel.from_meter((5, 4), denominator=16)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent We can generate an response for each of these kernels against the
-piano staff offset counter.
+\noindent A convolution response can be generated for each of these kernels
+against the piano staff offset counter.
 
 \begin{comment}
 <abjad>
@@ -5422,7 +5425,7 @@ show(fitted_meters, range_=(0, 5))
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Meter fitting in practice}
+\subsection{Examples}
 
 The output of timespan-makers motivates meter fitting more forcefully than the
 above trivial examples. Densely layered timespan textures often involve
@@ -5657,8 +5660,8 @@ show(fitted_meters, range_=(0, (19, 4)))
 %%% ABJADBOOK END %%%
 
 \noindent Increasing the number of permitted offsets even further does not
-necessarily improve results. A better initial meter fitting -- like the initial
-9/8 here -- often diminishes the choices possible afterward.
+necessarily improve results further. A better initial meter fitting -- like the
+initial 9/8 here -- often diminishes the choices possible afterward.
 
 \begin{comment}
 <abjad>
@@ -5733,93 +5736,8 @@ ways of modeling, creating and manipulating aspects of musical score. Taken
 separately, none of them can ever result in the rhythmic framework for a
 polyphonic piece of music. However, by combining all of them together, it is
 possible to construct powerful tools for generating arbitrarily large amounts
-of notation.
-
-The following \texttt{build\_score()} function outlines one possible approach
-to combining these techniques. This function creates a score from a
-rhythm-maker, a sequence of permitted meters, a score template and a timespan
-inventory. The timespan inventory must contain performed timespans whose voice
-names align with the voice names in the score produced by the score template.
-For example, Abjad's \texttt{GroupedRhythmicStavesScoreTemplate} class can
-produce scores containing voices with names like \enquote{Voice 1},
-\enquote{Voice 2} and so forth. The timespan inventory used for this example --
-created earlier in this chapter -- contains performed timespans with the voice
-names \enquote{Voice 1}, \enquote{Voice 2}, \enquote{Voice 3} and
-\enquote{Voice 4}, requiring a score template capable of creating scores with
-four staves of one voice each.
-
-\begin{comment}
-<abjad>
-show(timespan_inventory, key='voice_name')
-score_template = templatetools.GroupedRhythmicStavesScoreTemplate(
-    staff_count=4, with_clefs=True,
-    )
-score = score_template()
-print(format(score))
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> show(timespan_inventory, key='voice_name')
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-54d2fa8b64e488a84ee52a488caf28df.pdf}
-\begin{lstlisting}
->>> score_template = templatetools.GroupedRhythmicStavesScoreTemplate(
-...     staff_count=4, with_clefs=True,
-...     )
->>> score = score_template()
->>> print(format(score))
-\context Score = "Grouped Rhythmic Staves Score" <<
-    \context StaffGroup = "Grouped Rhythmic Staves Staff Group" <<
-        \context RhythmicStaff = "Staff 1" {
-            \clef "percussion"
-            \context Voice = "Voice 1" {
-            }
-        }
-        \context RhythmicStaff = "Staff 2" {
-            \clef "percussion"
-            \context Voice = "Voice 2" {
-            }
-        }
-        \context RhythmicStaff = "Staff 3" {
-            \clef "percussion"
-            \context Voice = "Voice 3" {
-            }
-        }
-        \context RhythmicStaff = "Staff 4" {
-            \clef "percussion"
-            \context Voice = "Voice 4" {
-            }
-        }
-    >>
->>
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-Score building proceeds by first fitting the permitted meters against the
-timespan inventory and calculating their meter boundaries -- the offsets of
-each downbeat, as well as the virtual downbeat, the \enquote{end-beat}, after
-the final meter. Then the timespans in the input timespan inventory are
-separated into new timespan inventories according to their associated voice
-names, with these new inventories stored in a dictionary whose keys are those
-same voice name. The score template generates an unpopulated score and the
-voice components in this score are iterated over. For each iterated voice, an
-inventory of timespans is retrieved from the \texttt{all\_voicewise\_timespans}
-dictionary. If no inventory exists, an empty one is created. The associated
-performed timespans are partitioned into contiguous groups in order to
-facilitate rhythm generation. Each partitioned group is passed, along with the
-input rhythm-maker, the fitted meter boundaries, and a seed value -- the number
-of performed timespan groups encountered so far -- to a rhythm generation
-subroutine, with the resulting phrase container appended into the current
-voice. If a gap is encountered between two partitioned groups, between the
-beginning of the first partitioned group and the beginning of the score -- the
-offset 0, or between the end of the last partitioned group and the final meter
-boundary, "silent music" will be created in the form of rests grouped into a
-container, with that container then inserted into the current voice.
+of notation. The following \texttt{build\_score()} function sketches one
+possible approach to combining these techniques.
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:build_score />[strip_prompt]
@@ -5878,13 +5796,107 @@ def build_score(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent A meter sequence of equal or greater duration to the input timespan
-inventory can be produced through fitting a collection of permitted meters
-against that same input timespan inventory. The sequence of offsets found at
-the boundaries of each fitted meter can then be determined by computing the
-cumulative sums of the durations of the fitted meters. These boundary offsets
-will be used to split timespans before they are fed to rhythm-makers for rhythm
-generation in order to ensure that no generated rhythm crosses any bar-lines.
+\noindent \texttt{build\_score()} creates a score from a rhythm-maker, a
+sequence of permitted meters, a score template and a timespan inventory. The
+timespan inventory must contain performed timespans whose voice names align
+with the voice names in the score produced by the score template. For example,
+Abjad's \texttt{GroupedRhythmicStavesScoreTemplate} class can produce scores
+containing voices with names like \enquote{Voice 1}, \enquote{Voice 2} and so
+forth. The timespan inventory used for this example -- created earlier in this
+chapter -- contains performed timespans with the voice names \enquote{Voice 1},
+\enquote{Voice 2}, \enquote{Voice 3} and \enquote{Voice 4}, requiring a score
+template capable of creating scores with four staves of one voice each.
+
+\begin{comment}
+<abjad>
+show(timespan_inventory, key='voice_name')
+score_template = templatetools.GroupedRhythmicStavesScoreTemplate(
+    staff_count=4, with_clefs=True,
+    )
+score = score_template()
+print(format(score))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> show(timespan_inventory, key='voice_name')
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-54d2fa8b64e488a84ee52a488caf28df.pdf}
+\begin{lstlisting}
+>>> score_template = templatetools.GroupedRhythmicStavesScoreTemplate(
+...     staff_count=4, with_clefs=True,
+...     )
+>>> score = score_template()
+>>> print(format(score))
+\context Score = "Grouped Rhythmic Staves Score" <<
+    \context StaffGroup = "Grouped Rhythmic Staves Staff Group" <<
+        \context RhythmicStaff = "Staff 1" {
+            \clef "percussion"
+            \context Voice = "Voice 1" {
+            }
+        }
+        \context RhythmicStaff = "Staff 2" {
+            \clef "percussion"
+            \context Voice = "Voice 2" {
+            }
+        }
+        \context RhythmicStaff = "Staff 3" {
+            \clef "percussion"
+            \context Voice = "Voice 3" {
+            }
+        }
+        \context RhythmicStaff = "Staff 4" {
+            \clef "percussion"
+            \context Voice = "Voice 4" {
+            }
+        }
+    >>
+>>
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Score building proceeds by first fitting the permitted meters against
+the timespan inventory and calculating their \emph{meter boundaries} -- the
+offsets of each downbeat, as well as the virtual downbeat, the
+\enquote{end-beat}, after the final meter. Then the timespans in the input
+timespan inventory are separated into new timespan inventories according to
+their associated voice names, with these new inventories stored in a dictionary
+whose keys are those same voice names. With the timespan and metrical
+structures organized, the \texttt{build\_score()} produces an unpopulated score
+from its score template. For each voice in this score, an inventory of
+timespans is retrieved from the \texttt{all\_voicewise\_timespans} dictionary.
+If no inventory exists, an empty one is created. The associated performed
+timespans are partitioned into contiguous groups in order to facilitate rhythm
+generation. Each partitioned group is passed, along with the input
+rhythm-maker, the fitted meter boundaries, and a seed value -- the number of
+performed timespan groups encountered so far -- to a rhythm generation
+subroutine, with the resulting phrase container appended into the current
+voice. If a gap is encountered between two partitioned groups, between the
+beginning of the first partitioned group and the beginning of the score -- the
+offset 0, or between the end of the last partitioned group and the final meter
+boundary, "silent music" will be created in the form of rests grouped into a
+container, with that container then inserted into the current voice. Once all
+voices in the score have been populated, their meters are rewritten, then the
+score is formatted and finally returned.
+
+An analysis of each of the functions called within \texttt{build\_score()}
+follows.
+
+\subsection{Organizing meter}
+
+Consider the first function called inside \texttt{build\_score()},
+\texttt{get\_meters\_and\_meter\_boundaries()}. A meter sequence of equal or
+greater duration to the input timespan inventory can be produced through
+fitting a collection of permitted meters against that same input timespan
+inventory. The sequence of offsets found at the boundaries of each fitted meter
+can then be determined by computing the cumulative sums of the durations of the
+fitted meters. These boundary offsets will be used to split timespans before
+they are fed to rhythm-makers for rhythm generation in order to ensure that no
+generated rhythm crosses any bar-lines.
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:get_meters_and_meter_boundaries />[strip_prompt]
@@ -5911,11 +5923,13 @@ def get_meters_and_meter_boundaries(timespan_inventory, permitted_meters):
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Each of the performed timespans in the input timespan inventory was
-configured with a voice name, allowing that timespan to be associated with a
-voice context in the score hierarchy produced by the input score template. As
-demonstrated earlier, Abjad components can be indexed by context name
-regardless of the depth of the named context in the score hierarchy.
+\subsection{Organizing timespans}
+
+Each of the performed timespans in the input timespan inventory was configured
+with a voice name, allowing that timespan to be associated with a voice context
+in the score hierarchy produced by the input score template. As demonstrated
+earlier, Abjad components can be indexed by context name regardless of the
+depth of the named context in the score hierarchy.
 
 \begin{comment}
 <abjad>
@@ -5983,12 +5997,13 @@ def get_all_voicewise_timespans(timespan_inventory):
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Creating \emph{performed} music requires first splitting a contiguous
-inventory of performed timespans by meter boundaries, collecting the shards
-together into a new inventory and then calculating the durations of those
-timespans. The resulting sequence of durations, along with an input
-rhythm-maker and an optional seed value can be sent to another function for
-rhythm generation.
+\subsection{Populating voices}
+
+Creating \emph{performed} music requires first splitting a contiguous inventory
+of performed timespans by meter boundaries, collecting the shards together into
+a new inventory and then calculating the durations of those timespans. The
+resulting sequence of durations, along with an input rhythm-maker and an
+optional seed value can be sent to another function for rhythm generation.
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:make_performed_music />[strip_prompt]
@@ -6014,7 +6029,9 @@ timespans in each voice -- can be created by constructing a timespan which
 outlines the gap between other performed timespans, splitting that timespan by
 meter boundaries, collecting the durations of the split shards, and finally
 passing those durations along with a rest-generating rhythm-maker to another
-function for rhythm generation.
+function for rhythm generation. As demonstrated in
+\autoref{ssec:note-rhythm-makers}, rest-generating rhythm-makers can be created
+from note rhythm-makers which use output masks to silence all output divisions.
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:make_silent_music />[strip_prompt]
@@ -6037,15 +6054,15 @@ def make_silent_music(start_offset, stop_offset, meter_boundaries):
 %%% ABJADBOOK END %%%
 
 \noindent Both silent and performed music generation relies on the same core
-rhythm generating function. This function calls its input rhythm-maker with a
-sequence of durations and an optional seed value, which may be interpreted
-variably depending on what kind of rhythm-maker was used, but which generally
-results in the rotation of any sequence-like configured value in that
-rhythm-maker, such as talea. The product of this first operation is a sequence
-of component selections. Some massaging converts this selections into a
-sequence of trivially-prolated containers and non-trivially prolated tuplets
-which can then be wrapped inside a larger container representing a complete
-phrase.
+rhythm generating function, \texttt{make\_music()}. This function calls its
+input rhythm-maker with a sequence of durations and an optional seed value,
+which may be interpreted variably depending on what kind of rhythm-maker was
+used, but which generally results in the rotation of any sequence-like
+configured value in that rhythm-maker, such as talea. The product of this first
+operation is a sequence of component selections. Some massaging converts this
+selections into a sequence of trivially-prolated containers and non-trivially
+prolated tuplets which can then be wrapped inside a larger container
+representing a complete phrase.
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:make_music />[strip_prompt]
@@ -6068,26 +6085,27 @@ def make_music(rhythm_maker, durations, seed=0):
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent After all phrases for a voice have been generated, their meters are
-rewritten. This process involves simultaneously iterating through both the
-divisions in each phrase along with pairs of meters and meter downbeat
-offsets -- that is, the offset from the origin of the score where each meter
-begins.\footnote{More optimizations to this joint container / meter iteration
-are obviously possible. Some have even been implemented in Consort's source.
-Such optimization include associating meters with their own timespans, and
-storing these meter-timespans in an optimized interval-tree data structure
-allowing rapid retrieval by both offset and timespan intersection. For the sake
-of pedagogical clarity, a more naive approach is used here.} Unprolated
-division containers are rewritten according to the meter active when they
-begin. Because a division may start \emph{after} a meter has begun it is
-necessary to calculate the difference between each unprolated division's start
-offset and each meter's start offset. This difference is passed to the
-\texttt{MutationAgent}'s \texttt{rewrite\_meter()} method via the
-\texttt{initial\_offset} keyword, allowing the division to be properly aligned
-against the desired meter. Prolated divisions -- tuplets -- are rewritten
-solely with respect to the duration of their contents, not to the prevailing
-meter. That is, a 5:4 tuplet in a 4/8 measure is rewritten with a meter of 5/8,
-not of 4/8.
+\subsection{Rewriting meters}
+
+After all phrases for a voice have been generated, their meters are rewritten.
+This process involves simultaneously iterating through both the divisions in
+each phrase along with pairs of meters and meter downbeat offsets -- that is,
+the offset from the origin of the score where each meter begins.\footnote{More
+optimizations to this joint container / meter iteration are obviously possible.
+Some have even been implemented in Consort's source. Such optimization include
+associating meters with their own timespans, and storing these meter-timespans
+in an optimized interval-tree data structure allowing rapid retrieval by both
+offset and timespan intersection. For the sake of pedagogical clarity, a more
+naive approach is used here.} Unprolated division containers are rewritten
+according to the meter active when they begin. Because a division may start
+\emph{after} a meter has begun it is necessary to calculate the difference
+between each unprolated division's start offset and each meter's start offset.
+This difference is passed to the \texttt{MutationAgent}'s
+\texttt{rewrite\_meter()} method via the \texttt{initial\_offset} keyword,
+allowing the division to be properly aligned against the desired meter.
+Prolated divisions -- tuplets -- are rewritten solely with respect to the
+duration of their contents, not to the prevailing meter. That is, a 5:4 tuplet
+in a 4/8 measure is rewritten with a meter of 5/8, not of 4/8.
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:rewrite_meters />[strip_prompt]
@@ -6122,6 +6140,8 @@ def rewrite_meters(phrase, meters, meter_boundaries):
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\subsection{Score post-processing}
+
 \noindent The final step in this score building process adds a
 \enquote{floating time signature context} to the score, filled with typographic
 spacer skips and time signature commands, one for each of the fitted meters.
@@ -6155,6 +6175,8 @@ def add_time_signature_context(score, meters):
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\subsection{Examples}
 
 \noindent Calling the \texttt{build\_score()} function generates a score as
 described above. In this example, the function's arguments comprise a talea
@@ -6293,4 +6315,5 @@ themselves, allowing each performed timespan to specify its local rhythmic
 language. Multiple timespan inventories could be combined together using the
 various logical operations to implement masking or fusing when timespans from
 one inventory overlap those from another. In fact, all of these extensions and
-variations are employed in Consort's own score generation process.
+variations are employed in Consort's own score generation process, as described
+in \autoref{chap:a-model-of-composition}.
