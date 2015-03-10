@@ -550,9 +550,9 @@ mirrored as methods on the \texttt{Timespan} class itself, allowing composers
 to determine the various relations of any timespan relative any other timespan
 or offset in an object-oriented fashion. The \texttt{Timespan} object
 automatically \enquote{fills in} the \texttt{timespan\_1} argument to the
-\texttt{TimeRelation} with itself, and can pass the optional argument to its
-method call as the other object in the relation, allowing for the immediate
-evaluation of the relation as either true or false.
+\texttt{TimeRelation} with a reference to itself, and can pass the optional
+argument to its method call as the other object in the relation, allowing for
+the immediate evaluation of the relation as either true or false.
 
 Consider the following three timespans:
 
@@ -601,11 +601,12 @@ show(timespan_inventory)
 
 \noindent We can test for intersection between these three timespans via the
 \texttt{intersects\_timespan()} method. Two timespans are considered to
-intersect if any part of one timespan overlaps any part of another, and is
-therefore commutative. Note that \texttt{timespan\_1} and \texttt{timespan\_3}
-do not overlap even though they share the offset 10. As discussed earlier,
-timespans are left-closed / right-open, meaning that while their start offset is
-contained in the infinite set of offsets they cover, their stop offset is not.
+intersect if any part of one timespan overlaps any part of another.
+\emph{Intersection} is therefore commutative. Note that \texttt{timespan\_1}
+and \texttt{timespan\_3} do not overlap even though they share the offset 10.
+As discussed earlier, timespans are left-closed / right-open, meaning that
+while their start offset is contained in the infinite set of offsets they range
+over, their stop offset is not.
 
 \begin{comment}
 <abjad>
@@ -648,8 +649,8 @@ True
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Congruency tests whether two timespans share the same start and stop
-offset. Every timespan is congruent with itself:
+\noindent \emph{Congruency} tests whether two timespans share the same start
+and stop offset. Every timespan is congruent with itself.
 
 \begin{comment}
 <abjad>
@@ -672,9 +673,10 @@ True
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Tangency tests whether one timespan's stop offset is the same as
-another timespan's start offset, or vice versa. Tangency can be used to
-determine if a sorted collection of timespans are all contiguous together.
+\noindent \emph{Tangency} tests whether one timespan's stop offset is the same
+as another timespan's start offset, or vice versa. Tangency can be used to
+determine if a sorted collection of timespans is both entirely contiguous and
+non-overlapping.
 
 \begin{comment}
 <abjad>
@@ -701,14 +703,14 @@ True
 such as testing if a timespan intersects with a specific offset, testing if a
 timespan overlaps only the beginning or end of another timespan, or testing if
 a timespan contains another timespan entirely. These predicates make possible
-many of the generative operations carried out on timespans.
+the many generative operations carried out on timespans.
 
 \subsection{Operations on timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Many \texttt{Timespan} methods provide transformations, such as translation,
 scaling or offset rounding. Because timespans are immutable, these methods
 create a new timespan based on the old one and then return the new, leaving
-the old exactly as it was:
+the old exactly as it was.
 
 \begin{comment}
 <abjad>
@@ -738,10 +740,11 @@ Timespan(start_offset=Offset(0, 1), stop_offset=Offset(16, 1))
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Internally, these generative methods are implemented via templating
-as described earlier, allowing annotated timespan subclasses to partake in the
-same templating functionality -- templating their start and / or stop offsets,
-but maintaining all other previously configured properties:
+\noindent These generative methods are implemented internally in terms of
+templating via \texttt{new()}, as described in \autoref{sec:timespans},
+allowing annotated timespan subclasses to partake in the same generative
+functionality -- reconfiguring their start and / or stop offsets, but
+maintaining all other previously configured properties.
 
 \begin{comment}
 <abjad>
@@ -768,16 +771,16 @@ timespantools.AnnotatedTimespan(
 %%% ABJADBOOK END %%%
 
 \noindent Some generative operations may return zero or more timespans,
-aggregated in a data structure called a \emph{timespan inventory}, which is
-discussed at length in the following section. Splitting a timespan by an offset
-is one such operation. If the offset to be split by is \emph{properly
-contained}\footnote{\emph{Proper containment} of an offset means that the
-offset is greater than the timespan's start offset and less than the timespan's
-stop offset. \emph{Improper containment} would indicated the offset is greater
-than or equal to the timespan's start offset and less than or equal to its stop
-offset.} by the timespan to be split, two new timespans will be returned,
-otherwise a timespan inventory containing a copy of the original input timespan
-will be returned:
+aggregated in a data structure called a \emph{timespan inventory}, discussed at
+length in \autoref{sec:timespan-inventories}. Splitting a timespan by an offset
+is one such operation. If the timespan to be split \emph{properly
+contains}\footnote{\emph{Proper containment} of an offset means that the offset
+is greater than the timespan's start offset and less than the timespan's stop
+offset. \emph{Improper containment} would indicated the offset is greater than
+or equal to the timespan's start offset and less than or equal to its stop
+offset.} the splitting offset, a timespan inventory containing two new
+timespans will be returned. Otherwise, the split operation will return a
+timespan inventory containing a copy of the original input timespan.
 
 \begin{comment}
 <abjad>
@@ -822,13 +825,14 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent More complex operations between timespans which result in timespan
-inventories include subtraction, as well as logical \texttt{AND}, \texttt{OR}
-and \texttt{XOR}. These generative operations are conceptually \emph{set}
-operations -- union, difference, intersection, symmetric difference, etc. --
-performed on the two sets of offsets contained by the two timespan operands.
-Consider these same set operations -- union, difference, intersection,
-symmetric difference -- carried out on trivial sets in Python:
+\noindent More complex operations between timespans resulting in timespan
+inventories include subtraction and the logical operations
+\texttt{AND}, \texttt{OR} and \texttt{XOR}. These generative operations are
+conceptually \emph{set} operations -- union, difference, intersection,
+symmetric difference, etc. -- performed on the two sets of offsets contained by
+the two timespan operands. Consider these same set operations -- union,
+difference, intersection, symmetric difference -- carried out on trivial sets
+in Python.
 
 \begin{comment}
 <abjad>
@@ -867,7 +871,7 @@ objects such as integers. For example, subtracting one timespan from another
 computes the set difference of the offsets contained by both. This operation is
 not commutative -- subtracting one timespan from another will not result in the
 same output as subtracting the latter from the former. Subtracting a timespan
-from itself always results in the empty set of offsets: no timespan at all:
+from itself always results in the empty set of offsets: no timespan at all.
 
 \begin{comment}
 <abjad>
@@ -993,7 +997,7 @@ timespantools.TimespanInventory(
 
 \noindent Computing the logical \texttt{OR} of two timespans results in an
 offset set union -- a commutative operation, effectively fusing the timespans
-together if they overlap:
+together if they overlap.
 
 \begin{comment}
 <abjad>
@@ -1082,7 +1086,8 @@ timespantools.TimespanInventory(
 %%% ABJADBOOK END %%%
 
 \noindent The logical \texttt{AND} -- set intersection -- results in the
-intersection of the two input timespans:
+intersection of the two input timespans. Only those offsets which occur in both
+timespan operands will occur in the output timespan, if any.
 
 \begin{comment}
 <abjad>
@@ -1135,7 +1140,7 @@ timespantools.TimespanInventory(
 \noindent Logical \texttt{XOR} -- also known as exclusive \texttt{OR} --
 results in the symmetric difference of the two input timespans. Only those
 offsets which are contained by only one of the two input timespans will occur
-in the output:
+in the output.
 
 \begin{comment}
 <abjad>
