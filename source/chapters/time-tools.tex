@@ -2534,7 +2534,7 @@ consort.tools.TaleaTimespanMaker(
 %%% ABJADBOOK END %%%
 
 All of the timespan inventories created in the following talea timespan-maker
-examples will use the same music specifier mapping and target timespan. An
+examples make use of the same music specifier mapping and target timespan. An
 ordered dictionary from Python's \texttt{collections} module guarantees that
 the timespan-makers process the music specifier entries in the same order, from
 \enquote{Voice 1} through \enquote{Voice 4}.\footnote{ The hash implementation
@@ -3310,23 +3310,28 @@ show(result, key='voice_name', range_=(0, 75))
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Abjad's rhythm-makers, like Consort's timespan-makers, are highly-configurable
-factory classes which behave like partially evaluated functions, taking
-as input sequences of \emph{divisions} -- positive duration tokens representing
-the divisions in some phrase of music -- and producing selections of score
-components as output. Abjad's \texttt{rhythmmakertools} library contains a
-variety of such classes, each providing a different strategy for rhythm
-generation, but unified by the same callable interface. Additionally,
-\texttt{rhythmmakertools} provides a collection of \emph{specifier} classes
-which group related configuration values together for controlling the behavior
-of ties, beams, duration spelling and other notational aspects of each
-rhythm-maker's output. Like many other classes in Abjad -- timespans, for
-example -- both these specifiers and the rhythm-makers themselves can be
-templated via calls to \texttt{new()}. A tour of these rhythm-maker classes
-demonstrates how a wide range of rhythmic textures can be produced.
+factory classes which behave like partially evaluated functions, taking as
+input sequences of \emph{divisions} -- positive, non-reduced fraction
+tokens\footnote{Rather than coercing input into sequences of \texttt{Duration}
+objects, which reduce their denominators as much as possible, rhythm-makers
+treat all input as \emph{non-reduced fractions}, allowing them to disambiguate
+4/16 from 2/8 or 6/8 from 3/4 and to therefore treat those division tokens as
+distinct.} representing the divisions in some phrase of music -- and producing
+selections of score components as output. Abjad's \texttt{rhythmmakertools}
+library contains a variety of such classes, each providing a different strategy
+for rhythm generation, but unified by the same callable interface.
+Additionally, \texttt{rhythmmakertools} provides a collection of
+\emph{specifier} classes which group related configuration values together for
+controlling the behavior of ties, beams, duration spelling and other notational
+aspects of each rhythm-maker's output. Like many other classes in Abjad --
+timespans, for example -- both these specifiers and the rhythm-makers
+themselves can be templated via calls to \texttt{new()}. A tour of these
+rhythm-maker classes demonstrates how a wide range of rhythmic textures can be
+produced.
 
 \subsection{Note rhythm-makers}
 
-Note rhythm-makers, arguably the simplest class of rhythm-maker, take a
+\emph{Note} rhythm-makers, arguably the simplest class of rhythm-maker, take a
 sequence of input divisions and \enquote{fill} them with notes, tied as
 necessary, such that the duration of each logical tie in each output division
 equals the duration of each input division.
@@ -3449,7 +3454,7 @@ show(note_rhythm_maker, divisions=divisions)
 
 \subsection{Talea rhythm-makers}
 
-Talea rhythm-makers, like talea timespan-makers, create rhythmic output through
+\emph{Talea} rhythm-makers, like talea timespan-makers, create rhythmic output through
 the use of a talea -- an infinitely cyclic pattern of durations. Talea
 rhythm-makers fill their output divisions with durations from their talea,
 splitting those durations across division boundaries when the divisions are
@@ -3542,12 +3547,12 @@ show(talea_rhythm_maker, divisions=divisions)
 
 \noindent Talea rhythm-makers can be configured to treat input divisions as
 though they had more counts than they actually do via their
-\texttt{extra\_counts\_per\_division} property, potentially causing tuplets to
-appear in the output. The following talea, reconfigured from the previous, adds
-an extra count to every second and third input division. This causes the 4/8
-and 3/16 as well as the 5/8 and 2/4 divisions to become tuplets, each with a
-pre-prolated duration 1/16 longer than their prolated duration. That is, the
-4/8 division contains a tuplet whose contents sum to 9/16, but scaled into a
+\texttt{extra\_counts\_per\_division} property, causing tuplets to appear in
+the output. The following talea, reconfigured from the previous, adds an extra
+count to every second and third input division. This causes the 4/8 and 3/16 as
+well as the 5/8 and 2/4 divisions to become tuplets, each with a pre-prolated
+contents duration 1/16 longer than their prolated duration. In other words, the 4/8
+division contains a tuplet whose contents sum to 9/16, but scaled into a
 duration of 8/16. Likewise, the 3/16 division contains a tuplet whose contents
 sum to 4/16, but scaled into a duration of 3/16. Note how this tupletting
 causes the pattern of split and tied talea durations to shift. In the previous
@@ -3686,13 +3691,13 @@ show(talea_rhythm_maker_with_rests, divisions=divisions)
 
 \subsection{Incised rhythm-makers}
 
-Incised rhythm-makers behave similarly to note rhythm-makers, but allow for
-\emph{incising} patterned sequences of notes and rests from the beginnings and
-ends of each output division, or even from the beginning and end of the entire
-sequence of divisions -- the rhythm-maker \emph{output}. Configuring an incised
-rhythm-maker to perform incision requires an \texttt{InciseSpecifier} instance.
-An unconfigured incised rhythm-maker behaves identically to unconfigured note
-rhythm-maker.
+\emph{Incised} rhythm-makers behave similarly to note rhythm-makers, but allow
+for \emph{incising} patterned sequences of notes and rests from the beginnings
+and ends of each output division, or even from the beginning and end of the
+entire sequence of divisions -- the rhythm-maker \emph{output}. Configuring an
+incised rhythm-maker to perform incision requires an \texttt{InciseSpecifier}
+instance. An unconfigured incised rhythm-maker behaves identically to an
+unconfigured note rhythm-maker.
 
 \begin{comment}
 <abjad>
@@ -3781,7 +3786,7 @@ show(incised_rhythm_maker, divisions=divisions)
 
 \noindent Prefix incision occurs in an identical fashion, by specifying
 sequences of group counts and talea numerators. Here, alternating groups of
-length-1 and length-2 are incised from the beginning of each division.
+notes of length-1 and length-2 are incised from the beginning of each division.
 
 \begin{comment}
 <abjad>
@@ -3814,8 +3819,9 @@ show(incised_rhythm_maker, divisions=divisions)
 %%% ABJADBOOK END %%%
 
 \noindent Setting the incise specifier's \texttt{fill\_with\_notes} property to
-false causes the rhythm-maker to fill the unincised durations of its divisions
-with rests rather notes.
+false causes the rhythm-maker to fill the unincised portions of its output
+divisions with rests rather notes. Filled mainly with silence, the incision
+pattern becomes much clearer.
 
 \begin{comment}
 <abjad>
@@ -3918,11 +3924,11 @@ show(incised_rhythm_maker, divisions=divisions)
 
 \subsection{Even-division rhythm-makers}
 
-Even-division rhythm-makers attempt to divide each input division into runs of
-notes with a basic duration \texttt{1/denominator}, where the \texttt{denominator}
-is specified on a per-division basis by the rhythm-maker's configurable
-\texttt{denominator} sequence property. When an input division does not
-exactly fit some multiple of this basic duration, some combination of
+\emph{Even-division} rhythm-makers attempt to divide each input division into
+runs of notes with a basic duration \texttt{1/denominator}, where the
+\texttt{denominator} is specified on a per-division basis by the rhythm-maker's
+configurable \texttt{denominator} sequence property. When an input division
+does not exactly fit some multiple of this basic duration, some combination of
 augmentation or tupletting will be used to produce notes with durations as
 close to that basic duration as possible.
 
@@ -4000,10 +4006,11 @@ show(even_division_rhythm_maker, divisions=divisions)
 %%% ABJADBOOK END %%%
 
 \noindent Like the talea rhythm-maker, even-division rhythm-makers can be
-configured with a \texttt{extra\_counts\_per\_division} property, forcing the
-rhythm-maker to treat input divisions as longer than the actually. Artificially
-lengthened divisions are rendered as tuplets. With the following rhythm-maker,
-every other division is extended by one count, causing the 4/8 and 2/4
+configured to add extra counts to each output division, forcing the
+rhythm-maker to treat input divisions as longer than they actually are.
+Artificially lengthened divisions are rendered as tuplets. With the following
+rhythm-maker which attempts to fill each output division with a run of 1/8
+notes, every other division is extended by one count, causing the 4/8 and 2/4
 divisions to be rendered as 5:4 tuplets, and the 4/16 division to be rendered
 as a 3:2 tuplet.
 
@@ -4171,7 +4178,7 @@ graph(six_eight_meter)
 >>> six_eight_meter = metertools.Meter((6, 8))
 >>> graph(six_eight_meter)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.333,]{assets/graphviz-476d0f5c7605cc762b9e3a391835548f.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-476d0f5c7605cc762b9e3a391835548f.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -4191,21 +4198,18 @@ strongest accent weights as they occur as either the start offset or stop
 offset of nodes at three levels of hierarchy in the rhythm tree. At the second
 level the 6/8 grouping divides into two 3/8 groupings, following common
 practice expectations: metrical groupings tend to subdivide into groups of two
-before they subdivide into groups of three\footnote{Consider a 12/8 meter.
+before they subdivide into groups of three.\footnote{Consider a 12/8 meter.
 Western musicians tend to subdivide twelve into either two groups of six or
-four groups of three rather than into three groups of four.}. Both second-level
+four groups of three rather than into three groups of four.} Both second-level
 nodes share the offset of 3/8, which also occurs in the third level, giving 3/8
 a weight of two. The third level contains the 1/8 duration beats, grouped by
 their parents in the second level into two groups three 1/8 duration nodes. The
 offsets 1/8, 1/4, 1/2 and 5/8 are not shared by any nodes except at the lowest
 metrical level and therefore all receive an accent weight of one.
 
-\subsection{Examples of meter} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-Consider the following examples of meters modeled in Abjad.
-
-A 3/4 meter consists of a top-level 3/4 metrical grouping divided into three
-1/4 duration beats:
+Consider the following other examples of meters modeled in Abjad. A 3/4 meter
+consists of a top-level 3/4 metrical grouping divided into three 1/4 duration
+beats.
 
 \begin{comment}
 <abjad>
@@ -4221,12 +4225,12 @@ graph(three_four_meter)
 >>> three_four_meter = metertools.Meter((3, 4))
 >>> graph(three_four_meter)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.333,]{assets/graphviz-27e6f78f37c92f763186b4aaae59c563.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-27e6f78f37c92f763186b4aaae59c563.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
 \noindent By default, a 7/8 meter subdivides its top-level metrical grouping
-into 3/8+2/8+2/8 groupings:
+into 3/8+2/8+2/8 groupings.
 
 \begin{comment}
 <abjad>
@@ -4242,12 +4246,12 @@ graph(seven_eight_meter)
 >>> seven_eight_meter = metertools.Meter((7, 8))
 >>> graph(seven_eight_meter)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.333,]{assets/graphviz-aa33afdcb82327be8e33e7587b5b7fb5.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-aa33afdcb82327be8e33e7587b5b7fb5.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
 \noindent A 12/8 meter subdivides into four 3/8 duration groupings, each
-containing three 1/8 duration beats:
+containing three 1/8 duration beats.
 
 \begin{comment}
 <abjad>
@@ -4263,18 +4267,16 @@ graph(twelve_eight_meter)
 >>> twelve_eight_meter = metertools.Meter((12, 8))
 >>> graph(twelve_eight_meter)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.333,]{assets/graphviz-c2a676a2bd53c91042417caefc7efaa9.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.6]{assets/graphviz-c2a676a2bd53c91042417caefc7efaa9.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\subsection{Alternate meter representations} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-Abjad permits alternate representations of meters with the same numerator and
-denominator. The default interpretation of 4/4 generates a top-level rhythmic
-grouping with a duration of 4/4 and four 1/4 beats as children\footnote{A
-\enquote{flat} 4/4 metrical structure is useful for meter rewriting as it
-allows the meter rewriting algorithm to ignore many common rhythmic idioms like
-1/4+1/2+1/4 and 1/4+3/4.}.
+\noindent Abjad also permits alternate representations of meters which
+ostensibly share the same numerator and denominator. The default interpretation
+of 4/4 generates a top-level rhythmic grouping with a duration of 4/4 and four
+1/4 beats as children.\footnote{A \enquote{flat} 4/4 metrical structure is
+useful for meter rewriting as it allows the meter rewriting algorithm to ignore
+many common rhythmic idioms like 1/4+1/2+1/4 and 1/4+3/4.}
 
 \begin{comment}
 <abjad>
@@ -4290,7 +4292,7 @@ graph(four_four_meter)
 >>> four_four_meter = metertools.Meter((4, 4))
 >>> graph(four_four_meter)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.333,]{assets/graphviz-1e7a83f7d35a8732ccfa1919e9c8f64f.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-1e7a83f7d35a8732ccfa1919e9c8f64f.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -4299,7 +4301,7 @@ denominator pairs, with their rhythm-tree structure determined programmatically
 from that input pair, they can also be instantiated from strings parsable as
 rhythm-trees, or from rhythm-tree objects themselves. All meters, because they
 are implemented in terms of rhythm-trees, can be represented by a Lisp-like
-rhythm-tree syntax:
+rhythm-tree syntax.
 
 \begin{comment}
 <abjad>
@@ -4321,11 +4323,12 @@ print(four_four_meter.pretty_rtm_format)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-Instantiating meters from explicit rhythm tree syntax allows composers to
-choose alternate representations of metrical structures. For example, a 4/4
-meter which strongly emphasizes beat three is possible by subdividing the
-top-level 4/4 metrical grouping into two 2/4 duration groupings, which are then
-subdivided each into two 1/4 duration beats:
+\noindent Instantiating meters from explicit rhythm tree syntax allows
+composers to choose alternate representations of metrical structures. For
+example, a 4/4 meter which strongly emphasizes beat three is possible by
+subdividing the top-level 4/4 metrical grouping into two 2/4 duration
+groupings, which are then subdivided each into two 1/4 duration beats. Such a
+metrical structure effectively treats 4/4 as identical to 2/2.
 
 \begin{comment}
 <abjad>
@@ -4341,13 +4344,13 @@ graph(arbitrary_meter_1)
 >>> arbitrary_meter_1 = metertools.Meter('(4/4 ((2/4 (1/4 1/4)) (2/4 (1/4 1/4))))')
 >>> graph(arbitrary_meter_1)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.333,]{assets/graphviz-538350f4d574238c7fe14b0bc2fcd602.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-538350f4d574238c7fe14b0bc2fcd602.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
 \noindent Unusual metrical structures are also possible, such as the following
 4/4 meter which divides into two parts, with the first part dividing into two
-again, and the second grouping of that divided into two again:
+again, and the second grouping of that divided into two again.
 
 \begin{comment}
 <abjad>
@@ -4363,7 +4366,7 @@ graph(arbitrary_meter_2)
 >>> arbitrary_meter_2 = metertools.Meter('(4/4 ((2/4 (1/4 (1/4 (1/8 1/8)))) 1/2))')
 >>> graph(arbitrary_meter_2)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.333,]{assets/graphviz-c0c488f838ef576f45131546e93310fa.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-c0c488f838ef576f45131546e93310fa.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -4377,15 +4380,16 @@ graph(arbitrary_meter_2)
 Notated rhythms can be expressed in multiple ways while maintaining the same
 attack-point and duration structure. \emph{Meter rewriting} formalizes the
 process of re-notating a rhythm according to the offset structure inherent to
-some meter while maintaining the original attack-points and durations. Logical
-ties are fused or split depending on their \emph{validity}. In the context of
-meter rewriting, validity expresses whether any logical tie -- trivial or not
--- \emph{aligns} to offsets found in nodes at a particular depth in a meter's
-rhythm-tree. Alignment requires that a logical tie both starts and stops at
-offsets found in some collection of offsets. Meter rewriting proceeds by
-testing logical ties against offsets outlined first by the root node of a
-meter and, if found invalid, against those offsets found in nodes progressively
-deeper in the meter's rhythm-tree.
+some meter while maintaining the original attack-points and durations by fusing
+and splitting logical ties according to their \emph{validity}. In the context
+of meter rewriting, validity expresses whether any logical tie -- trivial or
+not -- \emph{aligns} to offsets found in nodes at a particular depth in a
+meter's rhythm-tree. Alignment requires that a given logical tie either starts
+or stops at offsets found in the collection of offsets defined by a subtree of
+nodes in a meter's rhythm-tree. Meter rewriting proceeds by testing logical
+ties against offsets outlined first by the root node of a meter and, if found
+invalid, against those offsets found in nodes progressively deeper in the
+meter's rhythm-tree.
 
 For example, the offsets outlined by the root node of a 6/8 meter can be found
 by examining its depth-wise offset inventory.
@@ -4408,11 +4412,11 @@ six_eight_meter.depthwise_offset_inventory[0]
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-A logical tie three-quarters in duration starting at the offset 0 would be
-considered valid in the context of 6/8 because it aligns to the offsets
-outlined at depth-0 of the meter's rhythm-tree. In contrast, a logical tie two
-quarters in duration starting at 1/8 -- therefore outlining the timespan of
-1/8:5/8 -- would be considered invalid due to misalignment.
+\noindent A logical tie three-quarters in duration starting at the offset 0
+would be considered valid in the context of 6/8 because it aligns to the
+offsets outlined at depth-0 of the meter's rhythm-tree. In contrast, a logical
+tie two quarters in duration starting at 1/8 -- therefore outlining the
+timespan of 1/8:5/8 -- would be considered invalid due to misalignment.
 
 \begin{comment}
 <abjad>
@@ -4432,12 +4436,11 @@ show(six_eight_measure)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-Meter rewriting splits misaligned
-logical ties at any possible offset found in the currently considered depth. If
-no offsets at that depth intersect with the misaligned tie, the depth is
-increased and the process repeats. At a depth of 1 in a 6/8 meter we finally
-find an offset intersecting the timespan of the misaligned 1/8:5/8 logical tie:
-3/8.
+\noindent Meter rewriting splits misaligned logical ties at any possible offset
+found in the currently considered depth. If no offsets at that depth intersect
+with the misaligned tie, the depth is increased and the process repeats. At a
+depth of 1 in a 6/8 meter we finally find an offset intersecting the timespan
+of the misaligned 1/8:5/8 logical tie: 3/8.
 
 \begin{comment}
 <abjad>
@@ -4476,7 +4479,7 @@ show(six_eight_measure)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-As another example, consider the following rhythm:
+\noindent As another example, consider the following rhythm.
 
 \begin{comment}
 <abjad>
@@ -4520,7 +4523,7 @@ graph(four_four_meter)
 >>> four_four_meter = metertools.Meter((4, 4))
 >>> graph(four_four_meter)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.333,]{assets/graphviz-1e7a83f7d35a8732ccfa1919e9c8f64f.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-1e7a83f7d35a8732ccfa1919e9c8f64f.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -4600,7 +4603,7 @@ show(measure)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent After meter rewriting, the final F-sharp is notated as a
+\noindent After meter rewriting, the final F-sharp is still notated as a
 triple-dotted quarter-note, valid because its stop offset aligns perfectly with
 the containing measure's stop offset.
 
@@ -4623,7 +4626,7 @@ show(measure)
 %%% ABJADBOOK END %%%
 
 \noindent Capping the maximum number of dots to 2 causes the F-sharp to be
-rewritten with as a double-dotted eighth-note tied to a quarter-note.
+rewritten as a double-dotted eighth-note tied to a quarter-note.
 
 \begin{comment}
 <abjad>
@@ -4705,7 +4708,7 @@ distinctive groupings in more deeply nested meters, such as the 3-ness inherent
 to a 9/8 meter. The nodes with a depth of 1 in the following 9/8 meter's
 rhythm-tree -- the three 3/8 inner nodes marked by triangles -- outline the
 offsets 0/8, 3/8, 6/8 and 9/8. When rewriting a 9/8 rhythm with a boundary
-depth of 1, any logical ties not aligning with -- \emph{both} starting and
+depth of 1, any logical ties not aligning with -- either starting or
 stopping at -- those offsets would be marked as invalid and therefore
 rewritten.
 
@@ -4723,7 +4726,7 @@ graph(nine_eight_meter)
 >>> nine_eight_meter = metertools.Meter((9, 8))
 >>> graph(nine_eight_meter)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.333,]{assets/graphviz-9a650c94101f81b5350bc7b0edcf43a1.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-9a650c94101f81b5350bc7b0edcf43a1.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -4763,8 +4766,8 @@ show(measure)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent After rewriting, without any boundary depth specified, the D half
-note in the above 9/8 measure has been split into two quarter-notes, tied
+\noindent After rewriting, without any boundary depth specified, the D
+half-note in the above 9/8 measure has been split into two quarter-notes, tied
 together. The second of these quarter-notes begins at 6/8, therefore aligning
 with the start of the third 3/8 node at depth 1 in the 9/8 meter's rhythm tree.
 Likewise, the first half of the split half-note ends at the same 6/8 offset.
@@ -4801,10 +4804,10 @@ show(measure)
 \noindent After rewriting with boundary depth set to 1, not only has the D
 half-note been split in half, but the initial C half-note has been split at its
 3/8 offset. Because the initial half note aligned at the 0/8 offset -- as
-outlined by the root node in the 9/8 meter's rhythm tree --, but not at
-the 3/8 offset -- as outlined by the first and second 3/8-duration nodes at
-depth 1 of the same meter's rhythm tree --, it was marked invalid and therefor
-split at the first available offset: 3/8.
+outlined by the root node in the 9/8 meter's rhythm tree --, but not at the 3/8
+offset -- as outlined by the first and second 3/8-duration nodes at depth 1 of
+the same meter's rhythm tree --, it was marked invalid and therefor split at
+the first available offset: 3/8.
 
 \subsection{Recursive meter rewriting} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
