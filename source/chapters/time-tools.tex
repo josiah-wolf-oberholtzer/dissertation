@@ -2214,28 +2214,31 @@ timespan inventory instance. Dependent timespan-makers create their timespans
 based on the contents of a pre-existing timespan inventory, basing their output
 on various aspects of the structure of their input.
 
-All timespan-makers can be configured with \texttt{padding} and
+Additionally, all timespan-makers can be configured with \texttt{padding} and
 \texttt{timespan\_specifier} keywords. Padding allows the timespan-maker to
 force \enquote{silence} -- in the form of \texttt{SilentTimespan} objects --
 around the beginnings and ends of contiguous groups of timespans it creates.
 Timespan specifiers provide templates for some of the configurable properties
 specific to performed timespans, such as \texttt{minimum\_duration} and
-\texttt{forbid\_splitting}.
+\texttt{forbid\_splitting}, allowing the timespan-maker to apply the
+configuration defined in the timespan specifier to each of the timespans it
+creates.
 
 \subsection{Flooded timespan-makers} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \todo[inline]{\textbf{TODO:} Find a citation for flood fill. MacPaint?}
 
-Flooded timespan-makers are perhaps the simplest in the timespan-maker class
-family. Their name derives from ubiquitous graphic-design \enquote{flood fill}
-tools, used for filling an entire connected area. Flooded timespan-makers
-create one timespan for each voice in the input voice-name-to-music-specifier
-mapping, filling the entirety of the provide target timespan from beginning to
-end.
+\emph{Flooded} timespan-makers implement the most trivial timespan-creation strategy
+in the timespan-maker class family. Their name derives from the ubiquitous
+graphic-design \enquote{flood fill} tool, which fills an entire connected area
+with the same color or texture. Flooded timespan-makers create one timespan for
+each voice in the input voice-name-to-music-specifier mapping, filling the
+entirety of the provided target timespan from beginning to end.
 
-The following flooded timespan-maker will create a timespan inventory populated
-by a single performed timespan associated with a \enquote{Violin Voice}
-context, completely filling the span of 1/4 to 11/8.
+For example, the following flooded timespan-maker will create a timespan
+inventory populated by a single performed timespan associated with a
+\enquote{Violin Voice} context, completely filling the span of its target
+timespan: 1/4 to 11/8.
 
 \begin{comment}
 <abjad>
@@ -2341,8 +2344,9 @@ timespantools.TimespanInventory(
 \noindent Configuring the timespan-maker with padding creates silent timespans
 around the beginning and end of each group of output timespans on a per-voice
 basis. The timespan-maker will also configure these silent timespans with any
-specified layer number. Silent timespans are illustrated with dashed line, for
-clarity.
+specified layer number, allowing them to be sorted along with performed
+timespans from the same timespan-creation pass. Silent timespans are
+illustrated with dashed line to distinguish them from performed timespans.
 
 \begin{comment}
 <abjad>
@@ -2435,10 +2439,12 @@ timespantools.TimespanInventory(
 Consort's \texttt{TaleaTimespanMaker} class creates rich timespan textures
 through the use of \emph{talea} -- infinitely cyclic duration patterns. Abjad
 implements the concept of talea via the \texttt{Talea} class in its
-\texttt{rhythmmakertools} library. \texttt{Talea} defines a sequence of
-durations in terms of a finite sequence of numerators paired with a
-denominator. Once defined, they can be iterated over and indexed like an
-infinite sequence.
+\texttt{rhythmmakertools} library, which is discussed at length in
+\autoref{sec:rhythm-makers}. \texttt{Talea} objects define their infinitely
+cyclic sequence of durations in terms of a finite sequence of numerators paired
+with a single denominator. Once defined, they can be iterated over and indexed
+like an infinite sequence, simplifying the process of generating looped
+patterns of durations of arbitrary lengths.
 
 \begin{comment}
 <abjad>
@@ -2449,6 +2455,7 @@ talea = rhythmmakertools.Talea(
 for index in range(10):
     talea[index]
 
+talea[99999]
 </abjad>
 \end{comment}
 
@@ -2474,27 +2481,74 @@ NonreducedFraction(4, 16)
 NonreducedFraction(1, 16)
 NonreducedFraction(2, 16)
 \end{lstlisting}
+\begin{lstlisting}
+>>> talea[99999]
+NonreducedFraction(4, 16)
+\end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Talea timespan-makers make use of talea to control patterns of
-performed duration and silences. These timespan-makers can create timespan in
+\noindent \emph{Talea} timespan-makers make use of talea to control patterns of
+performed durations and silences. These timespan-makers can create timespans in
 \emph{synchronized} or \emph{unsynchronized} fashions. Unsynchronized timespan
 generation proceeds voice-by-voice through the input
 voice-name-to-music-specifier mapping, creating timespans from the start of the
 target timespan until its stop, then wrapping around to the next voice. Such
 unsynchronized timespan creation is ideal for creating massed textures of
 seemingly-unrelated timespans. Careful management of silence patterns and
-contiguous timespan grouping during synchronized creation can create dense,
-overlapping textures or sparse, pointillistic ones. Contrastingly, synchronized
-creation provides a mechanism for creating moments of shared attack across
-voices, followed by shared silences.
+contiguous timespan group lengths during unsynchronized creation can create
+dense, overlapping textures or sparse, pointillistic ones. Contrastingly,
+synchronized creation provides a mechanism for creating moments of shared
+attack across voices, followed by shared silences.
 
-All of the timespan inventories created in the following talea
-timespan-maker examples will use the same music specifier mapping and target
-timespan. An ordered dictionary from Python's \texttt{collections} module
-guarantees that the timespan-makers process the music specifier entries in the
-same order, from \enquote{Voice 1} through \enquote{Voice 4}.
+\begin{comment}
+<abjad>
+talea_timespan_maker = consort.TaleaTimespanMaker()
+print(format(talea_timespan_maker))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> talea_timespan_maker = consort.TaleaTimespanMaker()
+>>> print(format(talea_timespan_maker))
+consort.tools.TaleaTimespanMaker(
+    playing_talea=rhythmmakertools.Talea(
+        counts=(4,),
+        denominator=16,
+        ),
+    playing_groupings=(1,),
+    repeat=True,
+    silence_talea=rhythmmakertools.Talea(
+        counts=(4,),
+        denominator=16,
+        ),
+    step_anchor=Right,
+    synchronize_groupings=False,
+    synchronize_step=False,
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+All of the timespan inventories created in the following talea timespan-maker
+examples will use the same music specifier mapping and target timespan. An
+ordered dictionary from Python's \texttt{collections} module guarantees that
+the timespan-makers process the music specifier entries in the same order, from
+\enquote{Voice 1} through \enquote{Voice 4}.\footnote{ The hash implementation
+used by Python's dictionary class does not guarantee any particular ordering of
+keys, and may differ from one version of Python to the next, or even from one
+machine architecture to the next. While the timespan inventory illustrations
+shown with voice-name labels appear ordered, that is because of explicit
+lexical sorting of the voice-names in the illustration algorithm, not because
+of any particular ordering in the timespan-maker's
+voice-name-to-music-specifier mapping. Timespan-makers iterate over the keys in
+that mapping when creating timespans, and plain dictionaries may lead to
+unexpected results. For that reason, these examples -- and Consort itself --
+make use of the \texttt{OrderedDict} class from Python's \texttt{collections}
+module, which guarantees that keys be ordered by when they were inserted. }
 
 \begin{comment}
 <abjad>
@@ -2532,8 +2586,6 @@ voices.
 
 \begin{comment}
 <abjad>
-talea_timespan_maker = consort.TaleaTimespanMaker()
-print(format(talea_timespan_maker))
 result = talea_timespan_maker(
     music_specifiers=music_specifiers,
     target_timespan=target_timespan,
@@ -2546,25 +2598,6 @@ show(result, key='voice_name')
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> talea_timespan_maker = consort.TaleaTimespanMaker()
->>> print(format(talea_timespan_maker))
-consort.tools.TaleaTimespanMaker(
-    playing_talea=rhythmmakertools.Talea(
-        counts=(4,),
-        denominator=16,
-        ),
-    playing_groupings=(1,),
-    repeat=True,
-    silence_talea=rhythmmakertools.Talea(
-        counts=(4,),
-        denominator=16,
-        ),
-    step_anchor=Right,
-    synchronize_groupings=False,
-    synchronize_step=False,
-    )
-\end{lstlisting}
-\begin{lstlisting}
 >>> result = talea_timespan_maker(
 ...     music_specifiers=music_specifiers,
 ...     target_timespan=target_timespan,
@@ -2575,13 +2608,13 @@ consort.tools.TaleaTimespanMaker(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Changing the talea timespan-maker's \texttt{playing\_talea} from a
-series of 1/4-durations to 1/4, 2/4, 3/4, 4/4 reveals the timespan-maker's
-voice-wrapping behavior. Note how \enquote{Voice 1}'s timespans receive the
-durations 1/4, 2/4, 3/4, 4/4, 1/4 and 2/4. \enquote{Voice 2} continues the
-duration sequence with 3/4, 4/4 and so forth. The playing-duration talea
-continues to wrap around the end of each voice's timespans to the beginning of
-the next voice's.
+\noindent Changing the talea timespan-maker's \texttt{playing\_talea} property
+from a series of 1/4-durations to 1/4, 2/4, 3/4, 4/4 reveals the
+timespan-maker's voice-wrapping behavior. Note how \enquote{Voice 1}'s
+timespans receive the durations 1/4, 2/4, 3/4, 4/4, 1/4 and 2/4. \enquote{Voice
+2} continues the duration sequence with 3/4, 4/4 and so forth. The
+playing-duration talea continues to wrap around the end of each voice's
+timespans to the beginning of the next voice's.
 
 \begin{comment}
 <abjad>
@@ -2790,17 +2823,7 @@ in every voice at once, then select some amount of silence between the end of
 that vertically-synchronized group and the beginning of the next. Note here how
 the duration of each timespan follows the timespan-maker's 1/4, 2/4, 3/4, 4/4,
 5/4 pattern not from left-to-right by voice, but top-to-bottom by voice and
-then left-to-right. The silence durations between these synchronized groups are
-calculated from the end of the longest timespan in each group to the beginning
-of the next group. Therefore the second group starts at 1/1 because the first
-silence duration is 4/8 and the first group stops at 1/2. Similarly, the third
-group starts at 5/2 (20/8) because the second silence duration is 7/8 and the
-second group ended at 13/8. This silence \emph{stepping} can also be calculated
-from the beginning of one group to the next, rather than from the end of one to
-the beginning of the next, by changing the timespan-maker's
-\texttt{step\_anchor} property from \texttt{Right} to \texttt{Left}. Such a
-change helps guarantee the timing of initial attacks across synchronized
-groups.
+then left-to-right.
 
 \begin{comment}
 <abjad>
@@ -2848,10 +2871,25 @@ show(result, key='voice_name')
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Initial silences behave differently in synchronized talea
-timespan-makers than with unsynchronized talea timespan-makers. Rather than
-adding silences only at the very beginning of each voice's timespans, silences
-are determined for each voice at the beginning of each synchronized group.
+\noindent The silence durations between these synchronized groups are
+calculated from the end of the longest timespan in each group to the beginning
+of the next group. Therefore the second group starts at 1/1 because the first
+silence duration is 4/8 and the first group stops at 1/2. Similarly, the third
+group starts at 5/2 (20/8) because the second silence duration is 7/8 and the
+second group ended at 13/8. This silence \emph{stepping} can also be calculated
+from the beginning of one group to the next, rather than from the end of one to
+the beginning of the next, by changing the timespan-maker's
+\texttt{step\_anchor} property from \texttt{Right} to \texttt{Left}. Such a
+change helps guarantee the timing of initial attacks across synchronized
+groups.
+
+Initial silences behave differently in synchronized talea timespan-makers than
+with unsynchronized talea timespan-makers. Rather than adding silences only at
+the very beginning of each voice's timespans, silences are determined for each
+voice at the beginning of each synchronized group. Note how \enquote{Voice 3}
+is missing a fourth timespan. That timespan, with a duration of 5/8, and an
+initial silence of 2/8 measured from the offset 4/1, would have extended to
+39/8 -- 1/8 more than the target timespan's 19/4 stop offset.
 
 \begin{comment}
 <abjad>
@@ -2891,8 +2929,8 @@ show(result, key='voice_name')
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent And unlike flooded timespan-makers, padding durations are included in
-the start offset and step duration calculations for talea timespan-makers.
+\noindent Unlike flooded timespan-makers, padding durations are included in the
+start offset and step duration calculations for talea timespan-makers.
 
 \begin{comment}
 <abjad>
@@ -2928,15 +2966,16 @@ show(result, key='voice_name')
 
 \subsection{Dependent timespan-makers} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Dependent timespan-makers create timespans based on the disposition of
+\emph{Dependent} timespan-makers create timespans based on the disposition of
 timespans in an input timespan inventory, selecting the start and stop offsets
-of their generated timespans by filtering and inspecting timespans from the
-input according to their voice name or music specifier label. This behavior
+of their generated timespans by filtering and inspecting timespans from their
+input with respect to their voice name or music specifier label. This behavior
 helps model how timespans used to generate phrasing for a pianist's pedaling
 voice can be derived by selecting only those timespans in a timespan inventory
-for entire ensemble which pertain to the pianists right and left-hand voices.
+for entire ensemble which pertain to the pianists right and left-hand voices,
+ignoring all others.
 
-Consider the following timespan inventory, comprised of overlapping and
+Consider the following timespan inventory, comprised of both overlapping and
 non-overlapping timespans created for the contexts \enquote{Voice 1},
 \enquote{Voice 2} and \enquote{Ignored Voice}.
 
@@ -2986,7 +3025,7 @@ show(timespan_inventory, key='voice_name')
 created for the \enquote{Voice 1} and \enquote{Voice 2} contexts by specifying
 a tuple of voice names during instantiation. Passing the previously defined
 timespan inventory as an argument when calling the dependent timespan-maker
-adds the newly-created dependent timespans to it. For the sake of brevity and
+adds the newly-created dependent timespans to it. For the sake of brevity, and
 because timespan-makers modify any timespan inventory passed as an argument to
 \texttt{\_\_call\_\_()} in-place, we pass a copy of this timespan inventory,
 created via a call to \texttt{new()}, instead of the original.
@@ -3042,7 +3081,10 @@ bounds of the timespans they depend upon.
 Configuring the dependent timespan-maker with its
 \texttt{include\_inner\_starts} flag set to true causes it to create contiguous
 groups of dependent timespans, as though splitting at every moment when a
-timespan it depends upon starts.
+timespan it depends upon starts. Note that new dependent timespans begin at the
+offsets 10/1, 15/1 and 25/1, for example. This is because a new timespan begins
+in \enquote{Voice 1} at both 10/1 and 25/1, and another new timespan begins in
+\enquote{Voice 2} at 15/1.
 
 \begin{comment}
 <abjad>
@@ -3150,46 +3192,14 @@ show(result, key='voice_name')
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Note that in the previous dependent timespan-maker examples no target
-timespan was specified. When passed a non-empty timespan inventory during
-calling, timespan-makers can treat that inventory's timespan as their target
-timespan if no target timespan was specified explicitly. However, passing a
-target timespan to a dependent timespan-maker causes that timespan-maker to
-perform a logical \texttt{AND} of the target timespan with any selected
-timespans in the input inventory.
-
-\begin{comment}
-<abjad>
-result = new_dependent_timespan_maker(
-    music_specifiers=music_specifiers,
-    target_timespan=timespantools.Timespan(17, 58),
-    timespan_inventory=new(timespan_inventory),
-    )
-show(result, key='voice_name', range_=(0, 75))
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> result = new_dependent_timespan_maker(
-...     music_specifiers=music_specifiers,
-...     target_timespan=timespantools.Timespan(17, 58),
-...     timespan_inventory=new(timespan_inventory),
-...     )
->>> show(result, key='voice_name', range_=(0, 75))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-eed8f0800343d386847212c7a2dd79e8.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\noindent Finally, dependent timespan-makers are capable of performing simple
+\noindent Dependent timespan-makers are capable of performing simple
 transformations on the offsets they extract from their input timespan
 inventory. Rotation allows the timespan-maker to rotate the durations outlined
 by the offsets extracted from the timespans they select. Specifying a rotation
 index of 1 causes each created group of dependent timespans to rotate its
-internal durations by that index.
+internal durations by that index. The 10-duration dependent timespan which
+previously occurred first in the \enquote{Dependent Voice} now occurs second,
+following a 5/1-duration timespan.
 
 \begin{comment}
 <abjad>
@@ -3256,6 +3266,41 @@ show(result, key='voice_name', range_=(0, 75))
 >>> show(result, key='voice_name', range_=(0, 75))
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-57ce3dce1f7346f365183d8abb73e3a2.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Note that in the previous dependent timespan-maker examples no target
+timespan was specified. When passed a non-empty timespan inventory during
+calling, timespan-makers can treat that inventory's timespan as their target
+timespan if no target timespan was specified explicitly. However, passing a
+target timespan to a dependent timespan-maker causes that timespan-maker to
+perform a logical \texttt{AND} of the target timespan with any selected
+timespans in the input inventory. Here the dependent timespans are constrained
+between the offsets 17/1 and 58/1.
+
+\begin{comment}
+<abjad>
+result = new_dependent_timespan_maker(
+    music_specifiers=music_specifiers,
+    target_timespan=timespantools.Timespan(17, 58),
+    timespan_inventory=new(timespan_inventory),
+    )
+show(result, key='voice_name', range_=(0, 75))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> result = new_dependent_timespan_maker(
+...     music_specifiers=music_specifiers,
+...     target_timespan=timespantools.Timespan(17, 58),
+...     timespan_inventory=new(timespan_inventory),
+...     )
+>>> show(result, key='voice_name', range_=(0, 75))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-eed8f0800343d386847212c7a2dd79e8.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
