@@ -2011,9 +2011,8 @@ for shard in timespan_inventory.explode():
 %%% ABJADBOOK END %%%
 
 \noindent The number of output inventories can also be set explicitly, in which
-case explosion will attempt to limit the amount of overlap as much as possible
-while maintaining a similar level of overlap or density in each output
-inventory.
+case explosion will attempt to limit the amount of overlap as much as possible,
+while maintaining a similar level of density across each resulting inventory.
 
 \begin{comment}
 <abjad>
@@ -2048,14 +2047,14 @@ inventory into many, and so forth -- build on and extend these techniques.
 \label{sec:annotated-timespans-in-consort}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-While the above data structures and operations are potentially very useful, a
-larger question remains: how can composers create enough timespans, and in
-various patterns, to be musically interesting? Consort approaches this problem
-by providing a collection of factory classes -- \emph{timespan-makers} -- which
-can be configured and called to create arbitrarily large amounts of timespans.
+While timespans and timespan inventories provide a very general model for
+modeling the disposition of durated events in time, a larger question remains:
+how can composers create enough timespans, and in various patterns, to be
+musically interesting? Consort approaches this problem by providing a
+collection of factory classes -- \emph{timespan-makers} -- which can be
+configured and called to create arbitrarily large amounts of timespans.
 However, before turning to a detailed discussion of timespan-makers, we must
-first describe the products of the timespan themselves: Consort's annotated
-timespan subclasses.
+first discuss the products of the timespan themselves.
 
 Consort provides two separate timespan subclasses which are integral, if
 transient, components of its score interpretation stage: the
@@ -2063,25 +2062,25 @@ transient, components of its score interpretation stage: the
 are never created \enquote{by hand} during Consort's specification stage --
 this is, explicitly instantiated by a composer while specifying a score segment
 --, but are instead generated as transitory objects during interpretation.
-Consort uses \texttt{PerformedTimespan} objects to specify locations in the
+Consort uses \texttt{PerformedTimespan} objects to indicate locations in the
 score timeline where some active musical material should appear, while
-\texttt{SilentTimespan} objects specify tacet passages.
+\texttt{SilentTimespan} objects indicate tacet passages.
 
 As will be described in more detail in \autoref{chap:a-model-of-composition},
 Consort requires composers to specify musical materials in \emph{layers}, and
 to specify specifically in which voice contexts in the score -- vertically --
-that material should occur in. During the course of interpretation, Consort
-separates out generated timespans by voice name and layer into separate
-timespan inventories, and then progressively masks out timespans in timespan
-inventories with lower layer numbers by those timespans with higher layer
-numbers. One can imagine this process as analogous to the use of opaque
-overlapping layers in image editing software. Both the
-\texttt{PerformedTimespan} and \texttt{SilentTimespan} classes provide
-configurable properties for layer and voice name, in addition to the start
-offset and stop offset properties provided by their parent \texttt{Timespan}
-class. These properties allow the processes that generate them to record
-\emph{when} they were created, as well as \emph{where} the should appear in the
-score, should they survive the masking process.
+that material should occur. During the course of interpretation, Consort
+organizes generated timespans by voice name and layer into separate timespan
+inventories, and then progressively masks out timespans in timespan inventories
+with lower layer numbers by those timespans with higher layer numbers. One can
+imagine this process as analogous to the use of opaque overlapping layers in
+image editing software. Both the \texttt{PerformedTimespan} and
+\texttt{SilentTimespan} classes provide configurable properties for layer and
+voice name, in addition to the start offset and stop offset properties provided
+by their parent \texttt{Timespan} class. These properties allow the processes
+that generate them to record \emph{when} they were created, as well as
+\emph{where} the should appear in the score, should they survive the masking
+process.
 
 \begin{comment}
 <abjad>
@@ -2103,39 +2102,6 @@ performed_timespan = consort.PerformedTimespan(
 ...     start_offset=(1, 2),
 ...     stop_offset=(7, 8),
 ...     voice_name='Clarinet Voice',
-...     )
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\noindent Unlike performed timespans, silent timespans have no explicit reality
-in score, but can still be created for a particular voice context and layer.
-They act to simply erase any timespan in a lower layer through masking. This
-allows timespan-making processes to demand not only when a musical event should
-happen, but also when musical events should \emph{not}. For example, silent
-timespans make it possible to demand silence before music events involving
-instrument or mallet changes.
-
-\begin{comment}
-<abjad>
-silent_timespan = consort.SilentTimespan(
-    layer=2,
-    start_offset=Offset(0, 1),
-    stop_offset=Offset(1, 4),
-    voice_name='Oboe Voice',
-    )
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> silent_timespan = consort.SilentTimespan(
-...     layer=2,
-...     start_offset=Offset(0, 1),
-...     stop_offset=Offset(1, 4),
-...     voice_name='Oboe Voice',
 ...     )
 \end{lstlisting}
 \end{singlespacing}
@@ -2180,6 +2146,39 @@ performed_timespan = consort.PerformedTimespan(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent Unlike performed timespans, silent timespans have no explicit reality
+in score, but can still be created for a particular voice context and layer.
+They act to simply erase any timespan in a lower layer through masking. This
+allows timespan-making processes to demand not only when a musical event should
+happen, but also when musical events should \emph{not}. For example, silent
+timespans make it possible to demand silence before music events involving
+instrument or mallet changes.
+
+\begin{comment}
+<abjad>
+silent_timespan = consort.SilentTimespan(
+    layer=2,
+    start_offset=Offset(0, 1),
+    stop_offset=Offset(1, 4),
+    voice_name='Oboe Voice',
+    )
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> silent_timespan = consort.SilentTimespan(
+...     layer=2,
+...     start_offset=Offset(0, 1),
+...     stop_offset=Offset(1, 4),
+...     voice_name='Oboe Voice',
+...     )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \noindent All of the above properties are explained in more depth in
 \autoref{chap:a-model-of-composition}, in context of Consort's interpretation
 process. For the sake of demonstrating timespan-creation principles pithily,
@@ -2194,17 +2193,18 @@ an arbitrary object such as Python's \texttt{None} rather than a
 
 Consort provides a family of factory classes for producing timespans, each
 implementing a different strategy for populating timespan inventories, but all
-unified via the same callable interface. Timespan-makers take as input a mapping of
-voice-names to \emph{music specifiers} -- arbitrary objects specifying how a
-given timespan might be rendered as notation --, a \emph{target} timespan
-indicating the minimum and maximum start offsets of any timespan created by the
-timespan-maker, as well as an optional timespan inventory to modify in-place
-and a \emph{layer} identifier indicating in which pass a particular timespan
-was created,\footnote{Layer identifiers allow timespans to be sorted not only
-by their position in time or by their associated voice name, but also by at
-which point -- which \emph{layer} -- during some compositional process they
-were created. Layer ordering allows masking processes to mask \enquote{earlier}
-timespans with \enquote{later} ones.} and produce a timespan inventory as
+unified via the same callable interface. Timespan-makers take as input a
+mapping of voice-names to \emph{music specifiers} -- arbitrary objects
+specifying how a given timespan might be rendered as notation --, a
+\emph{target} timespan indicating the minimum and maximum permitted start
+offsets of any timespan created by the timespan-maker, an optional timespan
+inventory to modify in-place, and an optional \emph{layer} identifier
+indicating in which pass a particular timespan was created.\footnote{Layer
+identifiers allow timespans to be sorted not only by their position in time or
+by their associated voice name, but also by at which point -- which
+\emph{layer} -- during some compositional process they were created. Layer
+ordering allows masking processes to mask \enquote{earlier} timespans with
+\enquote{later} ones.} All timespan-makers produce timespan inventories as
 output.
 
 Timespan-makers fall into two broad categories: independent and dependent.
