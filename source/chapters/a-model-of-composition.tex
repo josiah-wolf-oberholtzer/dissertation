@@ -103,34 +103,45 @@ information, and the second stage applying grace notes, pitches, indicators,
 spanners and various typographic overrides to the previously-constructed
 rhythmic skeleton.
 
-During rhythmic interpretation, the segment-maker creates a maquette by calling
-each of its music-settings in turn to populate a timespan inventory, then
-resolves overlap conflicts within the inventory, fits meters against the
-resolved inventory's offsets, splits and prunes the inventory according to its
-fitted metrical structure, and finally converts the finished timespan maquette
-into an actual score. This process, like interpretation overall, can be roughly
-divided into work flows of maquette interpretation and score interpretation,
-although in practice -- for reasons discussed later -- the two work flows are
-interleaved significantly.
+Seen from a high level, the segment-maker creates a maquette during rhythmic
+interpretation by calling each of its music-settings in turn to populate a
+timespan inventory. It then resolves overlap conflicts within that inventory, fits
+meters against the resolved inventory's offsets, splits and prunes the contents
+of the inventory according to its fitted metrical structure, and finally converts the
+finished timespan maquette into an actual score. This process, like
+interpretation overall, can be roughly divided into work flows of *maquette
+creation* and *music creation*, although in practice the two flows are
+interleaved significantly as they actually influence one another. When creating
+the maquette, music settings with *independent* timespan-makers -- those which
+do not depend on the contents of a previously created timespan inventory,
+specifically flooded and talea timespan-makers -- are called in a first pass,
+and those with *dependent* timespan-makers in a second. These two passes only
+differ significantly in that meters are fitted against the segment's timespan
+maquette during the independent timespan-maker pass, but not during the
+dependent.
 
-Music settings with *independent* timespan-makers -- those which do not depend
-on the contents of a previously created timespan inventory, specifically
-flooded and talea timespan-makers -- are called in a first pass, and those with
-*dependent* timespan-makers in a second. These two passes only differ
-significantly in that meters are fitted against the segment's timespan maquette
-during the independent timespan-maker pass, but not during the dependent.
-
-When populating independent timespans, each music settings is called in turn to
+To populate the maquette, the segment-maker calls each of its music settings to
 produce timespans according to their configured timespan-makers,
 *timespan-identifiers* -- optional specifications of which portion of the
 segment's overall timespan to operate within -- and voice-associated music
-specifiers.
+specifiers. 
 
-Music setting must *resolve* both their timespan identifier -- in the case of
-procedural identifiers such as ratio-parts expressions which may not even know
-their target timespans during specifications -- and their voice-name
-abbreviations against the segment's desired duration and score template
-respectively.
+Music settings exist without any reference to a segment-maker, its desired
+duration -- and therefore desired timespan --, or its score template. A music
+setting's music specifiers are associated with keys representing voice-name
+abbreviations: underscore-delimited strings, necessitated by Python's keyword
+argument syntax. In order to match its music specifiers against actual voice
+contexts in a score, the music setting must resolve its voice-name
+abbreviations against a score template. Likewise, in order to know which target
+timespan or timespans its timespan-maker should operate within -- in the case
+of procedural timespan identifiers such as *ratio-parts expressions* which must
+be called against a preexisting timespan in order to determine what part or
+parts of that timespan to use -- the music setting must resolve its timespan
+identifier against the segment's desired duration. Target timespan resolution
+must take into account offset quantization, as the target timespans resulting
+from the evaluation of a ratio-parts expression may not align against a
+power-of-two-denominator offset grid such as 1/8, 1/16 or 1/32.
+
 
 This resolution results in ... <x products>
 
