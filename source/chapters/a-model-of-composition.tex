@@ -43,45 +43,66 @@ import consort
 \end{markdown}
 \end{comment}
 
-\begin{markdown}
-
 Consort, a Python library written as an extension to Abjad, models the
 composition of notated musical score as a repeated cycle containing three
-distinct stages: *specification*, *interpretation* and *visualization*.
+distinct stages: \emph{specification}, \emph{interpretation} and
+\emph{visualization}.
 
-*Specification* describes how *out-of-time materials* -- both concrete and
-programmatic -- should be deployed *in-time* in a *segment* of musical score as
-notation. Materials encompass abstractions -- such as pitch sets or collections
-of performance technique indications --, concrete fragments of *music* --
-narrowly defined here as any contiguous selection of score components --, and
-procedures for producing, altering or embellishing music such as rhythm-makers
-or attachment-handlers. Score segments comprise any contiguous passage of
-music, demarcating an area of compositional concern. Consort treats scores as
-comprised of at least one segment, but potentially many more concatenated
-together. Any segment may of course contain arbitrarily complex inner
-structuring. Separation of scores into distinct segments acts then mainly as an
-aid for the composer, both by simplifying the complexity of the current
-specification under consideration, and by allowing the typesetting engine --
-LilyPond -- to display more manageable amounts of notation than the full score,
-thus speeding up the cycle of specifying, interpreting and visualizing.
+\section{Specification}
+
+\emph{Specification} describes how \emph{out-of-time materials} -- both
+concrete and programmatic -- should be deployed \emph{in-time} in a
+\emph{segment} of musical score as notation. Materials encompass abstractions
+-- such as pitch sets or collections of performance technique indications --,
+concrete fragments of \emph{music} -- narrowly defined here as any contiguous
+selection of score components --, and procedures for producing, altering or
+embellishing music such as rhythm-makers or attachment-handlers. Score segments
+comprise any contiguous passage of music, demarcating an area of compositional
+concern. Consort treats scores as comprised of at least one segment, but
+potentially many more concatenated together. Any segment may of course contain
+arbitrarily complex inner structuring. Separation of scores into distinct
+segments acts then mainly as an aid for the composer, both by simplifying the
+complexity of the current specification under consideration, and by allowing
+the typesetting engine -- LilyPond -- to display more manageable amounts of
+notation than the full score, thus speeding up the cycle of specifying,
+interpreting and visualizing.
+
+\subsection{Segment-makers}
 
 Composers specify segments by creating and progressively configuring
-*segment-makers*, classes which conceptually mirror the rhythm- and
+\emph{segment-makers}, classes which conceptually mirror the rhythm- and
 timespan-makers described in \autoref{chap:time-tools}, but on a much larger
 scale. Such configuration parameters include score template, tempo, permitted
 meters, and desired duration. Most importantly, segment-makers may be
-configured with any number of *music settings*, which aggregate a
-timespan-maker, a target timespan and any number of *music specifiers* --
+configured with any number of \emph{music settings}, which aggregate a
+timespan-maker, a target timespan and any number of \emph{music specifiers} --
 bundles of materials which describe how phrases of music should be produced
-within a single voice. Music settings object-model both *when* and in *which*
-voices musical materials should be deployed. The order in which composers
-configure segment-makers with music settings defines each music setting's
-*layer*, determining how overlapping events in a single voice will mask one
-another. Score materials, including music settings, music specifiers,
-timespan-makers and any other class pertinent to score creation -- potentially
-even other segment-makers, may be defined from scratch in the same code module
-as the segment-maker currently being configured, templated from another
-material, or simply imported into the segment definition's namespace.
+within a single voice. Music settings object-model both \emph{when} and in
+\emph{which} voices musical materials should be deployed. The order in which
+composers configure segment-makers with music settings defines each music
+setting's \emph{layer} -- the first setting defined being layer 0, the second
+layer 1 and so forth, with each higher layer number indicating higher
+precedence or \enquote{foregroundness} --, determining how overlapping events
+in a single voice will mask one another. Score materials, including music
+settings, music specifiers, timespan-makers and any other class pertinent to
+score creation -- potentially even other segment-makers, may be defined from
+scratch in the same code module as the segment-maker currently being
+configured, templated from another material, or simply imported into the
+segment definition's namespace.
+
+Discuss music specifiers.
+
+Discuss grace, pitch and attachment handlers.
+
+Discuss why graces happen later.
+
+Discuss pitch specifiers, pitch operation specifiers, logical tie expressions.
+
+Discuss attachment expressions and selector.
+
+Discuss templating.
+
+\section{Interpretation}
 
 At any point during specification, a segment-maker may be interpreted to
 produce an illustration. Score interpretation proceeds conceptually much like
@@ -93,38 +114,41 @@ segment-maker itself, and the source instruction set its configuration -- its
 tempo, permitted meters, music settings and so forth. Timespan inventories
 produced by each music setting's timespan-maker, populated with timespans
 annotated with music specifiers perform the role of the intermediate
-representation. This intermediate representation acts as a *maquette*, blocking
-out where in the resulting score segment various materials should be deployed.
-The target of score interpretation is, unsurprisingly, a fully-fledge score
-aggregated from Abjad score components. Interpretation takes place in two broad
-stages -- rhythmic interpretation, followed by non-rhythmic interpretation --
-with the first stage producing a score populated solely with rhythmic
-information, and the second stage applying grace notes, pitches, indicators,
-spanners and various typographic overrides to the previously-constructed
-rhythmic skeleton.
+representation. This intermediate representation acts as a \emph{maquette},
+blocking out where in the resulting score segment various materials should be
+deployed. The target of score interpretation is, unsurprisingly, a fully-fledge
+score aggregated from Abjad score components. Interpretation takes place in two
+broad stages -- rhythmic interpretation, followed by non-rhythmic
+interpretation -- with the first stage producing a score populated solely with
+rhythmic information, and the second stage applying grace notes, pitches,
+indicators, spanners and various typographic overrides to the
+previously-constructed rhythmic skeleton.
 
-Seen from a high level, the segment-maker creates a maquette during rhythmic
-interpretation by calling each of its music-settings in turn to populate a
-timespan inventory. It then resolves overlap conflicts within that inventory, fits
-meters against the resolved inventory's offsets, splits and prunes the contents
-of the inventory according to its fitted metrical structure, and finally converts the
-finished timespan maquette into an actual score. This process, like
-interpretation overall, can be roughly divided into work flows of *maquette
-creation* and *music creation*, although in practice the two flows are
-interleaved significantly as they actually influence one another. When creating
-the maquette, music settings with *independent* timespan-makers -- those which
-do not depend on the contents of a previously created timespan inventory,
-specifically flooded and talea timespan-makers -- are called in a first pass,
-and those with *dependent* timespan-makers in a second. These two passes only
-differ significantly in that meters are fitted against the segment's timespan
-maquette during the independent timespan-maker pass, but not during the
-dependent.
+\section{Rhythmic interpretation}
+
+Seen from a high level, the segment-maker creates a maquette by calling each of
+its music-settings in turn to populate a timespan inventory. It then resolves
+overlap conflicts within that inventory, fits meters against the resolved
+inventory's offsets, splits and prunes the contents of the inventory according
+to its fitted metrical structure, and finally converts the finished timespan
+maquette into an actual score. This process, like interpretation overall, can
+be roughly divided into work flows of \emph{maquette creation} and \emph{music
+creation}, although in practice the two flows are interleaved significantly as
+they actually influence one another. When creating the maquette, music settings
+with \emph{independent} timespan-makers -- those which do not depend on the
+contents of a previously created timespan inventory, specifically flooded and
+talea timespan-makers -- are called in a first pass, and those with {dependent}
+timespan-makers in a second. These two passes only differ significantly in that
+meters are fitted against the segment's timespan maquette during the
+independent timespan-maker pass, but not during the dependent.
+
+\subsection{Evaluating music settings}
 
 To populate the maquette, the segment-maker calls each of its music settings to
 produce timespans according to their configured timespan-makers,
-*timespan-identifiers* -- optional specifications of which portion of the
+\emph{timespan-identifiers} -- optional specifications of which portion of the
 segment's overall timespan to operate within -- and voice-associated music
-specifiers. 
+specifiers.
 
 Music settings exist without any reference to a segment-maker, its desired
 duration -- and therefore desired timespan --, or its score template. A music
@@ -134,34 +158,177 @@ argument syntax. In order to match its music specifiers against actual voice
 contexts in a score, the music setting must resolve its voice-name
 abbreviations against a score template. Likewise, in order to know which target
 timespan or timespans its timespan-maker should operate within -- in the case
-of procedural timespan identifiers such as *ratio-parts expressions* which must
-be called against a preexisting timespan in order to determine what part or
-parts of that timespan to use -- the music setting must resolve its timespan
+of procedural timespan identifiers such as \emph{ratio-parts expressions} which
+must be called against a preexisting timespan in order to determine what part
+or parts of that timespan to use -- the music setting must resolve its timespan
 identifier against the segment's desired duration. Target timespan resolution
 must take into account offset quantization, as the target timespans resulting
 from the evaluation of a ratio-parts expression may not align against a
 power-of-two-denominator offset grid such as 1/8, 1/16 or 1/32.
 
+\begin{comment}
+<abjad>
+music_setting = consort.MusicSetting(
+    timespan_identifier=consort.RatioPartsExpression(
+        parts=(0, 2),
+        ratio=(1, 3, 2),
+        ),
+    timespan_maker=consort.FloodedTimespanMaker(),
+    violin_2='A',
+    viola=('B', 'C', 'D'),
+    )
+</abjad>
+\end{comment}
 
-This resolution results in ... <x products>
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> music_setting = consort.MusicSetting(
+...     timespan_identifier=consort.RatioPartsExpression(
+...         parts=(0, 2),
+...         ratio=(1, 3, 2),
+...         ),
+...     timespan_maker=consort.FloodedTimespanMaker(),
+...     violin_2='A',
+...     viola=('B', 'C', 'D'),
+...     )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
--   Mention composite music specifiers and music specifier sequences
--   Also timespan quantization
+\begin{comment}
+<abjad>
+score_template = consort.StringQuartetScoreTemplate()
+result = music_setting.resolve_music_specifiers(score_template)
+for voice_name, music_specifier_sequence in result.items():
+    print('VOICE:', voice_name)
+    print(format(music_specifier_sequence))
+
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> score_template = consort.StringQuartetScoreTemplate()
+>>> result = music_setting.resolve_music_specifiers(score_template)
+>>> for voice_name, music_specifier_sequence in result.items():
+...     print('VOICE:', voice_name)
+...     print(format(music_specifier_sequence))
+...
+('VOICE:', 'Violin 2 Performer Group')
+consort.tools.MusicSpecifierSequence(
+    music_specifiers=datastructuretools.CyclicTuple(
+        ['A']
+        ),
+    )
+('VOICE:', 'Viola Performer Group')
+consort.tools.MusicSpecifierSequence(
+    music_specifiers=datastructuretools.CyclicTuple(
+        ['B', 'C', 'D']
+        ),
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+segment_timespan = timespantools.Timespan(0, 8)
+show(segment_timespan)
+target_timespans = music_setting.resolve_target_timespans(segment_timespan)
+show(target_timespans, range_=(0, 8))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> segment_timespan = timespantools.Timespan(0, 8)
+>>> show(segment_timespan)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a34adb1cfbda637e38739ddd84494442.pdf}
+\begin{lstlisting}
+>>> target_timespans = music_setting.resolve_target_timespans(segment_timespan)
+>>> show(target_timespans, range_=(0, 8))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-102acd696ed0eb0ce3e2668275527bd3.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+target_timespans = music_setting.resolve_target_timespans(
+    segment_timespan,
+    timespan_quantization=Duration(1, 16),
+    )
+show(target_timespans, range_=(0, 8))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> target_timespans = music_setting.resolve_target_timespans(
+...     segment_timespan,
+...     timespan_quantization=Duration(1, 16),
+...     )
+>>> show(target_timespans, range_=(0, 8))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fdd1e78affa1ee5ba3e3e9b80feee1b2.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>
+music_setting = new(
+    music_setting,
+    timespan_identifier__mask_timespan=timespantools.Timespan(
+        start_offset=(1, 2),
+        stop_offset=7,
+        ),
+    )
+target_timespans = music_setting.resolve_target_timespans(segment_timespan)
+show(target_timespans, range_=(0, 8))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> music_setting = new(
+...     music_setting,
+...     timespan_identifier__mask_timespan=timespantools.Timespan(
+...         start_offset=(1, 2),
+...         stop_offset=7,
+...         ),
+...     )
+>>> target_timespans = music_setting.resolve_target_timespans(segment_timespan)
+>>> show(target_timespans, range_=(0, 8))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-435c344c6fe3e22cf86e856a0fe98c16.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 Once resolved, each music setting can call its timespan-maker to create
 timespans with the appropriate music specifiers, target timespans and layer,
 adding the resulting inventory to the growing collection of performed and
 silent timespans produced by previous music settings
 
+\begin{markdown}
 -   timespan creation actually takes place not directly from timespan-makers
     but via music specifier sequences (composite music specifiers aggregate
     these together)
-
 -   populating independent timespans:
     -   populate demultiplexed timespans
     -   Find meters
     -   Find meter boundaries
-    -   Demultiplex 
+    -   Demultiplex
         -   resolve cascading overlap across all timespans
     -   Split timespans at meter boundaries, discarding overly short timespans
     -   Discard malformed timespans (as a precaution)
@@ -176,7 +343,6 @@ silent timespans produced by previous music settings
         -   reconfigure the timespan with the created music, but without the
             divisions
     -   Prune meters
-
 -   populating dependent timespans
     -   this occurs almost identically as with independent timespans,
         but without any meter finding
@@ -185,35 +351,37 @@ silent timespans produced by previous music settings
     -   split at meter boundaries
     -   consolidate
     -   inscribe
-
 -   populate silent timespans
     -   creates timespans, splits and inscribes in one pass
     -   there are no more layers to create, so no need to resolve overlap
         conflicts
-
 -   rewrite meters (out of score, for efficiency)
 -   populate inscribed timespans music into the score
 -   collect attack points
+\end{markdown}
 
+\section{Non-rhythmic interpretation}
+
+\begin{markdown}
 During non-rhythmic interpretation:
-
 -   Non-rhythmic interpretation
     -   Grace handling
     -   Pitch handling
     -   Attachment handling
     -   Post-processing
+\end{markdown}
+
+\section{Persistence \& visualization}
 
 Once interpreted, a segment-maker's illustration may be persisted to disk as
 LilyPond syntax for inclusion in other LilyPond files, rendered as a PDF for
 viewing, or even serialized for other purposes. Composers study the results of
 interpretation, make changes to each segment's specification, and re-interpret
 as necessary, a large-scale re-enactment of interactive programming's pervasive
-*read-eval-print* loop paradigm.
+\emph{read-eval-print} loop paradigm.
 
 What follows is a detailed analysis of the various algorithms and subroutines
 employed during specification and interpretation.
-
-\end{markdown}
 
 \section{Segment makers}
 
@@ -288,7 +456,7 @@ show(segment_maker, verbose=False)
 <abjad>[stylesheet=../consort.ily]
 faster_segment_maker = new(
     segment_maker,
-    tempo=indicatortools.Tempo((1, 4), 120),
+    tempo=indicatortools.Tempo((1, 4), 20),
     )
 show(faster_segment_maker, verbose=False)
 </abjad>
@@ -300,11 +468,11 @@ show(faster_segment_maker, verbose=False)
 \begin{lstlisting}
 >>> faster_segment_maker = new(
 ...     segment_maker,
-...     tempo=indicatortools.Tempo((1, 4), 120),
+...     tempo=indicatortools.Tempo((1, 4), 20),
 ...     )
 >>> show(faster_segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-88bcdb27b1ad17661a645e4df9a41e96.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-dac8ffa35eb4dae93ba418fbf1eaf390.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -338,71 +506,6 @@ show(faster_segment_maker, verbose=False)
 -   Layer is implicit, derived from the order of setting definitions.
     -   Recall the discussion of timespan layer from earlier chapters.
 \end{markdown}
-
-\subsection{Ratio-parts expression examples}
-
-\begin{comment}
-<abjad>
-timespan = timespantools.Timespan(0, 8)
-show(timespan)
-ratio_parts_expression = consort.RatioPartsExpression(
-    ratio=[1, 2, 1],
-    parts=[0, 2],
-    )
-result = ratio_parts_expression(timespan)
-show(result)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> timespan = timespantools.Timespan(0, 8)
->>> show(timespan)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a34adb1cfbda637e38739ddd84494442.pdf}
-\begin{lstlisting}
->>> ratio_parts_expression = consort.RatioPartsExpression(
-...     ratio=[1, 2, 1],
-...     parts=[0, 2],
-...     )
->>> result = ratio_parts_expression(timespan)
->>> show(result)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-53d850fdf03d8308e4c1a9b0c39b239a.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-ratio_parts_expression = new(
-    ratio_parts_expression,
-    timespan=timespantools.Timespan(
-        start_offset=Offset(1, 4),
-        ),
-    )
-result = ratio_parts_expression(timespan)
-show(result, range_=(0, 8))
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> ratio_parts_expression = new(
-...     ratio_parts_expression,
-...     timespan=timespantools.Timespan(
-...         start_offset=Offset(1, 4),
-...         ),
-...     )
->>> result = ratio_parts_expression(timespan)
->>> show(result, range_=(0, 8))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-79f16a4a8418396c8645b819bd11c617.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
 
 \subsection{Score template and abbreviation examples}
 
@@ -1070,7 +1173,7 @@ show(timespan_inventory, range_=(0, (21, 4)))
 
 \begin{comment}
 <abjad>
-demultiplexed_timespans = consort.TimeManager.demultiplex_timespans(
+demultiplexed_timespans = consort.SegmentMaker.demultiplex_timespans(
     timespan_inventory,
     )
 show(demultiplexed_timespans, range_=(0, (21, 4)))
@@ -1081,7 +1184,7 @@ show(demultiplexed_timespans, range_=(0, (21, 4)))
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> demultiplexed_timespans = consort.TimeManager.demultiplex_timespans(
+>>> demultiplexed_timespans = consort.SegmentMaker.demultiplex_timespans(
 ...     timespan_inventory,
 ...     )
 >>> show(demultiplexed_timespans, range_=(0, (21, 4)))
@@ -1235,7 +1338,7 @@ show(unconsolidated_staff)
 consolidated_staff = Staff(parseable, context_name='RhythmicStaff')
 for voice in consolidated_staff:
     for phrase in voice:
-        phrase = consort.TimeManager.consolidate_rests(phrase)
+        phrase = consort.SegmentMaker.consolidate_rests(phrase)
 
 consort.annotate(consolidated_staff)
 staff_group = StaffGroup([unconsolidated_staff, consolidated_staff])
@@ -1250,7 +1353,7 @@ show(staff_group)
 >>> consolidated_staff = Staff(parseable, context_name='RhythmicStaff')
 >>> for voice in consolidated_staff:
 ...     for phrase in voice:
-...         phrase = consort.TimeManager.consolidate_rests(phrase)
+...         phrase = consort.SegmentMaker.consolidate_rests(phrase)
 ...
 >>> consort.annotate(consolidated_staff)
 >>> staff_group = StaffGroup([unconsolidated_staff, consolidated_staff])
