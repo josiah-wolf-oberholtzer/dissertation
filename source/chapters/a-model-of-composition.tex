@@ -14,7 +14,6 @@ import consort
 
 \begin{comment}
 \begin{markdown}
-#   Specification & Interpretation
 -   Materials
 -   Configuration
 -   Templating
@@ -48,6 +47,9 @@ composition of notated musical score as a repeated cycle containing three
 distinct stages: \emph{specification}, \emph{interpretation} and
 \emph{visualization}.
 
+What follows is a detailed analysis of the various algorithms and subroutines
+employed during Consort's specification and interpretation stages.
+
 \section{Specification}
 
 \emph{Specification} describes how \emph{out-of-time materials} -- both
@@ -69,6 +71,21 @@ interpreting and visualizing.
 
 \subsection{Segment-makers}
 
+\begin{markdown}
+-   Permitted time signatures
+-   Tempo
+-   Desired duration
+-   Score template
+    -   LilyPond will automatically concatenate scores with identical
+        context hierarchies. All contexts need to be present in every
+        concatenated segment, otherwise LilyPond will concatenate
+        incorrectly. However, we can use various typographic overrides to
+        make it appear that a context has disappeared.
+    -   Consort's ScoreTemplateManager helps create regularized score
+        templates.
+-   Music settings
+\end{markdown}
+
 Composers specify segments by creating and progressively configuring
 \emph{segment-makers}, classes which conceptually mirror the rhythm- and
 timespan-makers described in \autoref{chap:time-tools}, but on a much larger
@@ -77,7 +94,39 @@ meters, and desired duration. Most importantly, segment-makers may be
 configured with any number of \emph{music settings}, which aggregate a
 timespan-maker, a target timespan and any number of \emph{music specifiers} --
 bundles of materials which describe how phrases of music should be produced
-within a single voice. Music settings object-model both \emph{when} and in
+within a single voice. 
+
+\subsection{Music settings}
+
+\begin{markdown}
+-   What kind of music, laid out in what pattern, in which general
+    time frame, for which voices, in what layer?
+-   A timespan-maker
+-   A target timespan
+    -   A timespan.
+    -   A timespan inventory.
+    -   A ratio/parts expression.
+        -   Demonstrate. Check.
+-   Voice abbreviation / music specifier pairs
+    -   Why abbreviate? It's because of Python's key=value syntax for
+        keyword arguments.
+    -   How do we convert abbreviation to an actual context name?
+        -   Score templates need to define a mapping.
+        -   Demonstrate. Check.
+    -   What is the context name for?
+        -   Name-wise indexing in an actual score.
+        -   Demonstrate. Check.
+    -   Also, composite music specifiers: when two contexts need to be
+        discussed as a single unit.
+        -   Composite music specifiers need to convert one abbreviation into
+            two more abbreviations, each mapped to an actual context name.
+        -   Consort's ScoreTemplateManager takes care of calculating and
+            caching the appropriate names and abbreviations.
+-   Layer is implicit, derived from the order of setting definitions.
+    -   Recall the discussion of timespan layer from earlier chapters.
+\end{markdown}
+
+Music settings object-model both \emph{when} and in
 \emph{which} voices musical materials should be deployed. The order in which
 composers configure segment-makers with music settings defines each music
 setting's \emph{layer} -- the first setting defined being layer 0, the second
@@ -90,17 +139,31 @@ scratch in the same code module as the segment-maker currently being
 configured, templated from another material, or simply imported into the
 segment definition's namespace.
 
-Discuss music specifiers.
+\subsection{Music specifiers}
 
-Discuss grace, pitch and attachment handlers.
-
-Discuss why graces happen later.
-
-Discuss pitch specifiers, pitch operation specifiers, logical tie expressions.
-
-Discuss attachment expressions and selector.
-
-Discuss templating.
+\begin{markdown}
+-   A bundle of descriptors for what kind of music should fill a series of
+    1 or more timespans.
+-   All of the descriptors are optional.
+-   Rhythm-makers
+-   Grace-handlers
+-   Pitch-handlers
+-   Attachment-handlers
+-   Labels
+    -   This works in tandem with DependentTimespanMaker.
+    -   Example? Piano music with two hands and pedaling. The
+        hand-performed music might involve key presses, or it might involve
+        percussive techniques. All of the techniques that require pedaling
+        should be labeled 'pedaled'. A DependentTimespanMaker for the pedal
+        context can then be configured to look at timespans for both the LH
+        and RH of the piano, but only those timespans configured with a
+        music specifier labeled 'pedaled'.
+    -   Demonstrate.
+-   minimum phrase duration
+    -   (should this be hoisted into PerformedTimespan?
+-   seed
+-   is_sentinel (maybe remove from consort altogether)
+\end{markdown}
 
 \section{Interpretation}
 
@@ -142,11 +205,9 @@ timespan-makers in a second. These two passes only differ significantly in that
 meters are fitted against the segment's timespan maquette during the
 independent timespan-maker pass, but not during the dependent.
 
-\subsection{Evaluating music settings}
+\subsection{Populating the maquette}
 
 To populate the maquette, the segment-maker calls each of its music settings to
-produce timespans according to their configured timespan-makers,
-\emph{timespan-identifiers} -- optional specifications of which portion of the
 segment's overall timespan to operate within -- and voice-associated music
 specifiers.
 
@@ -156,15 +217,196 @@ setting's music specifiers are associated with keys representing voice-name
 abbreviations: underscore-delimited strings, necessitated by Python's keyword
 argument syntax. In order to match its music specifiers against actual voice
 contexts in a score, the music setting must resolve its voice-name
-abbreviations against a score template. Likewise, in order to know which target
-timespan or timespans its timespan-maker should operate within -- in the case
-of procedural timespan identifiers such as \emph{ratio-parts expressions} which
-must be called against a preexisting timespan in order to determine what part
-or parts of that timespan to use -- the music setting must resolve its timespan
-identifier against the segment's desired duration. Target timespan resolution
-must take into account offset quantization, as the target timespans resulting
-from the evaluation of a ratio-parts expression may not align against a
+abbreviations against a score template.
+
+- Music specifier sequences
+
+- Composite music specifiers
+
+In order to know which target timespan or timespans a music setting's
+timespan-maker should operate within -- in the case of procedural timespan
+identifiers such as \emph{ratio-parts expressions} which must be called against
+a preexisting timespan in order to determine what part or parts of that
+timespan to use -- the music setting must resolve its timespan identifier
+against the segment's desired duration. Target timespan resolution must take
+into account offset quantization, as the target timespans resulting from the
+evaluation of a ratio-parts expression may not align against a
 power-of-two-denominator offset grid such as 1/8, 1/16 or 1/32.
+
+Once resolved, each music setting can call its timespan-maker to create
+timespans with the appropriate music specifiers, target timespans and layer,
+adding the resulting inventory to the growing collection of performed and
+silent timespans produced by previous music settings
+
+-   timespan creation actually takes place not directly from timespan-makers
+    but via music specifier sequences (composite music specifiers aggregate
+    these together)
+
+\subsection{Finding meters}
+
+\begin{markdown}
+-   Find meters
+-   Find meter boundaries
+\end{markdown}
+
+\subsection{Resolving cascading overlap}
+
+\subsection{Splitting and pruning}
+
+\subsection{Phrase consolidation}
+
+\begin{markdown}
+-   Consolidate timespans, discarding if below minimum phrase duration,
+    populating the `divisions` property of the result
+\end{markdown}
+
+\subsection{Phrase inscription}
+
+\begin{markdown}
+-   Divisions
+-   Get rhythm maker (under what circumstances?)
+-   Make simple music
+-   Consolidate rests
+-   Rhythmic post-processing
+    -   attaching a GeneralizedBeam
+    -   attaching the scoped music specifier
+-   Reconfigure the timespan with the created music, but without the divisions
+\end{markdown}
+
+\subsection{Meter pruning}
+
+\subsection{Populating dependent timespans}
+
+\begin{markdown}
+-   this occurs almost identically as with independent timespans,
+    but without any meter finding
+-   populate demultiplexed timespans
+-   demultiplex
+-   split at meter boundaries
+-   consolidate
+-   inscribe
+\end{markdown}
+
+\subsection{Populating silent timespans}
+
+\begin{markdown}
+-   creates timespans, splits and inscribes in one pass
+-   there are no more layers to create, so no need to resolve overlap
+    conflicts
+\end{markdown}
+
+\subsection{Rewriting meters}
+
+\begin{markdown}
+-   Meter timespans
+-   Multi-measure rests
+-   Staff line spanners for broken score appearance
+-   Cleaning up logical ties
+\end{markdown}
+
+\subsection{Populating the score}
+
+\subsection{Collecting attack points}
+
+\section{Non-rhythmic interpretation}
+
+\subsection{Score traversal}
+
+\begin{markdown}
+-   By voice and phrase
+-   By attack-point / logical tie
+\end{markdown}
+
+\subsection{Grace handlers}
+
+\begin{markdown}
+-   Adds grace notes to the start of logical ties in a patterned way.
+-   Processes the score time-wise by logical tie.
+\end{markdown}
+
+\subsection{Pitch handlers}
+
+\begin{markdown}
+-   Applies pitches to logical ties in a patterned way.
+-   Applies pitches to grace notes associated with a logical tie.
+-   Applies logical-tie-expressions which can convert logical ties from
+    notes into chords, key-clusters or harmonics.
+-   Processes the score time-wise by logical tie.
+    -   The goal is to limit pitch class repetition both vertically and
+        horizontally, but *only* with regard to phrases in the score scoped
+        by each music specifier. Other phrases are not considered.
+-   Application rate: by logical tie, division, phrase
+    -   This requires the SeedSession class for keeping track of many
+        seeds, each advancing at a potentially different rate.
+    -   This also requires the AttackPointSignature class, which caches
+        information about each logical tie's position in its parent
+        division, phrase and overall segment.
+-   MusicSpecifier: pitches are non-semantic (is this even used?)
+-   Maps different patterns of pitches and different patterns of operations
+    across the timeline.
+    -   PitchHandler: `get_pitch_choice_timespans()`
+    -   Demonstrate.
+-   Can act on absolute pitches, or registered pitch classes.
+-   Other formulations are possible: selecting from vertical sonorities
+    based on register curves. (This is not currently implemented, but maybe
+    for Ersilia.)
+-   Demonstrate simple PitchHandler examples.
+-   Additionally:
+    -   SeedSession
+    -   Pitch operations
+    -   Logical tie expressions
+    -   Pitch application rate
+    -   Pitch specifier
+    -   Grace expressions
+\end{markdown}
+
+\subsection{Attachment handlers}
+
+\begin{markdown}
+-   Attaches things to the score.
+-   Aggregates AttachmentExpression instances together.
+    -   A bundle of a selector and an iterable of attachments or
+        expressions.
+    -   Reprise discussion of selectors.
+    -   Discuss expressions: DynamicExpression, etc.
+-   Processes the score by voice, then by *phrase*.
+    -   Unlike the other handlers, attachment handlers require the entire
+        phrase to operate on, and selectors should be designed with that in
+        mind.
+-   Demonstrate a gallery of selectors.
+    -   by duration
+    -   by leaves
+    -   by length
+    -   by logical tie
+    -   by counts (with negative counts too)
+-   Expressive attachments
+    -   Idiomatic indicators
+    -   DynamicExpression
+    -   BowContactSpanner
+    -   StringContactSpanner
+\end{markdown}
+
+\subsection{Post-processing}
+
+\begin{markdown}
+-   Voice copying
+-   Time signature context
+    -   Adding time signatures
+    -   Rehearsal marks
+    -   Repeat signs
+-   Style-sheets
+\end{markdown}
+
+\section{Persistence \& visualization}
+
+Once interpreted, a segment-maker's illustration may be persisted to disk as
+LilyPond syntax for inclusion in other LilyPond files, rendered as a PDF for
+viewing, or even serialized for other purposes. Composers study the results of
+interpretation, make changes to each segment's specification, and re-interpret
+as necessary, a large-scale re-enactment of interactive programming's pervasive
+\emph{read-eval-print} loop paradigm.
+
+\section{Examples}
 
 \begin{comment}
 <abjad>
@@ -315,92 +557,6 @@ show(target_timespans, range_=(0, 8))
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-Once resolved, each music setting can call its timespan-maker to create
-timespans with the appropriate music specifiers, target timespans and layer,
-adding the resulting inventory to the growing collection of performed and
-silent timespans produced by previous music settings
-
-\begin{markdown}
--   timespan creation actually takes place not directly from timespan-makers
-    but via music specifier sequences (composite music specifiers aggregate
-    these together)
--   populating independent timespans:
-    -   populate demultiplexed timespans
-    -   Find meters
-    -   Find meter boundaries
-    -   Demultiplex
-        -   resolve cascading overlap across all timespans
-    -   Split timespans at meter boundaries, discarding overly short timespans
-    -   Discard malformed timespans (as a precaution)
-    -   Consolidate timespans, discarding if below minimum phrase duration,
-        populating the `divisions` property of the result
-    -   Inscribe the consolidated timespans
-        -   get rhythm maker (under what circumstances?)
-        -   make simple music
-        -   consolidate rests
-        -   attach beams and music specifiers (with scope) to each consolidated
-            container
-        -   reconfigure the timespan with the created music, but without the
-            divisions
-    -   Prune meters
--   populating dependent timespans
-    -   this occurs almost identically as with independent timespans,
-        but without any meter finding
-    -   populate demultiplexed timespans
-    -   demultiplex
-    -   split at meter boundaries
-    -   consolidate
-    -   inscribe
--   populate silent timespans
-    -   creates timespans, splits and inscribes in one pass
-    -   there are no more layers to create, so no need to resolve overlap
-        conflicts
--   rewrite meters (out of score, for efficiency)
--   populate inscribed timespans music into the score
--   collect attack points
-\end{markdown}
-
-\section{Non-rhythmic interpretation}
-
-\begin{markdown}
-During non-rhythmic interpretation:
--   Non-rhythmic interpretation
-    -   Grace handling
-    -   Pitch handling
-    -   Attachment handling
-    -   Post-processing
-\end{markdown}
-
-\section{Persistence \& visualization}
-
-Once interpreted, a segment-maker's illustration may be persisted to disk as
-LilyPond syntax for inclusion in other LilyPond files, rendered as a PDF for
-viewing, or even serialized for other purposes. Composers study the results of
-interpretation, make changes to each segment's specification, and re-interpret
-as necessary, a large-scale re-enactment of interactive programming's pervasive
-\emph{read-eval-print} loop paradigm.
-
-What follows is a detailed analysis of the various algorithms and subroutines
-employed during specification and interpretation.
-
-\section{Segment makers}
-
-\begin{markdown}
-#   Segment-makers
--   Permitted time signatures
--   Tempo
--   Desired duration
--   Score template
-    -   LilyPond will automatically concatenate scores with identical
-        context hierarchies. All contexts need to be present in every
-        concatenated segment, otherwise LilyPond will concatenate
-        incorrectly. However, we can use various typographic overrides to
-        make it appear that a context has disappeared.
-    -   Consort's ScoreTemplateManager helps create regularized score
-        templates.
--   Music settings
-\end{markdown}
-
 \subsection{Segment-maker examples}
 
 \begin{comment}
@@ -475,37 +631,6 @@ show(faster_segment_maker, verbose=False)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-dac8ffa35eb4dae93ba418fbf1eaf390.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
-
-\section{Music settings}
-
-\begin{markdown}
-#   Music settings
--   What kind of music, laid out in what pattern, in which general
-    time frame, for which voices, in what layer?
--   A timespan-maker
--   A target timespan
-    -   A timespan.
-    -   A timespan inventory.
-    -   A ratio/parts expression.
-        -   Demonstrate. Check.
--   Voice abbreviation / music specifier pairs
-    -   Why abbreviate? It's because of Python's key=value syntax for
-        keyword arguments.
-    -   How do we convert abbreviation to an actual context name?
-        -   Score templates need to define a mapping.
-        -   Demonstrate. Check.
-    -   What is the context name for?
-        -   Name-wise indexing in an actual score.
-        -   Demonstrate. Check.
-    -   Also, composite music specifiers: when two contexts need to be
-        discussed as a single unit.
-        -   Composite music specifiers need to convert one abbreviation into
-            two more abbreviations, each mapped to an actual context name.
-        -   Consort's ScoreTemplateManager takes care of calculating and
-            caching the appropriate names and abbreviations.
--   Layer is implicit, derived from the order of setting definitions.
-    -   Recall the discussion of timespan layer from earlier chapters.
-\end{markdown}
 
 \subsection{Score template and abbreviation examples}
 
@@ -626,45 +751,6 @@ Voice()
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
-
-\section{Music specifiers}
-
-\begin{markdown}
--   A bundle of descriptors for what kind of music should fill a series of
-    1 or more timespans.
--   All of the descriptors are optional.
--   Rhythm-makers:
-    -   Creates rhythms in the divisions defined by a series of contiguous
-        timespans.
--   Grace-handlers:
-    -   Adds grace notes to the start of logical ties in a patterned way.
-    -   Processes the score time-wise by logical tie.
--   Pitch-handlers:
-    -   Applies pitches to logical ties in a patterned way.
-    -   Applies pitches to grace notes associated with a logical tie.
-    -   Applies logical-tie-expressions which can convert logical ties from
-        notes into chords, key-clusters or harmonics.
-    -   Processes the score time-wise by logical tie.
-        -   The goal is to limit pitch class repetition both vertically and
-            horizontally, but *only* with regard to phrases in the score scoped
-            by each music specifier. Other phrases are not considered.
-    -   Application rate: by logical tie, division, phrase
-        -   This requires the SeedSession class for keeping track of many
-            seeds, each advancing at a potentially different rate.
-        -   This also requires the AttackPointSignature class, which caches
-            information about each logical tie's position in its parent
-            division, phrase and overall segment.
-    -   MusicSpecifier: pitches are non-semantic (is this even used?)
-    -   Maps different patterns of pitches and different patterns of operations
-        across the timeline.
-        -   PitchHandler: `get_pitch_choice_timespans()`
-        -   Demonstrate.
-    -   Can act on absolute pitches, or registered pitch classes.
-    -   Other formulations are possible: selecting from vertical sonorities
-        based on register curves. (This is not currently implemented, but maybe
-        for Ersilia.)
-    -   Demonstrate simple PitchHandler examples.
-\end{markdown}
 
 \subsection{Music specifier label examples}
 
@@ -857,57 +943,6 @@ show(result, key='voice_name')
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-9382d23b443fa753fb33e78d0e7a805f.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
-
-\begin{comment}
-\begin{markdown}
--   Attachment-handlers:
-    -   Attaches things to the score.
-    -   Aggregates AttachmentExpression instances together.
-        -   A bundle of a selector and an iterable of attachments or
-            expressions.
-        -   Reprise discussion of selectors.
-        -   Discuss expressions: DynamicExpression, etc.
-    -   Processes the score by voice, then by *phrase*.
-        -   Unlike the other handlers, attachment handlers require the entire
-            phrase to operate on, and selectors should be designed with that in
-            mind.
-    -   Demonstrate a gallery of selectors.
-        -   by duration
-        -   by leaves
-        -   by length
-        -   by logical tie
-        -   by counts (with negative counts too)
-    -   Expressive attachments
-        -   Idiomatic indicators
-        -   DynamicExpression
-        -   BowContactSpanner
-        -   StringContactSpanner
--   Other music specifier properties of note?
-    -   *labels*
-        -   This works in tandem with DependentTimespanMaker.
-        -   Example? Piano music with two hands and pedaling. The
-            hand-performed music might involve key presses, or it might involve
-            percussive techniques. All of the techniques that require pedaling
-            should be labeled 'pedaled'. A DependentTimespanMaker for the pedal
-            context can then be configured to look at timespans for both the LH
-            and RH of the piano, but only those timespans configured with a
-            music specifier labeled 'pedaled'.
-        -   Demonstrate.
-    -   *minimum phrase duration*
-        -   (should this be hoisted into PerformedTimespan?
-    -   *seed*
-    -   *is_sentinel* (maybe remove from consort altogether)
-\end{markdown}
-\end{comment}
-
-\section{Composite music specifiers}
-
-\section{Timespan population}
-
-\begin{markdown}
--   Multiplexing & demultiplexing
--   Resolving cascading overlap
-\end{markdown}
 
 \subsection{Timespan resolution examples}
 
@@ -1193,20 +1228,6 @@ show(demultiplexed_timespans, range_=(0, (21, 4)))
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\section{Timespan Inscription}
-
-\begin{markdown}
--   Divisions
--   Rhythm creation
--   Rest consolidation
--   Rhythmic post-processing
-    -   attaching a GeneralizedBeam
-    -   attaching the scoped music specifier
--   Meter rewriting
-    Cleaning up logical ties
--   Attack-point collection
-\end{markdown}
-
 \subsection{Rest consolidation examples}
 
 \begin{comment}
@@ -1362,21 +1383,6 @@ show(staff_group)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1ef1a4031465a364425aef4e059efda0.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
-
-
-\begin{markdown}
-# Post-rhythm-creation processing
--   Score traversal revisited
--   Grace handling
--   Pitch handling
-    -   SeedSession
-    -   Pitch operations
-    -   Logical tie expressions
-    -   Pitch application rate
-    -   Pitch specifier
-    -   Grace expressions
--   Attachment handling
-\end{markdown}
 
 \subsection{Pitch handler examples}
 
@@ -2173,8 +2179,3 @@ show(lilypond_file)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-6e9d587e5ee37ad6583f5197bed09814.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
-
-\begin{markdown}
-# Score post-processing
--   Voice copying
-\end{markdown}
