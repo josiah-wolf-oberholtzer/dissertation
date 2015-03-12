@@ -96,28 +96,29 @@ annotated with music specifiers perform the role of the intermediate
 representation. This intermediate representation acts as a *maquette*, blocking
 out where in the resulting score segment various materials should be deployed.
 The target of score interpretation is, unsurprisingly, a fully-fledge score
-aggregated from Abjad score components.
+aggregated from Abjad score components. Interpretation takes place in two broad
+stages -- rhythmic interpretation, followed by non-rhythmic interpretation --
+with the first stage producing a score populated solely with rhythmic
+information, and the second stage applying grace notes, pitches, indicators,
+spanners and various typographic overrides to the previously-constructed
+rhythmic skeleton.
 
-Interpretation itself takes place in two broad stages -- rhythmic
-interpretation, followed by non-rhythmic interpretation -- with the first stage
-producing a score populated solely with rhythmic information, and the second
-stage applying grace notes, pitches, indicators, spanners and various
-typographic overrides to the previously-constructed rhythmic skeleton.
-
-<describe very high level, then lower>
-
-Before either rhythmic or non-rhythmic interpretation, the segment-maker first
-creates a *segment-session*, an object which keeps track of the products of
-interpretation -- the interpreted score, but also generated meters,
-attack-points and timespans -- for the segment-maker, allowing the
-segment-maker itself to remain stateless while it interprets.
-
-During rhythmic interpretation, the segment-maker populates an inventory of
-timespans by calling each of its music-settings. 
+During rhythmic interpretation, the segment-maker creates a maquette by calling
+each of its music-settings in turn to populate a timespan inventory, then
+resolves overlap conflicts within the inventory, fits meters against the
+resolved inventory's offsets, splits and prunes the inventory according to its
+fitted metrical structure, and finally converts the finished timespan maquette
+into an actual score. This process, like interpretation overall, can be roughly
+divided into work flows of maquette interpretation and score interpretation,
+although in practice -- for reasons discussed later -- the two work flows are
+interleaved significantly.
 
 Music settings with *independent* timespan-makers -- those which do not depend
-on the contents of a previously created timespan inventory -- are called in a
-first pass, and those with *dependent* timespan-makers second.
+on the contents of a previously created timespan inventory, specifically
+flooded and talea timespan-makers -- are called in a first pass, and those with
+*dependent* timespan-makers in a second. These two passes only differ
+significantly in that meters are fitted against the segment's timespan maquette
+during the independent timespan-maker pass, but not during the dependent.
 
 When populating independent timespans, each music settings is called in turn to
 produce timespans according to their configured timespan-makers,
