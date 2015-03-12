@@ -12,6 +12,7 @@ import consort
 </abjad>
 \end{comment}
 
+\begin{comment}
 \begin{markdown}
 #   Specification & Interpretation
 -   Materials
@@ -40,7 +41,9 @@ import consort
     concepts like "melody" or even "phrase". They're too vague. If we use that
     terminology at all, it is only in the most incredibly constrained way.
 \end{markdown}
+\end{comment}
 
+\begin{comment}
 \begin{markdown}
 #   Analysis Overview
 -   Specification
@@ -73,23 +76,37 @@ import consort
         -   Post-processing
 -   Persistence
 \end{markdown}
+\end{comment}
 
 \begin{markdown}
 
-Consort models composition through the *specification* of how *out-of-time
-materials* -- both concrete and programmatic -- should be deployed *in-time* on
-the page as notation.
+Consort, a Python library written as an extension to Abjad, models the
+composition of notated musical score as a repeated cycle of *specification*,
+*interpretation* and *visualization*.
 
-Consort works with *segments* of score, 
+The process of *specification* describes how *out-of-time materials* -- both
+concrete and programmatic -- should be deployed *in-time* in a *segment* of
+musical score as notation. Materials encompass abstractions -- such as pitch
+sets or collections of performance technique indications --, concrete fragments
+of *music* -- narrowly defined here as any contiguous selection of score
+components --, and procedures for producing, altering or embellishing music
+such as rhythm-makers or attachment-handlers. Score segments comprise any
+contiguous passage of music, demarcating an area of compositional concern.
+Consort treats scores as comprised of at least one segment, but potentially
+many more concatenated together. Any segment may of course contain arbitrarily
+complex inner structuring. Separation of scores into distinct segments acts
+then mainly as an aid for the composer, both by simplifying the complexity of
+the current specification under consideration, and by allowing the typesetting
+engine -- LilyPond -- to display more manageable amounts of notation than the
+full score, thus speeding up the cycle of specifying, interpreting and
+visualizing.
 
-Working with Consort falls into two distinct phases: *specification* and
-*interpretation*.
-
-Specification involves the process of specifying the structure and contents of
-a *segment* of score by creating and progressively configuring an instance of a
-*segment-maker*. Such configuration parameters include score template,
-tempo, permitted meters, and desired duration. Most importantly, segment-makers
-may be configured with any number of *music settings*, which aggregate a
+Composers specify segments by creating and progressively configuring
+*segment-makers*, classes which conceptually mirror the rhythm- and
+timespan-makers described in \autoref{chap:time-tools}, but on a much larger
+scale. Such configuration parameters include score template, tempo, permitted
+meters, and desired duration. Most importantly, segment-makers may be
+configured with any number of *music settings*, which aggregate a
 timespan-maker, a target timespan and any number of music specifiers. Music
 settings object-model both *when* and in *which* voices musical materials
 should be deployed. The order in which composers configure segment-makers with
@@ -131,6 +148,9 @@ as necessary, a large-scale re-enactment of interactive programming's pervasive
 
 \end{markdown}
 
+\section{Segment makers}
+
+\begin{comment}
 \begin{markdown}
 #   Segment-makers
 -   Permitted time signatures
@@ -146,6 +166,7 @@ as necessary, a large-scale re-enactment of interactive programming's pervasive
         templates.
 -   Music settings
 \end{markdown}
+\end{comment}
 
 \subsection{Segment-maker examples}
 
