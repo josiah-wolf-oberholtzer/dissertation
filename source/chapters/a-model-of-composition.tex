@@ -206,6 +206,7 @@ meters are fitted against the segment's timespan maquette during the
 independent timespan-maker pass, but not during the dependent.
 
 \subsection{Populating the maquette}
+\label{ssec:populating-the-maquette}
 
 To populate the maquette, the segment-maker calls each of its music settings to
 produce timespans according to their configured timespan-makers,
@@ -269,6 +270,7 @@ growing maquette of performed and silent timespans produced by previous music
 settings. The populating process repeats until no more music settings remain.
 
 \subsection{Finding meters, revisited}
+\label{ssec:finding-meters-revisited}
 
 Consort's segment-maker implements a variation on the meter-fitting algorithm
 described in \autoref{sec:finding-meters}. Each segment-maker may be configured
@@ -288,17 +290,42 @@ boundaries as properties on its instance, affording later retrieval by other
 subroutines.
 
 \subsection{Resolving cascading overlap}
+\label{ssec:resolving-cascading-overlap}
 
-\subsection{Splitting and pruning}
 
-\subsection{Phrase consolidation}
 
-\begin{markdown}
--   Consolidate timespans, discarding if below minimum phrase duration,
-    populating the `divisions` property of the result
-\end{markdown}
+\subsection{Splitting, pruning \& consolidation}
+\label{ssec:splitting-pruning-and-consolidation}
 
-\subsection{Phrase inscription}
+Split at meter boundaries
+
+Performed timespans may be configured with a \texttt{minimum\_duration}
+property.
+
+Timespan-makers and timespan specifiers
+
+Why prune?
+
+When notated with certain rhythm-makers, overly short divisions -- especially
+those of 1/16-duration and smaller -- may give undesirable results.
+
+Note that silent timespans have no configurable version of the same property.
+Their \texttt{minimum\_duration} always returns 0. They maintain this dummy
+property so that the segment-maker's timespan-pruning algorithms can treat
+silent and performed timespans identically.
+
+Prune malformed timespans, as a precaution
+
+Consolidate contiguous performed timespans with identical music specifiers,
+caching the durations of the consolidated timespans in a new timespan's
+\texttt{divisions} property. The new timespan outlines the start and stop
+offset of the consolidated group.
+
+If the music specifier was configured with a minimum phrase duration, and the
+consolidated timespan falls under that threshold, it is discarded.
+
+\subsection{Inscription}
+\label{ssec:inscription}
 
 \begin{markdown}
 -   Divisions
@@ -312,10 +339,36 @@ subroutines.
 \end{markdown}
 
 \subsection{Meter pruning}
+\label{ssec:meter-pruning}
 
-After 
+After the timespan pruning outlined in
+\autoref{ssec:splitting-pruning-and-consolidation}, and the possibility of gaps
+introduced due to rest consolidation as outlined in \autoref{ssec:inscription},
+the overall stop offset of the maquette -- not the stop offset derived from the
+segment-maker's desired duration -- may have shifted earlier.
+
+Depending on the degree of shift, timespans in the maquette may no longer occur
+during one or more of the implicit timespans of the previously fitted meters.
+
+Segment-makers may be configured to discard these silences via their
+\texttt{discard\_final\_silence} property.
 
 \subsection{Populating dependent timespans}
+\label{ssec:populating-dependent-timespans}
+
+The previous few passages, from \autoref{ssec:populating-the-maquette} through
+\autoref*{ssec:meter-pruning}, describe the process of populating a
+segment-makers's timespan maquette with the products of its *independent* music
+settings -- those music settings whose timespan makers are independent, notably
+flooded and talea timespan-makers.
+
+With the maquette partially populated, those music settings with dependent
+timespan-makers -- timespan-makers which generate timespans based on the
+contents of a preexisting timespan inventory -- may finally be called to
+provide their contributions to the maquette.
+
+Dependent population proceeds almost identically to independent population with
+a few notable differences.
 
 \begin{markdown}
 -   this occurs almost identically as with independent timespans,
@@ -328,6 +381,8 @@ After
 \end{markdown}
 
 \subsection{Populating silent timespans}
+
+
 
 \begin{markdown}
 -   creates timespans, splits and inscribes in one pass
