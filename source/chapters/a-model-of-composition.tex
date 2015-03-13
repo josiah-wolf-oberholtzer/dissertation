@@ -163,6 +163,7 @@ segment definition's namespace.
     -   (should this be hoisted into PerformedTimespan?
 -   seed
 -   is_sentinel (maybe remove from consort altogether)
+-   Composite music specifiers
 \end{markdown}
 
 \section{Interpretation}
@@ -208,30 +209,35 @@ independent timespan-maker pass, but not during the dependent.
 \subsection{Populating the maquette}
 
 To populate the maquette, the segment-maker calls each of its music settings to
+produce timespans according to their configured timespan-makers,
+\emph{timespan-identifiers} -- optional specifications of which portion of the
 segment's overall timespan to operate within -- and voice-associated music
 specifiers.
 
 Music settings exist without any reference to a segment-maker, its desired
-duration -- and therefore desired timespan --, or its score template. A music
-setting's music specifiers are associated with keys representing voice-name
-abbreviations: underscore-delimited strings, necessitated by Python's keyword
-argument syntax. In order to match its music specifiers against actual voice
-contexts in a score, the music setting must resolve its voice-name
-abbreviations against a score template.
+duration -- and therefore desired timespan --, or its score template.
 
-- Music specifier sequences
-
-- Composite music specifiers
+Timespan identifiers may include timespans, inventories of timespans, or even
+expressions callable against the segment-makers own timespan which evaluate to
+an inventory of timespans. 
 
 In order to know which target timespan or timespans a music setting's
 timespan-maker should operate within -- in the case of procedural timespan
 identifiers such as \emph{ratio-parts expressions} which must be called against
 a preexisting timespan in order to determine what part or parts of that
 timespan to use -- the music setting must resolve its timespan identifier
-against the segment's desired duration. Target timespan resolution must take
+against the segment's desired duration. Target timespan resolution must also take
 into account offset quantization, as the target timespans resulting from the
 evaluation of a ratio-parts expression may not align against a
 power-of-two-denominator offset grid such as 1/8, 1/16 or 1/32.
+
+A music setting's music specifiers are associated with keys representing
+voice-name abbreviations: underscore-delimited strings, necessitated by
+Python's keyword argument syntax. In order to match its music specifiers
+against actual voice contexts in a score, the music setting must resolve its
+voice-name abbreviations against a score template.
+
+- Music specifier sequences
 
 Once resolved, each music setting can call its timespan-maker to create
 timespans with the appropriate music specifiers, target timespans and layer,
