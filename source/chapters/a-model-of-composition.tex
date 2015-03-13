@@ -162,7 +162,6 @@ segment definition's namespace.
 -   minimum phrase duration
     -   (should this be hoisted into PerformedTimespan?
 -   seed
--   is_sentinel (maybe remove from consort altogether)
 -   Composite music specifiers
 \end{markdown}
 
@@ -212,48 +211,81 @@ To populate the maquette, the segment-maker calls each of its music settings to
 produce timespans according to their configured timespan-makers,
 \emph{timespan-identifiers} -- optional specifications of which portion of the
 segment's overall timespan to operate within -- and voice-associated music
-specifiers.
+specifiers. Timespan identifiers may include timespans, inventories of
+timespans, or even expressions callable against the segment-makers own timespan
+which evaluate to an inventory of timespans. 
 
 Music settings exist without any reference to a segment-maker, its desired
-duration -- and therefore desired timespan --, or its score template.
+duration -- and therefore desired timespan --, or its score template. In order
+to know which target timespan or timespans a music setting's timespan-maker
+should operate within -- in the case of procedural timespan identifiers such as
+\emph{ratio-parts expressions} which must be called against a preexisting
+timespan in order to determine what part or parts of that timespan to use --
+the music setting must resolve its timespan identifier against the segment's
+desired duration. Target timespan resolution must also take into account offset
+quantization, as the target timespans resulting from the evaluation of a
+ratio-parts expression may not align against a power-of-two-denominator offset
+grid such as 1/8, 1/16 or 1/32. Because timespan-makers produce their output
+relative to the start-offset of their target timespan, a misaligned target
+timespan -- starting at an offset like 1/3 or 15/7 rather than 1/4 or 0 -- will
+cause all generated timespans to be misaligned.
 
-Timespan identifiers may include timespans, inventories of timespans, or even
-expressions callable against the segment-makers own timespan which evaluate to
-an inventory of timespans. 
-
-In order to know which target timespan or timespans a music setting's
-timespan-maker should operate within -- in the case of procedural timespan
-identifiers such as \emph{ratio-parts expressions} which must be called against
-a preexisting timespan in order to determine what part or parts of that
-timespan to use -- the music setting must resolve its timespan identifier
-against the segment's desired duration. Target timespan resolution must also take
-into account offset quantization, as the target timespans resulting from the
-evaluation of a ratio-parts expression may not align against a
-power-of-two-denominator offset grid such as 1/8, 1/16 or 1/32.
-
-A music setting's music specifiers are associated with keys representing
-voice-name abbreviations: underscore-delimited strings, necessitated by
-Python's keyword argument syntax. In order to match its music specifiers
-against actual voice contexts in a score, the music setting must resolve its
-voice-name abbreviations against a score template.
-
-- Music specifier sequences
+Music setting's associate their music specifiers with strings containing
+voice-name abbreviations. These abbreviations are always underscore-delimited
+strings such as \texttt{violin\_1} or \texttt{piano\_lh} -- necessitated by
+Python's keyword argument syntax so that they can be used as keys during class
+instantiation -- which represent voices in a score, without having established
+a concrete reference to those voice contexts. In order to match its music
+specifiers against actual voice contexts in a score, the music setting must
+resolve its voice-name abbreviations against a score template, looking up each
+abbreviation on the template and returning the real name of the associated
+context. This lookup process allows music settings to construct well-formed
+voice-name-to-music-specifier mappings, implemented as ordered dictionaries and
+ordered by the actual *score index* -- effectively, the vertical location -- of
+each looked-up context in the segment-maker's under-construction score. As
+demonstrated in \autoref{sec:timespan-makers}, timespan-makers require these
+mappings to produce their output. Additionally, voice-name resolution
+guarantees that the values in the resolved voice-name-to-music-specifier
+mapping are always either a \texttt{MusicSpecifierSequence} or
+\texttt{CompositeMusicSpecifier} instance via coercion, where any composite
+music-specifier's primary and secondary music specifiers are themselves coerced
+into music specifier sequences. This coercion ensures that all arguments to the
+music setting's timespan-maker are in a well-formed and predictable state.
+\footnote{Timespan-makers actually delegate the creation of performed and
+silent timespans to music specifier sequences. While not demonstrated
+explicitly in \autoref{sec:timespan-makers}, this delegation allows
+timespan-makers to use both music specifier sequences and composite music
+specifiers interchangeably, with the former creating timespans associated with
+one voice and the later with two. When the values of a timespan-maker's input
+voice-name-to-music-specifier mapping are neither music specifier sequences nor
+composite music specifiers -- as was the case in all of the examples in
+\autoref{sec:timespan-makers} -- they implicitly coerce those values into music
+specifier sequences.}
 
 Once resolved, each music setting can call its timespan-maker to create
-timespans with the appropriate music specifiers, target timespans and layer,
-adding the resulting inventory to the growing collection of performed and
-silent timespans produced by previous music settings
+timespans with the appropriate voice-name-to-music-specifier mapping, target
+timespans and layer, adding the contents of the resulting inventory to the
+growing maquette of performed and silent timespans produced by previous music
+settings. The populating process repeats until no more music settings remain.
 
--   timespan creation actually takes place not directly from timespan-makers
-    but via music specifier sequences (composite music specifiers aggregate
-    these together)
+\subsection{Finding meters, revisited}
 
-\subsection{Finding meters}
-
-\begin{markdown}
--   Find meters
--   Find meter boundaries
-\end{markdown}
+Consort's segment-maker implements a variation on the meter-fitting algorithm
+described in \autoref{sec:finding-meters}. Each segment-maker may be configured
+with an inventory of permitted meters, as well as maximum meter run length, in
+order to drive the meter fitting algorithm. When counting offsets,
+segment-makers include the offsets found on the performed timespans in their
+maquette but discard those from silent timespans, removing any influence from
+timespans created solely for silencing other timespans. The start offset of
+each performed timespan is weighed twice as much as their stop offset. This
+imbalance helps emphasize simultaneous phrase starts across different voices.
+Additionally, segment-maker's weight their own desired stop offset at a much
+higher value than any count derived from the offsets in their maquette. This
+attempts to influence the meter fitting process into selecting a series of
+meters which end as close to their desired stop offset as possible. After
+fitting meters, the segment-maker caches both the fitted meters and their
+boundaries as properties on its instance, affording later retrieval by other
+subroutines.
 
 \subsection{Resolving cascading overlap}
 
@@ -280,6 +312,8 @@ silent timespans produced by previous music settings
 \end{markdown}
 
 \subsection{Meter pruning}
+
+After 
 
 \subsection{Populating dependent timespans}
 
