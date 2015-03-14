@@ -51,6 +51,7 @@ What follows is a detailed analysis of the various algorithms and subroutines
 employed during Consort's specification and interpretation stages.
 
 \section{Specification}
+\label{sec:specification}
 
 \emph{Specification} describes how \emph{out-of-time materials} -- both
 concrete and programmatic -- should be deployed \emph{in-time} in a
@@ -70,6 +71,7 @@ notation than the full score, thus speeding up the cycle of specifying,
 interpreting and visualizing.
 
 \subsection{Segment-makers}
+\label{ssec:segment-makers}
 
 \begin{markdown}
 -   Permitted time signatures
@@ -97,6 +99,7 @@ bundles of materials which describe how phrases of music should be produced
 within a single voice. 
 
 \subsection{Music settings}
+\label{ssec:music-settings}
 
 \begin{markdown}
 -   What kind of music, laid out in what pattern, in which general
@@ -140,6 +143,7 @@ configured, templated from another material, or simply imported into the
 segment definition's namespace.
 
 \subsection{Music specifiers}
+\label{ssec:music-specifiers}
 
 \begin{markdown}
 -   A bundle of descriptors for what kind of music should fill a series of
@@ -166,6 +170,7 @@ segment definition's namespace.
 \end{markdown}
 
 \section{Interpretation}
+\label{sec:interpretation}
 
 At any point during specification, a segment-maker may be interpreted to
 produce an illustration. Score interpretation proceeds conceptually much like
@@ -188,9 +193,12 @@ indicators, spanners and various typographic overrides to the
 previously-constructed rhythmic skeleton.
 
 \section{Rhythmic interpretation}
+\label{sec:rhythmic-interpretation}
 
-Seen from a high level, the segment-maker creates a maquette by calling each of
-its music-settings in turn to populate a timespan inventory. It then resolves
+Seen from a high level, rhythmic interpretation proceeds from coarse- to
+fine-grained. The segment-maker creates a *maquette* -- a model of the locations
+of musical materials in the score -- by calling each of its
+music-settings in turn to populate a timespan inventory. It then resolves
 overlap conflicts within that inventory, fits meters against the resolved
 inventory's offsets, splits and prunes the contents of the inventory according
 to its fitted metrical structure, and finally converts the finished timespan
@@ -292,8 +300,6 @@ subroutines.
 \subsection{Resolving cascading overlap}
 \label{ssec:resolving-cascading-overlap}
 
-
-
 \subsection{Splitting, pruning \& consolidation}
 \label{ssec:splitting-pruning-and-consolidation}
 
@@ -381,6 +387,7 @@ a few notable differences.
 \end{markdown}
 
 \subsection{Populating silent timespans}
+\label{ssec:populating-silent-timespans}
 
 \begin{markdown}
 -   creates timespans, splits and inscribes in one pass
@@ -389,6 +396,7 @@ a few notable differences.
 \end{markdown}
 
 \subsection{Rewriting meters}
+\label{ssec:rewriting-meters}
 
 \begin{markdown}
 -   Meter timespans
@@ -398,26 +406,72 @@ a few notable differences.
 \end{markdown}
 
 \subsection{Populating the score}
+\label{ssec:populating-the-score}
+
+Iterates through the maquette and unpopulated score in parallel, extracting the
+inscribed music from each timespan in the maquette and inserting those phrases
+into the score in the appropriate voice.
+
+Additionally, a time-signature context is created and inserted at the top
+of the score if the score does not already contain such a context.
+
+The segment-maker populates this time-signature context with measures filled
+with typographic spacer-skips, to create the appearance of floating
+time-signature indications.
 
 \subsection{Collecting attack points}
+
+Many of the handlers used during non-rhythmic interpretation rely on
+information about each pitched logical tie in the score.
+
+Including the position of the logical tie's head in the score regardless of
+voice -- its first leaf, and effectively its attack point -- as well as that
+head's index both within the division it occurs within, as well as which
+division within its phrase it occurs within.
 
 \section{Non-rhythmic interpretation}
 
 \subsection{Score traversal}
 
-\begin{markdown}
--   By voice and phrase
--   By attack-point / logical tie
-\end{markdown}
+The various handlers which iterate through the score during non-rhythmic
+interpretation use one of two techniques.
+
+*Voice-wise* iterations iterates through all voice contexts in the score, then
+iterates through the top-level containers in those voices. These top-level
+containers are the same containers reference by each performed timespan's
+\texttt{music} property, and represent each phrase in the maquette.
+
+*Attack-point* iteration iterates through all logical ties in the score in
+*time order* according to their start offset in the score, regardless of their
+vertical position within the score. Logical ties with identical start offsets
+-- those appearing at simultaneities across voices -- are then sorted by their
+*score order*. This results in an iteration which moves first forward in time
+and the top-of-score to bottom.
 
 \subsection{Grace handlers}
 
-\begin{markdown}
--   Adds grace notes to the start of logical ties in a patterned way.
--   Processes the score time-wise by logical tie.
-\end{markdown}
+Grace handlers attach *grace containers* to logical ties within a score in a
+patterned way.
 
-\subsection{Pitch handlers}
+Abjad implements grace notes as normal leaves -- notes, chords and rests --
+within special components which act both as Abjad \texttt{Container} classes as
+well as attachable indicators. That is to say, grace notes must be placed
+within one of these grace containers which is then attached to another leaf in
+the score much like any other indicator, such as dynamics or articulations.
+
+Grace-handlers traverse the score by logical tie in time-order, by iterating
+over the previously cached ordered dictionary of attack-points, generated at
+the end of rhythmic interpretation.
+
+Discuss sub-optimal grace-note spacing in proportional notation?
+
+\subsection{Pitch-handlers}
+\label{ssec:pitch-handlers}
+
+Pitch-handlers manage the process of applying pitch material to logical ties
+within a score in a patterned way.
+
+Pitch material may be semantic or non-semantic.
 
 \begin{markdown}
 -   Applies pitches to logical ties in a patterned way.
@@ -453,7 +507,28 @@ a few notable differences.
     -   Grace expressions
 \end{markdown}
 
-\subsection{Attachment handlers}
+\subsection{Attachment-handlers}
+\label{ssec:attachment-handlers}
+
+Attachment-handlers manage the process of attaching indicators and spanners to
+selections of components within a score. They may also evaluate *component
+expressions* against selections of components, much like the logical tie
+expressions outlined in \autoref{ssec:pitch-handlers}.
+
+Attachment-handlers aggregate *attachment expressions* by associating those
+expressions with underscore-delimited string keys. This mechanism, nearly
+identical to that employed by music settings, allows attachment expressions --
+which may have an arbitrary number of such associations -- to be reconfigured
+through templating to add new attachment expressions or overwrite or nullify
+specific existing expressions.\footnote{The principle employed by both music
+settings and attachment handlers is crucial: named references beat positional
+references.}
+
+Attachment expressions pair a *component selector* -- as described in
+\autoref{ssec:selectors} -- and an iterable of attachments -- indicators and
+spanners -- or component expressions.
+
+Attachment-handlers provide various niceties for instantiation.
 
 \begin{markdown}
 -   Attaches things to the score.
@@ -461,29 +536,42 @@ a few notable differences.
     -   A bundle of a selector and an iterable of attachments or
         expressions.
     -   Reprise discussion of selectors.
-    -   Discuss expressions: DynamicExpression, etc.
 -   Processes the score by voice, then by *phrase*.
     -   Unlike the other handlers, attachment handlers require the entire
         phrase to operate on, and selectors should be designed with that in
         mind.
--   Demonstrate a gallery of selectors.
-    -   by duration
-    -   by leaves
-    -   by length
-    -   by logical tie
-    -   by counts (with negative counts too)
--   Expressive attachments
-    -   Idiomatic indicators
-    -   DynamicExpression
-    -   BowContactSpanner
-    -   StringContactSpanner
+\end{markdown}
+
+\subsection{Expressive attachments}
+\label{ssec:expressive-attachments}
+
+\begin{markdown}
+-   Idiomatic indicators
+-   DynamicExpression
+-   BowContactSpanner
+-   StringContactSpanner
+-   Indicators attached as annotations
+-   Spanners as a kind of clever post-processing
 \end{markdown}
 
 \subsection{Post-processing}
+\label{ssec:post-processing}
+
+Score configuration.
+
+Adding a time signature context, as described in
+\autoref{ssec:score-post-processing}.
+
+Consort also allows for inserting a LilyPond \texttt{\\include} statement at
+the top of any LilyPond file constructed through interpretation which points to
+a stylesheet located relative to a path defined on the segment-maker.
+
+By subclasses Consort's segment-maker, individual score packages can cause
+their own segment-makers to automatically locate the appropriate stylesheet
+file relative to the package where that segment-maker subclass was defined.
 
 \begin{markdown}
 -   Score configuration
-    -   Voice copying
     -   Time signature context
         -   Adding time signatures
         -   Rehearsal marks
@@ -491,6 +579,23 @@ a few notable differences.
 -   LilyPond configuration
     -   Style-sheets
 \end{markdown}
+
+\subsection{Voice copying}
+\label{ssec:voice-copying}
+
+For reasons related solely to how LilyPond handles various typographic
+constructs during typesetting, it may prove necessary to copy certain voices in
+the score, maintaining all rhythmic information therein, but changing their
+context name and filtering out various spanners and indicators so that only a
+specific subset of typographic commands remain.
+
+My score \emph{Invisible Cities (ii): Armilla} employs this voice-copying
+technique to create the desired typography.
+
+This is achieved by subclassing Consort's segment-maker.
+
+Voice-copying treats the output of interpretation as \enquote{semantic}, but
+not necessarily fully-ready for typesetting.
 
 \section{Persistence \& visualization}
 
@@ -535,7 +640,7 @@ music_setting = consort.MusicSetting(
 %%% ABJADBOOK END %%%
 
 \begin{comment}
-<abjad>
+D<abjad>
 score_template = consort.StringQuartetScoreTemplate()
 result = music_setting.resolve_music_specifiers(score_template)
 for voice_name, music_specifier_sequence in result.items():
