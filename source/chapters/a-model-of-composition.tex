@@ -452,6 +452,22 @@ voice -- its first leaf, and effectively its attack point -- as well as that
 head's index both within the division it occurs within, as well as which
 division within its phrase it occurs within.
 
+\begin{markdown}
+-   AttackPointSignature
+    -   division_index
+    -   phrase_index
+    -   logical_tie_index
+    -   phrase_position (scaled position within the phrase)
+    -   division_position (scaled position within the division)
+    -   segment_position (scaled position within the entire segment)
+    -   is_first_of_division
+    -   is_first_of_phrase
+-   Elucidate voice / phrase / division structure
+-   SegmentMaker.logical_tie_to_division()
+-   SegmentMaker.logical_tie_to_phrase()
+-   SegmentMaker.logical_tie_to_voice()
+\end{markdown}
+
 \section{Non-rhythmic interpretation}
 
 \subsection{Score traversal}
@@ -470,6 +486,55 @@ vertical position within the score. Logical ties with identical start offsets
 -- those appearing at simultaneities across voices -- are then sorted by their
 *score order*. This results in an iteration which moves first forward in time
 and the top-of-score to bottom.
+
+\begin{comment}
+<abjad>
+music_specifier = consort.MusicSpecifier(
+    attachment_handler=consort.AttachmentHandler(),
+    rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
+        extra_counts_per_division=(0, 1),
+        talea=rhythmmakertools.Talea([1, 2, 3, 1, 4], 16),
+        ),
+    )
+timespan_maker = consort.TaleaTimespanMaker(
+    initial_silence_talea=rhythmmakertools.Talea([0, 1], 4),
+    playing_groupings=(1, 2, 2, 1, 2),
+    playing_talea=rhythmmakertools.Talea([2, 3], 8),
+    silence_talea=rhythmmakertools.Talea([1, 2, 3, 4], 8),
+    )
+music_setting = consort.MusicSetting(
+    timespan_maker=timespan_maker,
+    v1=music_specifier,
+    v2=music_specifier,
+    v3=music_specifier,
+    )
+segment_maker = consort.SegmentMaker(
+    desired_duration_in_seconds=8,
+    discard_final_silence=True,
+    omit_stylesheets=True,
+    permitted_time_signatures=[(2, 4), (5, 16), (3, 4)],
+    score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
+        staff_count=3,
+        with_clefs=True,
+        ),
+    settings=[music_setting],
+    tempo=indicatortools.Tempo((1, 4), 72),
+    )
+illustration = segment_maker(annotate=True, verbose=False)
+show(illustration)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
+    logical_tie, attack_point_signature = key_value_pair 
+    index_markup = Markup(index, Up).tiny().box()
+    attach(index_markup, logical_tie.head)
+    
+show(illustration)
+</abjad>
+\end{comment}
 
 \subsection{Grace handlers}
 
