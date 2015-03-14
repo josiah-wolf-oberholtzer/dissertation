@@ -26,6 +26,15 @@ abjad/clean:
 		-y ./stylesheet.ily \
 		source/chapters/*.tex
 
+abjad/clean/composition:
+	abjad-book \
+		--clean \
+		-a ./assets \
+		-g ./abjadbook.cfg \
+		-l . \
+		-y ./stylesheet.ily \
+		source/chapters/a-model-of-composition.tex
+
 abjad/clean/time-tools:
 	abjad-book \
 		--clean \

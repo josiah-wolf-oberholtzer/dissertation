@@ -96,7 +96,38 @@ meters, and desired duration. Most importantly, segment-makers may be
 configured with any number of \emph{music settings}, which aggregate a
 timespan-maker, a target timespan and any number of \emph{music specifiers} --
 bundles of materials which describe how phrases of music should be produced
-within a single voice. 
+within a single voice.
+
+\begin{comment}
+<abjad>
+segment_maker = consort.SegmentMaker(
+    desired_duration_in_seconds=9,
+    omit_stylesheets=True,
+    permitted_time_signatures=[(3, 4)],
+    score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
+        staff_count=2,
+        with_clefs=True,
+        ),
+    tempo=indicatortools.Tempo((1, 4), 60),
+    )
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+show(segment_maker, verbose=False)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+faster_segment_maker = new(
+    segment_maker,
+    tempo=indicatortools.Tempo((1, 4), 20),
+    )
+show(faster_segment_maker, verbose=False)
+</abjad>
+\end{comment}
 
 \subsection{Music settings}
 \label{ssec:music-settings}
@@ -163,6 +194,95 @@ This helps model the situation of creating a pedal voice mirroring not simply a
 pianist's left- and right-hand events, but only those that actually depress
 keys, ignoring guero events or other off-the-key percussive techniques for
 which no pedaling is desired.
+
+\begin{comment}
+<abjad>
+unlabeled_music_specifier = consort.MusicSpecifier()
+labeled_music_specifier = consort.MusicSpecifier(labels=['labeled'])
+timespan_inventory = timespantools.TimespanInventory([
+    consort.PerformedTimespan(
+        layer=1,
+        start_offset=0,
+        stop_offset=4,
+        music_specifier=labeled_music_specifier,
+        voice_name='Voice 1',
+        ),
+    consort.PerformedTimespan(
+        layer=1,
+        start_offset=2,
+        stop_offset=7,
+        music_specifier=labeled_music_specifier,
+        voice_name='Voice 2',
+        ),
+    consort.PerformedTimespan(
+        layer=2,
+        start_offset=6,
+        stop_offset=8,
+        music_specifier=unlabeled_music_specifier,
+        voice_name='Voice 1',
+        ),
+    consort.PerformedTimespan(
+        layer=2,
+        start_offset=10,
+        stop_offset=(25, 2),
+        music_specifier=unlabeled_music_specifier,
+        voice_name='Voice 2',
+        ),
+    consort.PerformedTimespan(
+        layer=1,
+        start_offset=11,
+        stop_offset=14,
+        music_specifier=labeled_music_specifier,
+        voice_name='Voice 1',
+        ),
+    consort.PerformedTimespan(
+        layer=1,
+        start_offset=14,
+        stop_offset=16,
+        music_specifier=labeled_music_specifier,
+        voice_name='Voice 1',
+        ),
+    consort.PerformedTimespan(
+        layer=1,
+        start_offset=15,
+        stop_offset=16,
+        music_specifier=labeled_music_specifier,
+        voice_name='Voice 2',
+        ),
+    ])
+show(timespan_inventory, key='voice_name')
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+dependent_timespan_maker = consort.DependentTimespanMaker(
+    include_inner_starts=True,
+    voice_names=('Voice 1', 'Voice 2'),
+    )
+result = dependent_timespan_maker(
+    layer=3,
+    music_specifiers={'Voice 3': None},
+    timespan_inventory=timespan_inventory[:],
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+dependent_timespan_maker = new(
+    dependent_timespan_maker,
+    labels=['labeled'],
+    )
+result = dependent_timespan_maker(
+    layer=3,
+    music_specifiers={'Voice 3': None},
+    timespan_inventory=timespan_inventory[:],
+    )
+show(result, key='voice_name')
+</abjad>
+\end{comment}
 
 \begin{markdown}
 -   A bundle of descriptors for what kind of music should fill a series of
@@ -245,7 +365,7 @@ produce timespans according to their configured timespan-makers,
 segment's overall timespan to operate within -- and voice-associated music
 specifiers. Timespan identifiers may include timespans, inventories of
 timespans, or even expressions callable against the segment-makers own timespan
-which evaluate to an inventory of timespans. 
+which evaluate to an inventory of timespans.
 
 Music settings exist without any reference to a segment-maker, its desired
 duration -- and therefore desired timespan --, or its score template. In order
@@ -294,6 +414,64 @@ composite music specifiers -- as was the case in all of the examples in
 \autoref{sec:timespan-makers} -- they implicitly coerce those values into music
 specifier sequences.}
 
+\begin{comment}
+<abjad>
+music_setting = consort.MusicSetting(
+    timespan_identifier=consort.RatioPartsExpression(
+        parts=(0, 2),
+        ratio=(1, 3, 2),
+        ),
+    timespan_maker=consort.FloodedTimespanMaker(),
+    violin_2='A',
+    viola=('B', 'C', 'D'),
+    )
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+score_template = consort.StringQuartetScoreTemplate()
+result = music_setting.resolve_music_specifiers(score_template)
+for voice_name, music_specifier_sequence in result.items():
+    print('VOICE:', voice_name)
+    print(format(music_specifier_sequence))
+
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+segment_timespan = timespantools.Timespan(0, 8)
+show(segment_timespan)
+target_timespans = music_setting.resolve_target_timespans(segment_timespan)
+show(target_timespans, range_=(0, 8))
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+target_timespans = music_setting.resolve_target_timespans(
+    segment_timespan,
+    timespan_quantization=Duration(1, 16),
+    )
+show(target_timespans, range_=(0, 8))
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+music_setting = new(
+    music_setting,
+    timespan_identifier__mask_timespan=timespantools.Timespan(
+        start_offset=(1, 2),
+        stop_offset=7,
+        ),
+    )
+target_timespans = music_setting.resolve_target_timespans(segment_timespan)
+show(target_timespans, range_=(0, 8))
+</abjad>
+\end{comment}
+
 Once resolved, each music setting can call its timespan-maker to create
 timespans with the appropriate voice-name-to-music-specifier mapping, target
 timespans and layer, adding the contents of the resulting inventory to the
@@ -322,6 +500,135 @@ subroutines.
 
 \subsection{Resolving cascading overlap}
 \label{ssec:resolving-cascading-overlap}
+
+\begin{comment}
+<abjad>
+layer_1_timespan_maker = consort.FloodedTimespanMaker()
+layer_1_target_timespan = timespantools.Timespan(0, (19, 4))
+layer_1_music_specifiers = collections.OrderedDict([
+    ('Voice 2', None),
+    ('Voice 3', None),
+    ])
+layer_1 = layer_1_timespan_maker(
+    layer=1,
+    music_specifiers=layer_1_music_specifiers,
+    target_timespan=layer_1_target_timespan,
+    )
+show(layer_1, key='voice_name', range_=(0, (21, 4)))
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+layer_2_timespan_maker = consort.TaleaTimespanMaker(
+    initial_silence_talea=rhythmmakertools.Talea(
+        counts=(0, 1, 3),
+        denominator=8,
+        ),
+    playing_groupings=(1, 2),
+    playing_talea=rhythmmakertools.Talea(
+        counts=(1, 2, 3, 4),
+        denominator=4,
+        ),
+    silence_talea=rhythmmakertools.Talea(
+        counts=(5, 3, 1),
+        denominator=8,
+        ),
+    )
+layer_2_target_timespan = timespantools.Timespan((3, 4), (19, 4))
+layer_2_music_specifiers = collections.OrderedDict([
+    ('Voice 1', None),
+    ('Voice 2', None),
+    ('Voice 3', None),
+    ('Voice 4', None),
+    ])
+layer_2 = layer_2_timespan_maker(
+    layer=2,
+    music_specifiers=layer_2_music_specifiers,
+    target_timespan=layer_2_target_timespan,
+    )
+show(layer_2, key='voice_name', range_=(0, (21, 4)))
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+layer_3_timespan_maker = consort.TaleaTimespanMaker(
+    initial_silence_talea=rhythmmakertools.Talea(
+        counts=(0, 0, 0, 1),
+        denominator=8,
+        ),
+    padding=Duration(1, 4),
+    playing_talea=rhythmmakertools.Talea(
+        counts=(2, 3, 4),
+        denominator=8,
+        ),
+    silence_talea=rhythmmakertools.Talea(
+        counts=(6,),
+        denominator=4,
+        ),
+    synchronize_step=True,
+    )
+layer_3_target_timespan = timespantools.Timespan((6, 4), (21, 4))
+layer_3_music_specifiers = collections.OrderedDict([
+    ('Voice 1', None),
+    ('Voice 3', None),
+    ('Voice 4', None),
+    ])
+layer_3 = layer_3_timespan_maker(
+    layer=3,
+    music_specifiers=layer_3_music_specifiers,
+    target_timespan=layer_3_target_timespan,
+    )
+show(layer_3, key='voice_name', range_=(0, (21, 4)))
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+timespan_makers = (
+    layer_1_timespan_maker,
+    layer_2_timespan_maker,
+    layer_3_timespan_maker,
+    )
+music_specifiers = (
+    layer_1_music_specifiers,
+    layer_2_music_specifiers,
+    layer_3_music_specifiers,
+    )
+target_timespans = (
+    layer_1_target_timespan,
+    layer_2_target_timespan,
+    layer_3_target_timespan,
+    )
+triples = zip(timespan_makers, music_specifiers, target_timespans)
+timespan_inventory = timespantools.TimespanInventory()
+for layer, triple in enumerate(triples, 1):
+    timespan_inventory = triple[0](
+        layer=layer,
+        music_specifiers=triple[1],
+        target_timespan=triple[2],
+        timespan_inventory=timespan_inventory,
+        )
+
+show(timespan_inventory, key='voice_name', range_=(0, (21, 4)))
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+show(timespan_inventory, range_=(0, (21, 4)))
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+demultiplexed_timespans = consort.SegmentMaker.demultiplex_timespans(
+    timespan_inventory,
+    )
+show(demultiplexed_timespans, range_=(0, (21, 4)))
+</abjad>
+\end{comment}
 
 \subsection{Splitting, pruning \& consolidation}
 \label{ssec:splitting-pruning-and-consolidation}
@@ -366,6 +673,79 @@ consolidated timespan falls under that threshold, it is discarded.
     -   attaching the scoped music specifier
 -   Reconfigure the timespan with the created music, but without the divisions
 \end{markdown}
+
+\begin{comment}
+<abjad>
+parseable = r'''
+\new Voice {
+    {
+        {
+            \time 4/4
+            r4
+            c4
+        }
+        {
+            \times 2/3 {
+                c4
+                r8
+            }
+            r4
+        }
+        {
+            \time 4/4
+            r4
+            c4.
+            r8
+        }
+        {
+            r4
+            \break
+        }
+        {
+            \time 3/4
+            r4
+        }
+        {
+            c8
+            c4.
+        }
+        \times 2/3 {
+            \time 2/4
+            r4
+            c4
+            c4
+        }
+        {
+            \time 4/4
+            c4.
+            r8
+        }
+        {
+            r8
+            c4
+            r8
+        }
+    }
+}
+'''
+unconsolidated_staff = Staff(parseable, context_name='RhythmicStaff')
+consort.annotate(unconsolidated_staff)
+show(unconsolidated_staff)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+consolidated_staff = Staff(parseable, context_name='RhythmicStaff')
+for voice in consolidated_staff:
+    for phrase in voice:
+        phrase = consort.SegmentMaker.consolidate_rests(phrase)
+
+consort.annotate(consolidated_staff)
+staff_group = StaffGroup([unconsolidated_staff, consolidated_staff])
+show(staff_group)
+</abjad>
+\end{comment}
 
 \subsection{Meter pruning}
 \label{ssec:meter-pruning}
@@ -528,10 +908,10 @@ show(illustration)
 \begin{comment}
 <abjad>
 for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
-    logical_tie, attack_point_signature = key_value_pair 
+    logical_tie, attack_point_signature = key_value_pair
     index_markup = Markup(index, Up).tiny().box()
     attach(index_markup, logical_tie.head)
-    
+
 show(illustration)
 </abjad>
 \end{comment}
@@ -595,6 +975,250 @@ Pitch material may be semantic or non-semantic.
     -   Grace expressions
 \end{markdown}
 
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+segment_maker = consort.SegmentMaker(
+    desired_duration_in_seconds=9,
+    omit_stylesheets=True,
+    permitted_time_signatures=[(3, 4)],
+    score_template=templatetools.GroupedStavesScoreTemplate(
+        staff_count=2,
+        ),
+    tempo=indicatortools.Tempo((1, 4), 60),
+    )
+music_specifier = consort.MusicSpecifier(
+    rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
+        talea=rhythmmakertools.Talea([1], 16),
+        ),
+    )
+timespan_maker = consort.TaleaTimespanMaker(
+    initial_silence_talea=rhythmmakertools.Talea([0, 1], 4),
+    playing_talea=rhythmmakertools.Talea([1], 8),
+    playing_groupings=[3],
+    silence_talea=rhythmmakertools.Talea([1], 8),
+    )
+segment_maker.add_setting(
+    timespan_maker=timespan_maker,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+show(segment_maker, verbose=False)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+music_specifier = new(
+    music_specifier,
+    pitch_handler=consort.AbsolutePitchHandler(
+        pitch_specifier="c' d' e' f' g' a' b' c''",
+        ),
+    )
+music_setting = consort.MusicSetting(
+    timespan_maker=timespan_maker,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+segment_maker = new(segment_maker, settings=[music_setting])
+show(segment_maker, verbose=False)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+music_specifier = new(
+    music_specifier,
+    rhythm_maker__talea__counts=[1, 2, 3, 4],
+    )
+music_setting = consort.MusicSetting(
+    timespan_maker=timespan_maker,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+segment_maker = new(segment_maker, settings=[music_setting])
+show(segment_maker, verbose=False)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+other_music_specifier = consort.MusicSpecifier(
+    pitch_handler=consort.AbsolutePitchHandler(pitch_specifier='g fs e f'),
+    rhythm_maker=rhythmmakertools.EvenDivisionRhythmMaker(
+        denominators=[8],
+        extra_counts_per_division=(1,),
+        ),
+    )
+other_music_setting = consort.MusicSetting(
+    timespan_maker=consort.TaleaTimespanMaker(
+        initial_silence_talea=rhythmmakertools.Talea([1], 2),
+        silence_talea=rhythmmakertools.Talea([1], 2),
+        ),
+    v1=other_music_specifier,
+    v2=other_music_specifier,
+    )
+segment_maker = new(
+    segment_maker,
+    settings=[music_setting, other_music_setting],
+    )
+show(segment_maker, verbose=False)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+music_specifier = new(
+    music_specifier,
+    pitch_handler__pitch_specifier=consort.PitchSpecifier(
+        pitch_segments=(
+            "c' e' g'",
+            "fs' g' a'",
+            "b d'",
+            ),
+        ratio=(1, 2, 3),
+        ),
+    )
+music_setting = consort.MusicSetting(
+    timespan_maker=timespan_maker,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+segment_maker = new(segment_maker, settings=[music_setting])
+show(segment_maker, verbose=False)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+music_specifier = new(
+    music_specifier,
+    pitch_handler__pitch_operation_specifier=consort.PitchOperationSpecifier(
+        pitch_operations=(
+            pitchtools.PitchOperation((
+                pitchtools.Inversion(),
+                )),
+            None,
+            pitchtools.PitchOperation((
+                pitchtools.Rotation(-1),
+                pitchtools.Transposition(-1),
+                ))
+            ),
+        ratio=(1, 2, 1),
+        ),
+    )
+music_setting = consort.MusicSetting(
+    timespan_maker=timespan_maker,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+segment_maker = new(segment_maker, settings=[music_setting])
+show(segment_maker, verbose=False)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+music_specifier = new(
+    music_specifier,
+    pitch_handler__forbid_repetitions=True,
+    )
+music_setting = consort.MusicSetting(
+    timespan_maker=timespan_maker,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+segment_maker = new(segment_maker, settings=[music_setting])
+show(segment_maker, verbose=False)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+music_specifier = new(
+    music_specifier,
+    pitch_handler__logical_tie_expressions=(
+        consort.ChordExpression(chord_expr=(-2, 0, 2)),
+        consort.ChordExpression(chord_expr=(-7, 0, 7)),
+        None,
+        ),
+    )
+music_setting = consort.MusicSetting(
+    timespan_maker=timespan_maker,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+segment_maker = new(segment_maker, settings=[music_setting])
+show(segment_maker, verbose=False)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+segment_maker = new(
+    segment_maker,
+    settings=[music_setting, other_music_setting],
+    )
+show(segment_maker, verbose=False)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+music_specifier = consort.MusicSpecifier(
+    pitch_handler=consort.AbsolutePitchHandler(
+        pitch_application_rate='division',
+        pitch_specifier="c' d' e' f' g' a' b' c''",
+        ),
+    rhythm_maker=rhythmmakertools.EvenDivisionRhythmMaker(denominators=[16]),
+    )
+music_setting = consort.MusicSetting(
+    timespan_maker=timespan_maker,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+segment_maker = new(segment_maker, settings=[music_setting])
+lilypond_file = segment_maker(verbose=False)
+consort.annotate(lilypond_file.score)
+show(lilypond_file)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+music_specifier = new(
+    music_specifier,
+    pitch_handler__pitch_application_rate='phrase',
+    )
+music_setting = consort.MusicSetting(
+    timespan_maker=timespan_maker,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+segment_maker = new(segment_maker, settings=[music_setting])
+lilypond_file = segment_maker(verbose=False)
+consort.annotate(lilypond_file.score)
+show(lilypond_file)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+music_specifier = new(
+    music_specifier,
+    pitch_handler__deviations=(0, 0, '-m2', '+m2'),
+    )
+music_setting = consort.MusicSetting(
+    timespan_maker=timespan_maker,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+segment_maker = new(segment_maker, settings=[music_setting])
+lilypond_file = segment_maker(verbose=False)
+consort.annotate(lilypond_file.score)
+show(lilypond_file)
+</abjad>
+\end{comment}
+
 \subsection{Attachment-handlers}
 \label{ssec:attachment-handlers}
 
@@ -629,6 +1253,122 @@ Attachment-handlers provide various niceties for instantiation.
         phrase to operate on, and selectors should be designed with that in
         mind.
 \end{markdown}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+music_specifier = consort.MusicSpecifier(
+    attachment_handler=consort.AttachmentHandler(),
+    rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
+        extra_counts_per_division=(0, 1),
+        talea=rhythmmakertools.Talea([1, 2, 3, 1, 4], 16),
+        ),
+    )
+timespan_maker = consort.TaleaTimespanMaker(
+    initial_silence_talea=rhythmmakertools.Talea([0, 1], 4),
+    playing_groupings=(1, 2, 2),
+    playing_talea=rhythmmakertools.Talea([2, 3], 8),
+    silence_talea=rhythmmakertools.Talea([1, 2, 3, 4], 8),
+    )
+music_setting = consort.MusicSetting(
+    timespan_maker=timespan_maker,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+segment_maker = consort.SegmentMaker(
+    desired_duration_in_seconds=8,
+    discard_final_silence=True,
+    omit_stylesheets=True,
+    permitted_time_signatures=[(2, 4), (5, 16), (3, 4)],
+    score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
+        staff_count=2,
+        with_clefs=True,
+        ),
+    settings=[music_setting],
+    tempo=indicatortools.Tempo((1, 4), 72),
+    )
+show(segment_maker, verbose=False)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+music_specifier = new(
+    music_specifier,
+    attachment_handler__accents=consort.AttachmentExpression(
+        attachments=Articulation('accent'),
+        selector=selectortools.Selector().by_leaves()[0],
+        ),
+    )
+music_setting = new(
+    music_setting,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+segment_maker = new(segment_maker, settings=[music_setting])
+show(segment_maker,verbose=False)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+music_specifier = new(
+    music_specifier,
+    attachment_handler__tenuti=consort.AttachmentExpression(
+        attachments=Articulation('tenuto'),
+        selector=selectortools.Selector()
+            .by_leaves()[1:]
+            .by_logical_tie(pitched=True)[0],
+        ),
+    )
+music_setting = new(
+    music_setting,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+segment_maker = new(segment_maker, settings=[music_setting])
+show(segment_maker, verbose=False)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+music_specifier = new(
+    music_specifier,
+    attachment_handler__slurs=Slur()
+    )
+music_setting = new(
+    music_setting,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+segment_maker = new(segment_maker, settings=[music_setting])
+show(segment_maker, verbose=False)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+music_specifier = new(
+    music_specifier,
+    attachment_handler__dynamics=consort.DynamicExpression(['f', 'p'])
+    )
+music_setting = new(
+    music_setting,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+segment_maker = new(segment_maker, settings=[music_setting])
+show(segment_maker, verbose=False)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+lilypond_file = segment_maker(verbose=False)
+consort.annotate(lilypond_file.score)
+show(lilypond_file)
+</abjad>
+\end{comment}
 
 \subsection{Expressive attachments}
 \label{ssec:expressive-attachments}
@@ -693,1777 +1433,3 @@ viewing, or even serialized for other purposes. Composers study the results of
 interpretation, make changes to each segment's specification, and re-interpret
 as necessary, a large-scale re-enactment of interactive programming's pervasive
 \emph{read-eval-print} loop paradigm.
-
-\section{Examples}
-
-\begin{comment}
-<abjad>
-music_setting = consort.MusicSetting(
-    timespan_identifier=consort.RatioPartsExpression(
-        parts=(0, 2),
-        ratio=(1, 3, 2),
-        ),
-    timespan_maker=consort.FloodedTimespanMaker(),
-    violin_2='A',
-    viola=('B', 'C', 'D'),
-    )
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_setting = consort.MusicSetting(
-...     timespan_identifier=consort.RatioPartsExpression(
-...         parts=(0, 2),
-...         ratio=(1, 3, 2),
-...         ),
-...     timespan_maker=consort.FloodedTimespanMaker(),
-...     violin_2='A',
-...     viola=('B', 'C', 'D'),
-...     )
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-D<abjad>
-score_template = consort.StringQuartetScoreTemplate()
-result = music_setting.resolve_music_specifiers(score_template)
-for voice_name, music_specifier_sequence in result.items():
-    print('VOICE:', voice_name)
-    print(format(music_specifier_sequence))
-
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> score_template = consort.StringQuartetScoreTemplate()
->>> result = music_setting.resolve_music_specifiers(score_template)
->>> for voice_name, music_specifier_sequence in result.items():
-...     print('VOICE:', voice_name)
-...     print(format(music_specifier_sequence))
-...
-('VOICE:', 'Violin 2 Performer Group')
-consort.tools.MusicSpecifierSequence(
-    music_specifiers=datastructuretools.CyclicTuple(
-        ['A']
-        ),
-    )
-('VOICE:', 'Viola Performer Group')
-consort.tools.MusicSpecifierSequence(
-    music_specifiers=datastructuretools.CyclicTuple(
-        ['B', 'C', 'D']
-        ),
-    )
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-segment_timespan = timespantools.Timespan(0, 8)
-show(segment_timespan)
-target_timespans = music_setting.resolve_target_timespans(segment_timespan)
-show(target_timespans, range_=(0, 8))
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> segment_timespan = timespantools.Timespan(0, 8)
->>> show(segment_timespan)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a34adb1cfbda637e38739ddd84494442.pdf}
-\begin{lstlisting}
->>> target_timespans = music_setting.resolve_target_timespans(segment_timespan)
->>> show(target_timespans, range_=(0, 8))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-102acd696ed0eb0ce3e2668275527bd3.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-target_timespans = music_setting.resolve_target_timespans(
-    segment_timespan,
-    timespan_quantization=Duration(1, 16),
-    )
-show(target_timespans, range_=(0, 8))
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> target_timespans = music_setting.resolve_target_timespans(
-...     segment_timespan,
-...     timespan_quantization=Duration(1, 16),
-...     )
->>> show(target_timespans, range_=(0, 8))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fdd1e78affa1ee5ba3e3e9b80feee1b2.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-music_setting = new(
-    music_setting,
-    timespan_identifier__mask_timespan=timespantools.Timespan(
-        start_offset=(1, 2),
-        stop_offset=7,
-        ),
-    )
-target_timespans = music_setting.resolve_target_timespans(segment_timespan)
-show(target_timespans, range_=(0, 8))
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_setting = new(
-...     music_setting,
-...     timespan_identifier__mask_timespan=timespantools.Timespan(
-...         start_offset=(1, 2),
-...         stop_offset=7,
-...         ),
-...     )
->>> target_timespans = music_setting.resolve_target_timespans(segment_timespan)
->>> show(target_timespans, range_=(0, 8))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-435c344c6fe3e22cf86e856a0fe98c16.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\subsection{Segment-maker examples}
-
-\begin{comment}
-<abjad>
-segment_maker = consort.SegmentMaker(
-    desired_duration_in_seconds=9,
-    omit_stylesheets=True,
-    permitted_time_signatures=[(3, 4)],
-    score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
-        staff_count=2,
-        with_clefs=True,
-        ),
-    tempo=indicatortools.Tempo((1, 4), 60),
-    )
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> segment_maker = consort.SegmentMaker(
-...     desired_duration_in_seconds=9,
-...     omit_stylesheets=True,
-...     permitted_time_signatures=[(3, 4)],
-...     score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
-...         staff_count=2,
-...         with_clefs=True,
-...         ),
-...     tempo=indicatortools.Tempo((1, 4), 60),
-...     )
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-show(segment_maker, verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> show(segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5551103a6156a0c950aaf871d1206d96.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-faster_segment_maker = new(
-    segment_maker,
-    tempo=indicatortools.Tempo((1, 4), 20),
-    )
-show(faster_segment_maker, verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> faster_segment_maker = new(
-...     segment_maker,
-...     tempo=indicatortools.Tempo((1, 4), 20),
-...     )
->>> show(faster_segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-dac8ffa35eb4dae93ba418fbf1eaf390.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\subsection{Score template and abbreviation examples}
-
-\begin{comment}
-<abjad>
-import armilla
-armilla_score_template = armilla.makers.ArmillaScoreTemplate()
-armilla_score = armilla_score_template()
-print(format(armilla_score))
-for item in armilla_score_template.context_name_abbreviations.items():
-    abbreviation, context_name = item
-    print(abbreviation, context_name)
-
-for item in armilla_score_template.composite_context_pairs.items():
-    grouping_abbreviation, grouped_abbreviations = item
-    print(grouping_abbreviation, grouped_abbreviations)
-
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> import armilla
->>> armilla_score_template = armilla.makers.ArmillaScoreTemplate()
->>> armilla_score = armilla_score_template()
->>> print(format(armilla_score))
-\context Score = "Armilla Score" <<
-    \tag #'time
-    \context TimeSignatureContext = "TimeSignatureContext" {
-    }
-    \tag #'viola-1
-    \context StringPerformerGroup = "Viola 1 Performer Group" \with {
-        instrumentName = \markup {
-            \hcenter-in
-                #10
-                "Viola 1"
-            }
-        shortInstrumentName = \markup {
-            \hcenter-in
-                #10
-                "Va. 1"
-            }
-    } <<
-        \context BowingStaff = "Viola 1 Bowing Staff" {
-            \clef "percussion"
-            \context Voice = "Viola 1 Bowing Voice" {
-            }
-        }
-        \context FingeringStaff = "Viola 1 Fingering Staff" {
-            \clef "alto"
-            \context Voice = "Viola 1 Fingering Voice" {
-            }
-        }
-    >>
-    \tag #'viola-2
-    \context StringPerformerGroup = "Viola 2 Performer Group" \with {
-        instrumentName = \markup {
-            \hcenter-in
-                #10
-                "Viola 2"
-            }
-        shortInstrumentName = \markup {
-            \hcenter-in
-                #10
-                "Va. 2"
-            }
-    } <<
-        \context BowingStaff = "Viola 2 Bowing Staff" {
-            \clef "percussion"
-            \context Voice = "Viola 2 Bowing Voice" {
-            }
-        }
-        \context FingeringStaff = "Viola 2 Fingering Staff" {
-            \clef "alto"
-            \context Voice = "Viola 2 Fingering Voice" {
-            }
-        }
-    >>
->>
-\end{lstlisting}
-\begin{lstlisting}
->>> for item in armilla_score_template.context_name_abbreviations.items():
-...     abbreviation, context_name = item
-...     print(abbreviation, context_name)
-...
-('viola_1', 'Viola 1 Performer Group')
-('viola_1_rh', 'Viola 1 Bowing Voice')
-('viola_1_lh', 'Viola 1 Fingering Voice')
-('viola_2', 'Viola 2 Performer Group')
-('viola_2_rh', 'Viola 2 Bowing Voice')
-('viola_2_lh', 'Viola 2 Fingering Voice')
-\end{lstlisting}
-\begin{lstlisting}
->>> for item in armilla_score_template.composite_context_pairs.items():
-...     grouping_abbreviation, grouped_abbreviations = item
-...     print(grouping_abbreviation, grouped_abbreviations)
-...
-('viola_1', ('viola_1_rh', 'viola_1_lh'))
-('viola_2', ('viola_2_rh', 'viola_2_lh'))
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-armilla_score['Viola 1 Fingering Voice']
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> armilla_score['Viola 1 Fingering Voice']
-Voice()
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\subsection{Music specifier label examples}
-
-\begin{comment}
-<abjad>
-unlabeled_music_specifier = consort.MusicSpecifier()
-labeled_music_specifier = consort.MusicSpecifier(labels=['labeled'])
-timespan_inventory = timespantools.TimespanInventory([
-    consort.PerformedTimespan(
-        layer=1,
-        start_offset=0,
-        stop_offset=4,
-        music_specifier=labeled_music_specifier,
-        voice_name='Voice 1',
-        ),
-    consort.PerformedTimespan(
-        layer=1,
-        start_offset=2,
-        stop_offset=7,
-        music_specifier=labeled_music_specifier,
-        voice_name='Voice 2',
-        ),
-    consort.PerformedTimespan(
-        layer=2,
-        start_offset=6,
-        stop_offset=8,
-        music_specifier=unlabeled_music_specifier,
-        voice_name='Voice 1',
-        ),
-    consort.PerformedTimespan(
-        layer=2,
-        start_offset=10,
-        stop_offset=(25, 2),
-        music_specifier=unlabeled_music_specifier,
-        voice_name='Voice 2',
-        ),
-    consort.PerformedTimespan(
-        layer=1,
-        start_offset=11,
-        stop_offset=14,
-        music_specifier=labeled_music_specifier,
-        voice_name='Voice 1',
-        ),
-    consort.PerformedTimespan(
-        layer=1,
-        start_offset=14,
-        stop_offset=16,
-        music_specifier=labeled_music_specifier,
-        voice_name='Voice 1',
-        ),
-    consort.PerformedTimespan(
-        layer=1,
-        start_offset=15,
-        stop_offset=16,
-        music_specifier=labeled_music_specifier,
-        voice_name='Voice 2',
-        ),
-    ])
-show(timespan_inventory, key='voice_name')
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> unlabeled_music_specifier = consort.MusicSpecifier()
->>> labeled_music_specifier = consort.MusicSpecifier(labels=['labeled'])
->>> timespan_inventory = timespantools.TimespanInventory([
-...     consort.PerformedTimespan(
-...         layer=1,
-...         start_offset=0,
-...         stop_offset=4,
-...         music_specifier=labeled_music_specifier,
-...         voice_name='Voice 1',
-...         ),
-...     consort.PerformedTimespan(
-...         layer=1,
-...         start_offset=2,
-...         stop_offset=7,
-...         music_specifier=labeled_music_specifier,
-...         voice_name='Voice 2',
-...         ),
-...     consort.PerformedTimespan(
-...         layer=2,
-...         start_offset=6,
-...         stop_offset=8,
-...         music_specifier=unlabeled_music_specifier,
-...         voice_name='Voice 1',
-...         ),
-...     consort.PerformedTimespan(
-...         layer=2,
-...         start_offset=10,
-...         stop_offset=(25, 2),
-...         music_specifier=unlabeled_music_specifier,
-...         voice_name='Voice 2',
-...         ),
-...     consort.PerformedTimespan(
-...         layer=1,
-...         start_offset=11,
-...         stop_offset=14,
-...         music_specifier=labeled_music_specifier,
-...         voice_name='Voice 1',
-...         ),
-...     consort.PerformedTimespan(
-...         layer=1,
-...         start_offset=14,
-...         stop_offset=16,
-...         music_specifier=labeled_music_specifier,
-...         voice_name='Voice 1',
-...         ),
-...     consort.PerformedTimespan(
-...         layer=1,
-...         start_offset=15,
-...         stop_offset=16,
-...         music_specifier=labeled_music_specifier,
-...         voice_name='Voice 2',
-...         ),
-...     ])
->>> show(timespan_inventory, key='voice_name')
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8ff4b7fe83d5db8fb0d01627be42da4b.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-dependent_timespan_maker = consort.DependentTimespanMaker(
-    include_inner_starts=True,
-    voice_names=('Voice 1', 'Voice 2'),
-    )
-result = dependent_timespan_maker(
-    layer=3,
-    music_specifiers={'Voice 3': None},
-    timespan_inventory=timespan_inventory[:],
-    )
-show(result, key='voice_name')
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> dependent_timespan_maker = consort.DependentTimespanMaker(
-...     include_inner_starts=True,
-...     voice_names=('Voice 1', 'Voice 2'),
-...     )
->>> result = dependent_timespan_maker(
-...     layer=3,
-...     music_specifiers={'Voice 3': None},
-...     timespan_inventory=timespan_inventory[:],
-...     )
->>> show(result, key='voice_name')
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-cacf84e69a9aeb754e2908597bc776a2.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-dependent_timespan_maker = new(
-    dependent_timespan_maker,
-    labels=['labeled'],
-    )
-result = dependent_timespan_maker(
-    layer=3,
-    music_specifiers={'Voice 3': None},
-    timespan_inventory=timespan_inventory[:],
-    )
-show(result, key='voice_name')
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> dependent_timespan_maker = new(
-...     dependent_timespan_maker,
-...     labels=['labeled'],
-...     )
->>> result = dependent_timespan_maker(
-...     layer=3,
-...     music_specifiers={'Voice 3': None},
-...     timespan_inventory=timespan_inventory[:],
-...     )
->>> show(result, key='voice_name')
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-9382d23b443fa753fb33e78d0e7a805f.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\subsection{Timespan resolution examples}
-
-\begin{comment}
-<abjad>
-layer_1_timespan_maker = consort.FloodedTimespanMaker()
-layer_1_target_timespan = timespantools.Timespan(0, (19, 4))
-layer_1_music_specifiers = collections.OrderedDict([
-    ('Voice 2', None),
-    ('Voice 3', None),
-    ])
-layer_1 = layer_1_timespan_maker(
-    layer=1,
-    music_specifiers=layer_1_music_specifiers,
-    target_timespan=layer_1_target_timespan,
-    )
-show(layer_1, key='voice_name', range_=(0, (21, 4)))
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> layer_1_timespan_maker = consort.FloodedTimespanMaker()
->>> layer_1_target_timespan = timespantools.Timespan(0, (19, 4))
->>> layer_1_music_specifiers = collections.OrderedDict([
-...     ('Voice 2', None),
-...     ('Voice 3', None),
-...     ])
->>> layer_1 = layer_1_timespan_maker(
-...     layer=1,
-...     music_specifiers=layer_1_music_specifiers,
-...     target_timespan=layer_1_target_timespan,
-...     )
->>> show(layer_1, key='voice_name', range_=(0, (21, 4)))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f86c3ef83d7c5ffbef9e47999bb478a9.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-layer_2_timespan_maker = consort.TaleaTimespanMaker(
-    initial_silence_talea=rhythmmakertools.Talea(
-        counts=(0, 1, 3),
-        denominator=8,
-        ),
-    playing_groupings=(1, 2),
-    playing_talea=rhythmmakertools.Talea(
-        counts=(1, 2, 3, 4),
-        denominator=4,
-        ),
-    silence_talea=rhythmmakertools.Talea(
-        counts=(5, 3, 1),
-        denominator=8,
-        ),
-    )
-layer_2_target_timespan = timespantools.Timespan((3, 4), (19, 4))
-layer_2_music_specifiers = collections.OrderedDict([
-    ('Voice 1', None),
-    ('Voice 2', None),
-    ('Voice 3', None),
-    ('Voice 4', None),
-    ])
-layer_2 = layer_2_timespan_maker(
-    layer=2,
-    music_specifiers=layer_2_music_specifiers,
-    target_timespan=layer_2_target_timespan,
-    )
-show(layer_2, key='voice_name', range_=(0, (21, 4)))
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> layer_2_timespan_maker = consort.TaleaTimespanMaker(
-...     initial_silence_talea=rhythmmakertools.Talea(
-...         counts=(0, 1, 3),
-...         denominator=8,
-...         ),
-...     playing_groupings=(1, 2),
-...     playing_talea=rhythmmakertools.Talea(
-...         counts=(1, 2, 3, 4),
-...         denominator=4,
-...         ),
-...     silence_talea=rhythmmakertools.Talea(
-...         counts=(5, 3, 1),
-...         denominator=8,
-...         ),
-...     )
->>> layer_2_target_timespan = timespantools.Timespan((3, 4), (19, 4))
->>> layer_2_music_specifiers = collections.OrderedDict([
-...     ('Voice 1', None),
-...     ('Voice 2', None),
-...     ('Voice 3', None),
-...     ('Voice 4', None),
-...     ])
->>> layer_2 = layer_2_timespan_maker(
-...     layer=2,
-...     music_specifiers=layer_2_music_specifiers,
-...     target_timespan=layer_2_target_timespan,
-...     )
->>> show(layer_2, key='voice_name', range_=(0, (21, 4)))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-e49b088ae657fd66299d7b78da251b1a.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-layer_3_timespan_maker = consort.TaleaTimespanMaker(
-    initial_silence_talea=rhythmmakertools.Talea(
-        counts=(0, 0, 0, 1),
-        denominator=8,
-        ),
-    padding=Duration(1, 4),
-    playing_talea=rhythmmakertools.Talea(
-        counts=(2, 3, 4),
-        denominator=8,
-        ),
-    silence_talea=rhythmmakertools.Talea(
-        counts=(6,),
-        denominator=4,
-        ),
-    synchronize_step=True,
-    )
-layer_3_target_timespan = timespantools.Timespan((6, 4), (21, 4))
-layer_3_music_specifiers = collections.OrderedDict([
-    ('Voice 1', None),
-    ('Voice 3', None),
-    ('Voice 4', None),
-    ])
-layer_3 = layer_3_timespan_maker(
-    layer=3,
-    music_specifiers=layer_3_music_specifiers,
-    target_timespan=layer_3_target_timespan,
-    )
-show(layer_3, key='voice_name', range_=(0, (21, 4)))
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> layer_3_timespan_maker = consort.TaleaTimespanMaker(
-...     initial_silence_talea=rhythmmakertools.Talea(
-...         counts=(0, 0, 0, 1),
-...         denominator=8,
-...         ),
-...     padding=Duration(1, 4),
-...     playing_talea=rhythmmakertools.Talea(
-...         counts=(2, 3, 4),
-...         denominator=8,
-...         ),
-...     silence_talea=rhythmmakertools.Talea(
-...         counts=(6,),
-...         denominator=4,
-...         ),
-...     synchronize_step=True,
-...     )
->>> layer_3_target_timespan = timespantools.Timespan((6, 4), (21, 4))
->>> layer_3_music_specifiers = collections.OrderedDict([
-...     ('Voice 1', None),
-...     ('Voice 3', None),
-...     ('Voice 4', None),
-...     ])
->>> layer_3 = layer_3_timespan_maker(
-...     layer=3,
-...     music_specifiers=layer_3_music_specifiers,
-...     target_timespan=layer_3_target_timespan,
-...     )
->>> show(layer_3, key='voice_name', range_=(0, (21, 4)))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-941b5746ac1f0adcadef1f907d8ffb78.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-timespan_makers = (
-    layer_1_timespan_maker,
-    layer_2_timespan_maker,
-    layer_3_timespan_maker,
-    )
-music_specifiers = (
-    layer_1_music_specifiers,
-    layer_2_music_specifiers,
-    layer_3_music_specifiers,
-    )
-target_timespans = (
-    layer_1_target_timespan,
-    layer_2_target_timespan,
-    layer_3_target_timespan,
-    )
-triples = zip(timespan_makers, music_specifiers, target_timespans)
-timespan_inventory = timespantools.TimespanInventory()
-for layer, triple in enumerate(triples, 1):
-    timespan_inventory = triple[0](
-        layer=layer,
-        music_specifiers=triple[1],
-        target_timespan=triple[2],
-        timespan_inventory=timespan_inventory,
-        )
-
-show(timespan_inventory, key='voice_name', range_=(0, (21, 4)))
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> timespan_makers = (
-...     layer_1_timespan_maker,
-...     layer_2_timespan_maker,
-...     layer_3_timespan_maker,
-...     )
->>> music_specifiers = (
-...     layer_1_music_specifiers,
-...     layer_2_music_specifiers,
-...     layer_3_music_specifiers,
-...     )
->>> target_timespans = (
-...     layer_1_target_timespan,
-...     layer_2_target_timespan,
-...     layer_3_target_timespan,
-...     )
->>> triples = zip(timespan_makers, music_specifiers, target_timespans)
->>> timespan_inventory = timespantools.TimespanInventory()
->>> for layer, triple in enumerate(triples, 1):
-...     timespan_inventory = triple[0](
-...         layer=layer,
-...         music_specifiers=triple[1],
-...         target_timespan=triple[2],
-...         timespan_inventory=timespan_inventory,
-...         )
-...
->>> show(timespan_inventory, key='voice_name', range_=(0, (21, 4)))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-cd13e1c03522127ffbfba2623f59a7fb.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-show(timespan_inventory, range_=(0, (21, 4)))
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> show(timespan_inventory, range_=(0, (21, 4)))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-39bc7fc954dbcc692b2517c8195b821e.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-demultiplexed_timespans = consort.SegmentMaker.demultiplex_timespans(
-    timespan_inventory,
-    )
-show(demultiplexed_timespans, range_=(0, (21, 4)))
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> demultiplexed_timespans = consort.SegmentMaker.demultiplex_timespans(
-...     timespan_inventory,
-...     )
->>> show(demultiplexed_timespans, range_=(0, (21, 4)))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8d7921006d6bce021d9a284d12ed2e90.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\subsection{Rest consolidation examples}
-
-\begin{comment}
-<abjad>
-parseable = r'''
-\new Voice {
-    {
-        {
-            \time 4/4
-            r4
-            c4
-        }
-        {
-            \times 2/3 {
-                c4
-                r8
-            }
-            r4
-        }
-        {
-            \time 4/4
-            r4
-            c4.
-            r8
-        }
-        {
-            r4
-            \break
-        }
-        {
-            \time 3/4
-            r4
-        }
-        {
-            c8
-            c4.
-        }
-        \times 2/3 {
-            \time 2/4
-            r4
-            c4
-            c4
-        }
-        {
-            \time 4/4
-            c4.
-            r8
-        }
-        {
-            r8
-            c4
-            r8
-        }
-    }
-}
-'''
-unconsolidated_staff = Staff(parseable, context_name='RhythmicStaff')
-consort.annotate(unconsolidated_staff)
-show(unconsolidated_staff)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> parseable = r'''
-... \new Voice {
-...     {
-...         {
-...             \time 4/4
-...             r4
-...             c4
-...         }
-...         {
-...             \times 2/3 {
-...                 c4
-...                 r8
-...             }
-...             r4
-...         }
-...         {
-...             \time 4/4
-...             r4
-...             c4.
-...             r8
-...         }
-...         {
-...             r4
-...             \break
-...         }
-...         {
-...             \time 3/4
-...             r4
-...         }
-...         {
-...             c8
-...             c4.
-...         }
-...         \times 2/3 {
-...             \time 2/4
-...             r4
-...             c4
-...             c4
-...         }
-...         {
-...             \time 4/4
-...             c4.
-...             r8
-...         }
-...         {
-...             r8
-...             c4
-...             r8
-...         }
-...     }
-... }
-... '''
->>> unconsolidated_staff = Staff(parseable, context_name='RhythmicStaff')
->>> consort.annotate(unconsolidated_staff)
->>> show(unconsolidated_staff)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8a213398dc0a03a0c9fcf4af26637767.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>
-consolidated_staff = Staff(parseable, context_name='RhythmicStaff')
-for voice in consolidated_staff:
-    for phrase in voice:
-        phrase = consort.SegmentMaker.consolidate_rests(phrase)
-
-consort.annotate(consolidated_staff)
-staff_group = StaffGroup([unconsolidated_staff, consolidated_staff])
-show(staff_group)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> consolidated_staff = Staff(parseable, context_name='RhythmicStaff')
->>> for voice in consolidated_staff:
-...     for phrase in voice:
-...         phrase = consort.SegmentMaker.consolidate_rests(phrase)
-...
->>> consort.annotate(consolidated_staff)
->>> staff_group = StaffGroup([unconsolidated_staff, consolidated_staff])
->>> show(staff_group)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1ef1a4031465a364425aef4e059efda0.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\subsection{Pitch handler examples}
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-segment_maker = consort.SegmentMaker(
-    desired_duration_in_seconds=9,
-    omit_stylesheets=True,
-    permitted_time_signatures=[(3, 4)],
-    score_template=templatetools.GroupedStavesScoreTemplate(
-        staff_count=2,
-        ),
-    tempo=indicatortools.Tempo((1, 4), 60),
-    )
-music_specifier = consort.MusicSpecifier(
-    rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
-        talea=rhythmmakertools.Talea([1], 16),
-        ),
-    )
-timespan_maker = consort.TaleaTimespanMaker(
-    initial_silence_talea=rhythmmakertools.Talea([0, 1], 4),
-    playing_talea=rhythmmakertools.Talea([1], 8),
-    playing_groupings=[3],
-    silence_talea=rhythmmakertools.Talea([1], 8),
-    )
-segment_maker.add_setting(
-    timespan_maker=timespan_maker,
-    v1=music_specifier,
-    v2=music_specifier,
-    )
-show(segment_maker, verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> segment_maker = consort.SegmentMaker(
-...     desired_duration_in_seconds=9,
-...     omit_stylesheets=True,
-...     permitted_time_signatures=[(3, 4)],
-...     score_template=templatetools.GroupedStavesScoreTemplate(
-...         staff_count=2,
-...         ),
-...     tempo=indicatortools.Tempo((1, 4), 60),
-...     )
->>> music_specifier = consort.MusicSpecifier(
-...     rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
-...         talea=rhythmmakertools.Talea([1], 16),
-...         ),
-...     )
->>> timespan_maker = consort.TaleaTimespanMaker(
-...     initial_silence_talea=rhythmmakertools.Talea([0, 1], 4),
-...     playing_talea=rhythmmakertools.Talea([1], 8),
-...     playing_groupings=[3],
-...     silence_talea=rhythmmakertools.Talea([1], 8),
-...     )
->>> segment_maker.add_setting(
-...     timespan_maker=timespan_maker,
-...     v1=music_specifier,
-...     v2=music_specifier,
-...     )
->>> show(segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-394f358f60132ecf989d89a8a9e62012.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-music_specifier = new(
-    music_specifier,
-    pitch_handler=consort.AbsolutePitchHandler(
-        pitch_specifier="c' d' e' f' g' a' b' c''",
-        ),
-    )
-music_setting = consort.MusicSetting(
-    timespan_maker=timespan_maker,
-    v1=music_specifier,
-    v2=music_specifier,
-    )
-segment_maker = new(segment_maker, settings=[music_setting])
-show(segment_maker, verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_specifier = new(
-...     music_specifier,
-...     pitch_handler=consort.AbsolutePitchHandler(
-...         pitch_specifier="c' d' e' f' g' a' b' c''",
-...         ),
-...     )
->>> music_setting = consort.MusicSetting(
-...     timespan_maker=timespan_maker,
-...     v1=music_specifier,
-...     v2=music_specifier,
-...     )
->>> segment_maker = new(segment_maker, settings=[music_setting])
->>> show(segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-104b2b0b061ac0a12d87191eadfae379.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-music_specifier = new(
-    music_specifier,
-    rhythm_maker__talea__counts=[1, 2, 3, 4],
-    )
-music_setting = consort.MusicSetting(
-    timespan_maker=timespan_maker,
-    v1=music_specifier,
-    v2=music_specifier,
-    )
-segment_maker = new(segment_maker, settings=[music_setting])
-show(segment_maker, verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_specifier = new(
-...     music_specifier,
-...     rhythm_maker__talea__counts=[1, 2, 3, 4],
-...     )
->>> music_setting = consort.MusicSetting(
-...     timespan_maker=timespan_maker,
-...     v1=music_specifier,
-...     v2=music_specifier,
-...     )
->>> segment_maker = new(segment_maker, settings=[music_setting])
->>> show(segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1548051ace14e831b1685f04ffc9bf04.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-other_music_specifier = consort.MusicSpecifier(
-    pitch_handler=consort.AbsolutePitchHandler(pitch_specifier='g fs e f'),
-    rhythm_maker=rhythmmakertools.EvenDivisionRhythmMaker(
-        denominators=[8],
-        extra_counts_per_division=(1,),
-        ),
-    )
-other_music_setting = consort.MusicSetting(
-    timespan_maker=consort.TaleaTimespanMaker(
-        initial_silence_talea=rhythmmakertools.Talea([1], 2),
-        silence_talea=rhythmmakertools.Talea([1], 2),
-        ),
-    v1=other_music_specifier,
-    v2=other_music_specifier,
-    )
-segment_maker = new(
-    segment_maker,
-    settings=[music_setting, other_music_setting],
-    )
-show(segment_maker, verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> other_music_specifier = consort.MusicSpecifier(
-...     pitch_handler=consort.AbsolutePitchHandler(pitch_specifier='g fs e f'),
-...     rhythm_maker=rhythmmakertools.EvenDivisionRhythmMaker(
-...         denominators=[8],
-...         extra_counts_per_division=(1,),
-...         ),
-...     )
->>> other_music_setting = consort.MusicSetting(
-...     timespan_maker=consort.TaleaTimespanMaker(
-...         initial_silence_talea=rhythmmakertools.Talea([1], 2),
-...         silence_talea=rhythmmakertools.Talea([1], 2),
-...         ),
-...     v1=other_music_specifier,
-...     v2=other_music_specifier,
-...     )
->>> segment_maker = new(
-...     segment_maker,
-...     settings=[music_setting, other_music_setting],
-...     )
->>> show(segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-e6f73fdc68fe0c974a8ca8492d683bdb.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-music_specifier = new(
-    music_specifier,
-    pitch_handler__pitch_specifier=consort.PitchSpecifier(
-        pitch_segments=(
-            "c' e' g'",
-            "fs' g' a'",
-            "b d'",
-            ),
-        ratio=(1, 2, 3),
-        ),
-    )
-music_setting = consort.MusicSetting(
-    timespan_maker=timespan_maker,
-    v1=music_specifier,
-    v2=music_specifier,
-    )
-segment_maker = new(segment_maker, settings=[music_setting])
-show(segment_maker, verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_specifier = new(
-...     music_specifier,
-...     pitch_handler__pitch_specifier=consort.PitchSpecifier(
-...         pitch_segments=(
-...             "c' e' g'",
-...             "fs' g' a'",
-...             "b d'",
-...             ),
-...         ratio=(1, 2, 3),
-...         ),
-...     )
->>> music_setting = consort.MusicSetting(
-...     timespan_maker=timespan_maker,
-...     v1=music_specifier,
-...     v2=music_specifier,
-...     )
->>> segment_maker = new(segment_maker, settings=[music_setting])
->>> show(segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f863612768a505f3f1a27901d8908c01.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-music_specifier = new(
-    music_specifier,
-    pitch_handler__pitch_operation_specifier=consort.PitchOperationSpecifier(
-        pitch_operations=(
-            pitchtools.PitchOperation((
-                pitchtools.Inversion(),
-                )),
-            None,
-            pitchtools.PitchOperation((
-                pitchtools.Rotation(-1),
-                pitchtools.Transposition(-1),
-                ))
-            ),
-        ratio=(1, 2, 1),
-        ),
-    )
-music_setting = consort.MusicSetting(
-    timespan_maker=timespan_maker,
-    v1=music_specifier,
-    v2=music_specifier,
-    )
-segment_maker = new(segment_maker, settings=[music_setting])
-show(segment_maker, verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_specifier = new(
-...     music_specifier,
-...     pitch_handler__pitch_operation_specifier=consort.PitchOperationSpecifier(
-...         pitch_operations=(
-...             pitchtools.PitchOperation((
-...                 pitchtools.Inversion(),
-...                 )),
-...             None,
-...             pitchtools.PitchOperation((
-...                 pitchtools.Rotation(-1),
-...                 pitchtools.Transposition(-1),
-...                 ))
-...             ),
-...         ratio=(1, 2, 1),
-...         ),
-...     )
->>> music_setting = consort.MusicSetting(
-...     timespan_maker=timespan_maker,
-...     v1=music_specifier,
-...     v2=music_specifier,
-...     )
->>> segment_maker = new(segment_maker, settings=[music_setting])
->>> show(segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8353cb721ae26e66270945a62cbb8a67.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-music_specifier = new(
-    music_specifier,
-    pitch_handler__forbid_repetitions=True,
-    )
-music_setting = consort.MusicSetting(
-    timespan_maker=timespan_maker,
-    v1=music_specifier,
-    v2=music_specifier,
-    )
-segment_maker = new(segment_maker, settings=[music_setting])
-show(segment_maker, verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_specifier = new(
-...     music_specifier,
-...     pitch_handler__forbid_repetitions=True,
-...     )
->>> music_setting = consort.MusicSetting(
-...     timespan_maker=timespan_maker,
-...     v1=music_specifier,
-...     v2=music_specifier,
-...     )
->>> segment_maker = new(segment_maker, settings=[music_setting])
->>> show(segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-e8337085639c633444a1e65214aa5493.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-music_specifier = new(
-    music_specifier,
-    pitch_handler__logical_tie_expressions=(
-        consort.ChordExpression(chord_expr=(-2, 0, 2)),
-        consort.ChordExpression(chord_expr=(-7, 0, 7)),
-        None,
-        ),
-    )
-music_setting = consort.MusicSetting(
-    timespan_maker=timespan_maker,
-    v1=music_specifier,
-    v2=music_specifier,
-    )
-segment_maker = new(segment_maker, settings=[music_setting])
-show(segment_maker, verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_specifier = new(
-...     music_specifier,
-...     pitch_handler__logical_tie_expressions=(
-...         consort.ChordExpression(chord_expr=(-2, 0, 2)),
-...         consort.ChordExpression(chord_expr=(-7, 0, 7)),
-...         None,
-...         ),
-...     )
->>> music_setting = consort.MusicSetting(
-...     timespan_maker=timespan_maker,
-...     v1=music_specifier,
-...     v2=music_specifier,
-...     )
->>> segment_maker = new(segment_maker, settings=[music_setting])
->>> show(segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1faec952a7b45f54cee2ed62c44d50bc.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-segment_maker = new(
-    segment_maker,
-    settings=[music_setting, other_music_setting],
-    )
-show(segment_maker, verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> segment_maker = new(
-...     segment_maker,
-...     settings=[music_setting, other_music_setting],
-...     )
->>> show(segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-9b48c7c7d8ec2ca4e86b9da611fdef17.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-music_specifier = consort.MusicSpecifier(
-    pitch_handler=consort.AbsolutePitchHandler(
-        pitch_application_rate='division',
-        pitch_specifier="c' d' e' f' g' a' b' c''",
-        ),
-    rhythm_maker=rhythmmakertools.EvenDivisionRhythmMaker(denominators=[16]),
-    )
-music_setting = consort.MusicSetting(
-    timespan_maker=timespan_maker,
-    v1=music_specifier,
-    v2=music_specifier,
-    )
-segment_maker = new(segment_maker, settings=[music_setting])
-lilypond_file = segment_maker(verbose=False)
-consort.annotate(lilypond_file.score)
-show(lilypond_file)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_specifier = consort.MusicSpecifier(
-...     pitch_handler=consort.AbsolutePitchHandler(
-...         pitch_application_rate='division',
-...         pitch_specifier="c' d' e' f' g' a' b' c''",
-...         ),
-...     rhythm_maker=rhythmmakertools.EvenDivisionRhythmMaker(denominators=[16]),
-...     )
->>> music_setting = consort.MusicSetting(
-...     timespan_maker=timespan_maker,
-...     v1=music_specifier,
-...     v2=music_specifier,
-...     )
->>> segment_maker = new(segment_maker, settings=[music_setting])
->>> lilypond_file = segment_maker(verbose=False)
->>> consort.annotate(lilypond_file.score)
->>> show(lilypond_file)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-76acdc0bda9feecdd70997204aa7c9c8.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-music_specifier = new(
-    music_specifier,
-    pitch_handler__pitch_application_rate='phrase',
-    )
-music_setting = consort.MusicSetting(
-    timespan_maker=timespan_maker,
-    v1=music_specifier,
-    v2=music_specifier,
-    )
-segment_maker = new(segment_maker, settings=[music_setting])
-lilypond_file = segment_maker(verbose=False)
-consort.annotate(lilypond_file.score)
-show(lilypond_file)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_specifier = new(
-...     music_specifier,
-...     pitch_handler__pitch_application_rate='phrase',
-...     )
->>> music_setting = consort.MusicSetting(
-...     timespan_maker=timespan_maker,
-...     v1=music_specifier,
-...     v2=music_specifier,
-...     )
->>> segment_maker = new(segment_maker, settings=[music_setting])
->>> lilypond_file = segment_maker(verbose=False)
->>> consort.annotate(lilypond_file.score)
->>> show(lilypond_file)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-89244abdb768aa23fa5a7425fab9e539.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-music_specifier = new(
-    music_specifier,
-    pitch_handler__deviations=(0, 0, '-m2', '+m2'),
-    )
-music_setting = consort.MusicSetting(
-    timespan_maker=timespan_maker,
-    v1=music_specifier,
-    v2=music_specifier,
-    )
-segment_maker = new(segment_maker, settings=[music_setting])
-lilypond_file = segment_maker(verbose=False)
-consort.annotate(lilypond_file.score)
-show(lilypond_file)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_specifier = new(
-...     music_specifier,
-...     pitch_handler__deviations=(0, 0, '-m2', '+m2'),
-...     )
->>> music_setting = consort.MusicSetting(
-...     timespan_maker=timespan_maker,
-...     v1=music_specifier,
-...     v2=music_specifier,
-...     )
->>> segment_maker = new(segment_maker, settings=[music_setting])
->>> lilypond_file = segment_maker(verbose=False)
->>> consort.annotate(lilypond_file.score)
->>> show(lilypond_file)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ff0b1c46ddbd29c5a690fe7c182da0aa.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\subsection{Attachment handler examples}
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-music_specifier = consort.MusicSpecifier(
-    attachment_handler=consort.AttachmentHandler(),
-    rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
-        extra_counts_per_division=(0, 1),
-        talea=rhythmmakertools.Talea([1, 2, 3, 1, 4], 16),
-        ),
-    )
-timespan_maker = consort.TaleaTimespanMaker(
-    initial_silence_talea=rhythmmakertools.Talea([0, 1], 4),
-    playing_groupings=(1, 2, 2),
-    playing_talea=rhythmmakertools.Talea([2, 3], 8),
-    silence_talea=rhythmmakertools.Talea([1, 2, 3, 4], 8),
-    )
-music_setting = consort.MusicSetting(
-    timespan_maker=timespan_maker,
-    v1=music_specifier,
-    v2=music_specifier,
-    )
-segment_maker = consort.SegmentMaker(
-    desired_duration_in_seconds=8,
-    discard_final_silence=True,
-    omit_stylesheets=True,
-    permitted_time_signatures=[(2, 4), (5, 16), (3, 4)],
-    score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
-        staff_count=2,
-        with_clefs=True,
-        ),
-    settings=[music_setting],
-    tempo=indicatortools.Tempo((1, 4), 72),
-    )
-show(segment_maker, verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_specifier = consort.MusicSpecifier(
-...     attachment_handler=consort.AttachmentHandler(),
-...     rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
-...         extra_counts_per_division=(0, 1),
-...         talea=rhythmmakertools.Talea([1, 2, 3, 1, 4], 16),
-...         ),
-...     )
->>> timespan_maker = consort.TaleaTimespanMaker(
-...     initial_silence_talea=rhythmmakertools.Talea([0, 1], 4),
-...     playing_groupings=(1, 2, 2),
-...     playing_talea=rhythmmakertools.Talea([2, 3], 8),
-...     silence_talea=rhythmmakertools.Talea([1, 2, 3, 4], 8),
-...     )
->>> music_setting = consort.MusicSetting(
-...     timespan_maker=timespan_maker,
-...     v1=music_specifier,
-...     v2=music_specifier,
-...     )
->>> segment_maker = consort.SegmentMaker(
-...     desired_duration_in_seconds=8,
-...     discard_final_silence=True,
-...     omit_stylesheets=True,
-...     permitted_time_signatures=[(2, 4), (5, 16), (3, 4)],
-...     score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
-...         staff_count=2,
-...         with_clefs=True,
-...         ),
-...     settings=[music_setting],
-...     tempo=indicatortools.Tempo((1, 4), 72),
-...     )
->>> show(segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-31ad7eaab600ca94fc940e6c050a8651.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-music_specifier = new(
-    music_specifier,
-    attachment_handler__accents=consort.AttachmentExpression(
-        attachments=Articulation('accent'),
-        selector=selectortools.Selector().by_leaves()[0],
-        ),
-    )
-music_setting = new(
-    music_setting,
-    v1=music_specifier,
-    v2=music_specifier,
-    )
-segment_maker = new(segment_maker, settings=[music_setting])
-show(segment_maker,verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_specifier = new(
-...     music_specifier,
-...     attachment_handler__accents=consort.AttachmentExpression(
-...         attachments=Articulation('accent'),
-...         selector=selectortools.Selector().by_leaves()[0],
-...         ),
-...     )
->>> music_setting = new(
-...     music_setting,
-...     v1=music_specifier,
-...     v2=music_specifier,
-...     )
->>> segment_maker = new(segment_maker, settings=[music_setting])
->>> show(segment_maker,verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5845a137b0839d77edd44e425c040cdb.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-music_specifier = new(
-    music_specifier,
-    attachment_handler__tenuti=consort.AttachmentExpression(
-        attachments=Articulation('tenuto'),
-        selector=selectortools.Selector()
-            .by_leaves()[1:]
-            .by_logical_tie(pitched=True)[0],
-        ),
-    )
-music_setting = new(
-    music_setting,
-    v1=music_specifier,
-    v2=music_specifier,
-    )
-segment_maker = new(segment_maker, settings=[music_setting])
-show(segment_maker, verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_specifier = new(
-...     music_specifier,
-...     attachment_handler__tenuti=consort.AttachmentExpression(
-...         attachments=Articulation('tenuto'),
-...         selector=selectortools.Selector()
-...             .by_leaves()[1:]
-...             .by_logical_tie(pitched=True)[0],
-...         ),
-...     )
->>> music_setting = new(
-...     music_setting,
-...     v1=music_specifier,
-...     v2=music_specifier,
-...     )
->>> segment_maker = new(segment_maker, settings=[music_setting])
->>> show(segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-254b71b1dd161525523b2dfc96ee5b18.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-music_specifier = new(
-    music_specifier,
-    attachment_handler__slurs=Slur()
-    )
-music_setting = new(
-    music_setting,
-    v1=music_specifier,
-    v2=music_specifier,
-    )
-segment_maker = new(segment_maker, settings=[music_setting])
-show(segment_maker, verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_specifier = new(
-...     music_specifier,
-...     attachment_handler__slurs=Slur()
-...     )
->>> music_setting = new(
-...     music_setting,
-...     v1=music_specifier,
-...     v2=music_specifier,
-...     )
->>> segment_maker = new(segment_maker, settings=[music_setting])
->>> show(segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f0e62c688147028c121f9b53bb698a65.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-music_specifier = new(
-    music_specifier,
-    attachment_handler__dynamics=consort.DynamicExpression(['f', 'p'])
-    )
-music_setting = new(
-    music_setting,
-    v1=music_specifier,
-    v2=music_specifier,
-    )
-segment_maker = new(segment_maker, settings=[music_setting])
-show(segment_maker, verbose=False)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> music_specifier = new(
-...     music_specifier,
-...     attachment_handler__dynamics=consort.DynamicExpression(['f', 'p'])
-...     )
->>> music_setting = new(
-...     music_setting,
-...     v1=music_specifier,
-...     v2=music_specifier,
-...     )
->>> segment_maker = new(segment_maker, settings=[music_setting])
->>> show(segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5134d656fed6cee151678103491f4f07.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-lilypond_file = segment_maker(verbose=False)
-consort.annotate(lilypond_file.score)
-show(lilypond_file)
-</abjad>
-\end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> lilypond_file = segment_maker(verbose=False)
->>> consort.annotate(lilypond_file.score)
->>> show(lilypond_file)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-6e9d587e5ee37ad6583f5197bed09814.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
