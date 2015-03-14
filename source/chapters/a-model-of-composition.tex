@@ -145,6 +145,25 @@ segment definition's namespace.
 \subsection{Music specifiers}
 \label{ssec:music-specifiers}
 
+Music specifiers bundle all of the information necessary for a segment-maker to
+generate notation for a sequence of divisions, grouped as a phrase.
+
+a rhythm-maker, grace-handler, pitch-handler and attachment-handler, as well as
+a variety of other properties.
+
+As demonstrated in \autoref{ssec:dependent-timespan-makers}, dependent
+timespan-makers can be configured to create timespans according to the
+disposition of performed timespans associated with specific voices.
+
+Dependent timespan-makers can also be configured to select depended-upon
+timespans based on the \texttt{label} property of those performed timespans'
+music specifiers.
+
+This helps model the situation of creating a pedal voice mirroring not simply a
+pianist's left- and right-hand events, but only those that actually depress
+keys, ignoring guero events or other off-the-key percussive techniques for
+which no pedaling is desired.
+
 \begin{markdown}
 -   A bundle of descriptors for what kind of music should fill a series of
     1 or more timespans.
@@ -168,6 +187,10 @@ segment definition's namespace.
 -   seed
 -   Composite music specifiers
 \end{markdown}
+
+A music specifier's \texttt{seed} property
+
+A music specifier's \texttt{minimum\_phrase\_duration} property
 
 \section{Interpretation}
 \label{sec:interpretation}
