@@ -110,7 +110,7 @@ timespan = timespantools.Timespan(
 %%% ABJADBOOK END %%%
 
 \noindent Like many objects in Abjad, timespan can be formatted for
-human-readable textual inspection, or displayed as a graphic illustration.
+human-readable textual inspection, or displayed as a graphic illustration:
 
 \begin{comment}
 <abjad>
@@ -141,7 +141,7 @@ properties for inspecting timespans, comparing them to other timespans or
 offsets, and for operating on timespans to generate new timespans. Once
 instantiated, a timespan can be examined for its start offset, stop offset
 and duration. Because of the \texttt{Timespan} class' immutability, these
-properties are read-only and therefore can only be accessed, but not changed.
+properties are read-only and therefore can only be accessed, but not changed:
 
 \begin{comment}
 <abjad>
@@ -172,7 +172,7 @@ Duration(5, 4)
 \noindent A timespan's start offset must be equal to or less than its stop
 offset. Timespans with identical start and stop offsets have a duration of 0
 and effectively model a single time-point. Such timespans are considered not
-\enquote{well-formed}.
+\enquote{well-formed}:
 
 \begin{comment}
 <abjad>
@@ -202,7 +202,7 @@ the \texttt{Timespan} class' initializer are optional, and default to Abjad's
 built-in rational constants \texttt{NegativeInfinity} and \texttt{Infinity}
 respectively. A timespan created without specifying either a start or stop
 offset effectively describes the timespan which encompasses all possible
-offsets in time.
+offsets in time:
 
 \begin{comment}
 <abjad>
@@ -234,7 +234,7 @@ Infinity
 
 \noindent By specifying only a start or stop offset, timespans can also be
 created which encompass the infinite set of offsets up until some stop offset,
-or the infinite set of offsets starting at and following some start-offset.
+or the infinite set of offsets starting at and following some start-offset:
 
 \begin{comment}
 <abjad>
@@ -259,7 +259,7 @@ Timespan(start_offset=Offset(0, 1), stop_offset=Infinity)
 
 \noindent \texttt{Timespan} objects also partake in Abjad's templating regime.
 New timespans can be created from old ones through the use of the top-level
-\texttt{new()} function.
+\texttt{new()} function:
 
 \begin{comment}
 <abjad>
@@ -293,7 +293,7 @@ support new behaviors and configurations. As an example, Abjad's
 \texttt{timespantools} library provides an \texttt{AnnotatedTimespan} class
 which subclasses \texttt{Timespan} but adds a third read-only
 \texttt{annotation} property, which can be configured with any arbitrary
-object.
+object:
 
 \begin{comment}
 <abjad>
@@ -328,7 +328,7 @@ to store increasing amounts of information during the compositional process.
 Additionally, Abjad's top-level \texttt{new()} function can be used to template
 new annotated timespans from old ones, replacing one annotation with another
 while preserving temporal information. If that same annotation object supports
-templating, nested reconfiguration can be performed.
+templating, nested reconfiguration can be performed:
 
 \begin{comment}
 <abjad>
@@ -437,7 +437,7 @@ functions contained in \texttt{timespantools} are
 \texttt{timespan\_2\_stops\_when\_timespan\_1\_stops()} and
 \texttt{timespan\_2\_trisects\_timespan\_1()}. }. Time relations may be
 configured with or without reference to any timespans or offsets at all,
-allowing for the possibility of modeling a purely abstract time relationship.
+allowing for the possibility of modeling a purely abstract time relationship:
 
 \begin{comment}
 <abjad>
@@ -488,7 +488,7 @@ and $[c, d)$ can be described more pithily by the following predicate:
 object acts as a kind of \enquote{frozen} predicate. Calling the time
 relation as though it was a function\footnote{Any class in Python can be made
 treatable as a function by implementing a \texttt{\_\_call\_\_()} method.} on
-another timespan or offset returns a truth value.
+another timespan or offset returns a truth value:
 
 \begin{comment}
 <abjad>
@@ -521,7 +521,7 @@ False
 -- to one of the various time relation factory functions found in
 \texttt{timespantools} will configure and then immediately evaluate the
 generated time relation object, allowing the factory function itself to behave
-as a predicate.
+as a predicate:
 
 \begin{comment}
 <abjad>
@@ -579,7 +579,7 @@ timespan_3 = timespantools.Timespan(10, 20)
 further in \autoref{sec:timespan-inventories}, the three timespans can be
 illustrated. Note that the beginning and end of each timespan is demarcated by
 a short vertical line, and that only non-intersecting timespans are shown in
-each \enquote{row} in the illustration.
+each \enquote{row} in the illustration:
 
 \begin{comment}
 <abjad>[hide=true]
@@ -606,7 +606,7 @@ intersect if any part of one timespan overlaps any part of another.
 and \texttt{timespan\_3} do not overlap even though they share the offset 10.
 As discussed earlier, timespans are left-closed / right-open, meaning that
 while their start offset is contained in the infinite set of offsets they range
-over, their stop offset is not.
+over, their stop offset is not:
 
 \begin{comment}
 <abjad>
@@ -650,7 +650,7 @@ True
 %%% ABJADBOOK END %%%
 
 \noindent \emph{Congruency} tests whether two timespans share the same start
-and stop offset. Every timespan is congruent with itself.
+and stop offset. Every timespan is congruent with itself:
 
 \begin{comment}
 <abjad>
@@ -676,7 +676,7 @@ True
 \noindent \emph{Tangency} tests whether one timespan's stop offset is the same
 as another timespan's start offset, or vice versa. Tangency can be used to
 determine if a sorted collection of timespans is both entirely contiguous and
-non-overlapping.
+non-overlapping:
 
 \begin{comment}
 <abjad>
@@ -711,7 +711,7 @@ the many generative operations carried out on timespans.
 Many \texttt{Timespan} methods provide transformations, such as translation,
 scaling or offset rounding. Because timespans are immutable, these methods
 create a new timespan based on the old one and then return the new, leaving
-the old exactly as it was.
+the old exactly as it was:
 
 \begin{comment}
 <abjad>
@@ -745,7 +745,7 @@ Timespan(start_offset=Offset(0, 1), stop_offset=Offset(16, 1))
 templating via \texttt{new()}, as described in \autoref{sec:timespans},
 allowing annotated timespan subclasses to partake in the same generative
 functionality -- reconfiguring their start and / or stop offsets, but
-maintaining all other previously configured properties.
+maintaining all other previously configured properties:
 
 \begin{comment}
 <abjad>
@@ -781,7 +781,7 @@ offset. \emph{Improper containment} would indicated the offset is greater than
 or equal to the timespan's start offset and less than or equal to its stop
 offset.} the splitting offset, a timespan inventory containing two new
 timespans will be returned. Otherwise, the split operation will return a
-timespan inventory containing a copy of the original input timespan.
+timespan inventory containing a copy of the original input timespan:
 
 \begin{comment}
 <abjad>
@@ -833,7 +833,7 @@ conceptually \emph{set} operations -- union, difference, intersection,
 symmetric difference, etc. -- performed on the two sets of offsets contained by
 the two timespan operands. Consider these same set operations -- union,
 difference, intersection, symmetric difference -- carried out on trivial sets
-in Python.
+in Python:
 
 \begin{comment}
 <abjad>
@@ -872,7 +872,7 @@ objects such as integers. For example, subtracting one timespan from another
 computes the set difference of the offsets contained by both. This operation is
 not commutative -- subtracting one timespan from another will not result in the
 same output as subtracting the latter from the former. Subtracting a timespan
-from itself always results in the empty set of offsets: no timespan at all.
+from itself always results in the empty set of offsets: no timespan at all:
 
 \begin{comment}
 <abjad>
@@ -998,7 +998,7 @@ timespantools.TimespanInventory(
 
 \noindent Computing the logical \texttt{OR} of two timespans results in an
 offset set union -- a commutative operation, effectively fusing the timespans
-together if they overlap.
+together if they overlap:
 
 \begin{comment}
 <abjad>
@@ -1088,7 +1088,7 @@ timespantools.TimespanInventory(
 
 \noindent The logical \texttt{AND} -- set intersection -- results in the
 intersection of the two input timespans. Only those offsets which occur in both
-timespan operands will occur in the output timespan, if any.
+timespan operands will occur in the output timespan, if any:
 
 \begin{comment}
 <abjad>
@@ -1141,7 +1141,7 @@ timespantools.TimespanInventory(
 \noindent Logical \texttt{XOR} -- also known as exclusive \texttt{OR} --
 results in the symmetric difference of the two input timespans. Only those
 offsets which are contained by only one of the two input timespans will occur
-in the output.
+in the output:
 
 \begin{comment}
 <abjad>
@@ -1248,7 +1248,7 @@ containing non-overlapping timespans.
 
 Like a Python list, a timespan inventory can be created with an iterable of
 zero or more timespans as an instantiation argument, be appended to, or
-extended into.
+extended into:
 
 \begin{comment}
 <abjad>
@@ -1307,7 +1307,7 @@ timespantools.TimespanInventory(
 %%% ABJADBOOK END %%%
 
 \noindent Timespan inventories can also be queried for their length, be indexed
-into, or iterated over like any other sequence-like object in Python.
+into, or iterated over like any other sequence-like object in Python:
 
 \begin{comment}
 <abjad>
@@ -1349,7 +1349,7 @@ iterable object, including another list. Unlike timespans, timespan inventories
 are mutable. As many of the operations implemented on timespan inventories
 mutate the inventory \emph{in-place}, this instantiation pattern provides a
 simple means of \enquote{copying}, allowing composers to duplicate a timespan
-structure before operating on it, thereby preserving the original.
+structure before operating on it, thereby preserving the original:
 
 \begin{comment}
 <abjad>
@@ -1405,7 +1405,7 @@ contained timespans. Their start and stop offset properties allow them to
 express a duration, as well as provide a concrete timespan representation.
 Because timespan inventories can be modeled as timespans, they can even be
 inserted into other timespan inventories, effectively masquerading as
-timespans.
+timespans:
 
 \begin{comment}
 <abjad>
@@ -1445,7 +1445,7 @@ tangent to another timespan and also does not overlap any other timespan.
 \emph{Overlap} tests if any timespan intersects any other timespan.
 \emph{Well-formedness} tests that all timespans' durations are greater than 0.
 A timespan inventory whose timespans are contiguous is necessarily also
-non-overlapping.
+non-overlapping:
 
 \begin{comment}
 <abjad>
@@ -1474,7 +1474,7 @@ True
 %%% ABJADBOOK END %%%
 
 \noindent The following timespan inventory's timespans are non-overlapping but
-also non-contiguous.
+also non-contiguous:
 
 \begin{comment}
 <abjad>
@@ -1513,7 +1513,7 @@ True
 %%% ABJADBOOK END %%%
 
 \noindent In contrast, this timespan inventory's timespans are both
-non-overlapping and contiguous.
+non-overlapping and contiguous:
 
 \begin{comment}
 <abjad>
@@ -1560,7 +1560,7 @@ every timespan contained in a given inventory by some offset. All of these
 operations act in place. The intersection of all of the timespans in a timespan
 inventory relative another timespan can be computed with the Python \texttt{\&}
 operator, the same syntax used when operating on individual timespans, as
-demonstrated in \autoref{sec:operations-on-timespans}.\footnote{ The call to
+demonstrated in \autoref{sec:operations-on-timespans}:\footnote{ The call to
 \texttt{show()} in the code example here contains the keyword argument
 \texttt{range\_}. This argument controls the horizontal scaling and spacing of
 the timespan illustration, allowing different illustrations to be aligned
@@ -1611,7 +1611,7 @@ show(result, range_=(-2, 16))
 
 \noindent Likewise, the offsets bound by a given timespan can be subtracted
 from all of the timespans in a timespan inventory, effectively cutting a hole
-in that inventory's timeline.
+in that inventory's timeline:
 
 \begin{comment}
 <abjad>
@@ -1650,7 +1650,7 @@ show(result)
 
 \noindent As with a single timespan and an offset, an entire timespan inventory
 can be split into two separate inventories via the \texttt{split\_at\_offset()}
-method.
+method:
 
 \begin{comment}
 <abjad>
@@ -1692,7 +1692,7 @@ show(right, range_=(0, 10))
 
 \noindent The \texttt{TimespanInventory} class also provides the convenience
 method \texttt{split\_at\_offsets()} for splitting an inventory by an arbitrary
-number of offsets at once.
+number of offsets at once:
 
 \begin{comment}
 <abjad>
@@ -1741,7 +1741,7 @@ procedure solely against the contents of the inventory itself, mapping each
 timespan in the collection against each other timespan in that collection.
 For example, a timespan inventory can be modified by computing the logical
 \texttt{OR} -- the set union -- of every timespan in the inventory relative
-every other timespan, effectively fusing all overlapping timespans together.
+every other timespan, effectively fusing all overlapping timespans together:
 
 \begin{comment}
 <abjad>
@@ -1791,7 +1791,7 @@ timespantools.TimespanInventory(
 \noindent A timespan inventory can also be modified by computing the logical
 \texttt{AND} of every timespan in the inventory relative every other timespan.
 This procedure leaves only those offsets where every single timespan
-overlaps.
+overlaps:
 
 \begin{comment}
 <abjad>
@@ -1840,7 +1840,7 @@ timespantools.TimespanInventory(
 
 \noindent Lastly, computing the in-place logical \texttt{XOR} removes all
 overlap from the timespan inventory, leaving only those offsets occupied by
-only one timespan.
+only one timespan:
 
 \begin{comment}
 <abjad>
@@ -1898,7 +1898,7 @@ timespantools.TimespanInventory(
 \noindent Timespan \emph{partitioning} separates a timespan inventory into
 groups of overlapping and optionally tangent timespans, aggregated into new
 timespan inventories. This procedure allows composers to isolate contiguous
-blocks of activity.
+blocks of activity:
 
 \begin{comment}
 <abjad>
@@ -1953,11 +1953,11 @@ for shard in timespan_inventory.partition(include_tangent_timespans=True):
 or more new inventories in an attempt to limit the amount of overlap in each
 resulting inventory. The number of output inventories can be left unspecified,
 in which case explosion will generate as many inventories as necessary to
-prevent overlap entirely in every resulting inventory.\footnote{ Explosion is
+prevent overlap entirely in every resulting inventory:\footnote{ Explosion is
 one of the techniques used to create timespan inventory illustrations,
 providing the mechanism by which arbitrary collections of timespans are
 automatically separated into non-overlapping inventories, which can then be
-rendered graphically as \enquote{rows} of line segments.}.
+rendered graphically as \enquote{rows} of line segments.}
 
 \begin{comment}
 <abjad>
@@ -2012,7 +2012,7 @@ for shard in timespan_inventory.explode():
 
 \noindent The number of output inventories can also be set explicitly, in which
 case explosion will attempt to limit the amount of overlap as much as possible,
-while maintaining a similar level of density across each resulting inventory.
+while maintaining a similar level of density across each resulting inventory:
 
 \begin{comment}
 <abjad>
@@ -2080,7 +2080,7 @@ voice name, in addition to the start offset and stop offset properties provided
 by their parent \texttt{Timespan} class. These properties allow the processes
 that generate them to record \emph{when} they were created, as well as
 \emph{where} the should appear in the score, should they survive the masking
-process.
+process:
 
 \begin{comment}
 <abjad>
@@ -2115,7 +2115,7 @@ information about how to generate notation from a timespan, \texttt{divisions}
 -- a memento of the original duration structure of a contiguous sequence of
 performed timespans which have been consolidated into a single performed
 timespan after the masking process ends, and \texttt{music} -- used to attach
-any generated notation prior to maquetting.
+any generated notation prior to maquetting:
 
 \begin{comment}
 <abjad>
@@ -2152,7 +2152,7 @@ They act to simply erase any timespan in a lower layer through masking. This
 allows timespan-making processes to demand not only when a musical event should
 happen, but also when musical events should \emph{not}. For example, silent
 timespans make it possible to demand silence before music events involving
-instrument or mallet changes.
+instrument or mallet changes:
 
 \begin{comment}
 <abjad>
@@ -2238,7 +2238,7 @@ entirety of the provided target timespan from beginning to end.
 For example, the following flooded timespan-maker will create a timespan
 inventory populated by a single performed timespan associated with a
 \enquote{Violin Voice} context, completely filling the span of its target
-timespan: 1/4 to 11/8.
+timespan, from 1/4 to 11/8:
 
 \begin{comment}
 <abjad>
@@ -2283,7 +2283,7 @@ timespantools.TimespanInventory(
 timespans in the output. Likewise, calling the timespan-maker with a
 \texttt{layer} keyword configures the output timespans with that layer number.
 The layer is indicated in the illustration just above and to the right of the
-beginning of each timespan.
+beginning of each timespan:
 
 \begin{comment}
 <abjad>
@@ -2346,7 +2346,7 @@ around the beginning and end of each group of output timespans on a per-voice
 basis. The timespan-maker will also configure these silent timespans with any
 specified layer number, allowing them to be sorted along with performed
 timespans from the same timespan-creation pass. Silent timespans are
-illustrated with dashed line to distinguish them from performed timespans.
+illustrated with dashed line to distinguish them from performed timespans:
 
 \begin{comment}
 <abjad>
@@ -2444,7 +2444,7 @@ implements the concept of talea via the \texttt{Talea} class in its
 cyclic sequence of durations in terms of a finite sequence of numerators paired
 with a single denominator. Once defined, they can be iterated over and indexed
 like an infinite sequence, simplifying the process of generating looped
-patterns of durations of arbitrary lengths.
+patterns of durations of arbitrary lengths:
 
 \begin{comment}
 <abjad>
@@ -2499,7 +2499,7 @@ seemingly-unrelated timespans. Careful management of silence patterns and
 contiguous timespan group lengths during unsynchronized creation can create
 dense, overlapping textures or sparse, pointillistic ones. Contrastingly,
 synchronized creation provides a mechanism for creating moments of shared
-attack across voices, followed by shared silences.
+attack across voices, followed by shared silences:
 
 \begin{comment}
 <abjad>
@@ -2537,7 +2537,7 @@ All of the timespan inventories created in the following talea timespan-maker
 examples make use of the same music specifier mapping and target timespan. An
 ordered dictionary from Python's \texttt{collections} module guarantees that
 the timespan-makers process the music specifier entries in the same order, from
-\enquote{Voice 1} through \enquote{Voice 4}.\footnote{ The hash implementation
+\enquote{Voice 1} through \enquote{Voice 4}:\footnote{ The hash implementation
 used by Python's dictionary class does not guarantee any particular ordering of
 keys, and may differ from one version of Python to the next, or even from one
 machine architecture to the next. While the timespan inventory illustrations
@@ -2582,7 +2582,7 @@ target_timespan = timespantools.Timespan(0, (19, 4))
 \noindent Without any manual configuration, talea timespan-makers generate
 unsynchronized 1-length groups of 1/4-duration timespans, separated by
 1/4-duration silences, creating the appearance of synchronization across
-voices.
+voices:
 
 \begin{comment}
 <abjad>
@@ -2614,7 +2614,7 @@ timespan-maker's voice-wrapping behavior. Note how \enquote{Voice 1}'s
 timespans receive the durations 1/4, 2/4, 3/4, 4/4, 1/4 and 2/4. \enquote{Voice
 2} continues the duration sequence with 3/4, 4/4 and so forth. The
 playing-duration talea continues to wrap around the end of each voice's
-timespans to the beginning of the next voice's.
+timespans to the beginning of the next voice's:
 
 \begin{comment}
 <abjad>
@@ -2662,7 +2662,7 @@ voice's timespans. Note how \enquote{Voice 2}'s final timespan, from 13/4 to
 4/1, should -- according to the following talea timespan-maker's groupings
 pattern -- begin a group of length 2. Because that grouping would run beyond
 the target timespan's 19/4 stop offset, the following voice's first timespan
-group receives the 2-length grouping instead.
+group receives the 2-length grouping instead:
 
 \begin{comment}
 <abjad>
@@ -2698,7 +2698,7 @@ show(result, key='voice_name')
 
 \noindent Reconfiguring the above talea timespan-maker with a different
 \texttt{silence\_talea} produces patterned variations in the durations of
-silences between timespan groups.
+silences between timespan groups:
 
 \begin{comment}
 <abjad>
@@ -2739,7 +2739,7 @@ show(result, key='voice_name')
 %%% ABJADBOOK END %%%
 
 \noindent Likewise, changing the \texttt{initial\_silence\_talea} produces
-varying amounts of silence at the beginning of each voice.
+varying amounts of silence at the beginning of each voice:
 
 \begin{comment}
 <abjad>
@@ -2782,7 +2782,7 @@ show(result, key='voice_name')
 \noindent Talea timespan-makers also provide for transformations derived from
 the timespan inventory class itself. The \texttt{reflect} keyword configures
 the timespan-maker to reflect its output timespan inventory around its own
-axis, creating a \enquote{mirror image}.
+axis, creating a \enquote{mirror image}:
 
 \begin{comment}
 <abjad>
@@ -2823,7 +2823,7 @@ in every voice at once, then select some amount of silence between the end of
 that vertically-synchronized group and the beginning of the next. Note here how
 the duration of each timespan follows the timespan-maker's 1/4, 2/4, 3/4, 4/4,
 5/4 pattern not from left-to-right by voice, but top-to-bottom by voice and
-then left-to-right.
+then left-to-right:
 
 \begin{comment}
 <abjad>
@@ -2889,7 +2889,7 @@ the very beginning of each voice's timespans, silences are determined for each
 voice at the beginning of each synchronized group. Note how \enquote{Voice 3}
 is missing a fourth timespan. That timespan, with a duration of 5/8, and an
 initial silence of 2/8 measured from the offset 4/1, would have extended to
-39/8 -- 1/8 more than the target timespan's 19/4 stop offset.
+39/8 -- 1/8 more than the target timespan's 19/4 stop offset:
 
 \begin{comment}
 <abjad>
@@ -2930,7 +2930,7 @@ show(result, key='voice_name')
 %%% ABJADBOOK END %%%
 
 \noindent Unlike flooded timespan-makers, padding durations are included in the
-start offset and step duration calculations for talea timespan-makers.
+start offset and step duration calculations for talea timespan-makers:
 
 \begin{comment}
 <abjad>
@@ -2977,7 +2977,7 @@ ignoring all others.
 
 Consider the following timespan inventory, comprised of both overlapping and
 non-overlapping timespans created for the contexts \enquote{Voice 1},
-\enquote{Voice 2} and \enquote{Ignored Voice}.
+\enquote{Voice 2} and \enquote{Ignored Voice}:
 
 \begin{comment}
 <abjad>
@@ -3028,7 +3028,7 @@ timespan inventory as an argument when calling the dependent timespan-maker
 adds the newly-created dependent timespans to it. For the sake of brevity, and
 because timespan-makers modify any timespan inventory passed as an argument to
 \texttt{\_\_call\_\_()} in-place, we pass a copy of this timespan inventory,
-created via a call to \texttt{new()}, instead of the original.
+created via a call to \texttt{new()}, instead of the original:
 
 \begin{comment}
 <abjad>
@@ -3084,7 +3084,7 @@ groups of dependent timespans, as though splitting at every moment when a
 timespan it depends upon starts. Note that new dependent timespans begin at the
 offsets 10/1, 15/1 and 25/1, for example. This is because a new timespan begins
 in \enquote{Voice 1} at both 10/1 and 25/1, and another new timespan begins in
-\enquote{Voice 2} at 15/1.
+\enquote{Voice 2} at 15/1:
 
 \begin{comment}
 <abjad>
@@ -3120,7 +3120,7 @@ show(result, key='voice_name')
 
 \noindent Likewise, the \texttt{include\_inner\_stops} flag causes the
 dependent timespan-maker to take into account the stop offsets of any timespan
-it depends upon.
+it depends upon:
 
 \begin{comment}
 <abjad>
@@ -3156,7 +3156,7 @@ show(result, key='voice_name')
 
 \noindent Both options can be combined together, resulting in dependent
 timespans outlining all offsets from the collection of timespans they depend
-upon.
+upon:
 
 \begin{comment}
 <abjad>
@@ -3199,7 +3199,7 @@ by the offsets extracted from the timespans they select. Specifying a rotation
 index of 1 causes each created group of dependent timespans to rotate its
 internal durations by that index. The 10-duration dependent timespan which
 previously occurred first in the \enquote{Dependent Voice} now occurs second,
-following a 5/1-duration timespan.
+following a 5/1-duration timespan:
 
 \begin{comment}
 <abjad>
@@ -3235,7 +3235,7 @@ show(result, key='voice_name', range_=(0, 75))
 
 \noindent More than one rotation index can be specified, allowing for each
 group of dependent timespans -- as created from each shard of the partitioned
-selected timespans -- to be rotated independently.
+selected timespans -- to be rotated independently:
 
 \begin{comment}
 <abjad>
@@ -3276,7 +3276,7 @@ timespan if no target timespan was specified explicitly. However, passing a
 target timespan to a dependent timespan-maker causes that timespan-maker to
 perform a logical \texttt{AND} of the target timespan with any selected
 timespans in the input inventory. Here the dependent timespans are constrained
-between the offsets 17/1 and 58/1.
+between the offsets 17/1 and 58/1:
 
 \begin{comment}
 <abjad>
@@ -3335,7 +3335,7 @@ produced.
 \emph{Note} rhythm-makers, arguably the simplest class of rhythm-maker, take a
 sequence of input divisions and \enquote{fill} them with notes, tied as
 necessary, such that the duration of each logical tie in each output division
-equals the duration of each input division.
+equals the duration of each input division:
 
 \begin{comment}
 <abjad>
@@ -3368,7 +3368,7 @@ optional customization of their rhythm-generating behavior. For example, a
 \texttt{TieSpecifier} can be used to force a rhythm-maker to tie the last note
 of each output division to the first note of the next output division. When
 used with a note rhythm-maker, this effectively ties all notes in the output
-together.
+together:
 
 \begin{comment}
 <abjad>
@@ -3407,7 +3407,7 @@ control the masking pattern. These patterns partition the rhythm-maker's output
 divisions into segments of a given period, and then mask out divisions
 specified by indices within that period. For example, a note rhythm-maker
 configured with a single output mask of a period of length 2 and a masking
-index 0 will cause the first of every two divisions to be silenced.
+index 0 will cause the first of every two divisions to be silenced:
 
 \begin{comment}
 <abjad>
@@ -3431,7 +3431,7 @@ show(note_rhythm_maker, divisions=divisions)
 
 \noindent Reducing the period of the boolean pattern from 2 to 1 silences every
 output division, effectively turning a note-generating rhythm-maker into a
-rest-generating rhythm-maker.
+rest-generating rhythm-maker:
 
 \begin{comment}
 <abjad>
@@ -3460,7 +3460,7 @@ the use of a talea -- an infinitely cyclic pattern of durations. Talea
 rhythm-makers fill their output divisions with durations from their talea,
 splitting those durations across division boundaries when the divisions are
 over-full. The following trivial talea rhythm-maker uses a length-1 talea
-comprised of a single 1/16 duration.
+comprised of a single 1/16 duration:
 
 \begin{comment}
 <abjad>
@@ -3493,7 +3493,7 @@ show(talea_rhythm_maker, divisions=divisions)
 \noindent Extending the talea counts to a sequence of alternating 1/16 and 1/8
 notes produces more complex results. Note how the 1/8 durations break over the
 boundaries of the 3/16 measure, but remain tied together. Talea rhythm-makers
-handle talea splitting and tying transparently.
+handle talea splitting and tying transparently:
 
 \begin{comment}
 <abjad>
@@ -3520,7 +3520,7 @@ show(talea_rhythm_maker, divisions=divisions)
 %%% ABJADBOOK END %%%
 
 \noindent With the talea counts changed to a descending sequence of durations,
-the pattern of split and tied durations also changes.
+the pattern of split and tied durations also changes:
 
 \begin{comment}
 <abjad>
@@ -3560,7 +3560,7 @@ causes the pattern of split and tied talea durations to shift. In the previous
 example, the second instance of the talea's 3/16 duration occurred entirely
 during the 3/16 division. Here, that same 3/16 talea duration begins on the
 final 1/16 of the 4/8 division's 9:8 tuplet, tied into the 4:3 tuplet in the
-following division.
+following division:
 
 \begin{comment}
 <abjad>
@@ -3594,7 +3594,7 @@ across divisions results in the entire output of the note rhythm-maker merging
 into the same logical tie. The output divisions of talea rhythm-makers
 generally contain more than one logical tie, and therefore tying across
 divisions tends to produce the effect of elided downbeats with intermittent
-attacks.
+attacks:
 
 \begin{comment}
 <abjad>
@@ -3630,7 +3630,7 @@ talea, or by configuring the rhythm-maker with a special \emph{burnish}
 specifier which casts logical ties generated by the rhythm-maker as either
 notes or rests, in a patterned way. Here, the 3-count in the talea
 rhythm-maker's talea is changed to -3, resulting in the production of
-3/16-duration silences.
+3/16-duration silences:
 
 \begin{comment}
 <abjad>
@@ -3658,7 +3658,7 @@ show(talea_rhythm_maker_with_rests, divisions=divisions)
 
 \noindent Alternatively, configuring the rhythm-maker with the following
 \texttt{BurnishSpecifier} allows the first logical tie of every other division
-to be converted to rests.
+to be converted to rests:
 
 \begin{comment}
 <abjad>
@@ -3698,7 +3698,7 @@ and ends of each output division, or even from the beginning and end of the
 entire sequence of divisions -- the rhythm-maker \emph{output}. Configuring an
 incised rhythm-maker to perform incision requires an \texttt{InciseSpecifier}
 instance. An unconfigured incised rhythm-maker behaves identically to an
-unconfigured note rhythm-maker.
+unconfigured note rhythm-maker:
 
 \begin{comment}
 <abjad>
@@ -3726,7 +3726,7 @@ well as the \emph{sign} of the component to be incised. Negative talea items
 indicate rests, while positive talea items indicate notes. The count properties
 -- \texttt{suffix\_counts} and \texttt{prefix\_counts} -- indicate how many
 talea durations should be selected at each pass. The following incised
-rhythm-maker incises a single 1/16 rest at the end of each division.
+rhythm-maker incises a single 1/16 rest at the end of each division:
 
 \begin{comment}
 <abjad>
@@ -3759,7 +3759,7 @@ show(incised_rhythm_maker, divisions=divisions)
 %%% ABJADBOOK END %%%
 
 \noindent Extending the suffix talea results in a more complex incision
-pattern.
+pattern:
 
 \begin{comment}
 <abjad>
@@ -3787,7 +3787,7 @@ show(incised_rhythm_maker, divisions=divisions)
 
 \noindent Prefix incision occurs in an identical fashion, by specifying
 sequences of group counts and talea numerators. Here, alternating groups of
-notes of length-1 and length-2 are incised from the beginning of each division.
+notes of length-1 and length-2 are incised from the beginning of each division:
 
 \begin{comment}
 <abjad>
@@ -3822,7 +3822,7 @@ show(incised_rhythm_maker, divisions=divisions)
 \noindent Setting the incise specifier's \texttt{fill\_with\_notes} property to
 false causes the rhythm-maker to fill the unincised portions of its output
 divisions with rests rather notes. Filled mainly with silence, the incision
-pattern becomes much clearer.
+pattern becomes much clearer:
 
 \begin{comment}
 <abjad>
@@ -3851,7 +3851,7 @@ show(incised_rhythm_maker, divisions=divisions)
 \noindent Incised rhythm-makers can be configured to only incise the outer
 divisions of their output. The following rhythm-maker cuts 1/8 rests from the
 beginning of the first division in its output, and the end of the last
-division.
+division:
 
 \begin{comment}
 <abjad>
@@ -3893,7 +3893,7 @@ show(incised_rhythm_maker, divisions=divisions)
 specifiers as the other rhythm-maker classes defined in Abjad's
 \texttt{rhythmmakertools} library. Like note rhythm-makers, they can be
 configured to tie the last note of each output division to the first note of
-the next output division via an instance of the \texttt{TieSpecifier} class.
+the next output division via an instance of the \texttt{TieSpecifier} class:
 
 \begin{comment}
 <abjad>
@@ -3931,7 +3931,7 @@ runs of notes with a basic duration \texttt{1/denominator}, where the
 configurable \texttt{denominator} sequence property. When an input division
 does not exactly fit some multiple of this basic duration, some combination of
 augmentation or tupletting will be used to produce notes with durations as
-close to that basic duration as possible.
+close to that basic duration as possible:
 
 \begin{comment}
 <abjad>
@@ -3953,7 +3953,7 @@ show(even_division_rhythm_maker, divisions=divisions)
 
 \noindent Extending the even-division rhythm-maker's denominator sequence to a
 2-length pattern produces divisions filled alternatingly with 1/8 and 1/16
-notes. Note that the 3/16 measure is filled with a dotted 1/8 note.
+notes. Note that the 3/16 measure is filled with a dotted 1/8 note:
 
 \begin{comment}
 <abjad>
@@ -3980,7 +3980,7 @@ show(even_division_rhythm_maker, divisions=divisions)
 %%% ABJADBOOK END %%%
 
 \noindent Extending the denominator sequence even further results in more
-complex output. Note here how the 5/8 division is rendered as a tuplet.
+complex output. Note here how the 5/8 division is rendered as a tuplet:
 
 \begin{comment}
 <abjad>
@@ -4013,7 +4013,7 @@ Artificially lengthened divisions are rendered as tuplets. With the following
 rhythm-maker which attempts to fill each output division with a run of 1/8
 notes, every other division is extended by one count, causing the 4/8 and 2/4
 divisions to be rendered as 5:4 tuplets, and the 4/16 division to be rendered
-as a 3:2 tuplet.
+as a 3:2 tuplet:
 
 \begin{comment}
 <abjad>
@@ -4042,7 +4042,7 @@ show(even_division_rhythm_maker, divisions=divisions)
 %%% ABJADBOOK END %%%
 
 \noindent When configured with a tie specifier, the even-division rhythm-maker
-obscures the downbeat of every output division.
+obscures the downbeat of every output division:
 
 \begin{comment}
 <abjad>
@@ -4073,7 +4073,7 @@ show(even_division_rhythm_maker, divisions=divisions)
 %%% ABJADBOOK END %%%
 
 \noindent And when reconfigured with the earlier 8-4-16 denominator pattern,
-the even-division rhythm-maker produces rich tupletted rhythmic output.
+the even-division rhythm-maker produces rich tupletted rhythmic output:
 
 \begin{comment}
 <abjad>
@@ -4108,7 +4108,7 @@ output. The following contrived composite rhythm-maker uses the previously note
 rhythm-maker -- which only generates rests -- for the last of any sequence of
 input divisions, the previously defined incised rhythm-maker for the first of
 any sequence of input divisions, and the previously defined talea rhythm-maker
-for all other input divisions.
+for all other input divisions:
 
 \begin{comment}
 <abjad>
@@ -4210,7 +4210,7 @@ metrical level and therefore all receive an accent weight of one.
 
 Consider the following other examples of meters modeled in Abjad. A 3/4 meter
 consists of a top-level 3/4 metrical grouping divided into three 1/4 duration
-beats.
+beats:
 
 \begin{comment}
 <abjad>
@@ -4231,7 +4231,7 @@ graph(three_four_meter)
 %%% ABJADBOOK END %%%
 
 \noindent By default, a 7/8 meter subdivides its top-level metrical grouping
-into 3/8+2/8+2/8 groupings.
+into 3/8+2/8+2/8 groupings:
 
 \begin{comment}
 <abjad>
@@ -4252,7 +4252,7 @@ graph(seven_eight_meter)
 %%% ABJADBOOK END %%%
 
 \noindent A 12/8 meter subdivides into four 3/8 duration groupings, each
-containing three 1/8 duration beats.
+containing three 1/8 duration beats:
 
 \begin{comment}
 <abjad>
@@ -4275,7 +4275,7 @@ graph(twelve_eight_meter)
 \noindent Abjad also permits alternate representations of meters which
 ostensibly share the same numerator and denominator. The default interpretation
 of 4/4 generates a top-level rhythmic grouping with a duration of 4/4 and four
-1/4 beats as children.\footnote{A \enquote{flat} 4/4 metrical structure is
+1/4 beats as children:\footnote{A \enquote{flat} 4/4 metrical structure is
 useful for meter rewriting as it allows the meter rewriting algorithm to ignore
 many common rhythmic idioms like 1/4+1/2+1/4 and 1/4+3/4.}
 
@@ -4302,7 +4302,7 @@ denominator pairs, with their rhythm-tree structure determined programmatically
 from that input pair, they can also be instantiated from strings parsable as
 rhythm-trees, or from rhythm-tree objects themselves. All meters, because they
 are implemented in terms of rhythm-trees, can be represented by a Lisp-like
-rhythm-tree syntax.
+rhythm-tree syntax:
 
 \begin{comment}
 <abjad>
@@ -4329,7 +4329,7 @@ composers to choose alternate representations of metrical structures. For
 example, a 4/4 meter which strongly emphasizes beat three is possible by
 subdividing the top-level 4/4 metrical grouping into two 2/4 duration
 groupings, which are then subdivided each into two 1/4 duration beats. Such a
-metrical structure effectively treats 4/4 as identical to 2/2.
+metrical structure effectively treats 4/4 as identical to 2/2:
 
 \begin{comment}
 <abjad>
@@ -4351,7 +4351,7 @@ graph(arbitrary_meter_1)
 
 \noindent Unusual metrical structures are also possible, such as the following
 4/4 meter which divides into two parts, with the first part dividing into two
-again, and the second grouping of that divided into two again.
+again, and the second grouping of that divided into two again:
 
 \begin{comment}
 <abjad>
@@ -4393,7 +4393,7 @@ invalid, against those offsets found in nodes progressively deeper in the
 meter's rhythm-tree.
 
 For example, the offsets outlined by the root node of a 6/8 meter can be found
-by examining its depth-wise offset inventory.
+by examining its depth-wise offset inventory:
 
 \begin{comment}
 <abjad>
@@ -4417,7 +4417,7 @@ six_eight_meter.depthwise_offset_inventory[0]
 would be considered valid in the context of 6/8 because it aligns to the
 offsets outlined at depth-0 of the meter's rhythm-tree. In contrast, a logical
 tie two quarters in duration starting at 1/8 -- therefore outlining the
-timespan of 1/8:5/8 -- would be considered invalid due to misalignment.
+timespan of 1/8:5/8 -- would be considered invalid due to misalignment:
 
 \begin{comment}
 <abjad>
@@ -4441,7 +4441,7 @@ show(six_eight_measure)
 found in the currently considered depth. If no offsets at that depth intersect
 with the misaligned tie, the depth is increased and the process repeats. At a
 depth of 1 in a 6/8 meter we finally find an offset intersecting the timespan
-of the misaligned 1/8:5/8 logical tie: 3/8.
+of the misaligned 1/8:5/8 logical tie at the offset 3/8:
 
 \begin{comment}
 <abjad>
@@ -4460,7 +4460,7 @@ six_eight_meter.depthwise_offset_inventory[1]
 %%% ABJADBOOK END %%%
 
 \noindent Rewriting the contents of the 6/8 measure against a 6/8 meter splits
-the inner half-note at the 3/8 offset boundary.
+the inner half-note at the 3/8 offset boundary:
 
 \begin{comment}
 <abjad>
@@ -4480,7 +4480,7 @@ show(six_eight_measure)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent As another example, consider the following rhythm.
+\noindent As another example, consider the following rhythm:
 
 \begin{comment}
 <abjad>
@@ -4508,7 +4508,7 @@ show(staff)
 
 \noindent The middle measure is notated in a perfectly valid manner. However,
 the double-dotted D does not align with or break against any of the offsets of
-a 4/4 metrical structure: 0/4, 1/4, 2/4, 3/4 or 4/4.
+a 4/4 metrical structure: 0/4, 1/4, 2/4, 3/4 or 4/4:
 
 \begin{comment}
 <abjad>
@@ -4529,7 +4529,7 @@ graph(four_four_meter)
 %%% ABJADBOOK END %%%
 
 \noindent Rewriting the inner measure against a 4/4 meter breaks the inner
-logical tie at 1/4 and 3/4, slightly improving readability.
+logical tie at 1/4 and 3/4, slightly improving readability:
 
 \begin{comment}
 <abjad>
@@ -4551,7 +4551,7 @@ show(staff)
 
 \noindent Rewriting the same measure against a 2/2 meter breaks the inner
 logical tie at the offset 1/2, as two double-dotted quarter notes. While
-identical to 4/4 in duration, 2/2 strongly emphasizes this duple division.
+identical to 4/4 in duration, 2/2 strongly emphasizes this duple division:
 
 \begin{comment}
 <abjad>
@@ -4584,7 +4584,7 @@ individual notes exceed the maximum number of permitted dots will be rewritten,
 if a maximum dot count has been specified.
 
 Consider this series of progressively rewritten rhythms, beginning with the
-following unrewritten 3/4 measure.
+following unrewritten 3/4 measure:
 
 \begin{comment}
 <abjad>
@@ -4606,7 +4606,7 @@ show(measure)
 
 \noindent After meter rewriting, the final F-sharp is still notated as a
 triple-dotted quarter-note, valid because its stop offset aligns perfectly with
-the containing measure's stop offset.
+the containing measure's stop offset:
 
 \begin{comment}
 <abjad>
@@ -4627,7 +4627,7 @@ show(measure)
 %%% ABJADBOOK END %%%
 
 \noindent Capping the maximum number of dots to 2 causes the F-sharp to be
-rewritten as a double-dotted eighth-note tied to a quarter-note.
+rewritten as a double-dotted eighth-note tied to a quarter-note:
 
 \begin{comment}
 <abjad>
@@ -4650,7 +4650,7 @@ show(measure)
 %%% ABJADBOOK END %%%
 
 \noindent Constraining the maximum number of dots to 1 further subdivides the
-F-sharp logical tie.
+F-sharp logical tie:
 
 \begin{comment}
 <abjad>
@@ -4673,7 +4673,7 @@ show(measure)
 %%% ABJADBOOK END %%%
 
 \noindent Finally, with no dots permitted at all, the rhythmic presentation of
-the measure changes considerably. Every dotted rhythm has been subdivided.
+the measure changes considerably. Every dotted rhythm has been subdivided:
 
 \begin{comment}
 <abjad>
@@ -4711,7 +4711,7 @@ rhythm-tree -- the three 3/8 inner nodes marked by triangles -- outline the
 offsets 0/8, 3/8, 6/8 and 9/8. When rewriting a 9/8 rhythm with a boundary
 depth of 1, any logical ties not aligning with -- either starting or
 stopping at -- those offsets would be marked as invalid and therefore
-rewritten.
+rewritten:
 
 \begin{comment}
 <abjad>
@@ -4774,7 +4774,7 @@ with the start of the third 3/8 node at depth 1 in the 9/8 meter's rhythm tree.
 Likewise, the first half of the split half-note ends at the same 6/8 offset.
 However, the initial C half-note, while aligning with the beginning of the
 meter and therefore treated as valid, does not emphasize any of the meter's
-inner offsets as outlined by the offsets 3/8 and 6/8.
+inner offsets as outlined by the offsets 3/8 and 6/8:
 
 \begin{comment}
 <abjad>
@@ -4817,7 +4817,7 @@ existing within their own metrical scope, isolated from any other meter. The
 numerator and denominator of the tuplet's pre-prolated contents duration act as
 the numerator and denominator of their \enquote{virtual} meter. Thus, a 6:5
 tuplet encountered in any context will be rewritten as though under some
-6-numerator meter.
+6-numerator meter:
 
 \begin{comment}
 <abjad>
@@ -4869,7 +4869,7 @@ identical durations, such as 3/4 and 6/8, or between various possible
 representations of other prime-numerator meters like 5/4, 7/8 and so forth.
 The following series of 3/4 measures contain rhythms which emphasize 3/4-ness
 or 6/8-ness to different degrees. While perfectly valid and totally legible,
-they can still be rewritten to more strongly express one meter over the other.
+they can still be rewritten to more strongly express one meter over the other:
 
 \begin{comment}
 <abjad>
@@ -4897,7 +4897,7 @@ show(staff)
 emphasis of the offsets found in the 3/4 meter's depth-1 group of three
 quarter-duration nodes: 0/4, 1/4, 2/4 and 3/4. Both the outer measures'
 contents align to these offsets, but the inner measure's hemiola contents do
-not, and are rewritten.
+not, and are rewritten:
 
 \begin{comment}
 <abjad>
@@ -4925,7 +4925,7 @@ show(staff)
 of 1 -- forces emphasis of the offsets outlined by 6/8's two depth-1
 3/8-duration nodes: 0/8, 3/8 and 6/8. Only the inner measure's contents align
 perfectly these offsets, so the outer measures are rewritten, better
-demonstrating 6/8's duple-ness.
+demonstrating 6/8's duple-ness:
 
 \begin{comment}
 <abjad>
@@ -5013,7 +5013,7 @@ show(piano_staff)
 counted by selecting the score's leaves and instantiating an offset counter
 from them. Because all score components can be expressed as timespans via
 \texttt{inspect\_(some\_component).get\_timespan()} the offset counter can
-retrieve both their start and stop offsets within the score.
+retrieve both their start and stop offsets within the score:
 
 \begin{comment}
 <abjad>
@@ -5053,7 +5053,7 @@ metertools.OffsetCounter(
 as both the start or stop offset for four separate leaves in the score.
 
 Offset counters can also be generated from timespan inventories, allowing meter
-convolution to be used without reference to any score objects at all.
+convolution to be used without reference to any score objects at all:
 
 \begin{comment}
 <abjad>
@@ -5110,7 +5110,7 @@ not explicitly modeled by the rhythm-trees of those same meters.
 Here a metric accent kernel is generated from a 4/4 meter, extending its
 denominator to a \emph{limit} of 1/16. The weights at each offset are
 normalized such that they sum to 1. Normalization prevents very long meters
-from having undue influence during meter fitting.
+from having undue influence during meter fitting:
 
 \begin{comment}
 <abjad>
@@ -5157,7 +5157,7 @@ for offset, weight in sorted(kernel_44.kernel.items()):
 count at each offset in the input offset counter is multiplied against the
 weight at the corresponding offset in the metric accent kernel. If no
 corresponding offset exists in the kernel, the weight is taken as 0. The
-weighted counts are then added together and returned.
+weighted counts are then added together and returned:
 
 \begin{comment}
 <abjad>
@@ -5178,7 +5178,7 @@ float(response)
 %%% ABJADBOOK END %%%
 
 \noindent The following loop demonstrates the logic underlying the above meter
-convolution process example.
+convolution process example:
 
 \begin{comment}
 <abjad>
@@ -5221,7 +5221,7 @@ for offset, count in sorted(piano_staff_counter.items()):
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-\noindent Now consider the metric accent kernels for 3/4, 7/8 and 5/4 meters.
+\noindent Now consider the metric accent kernels for 3/4, 7/8 and 5/4 meters:
 
 \begin{comment}
 <abjad>
@@ -5243,7 +5243,7 @@ kernel_54 = metertools.MetricAccentKernel.from_meter((5, 4), denominator=16)
 %%% ABJADBOOK END %%%
 
 \noindent A convolution response can be generated for each of these kernels
-against the piano staff offset counter.
+against the piano staff offset counter:
 
 \begin{comment}
 <abjad>
@@ -5287,7 +5287,7 @@ compare against.
 
 Consider the following offsets, which are separated from one another by the
 duration of a whole note, outlining the start and stop offsets of a series of
-4/4 meters.
+4/4 meters:
 
 \begin{comment}
 <abjad>
@@ -5313,7 +5313,7 @@ show(offset_counter, range_=(0, 5))
 
 \noindent Given the following collection of meters, after meter fitting is
 performed only 4/4 meters should be selected as they perfectly align with
-the previously defined collection of offsets.
+the previously defined collection of offsets:
 
 \begin{comment}
 <abjad>
@@ -5353,7 +5353,7 @@ input offsets. The initial 3/4 fitted meter perfectly matches the offsets 0/1
 and 3/4, while the 4/4 meter after it matches the 5/4 offset against its
 third beat. The next meter's end-beat offset aligns against the offset
 counter's 5/2 offset allowing the meter fitting process to perfectly match the
-remaining offsets against a pair of 5/4 meters.
+remaining offsets against a pair of 5/4 meters:
 
 \begin{comment}
 <abjad>
@@ -5397,7 +5397,7 @@ a row. If desired, this repetition can be prevented entirely by the
 \texttt{Meter.fit\_meters\_to\_expr()}. With \texttt{maximum\_run\_length} set
 to 1, the meter fitting process can no longer select two 5/4 meters for the end
 of the fitted meter sequence. Instead, a pair of 3/4 and 4/4 meters replace the
-previously final 5/4 meter.
+previously final 5/4 meter:
 
 \begin{comment}
 <abjad>
@@ -5433,7 +5433,7 @@ hundreds or even thousands of offsets with many points of simultaneity or
 overlap. Careful management of meter fitting can result in convincing metrical
 solutions to such textures.
 
-Recall the quartet timespan texture from earlier in this chapter.
+Recall the quartet timespan texture from earlier in this chapter:
 
 \begin{comment}
 <abjad>
@@ -5475,7 +5475,7 @@ show(timespan_inventory, key='voice_name')
 
 \noindent Constructing an offset counter from this timespan inventory shows
 several offsets with strong simultaneities, notably at 11/8, 13/8, 17/8 and
-25/8.
+25/8:
 
 \begin{comment}
 <abjad>
@@ -5502,7 +5502,7 @@ against strong beats in each meter. The initial 6/8 meter receive a 2-count
 accent on its half-way 3/8 offset. The second 6/8 meter is matches strong
 accents on both its downbeat, its half-beat and on its end-beat. Likewise, the
 7/8 meter matches strong accents on its down-beat and end-beat, as well as its
-inner 2-count groupings.
+inner 2-count groupings:
 
 \begin{comment}
 <abjad>
@@ -5543,7 +5543,7 @@ show(fitted_meters, range_=(0, (19, 4)))
 
 \noindent Removing the 5/8 meter from the permitted meters inventory gives less
 convincing results. Notably, the strong simultaneities at offsets 11/8 and 17/8
-no longer align with any downbeats in the fitted meters.
+no longer align with any downbeats in the fitted meters:
 
 \begin{comment}
 <abjad>
@@ -5585,7 +5585,7 @@ show(fitted_meters, range_=(0, (19, 4)))
 \noindent Lifting the constraint on meter repetition does not improve the
 results. Both the 11/8 and 17/8 offsets still align with weak beats in the
 fitted meters. The only real change is the swapping of 6/8 and 3/4 meters in
-the first and last pairs of fitted meters.
+the first and last pairs of fitted meters:
 
 \begin{comment}
 <abjad>
@@ -5620,7 +5620,7 @@ show(fitted_meters, range_=(0, (19, 4)))
 greater variety of meters gives an even closer fitting than the very first
 example. Not only do the 11/8 and 17/8 offsets align at downbeats, but the
 three-weight offset at 25/8 matches the downbeat of a 3/4 meter with two-weight
-accents on both its second and third beat as well as the following downbeat.
+accents on both its second and third beat as well as the following downbeat:
 
 \begin{comment}
 <abjad>
@@ -5661,7 +5661,7 @@ show(fitted_meters, range_=(0, (19, 4)))
 
 \noindent Increasing the number of permitted offsets even further does not
 necessarily improve results further. A better initial meter fitting -- like the
-initial 9/8 here -- often diminishes the choices possible afterward.
+initial 9/8 here -- often diminishes the choices possible afterward:
 
 \begin{comment}
 <abjad>
@@ -5737,7 +5737,7 @@ separately, none of them can ever result in the rhythmic framework for a
 polyphonic piece of music. However, by combining all of them together, it is
 possible to construct powerful tools for generating arbitrarily large amounts
 of notation. The following \texttt{build\_score()} function sketches one
-possible approach to combining these techniques.
+possible approach to combining these techniques:
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:build_score />[strip_prompt]
@@ -5805,7 +5805,7 @@ containing voices with names like \enquote{Voice 1}, \enquote{Voice 2} and so
 forth. The timespan inventory used for this example -- created earlier in this
 chapter -- contains performed timespans with the voice names \enquote{Voice 1},
 \enquote{Voice 2}, \enquote{Voice 3} and \enquote{Voice 4}, requiring a score
-template capable of creating scores with four staves of one voice each.
+template capable of creating scores with four staves of one voice each:
 
 \begin{comment}
 <abjad>
@@ -5896,7 +5896,7 @@ inventory. The sequence of offsets found at the boundaries of each fitted meter
 can then be determined by computing the cumulative sums of the durations of the
 fitted meters. These boundary offsets will be used to split timespans before
 they are fed to rhythm-makers for rhythm generation in order to ensure that no
-generated rhythm crosses any bar-lines.
+generated rhythm crosses any bar-lines:
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:get_meters_and_meter_boundaries />[strip_prompt]
@@ -5929,7 +5929,7 @@ Each of the performed timespans in the input timespan inventory was configured
 with a voice name, allowing that timespan to be associated with a voice context
 in the score hierarchy produced by the input score template. As demonstrated
 earlier, Abjad components can be indexed by context name regardless of the
-depth of the named context in the score hierarchy.
+depth of the named context in the score hierarchy:
 
 \begin{comment}
 <abjad>
@@ -5975,7 +5975,7 @@ Voice()
 timespan inventory need to be separated into \emph{voice-wise} timespan
 inventories, each only containing timespans associated with the same voice.
 This can be accomplished by building a dictionary whose keys are voice names
-and whose values are timespan inventories.
+and whose values are timespan inventories:
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:get_all_voicewise_timespans />[strip_prompt]
@@ -6003,7 +6003,7 @@ Creating \emph{performed} music requires first splitting a contiguous inventory
 of performed timespans by meter boundaries, collecting the shards together into
 a new inventory and then calculating the durations of those timespans. The
 resulting sequence of durations, along with an input rhythm-maker and an
-optional seed value can be sent to another function for rhythm generation.
+optional seed value can be sent to another function for rhythm generation:
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:make_performed_music />[strip_prompt]
@@ -6031,7 +6031,7 @@ meter boundaries, collecting the durations of the split shards, and finally
 passing those durations along with a rest-generating rhythm-maker to another
 function for rhythm generation. As demonstrated in
 \autoref{ssec:note-rhythm-makers}, rest-generating rhythm-makers can be created
-from note rhythm-makers which use output masks to silence all output divisions.
+from note rhythm-makers which use output masks to silence all output divisions:
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:make_silent_music />[strip_prompt]
@@ -6062,7 +6062,7 @@ configured value in that rhythm-maker, such as talea. The product of this first
 operation is a sequence of component selections. Some massaging converts this
 selections into a sequence of trivially-prolated containers and non-trivially
 prolated tuplets which can then be wrapped inside a larger container
-representing a complete phrase.
+representing a complete phrase:
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:make_music />[strip_prompt]
@@ -6105,7 +6105,7 @@ This difference is passed to the \texttt{MutationAgent}'s
 allowing the division to be properly aligned against the desired meter.
 Prolated divisions -- tuplets -- are rewritten solely with respect to the
 duration of their contents, not to the prevailing meter. That is, a 5:4 tuplet
-in a 4/8 measure is rewritten with a meter of 5/8, not of 4/8.
+in a 4/8 measure is rewritten with a meter of 5/8, not of 4/8:
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:rewrite_meters />[strip_prompt]
@@ -6141,6 +6141,7 @@ def rewrite_meters(phrase, meters, meter_boundaries):
 %%% ABJADBOOK END %%%
 
 \subsection{Score post-processing}
+\label{ssec:score-post-processing}
 
 \noindent The final step in this score building process adds a
 \enquote{floating time signature context} to the score, filled with typographic
@@ -6153,7 +6154,7 @@ for a context definition with that name and apply any typographic overrides
 found there during the typesetting process. While LilyPond does not come
 packaged with a \texttt{TimeSignatureContext} definition, examples of what such
 a definition looks like can be found in the various \texttt{stylesheet}
-sections of the source code appendices to this document.
+sections of the source code appendices to this document:
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:add_time_signature_context />[strip_prompt]
@@ -6181,7 +6182,7 @@ def add_time_signature_context(score, meters):
 \noindent Calling the \texttt{build\_score()} function generates a score as
 described above. In this example, the function's arguments comprise a talea
 rhythm-maker, an inventory of meters, as well as the previously defined score
-template and timespan inventory.
+template and timespan inventory:
 
 \begin{comment}
 <abjad>
@@ -6226,7 +6227,7 @@ annotated via Consort's \texttt{annotate} function. This function draws thick
 brackets underneath each staff, with the lower bracket indicating the overall
 phrase grouping and the inner brackets indicating divisions within each phrase.
 Entirely silent phrasing brackets are drawn with dashed rather than solid
-lines.
+lines:
 
 \begin{comment}
 <abjad>[stylesheet=../consort-small.ily]
@@ -6262,7 +6263,7 @@ show(score)
 to the \texttt{build\_score()} function. For example, the timespan inventory
 can be reflected around its axis and stretched from a duration of 19/4 to 25/4.
 This will change the overall duration and phrase density of the resulting score
-while maintaining the character of its surface rhythms.
+while maintaining the character of its surface rhythms:
 
 \begin{comment}
 <abjad>[stylesheet=../consort-small.ily]
