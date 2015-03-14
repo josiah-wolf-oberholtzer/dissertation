@@ -20,15 +20,68 @@ Abjad models notation.
 
 foo
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Top-level functions}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-foo
+\begin{markdown}
+-   print()
+-   repr() and __repr__()
+-   str() and __str__()
+-   format() and __format__()
+-   show() and __illustrate__()
+-   graph() and __graph__()
+\end{markdown}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Components, leaves \& containers}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{markdown}
+-   The score tree
+-   Component
+-   Count-time components
+-   Non-count-time components
+-   One, and only one, parent per component. They *cannot* be in more than one
+    container. This is both confusing, and liable to cause reference problems.
+\end{markdown}
+
+\subsection{Leaves}
+
+\begin{markdown}
+-   Leaf
+-   These are components which do not contain other components.
+-   Note
+-   Rest
+-   Chord
+-   NoteHead
+\end{markdown}
+
+\subsection{Containers}
+
+\begin{markdown}
+-   Container
+-   LilyPond and { }
+-   Measure
+-   LilyPond has no explicit measures
+-   Tuplet and FixedDurationTuplet
+\end{markdown}
+
+\subsection{Contexts}
+
+\begin{markdown}
+-   Context
+-   Contexts are containers, but not *count-time*
+-   Voice
+-   Staff
+-   StaffGroup
+-   Score
+\end{markdown}
+
+\subsection{Inspection}
+
+\begin{markdown}
+-   inspect_()
+-   not *inspect()*, as that would cause a name conflict with Python's inspect
+    module
+-   inspect(...).get_parentage()
+\end{markdown}
 
 \begin{comment}
 <abjad>
@@ -84,6 +137,14 @@ Duration(19, 24)
 \end{lstlisting}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\subsection{Inspecting durations}
+
+\begin{markdown}
+-   inspect_(...).get_duration()
+-   inspect_(...).get_timespan()
+-   in_seconds=True
+\end{markdown}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Pitches, pitch-classes, intervals and operators}
@@ -276,31 +337,86 @@ show(pitch_operation(pitch_segment))
 \subsection{Other pitch modeling concepts}
 
 \begin{markdown}
-- Accidental
-- Octave
-- PitchRange
-- StaffPosition
+-   Accidental
+-   Octave
+-   PitchRange
+-   StaffPosition
+\end{markdown}
+
+\subsection{Inspecting leaf pitches}
+
+\begin{markdown}
+-   Note("c'4").written_pitch
+-   Note("c'4").note_head.written_pitch
+-   Chord("<c' e' g'>4").written_pitches
+-   inspect_(note).get_sounding_pitch()
+-   inspect_(note).get_sounding_pitches()
 \end{markdown}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Indicators}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-foo
+\subsection{Attachment}
+
+\begin{markdown}
+-   attach(x, y, scope=..., is_annotation=..., name=...)
+\end{markdown}
+
+\subsection{Tour of indicators}
+
+\begin{markdown}
+-   Articulation
+-   BarLine
+-   Clef 
+-   Dynamic
+-   KeySignature
+-   Markup
+-   Tempo
+-   TimeSignature
+\end{markdown}
 
 \subsection{Context scoping}
 
-foo
+\begin{markdown}
+-   What is scope?
+-   Default scope
+-   Explicit scope
+\end{markdown}
 
 \subsection{Non-formatting annotations}
 
-foo
+\begin{markdown}
+-   Annotation
+-   Idiomatic indicators, used by other processes:
+    -   BowContactPoint
+    -   IsAtSoundingPitch
+    -   IsUnpitched
+    -   StringContactPoint
+    -   StringTuning
+    -   etc.
+-   attach(x, y, is_annotation=True)
+\end{markdown}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Spanners}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-foo
+\begin{markdown}
+-   graph cyclicity
+-   logical voices
+\end{markdown}
+
+\subsection{Tour of spanners}
+
+\begin{markdown}
+-   Beam
+-   Glissando
+-   Hairpin
+-   Slur
+-   Trill
+-   Tie
+\end{markdown}
 
 \subsection{LilyPond format bundles}
 
@@ -310,6 +426,12 @@ foo
 
 foo
 
+\subsection{Complex indicators}
+
+\begin{markdown}
+-   KeyCluster
+\end{markdown}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Score iteration, selections \& selectors}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -317,20 +439,55 @@ foo
 foo
 
 \subsection{Indexing}
+\label{ssec:indexing}
 
-foo
-
-\subsection{Iteration}
-
-foo
+\begin{markdown}
+-   By name
+-   By index
+-   By slice
+\end{markdown}
 
 \subsection{Selection}
+\label{ssec:selection}
 
-foo
+\begin{markdown}
+-   select() 
+-   Selection class
+-   Container.select_leaves()
+    -   allow_discontiguous_leaves=True
+-   inspect_(...).get_logical_tie() 
+-   LogicalTie
+    -   head
+    -   tail
+    -   timespan
+    -   trivial logical ties
+\end{markdown}
+
+\subsection{Iteration}
+\label{ssec:iteration}
+
+\begin{markdown}
+-   By __iter__()
+-   By iterate(...)by_...()
+    -   by_class()
+    -   by_logical_tie()
+    -   by_run()
+    -   by_timeline()
+    -   by_vertical_moment()
+    -   depth_first()
+\end{markdown}
 
 \subsection{Selectors}
+\label{ssec:selectors}
 
-foo
+\begin{markdown}
+-   Demonstrate a gallery of selectors.
+    -   by duration
+    -   by leaves
+    -   by length
+    -   by logical tie
+    -   by counts (with negative counts too)
+\end{markdown}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Notation factories}
@@ -344,8 +501,16 @@ foo
 
 \subsection{Score templates}
 
-foo
+\begin{markdown}
+-   Simplify score creation process
+\end{markdown}
 
 \subsection{Parsers}
 
-foo
+\begin{markdown}
+-   LilyPond parser
+-   PLY
+-   SchemeParser
+-   RhythmTreeParser
+-   ReducedLyParser
+\end{markdown}
