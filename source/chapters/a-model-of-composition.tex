@@ -1381,7 +1381,7 @@ show(illustration)
 ...     attachment_handler=consort.AttachmentHandler(),
 ...     rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
 ...         extra_counts_per_division=(0, 1),
-...         talea=rhythmmakertools.Talea([1, 2, 3, 1, 4], 16),
+...         talea=rhythmmakertools.Talea([2, 3, 2, 4], 16),
 ...         ),
 ...     )
 >>> timespan_maker = consort.TaleaTimespanMaker(
@@ -1411,7 +1411,7 @@ show(illustration)
 >>> illustration = segment_maker(annotate=True, verbose=False)
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-2cd152c8ae7c36e9c4d25794d6a5c01e.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-28bd42514281017588e67e2de044aabc.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1433,12 +1433,13 @@ show(illustration)
 \begin{lstlisting}
 >>> for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
 ...     logical_tie, attack_point_signature = key_value_pair
-...     index_markup = Markup(index, Up).tiny().box()
-...     attach(index_markup, logical_tie.head)
+...     markup = Markup(index, Up)
+...     markup = markup.smaller().pad_around(0.5).box()
+...     attach(markup, logical_tie.head)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c1fbf923c4cbc77d42a8ea568c3536b5.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-b562fb0f5f4fae77558b8313231320ee.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1460,6 +1461,64 @@ show(illustration)
 </abjad>
 \end{comment}
 
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
+...     logical_tie, attack_point_signature = key_value_pair
+...     for markup in inspect_(logical_tie.head).get_markup():
+...         detached = detach(markup, logical_tie.head)
+...     string = '{}:{}'.format(
+...         attack_point_signature.division_index,
+...         attack_point_signature.logical_tie_index,
+...         )
+...     markup = Markup(string, Up)
+...     markup = markup.smaller().pad_around(0.5).box()
+...     attach(markup, logical_tie.head)
+...
+>>> show(illustration)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7ac60f430096c8928e649d9344ffcda9.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
+    logical_tie, attack_point_signature = key_value_pair
+    for markup in inspect_(logical_tie.head).get_markup():
+        detached = detach(markup, logical_tie.head)
+    phrase_position = attack_point_signature.phrase_position
+    markup = Markup.fraction(phrase_position)
+    markup = Markup(markup, Up)
+    markup = markup.smaller().pad_around(0.5).box()
+    attach(markup, logical_tie.head)
+
+show(illustration)
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
+...     logical_tie, attack_point_signature = key_value_pair
+...     for markup in inspect_(logical_tie.head).get_markup():
+...         detached = detach(markup, logical_tie.head)
+...     phrase_position = attack_point_signature.phrase_position
+...     markup = Markup.fraction(phrase_position)
+...     markup = Markup(markup, Up)
+...     markup = markup.smaller().pad_around(0.5).box()
+...     attach(markup, logical_tie.head)
+...
+>>> show(illustration)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-9e4e247741981b5582bafec5c48accfc.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
 for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
@@ -1475,6 +1534,26 @@ for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
 show(illustration)
 </abjad>
 \end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
+...     logical_tie, attack_point_signature = key_value_pair
+...     for markup in inspect_(logical_tie.head).get_markup():
+...         detached = detach(markup, logical_tie.head)
+...     segment_position = attack_point_signature.segment_position
+...     markup = Markup.fraction(segment_position)
+...     markup = Markup(markup, Up)
+...     markup = markup.smaller().pad_around(0.5).box()
+...     attach(markup, logical_tie.head)
+...
+>>> show(illustration)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-4e9383624bf57c348cbecff0a26a17e7.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
 \subsection{Grace handlers}
 
