@@ -88,6 +88,10 @@ hierarchies. All contexts need to be present in every concatenated segment,
 otherwise LilyPond will concatenate incorrectly. However, various typographic
 overrides can be employed to make it seem that a context has disappeared.
 
+The following defines a segment-maker with desired duration of 9 seconds, only
+3/4 meters permitted, a score-template comprised of two rhythmic staves, and a
+tempo or quarter-equals-60:
+
 \begin{comment}
 <abjad>
 segment_maker = consort.SegmentMaker(
@@ -119,6 +123,11 @@ segment_maker = consort.SegmentMaker(
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\noindent This segment-maker can be illustrated via \texttt{show()}, like many
+other objects in Abjad. Illustration here invokes the segment-maker's
+interpretation stage. The \texttt{verbose=False} flag prevents it from
+printing a considerable amount of diagnostic information:
+
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
 show(segment_maker, verbose=False)
@@ -134,6 +143,11 @@ show(segment_maker, verbose=False)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5551103a6156a0c950aaf871d1206d96.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\noindent By changing the tempo from quarter-equals-60 to quarter-equals-20,
+the overall notated duration of the segment shrinks by two thirds, but the
+duration in seconds remains the same. This mechanism allows segments to be
+planned relative one another in terms of their \enquote{actual} durations:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -159,8 +173,7 @@ show(slower_segment_maker, verbose=False)
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
-
-Most importantly, segment-makers may be configured with any number of
+\noindent Most importantly, segment-makers may be configured with any number of
 \emph{music settings}, which aggregate a timespan-maker, a target timespan and
 any number of \emph{music specifiers} -- bundles of materials which describe
 how phrases of music should be produced within a single voice.
@@ -572,8 +585,8 @@ music_setting = consort.MusicSetting(
 ...         ratio=(1, 3, 2),
 ...         ),
 ...     timespan_maker=consort.FloodedTimespanMaker(),
-...     violin_2='A',
-...     viola=('B', 'C', 'D'),
+...     violin_2_lh='A',
+...     viola_lh=('B', 'C', 'D'),
 ...     )
 \end{lstlisting}
 \end{singlespacing}
@@ -600,13 +613,13 @@ for voice_name, music_specifier_sequence in result.items():
 ...     print('VOICE:', voice_name)
 ...     print(format(music_specifier_sequence))
 ...
-('VOICE:', 'Violin 2 Performer Group')
+('VOICE:', 'Violin 2 Fingering Voice')
 consort.tools.MusicSpecifierSequence(
     music_specifiers=datastructuretools.CyclicTuple(
         ['A']
         ),
     )
-('VOICE:', 'Viola Performer Group')
+('VOICE:', 'Viola Fingering Voice')
 consort.tools.MusicSpecifierSequence(
     music_specifiers=datastructuretools.CyclicTuple(
         ['B', 'C', 'D']
@@ -702,26 +715,6 @@ timespans with the appropriate voice-name-to-music-specifier mapping, target
 timespans and layer, adding the contents of the resulting inventory to the
 growing maquette of performed and silent timespans produced by previous music
 settings. The populating process repeats until no more music settings remain.
-
-\subsection{Finding meters, revisited}
-\label{ssec:finding-meters-revisited}
-
-Consort's segment-maker implements a variation on the meter-fitting algorithm
-described in \autoref{sec:finding-meters}. Each segment-maker may be configured
-with an inventory of permitted meters, as well as maximum meter run length, in
-order to drive the meter fitting algorithm. When counting offsets,
-segment-makers include the offsets found on the performed timespans in their
-maquette but discard those from silent timespans, removing any influence from
-timespans created solely for silencing other timespans. The start offset of
-each performed timespan is weighed twice as much as their stop offset. This
-imbalance helps emphasize simultaneous phrase starts across different voices.
-Additionally, segment-maker's weight their own desired stop offset at a much
-higher value than any count derived from the offsets in their maquette. This
-attempts to influence the meter fitting process into selecting a series of
-meters which end as close to their desired stop offset as possible. After
-fitting meters, the segment-maker caches both the fitted meters and their
-boundaries as properties on its instance, affording later retrieval by other
-subroutines.
 
 \subsection{Resolving cascading overlap}
 \label{ssec:resolving-cascading-overlap}
@@ -1008,35 +1001,198 @@ show(demultiplexed_timespans, range_=(0, (21, 4)))
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
+\subsection{Finding meters, revisited}
+\label{ssec:finding-meters-revisited}
+
+Consort's segment-maker implements a variation on the meter-fitting algorithm
+described in \autoref{sec:finding-meters}. Each segment-maker may be configured
+with an inventory of permitted meters, as well as maximum meter run length, in
+order to drive the meter fitting algorithm. When counting offsets,
+segment-makers include the offsets found on the performed timespans in their
+maquette but discard those from silent timespans, removing any influence from
+timespans created solely for silencing other timespans. The start offset of
+each performed timespan is weighed twice as much as their stop offset. This
+imbalance helps emphasize simultaneous phrase starts across different voices.
+Additionally, segment-maker's weight their own desired stop offset at a much
+higher value than any count derived from the offsets in their maquette. This
+attempts to influence the meter fitting process into selecting a series of
+meters which end as close to their desired stop offset as possible. After
+fitting meters, the segment-maker caches both the fitted meters and their
+boundaries as properties on its instance, affording later retrieval by other
+subroutines.
+
 \subsection{Splitting, pruning \& consolidation}
 \label{ssec:splitting-pruning-and-consolidation}
 
-Split at meter boundaries
+Once meters have been fitted against the resolved maquette, the timespans in
+the maquette must be split at the measure boundaries outlined by those meters.
+Splitting guarantees that no timespans cross any bar-lines and that therefore
+no containers generated by those timespans when notating them as score
+components cross any bar-lines either. While LilyPond can typeset bar-line
+crossing notes, chords and even tuplets, the scores I have composed via Consort
+do not currently make use of such constructions. As described in
+\autoref{ssec:operations-on-timespans}, operations on timespans which change
+offsets -- generating new timespans in the process, rather than modifying the
+operated-upon timespan in-place -- preserve their unmodified properties via
+templating. Splitting is no exception, and those timespans split maintain their
+music specifiers, layer identifiers and voice-names:
 
-Performed timespans may be configured with a \texttt{minimum\_duration}
-property.
+\begin{comment}
+<abjad>
+performed_timespan = consort.PerformedTimespan(
+    layer=3,
+    start_offset=(1, 2),
+    stop_offset=(13, 8),
+    voice_name='Percussion Voice',
+    )
+shards = performed_timespan.split_at_offset((9, 16))
+print(format(shards))
+</abjad>
+\end{comment}
 
-Timespan-makers and timespan specifiers
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> performed_timespan = consort.PerformedTimespan(
+...     layer=3,
+...     start_offset=(1, 2),
+...     stop_offset=(13, 8),
+...     voice_name='Percussion Voice',
+...     )
+>>> shards = performed_timespan.split_at_offset((9, 16))
+>>> print(format(shards))
+timespantools.TimespanInventory(
+    [
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(1, 2),
+            stop_offset=durationtools.Offset(9, 16),
+            layer=3,
+            original_stop_offset=durationtools.Offset(13, 8),
+            voice_name='Percussion Voice',
+            ),
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(9, 16),
+            stop_offset=durationtools.Offset(13, 8),
+            layer=3,
+            original_start_offset=durationtools.Offset(1, 2),
+            voice_name='Percussion Voice',
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
-Why prune?
+\noindent After splitting, the segment-maker prunes timespans considered either
+too short or malformed. Performed timespans may be configured with a
+\texttt{minimum\_duration} property. Timespan-makers may set this property on
+timespans they create when they are themselves configured with a
+\texttt{TimespanSpecifier}. Any performed timespan whose actual duration is
+less than its minimum duration -- if it has been configured with a minimum
+duration -- will be removed from the maquette. Likewise any timespan with a
+duration of 0 -- therefore malformed -- will also be removed. While the latter
+pruning guarantees correctness of the maquette -- malformed timespans cannot be
+rendered as notation at all, and may cause other problems when partitioning due
+to ambiguities in their start / stop offset semantics --, the former allows for
+a kind of compositional control over the maquette. When notated with certain
+rhythm-makers, overly short divisions -- especially those shorter than
+1/8-duration -- may give undesirable results. Note that silent timespans have
+no configurable minimum duration. Their \texttt{minimum\_duration} always
+returns 0. They maintain this dummy property so that the segment-maker's
+timespan-pruning algorithms can treat silent and performed timespans
+identically.
 
-When notated with certain rhythm-makers, overly short divisions -- especially
-those of 1/16-duration and smaller -- may give undesirable results.
+Next, Consort's segment-maker \emph{consolidates} contiguous performed
+timespans with identical music specifiers, caching the durations of the
+consolidated timespans in a new timespan's \texttt{divisions} property. Each
+new consolidated timespan outlines the start and stop offset of its
+consolidated group:
 
-Note that silent timespans have no configurable version of the same property.
-Their \texttt{minimum\_duration} always returns 0. They maintain this dummy
-property so that the segment-maker's timespan-pruning algorithms can treat
-silent and performed timespans identically.
+\begin{comment}
+<abjad>
+timespans = timespantools.TimespanInventory([
+    consort.PerformedTimespan(
+        start_offset=0,
+        stop_offset=10,
+        music_specifier='foo',
+        ),
+    consort.PerformedTimespan(
+        start_offset=10,
+        stop_offset=20,
+        music_specifier='foo',
+        ),
+    consort.PerformedTimespan(
+        start_offset=20,
+        stop_offset=25,
+        music_specifier='bar',
+        ),
+    consort.PerformedTimespan(
+        start_offset=40,
+        stop_offset=50,
+        music_specifier='bar',
+        ),
+    consort.PerformedTimespan(
+        start_offset=50,
+        stop_offset=58,
+        music_specifier='bar',
+        ),
+    ])
+show(timespans)
+timespans = consort.SegmentMaker.consolidate_timespans(timespans)
+show(timespans)
+</abjad>
+\end{comment}
 
-Prune malformed timespans, as a precaution
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> timespans = timespantools.TimespanInventory([
+...     consort.PerformedTimespan(
+...         start_offset=0,
+...         stop_offset=10,
+...         music_specifier='foo',
+...         ),
+...     consort.PerformedTimespan(
+...         start_offset=10,
+...         stop_offset=20,
+...         music_specifier='foo',
+...         ),
+...     consort.PerformedTimespan(
+...         start_offset=20,
+...         stop_offset=25,
+...         music_specifier='bar',
+...         ),
+...     consort.PerformedTimespan(
+...         start_offset=40,
+...         stop_offset=50,
+...         music_specifier='bar',
+...         ),
+...     consort.PerformedTimespan(
+...         start_offset=50,
+...         stop_offset=58,
+...         music_specifier='bar',
+...         ),
+...     ])
+>>> show(timespans)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5f102816b004f8607b165bde7a9a4eb6.pdf}
+\begin{lstlisting}
+>>> timespans = consort.SegmentMaker.consolidate_timespans(timespans)
+>>> show(timespans)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-dabc429bbedead286bda82e3603f4457.pdf}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
 
-Consolidate contiguous performed timespans with identical music specifiers,
-caching the durations of the consolidated timespans in a new timespan's
-\texttt{divisions} property. The new timespan outlines the start and stop
-offset of the consolidated group.
-
-If the music specifier was configured with a minimum phrase duration, and the
-consolidated timespan falls under that threshold, it is discarded.
+\noindent Consolidation transforms performed timespans from free-floating cells
+in the maquette into components of larger phrases. The cached divisions also
+prepare these consolidated timespans for \emph{inscription} by defining the
+correct input for a rhythm-maker: a sequence of divisions. If the music
+specifier of the consolidated timespan was configured with a \emph{minimum
+phrase duration}, and the consolidated timespan falls under that threshold, it
+too is discarded.
 
 \subsection{Inscription}
 \label{ssec:inscription}
