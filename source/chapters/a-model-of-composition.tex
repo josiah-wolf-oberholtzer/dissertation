@@ -73,30 +73,20 @@ interpreting and visualizing.
 \subsection{Segment-makers}
 \label{ssec:segment-makers}
 
-\begin{markdown}
--   Permitted time signatures
--   Tempo
--   Desired duration
--   Score template
-    -   LilyPond will automatically concatenate scores with identical
-        context hierarchies. All contexts need to be present in every
-        concatenated segment, otherwise LilyPond will concatenate
-        incorrectly. However, we can use various typographic overrides to
-        make it appear that a context has disappeared.
-    -   Consort's ScoreTemplateManager helps create regularized score
-        templates.
--   Music settings
-\end{markdown}
-
 Composers specify segments by creating and progressively configuring
 \emph{segment-makers}, classes which conceptually mirror the rhythm- and
 timespan-makers described in \autoref{chap:time-tools}, but on a much larger
-scale. Such configuration parameters include score template, tempo, permitted
-meters, and desired duration. Most importantly, segment-makers may be
-configured with any number of \emph{music settings}, which aggregate a
-timespan-maker, a target timespan and any number of \emph{music specifiers} --
-bundles of materials which describe how phrases of music should be produced
-within a single voice.
+scale. Such configuration parameters include tempo, permitted meters, desired
+duration, and score template. Score templates, as outlined in
+\autoref{ssec:score-templates}, are notation factories which build scores
+comprised of staff groups, staves, voices, clefs and instruments, as necessary
+to model the context hierarchy of a score to which no count-time components
+have yet been added. All segment-makers in a score project must use the same
+score template if they are to appear contiguously in the complete typeset
+score. LilyPond will automatically concatenate scores with identical context
+hierarchies. All contexts need to be present in every concatenated segment,
+otherwise LilyPond will concatenate incorrectly. However, various typographic
+overrides can be employed to make it seem that a context has disappeared.
 
 \begin{comment}
 <abjad>
@@ -168,6 +158,12 @@ show(slower_segment_maker, verbose=False)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-dac8ffa35eb4dae93ba418fbf1eaf390.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+
+Most importantly, segment-makers may be configured with any number of
+\emph{music settings}, which aggregate a timespan-maker, a target timespan and
+any number of \emph{music specifiers} -- bundles of materials which describe
+how phrases of music should be produced within a single voice.
 
 \subsection{Music settings}
 \label{ssec:music-settings}
@@ -453,8 +449,8 @@ A music specifier's \texttt{seed} property
 
 A music specifier's \texttt{minimum\_phrase\_duration} property
 
-\section{Interpretation}
-\label{sec:interpretation}
+\section{Rhythmic interpretation}
+\label{sec:rhythmic-interpretation}
 
 At any point during specification, a segment-maker may be interpreted to
 produce an illustration. Score interpretation proceeds conceptually much like
@@ -475,9 +471,6 @@ interpretation -- with the first stage producing a score populated solely with
 rhythmic information, and the second stage applying grace notes, pitches,
 indicators, spanners and various typographic overrides to the
 previously-constructed rhythmic skeleton.
-
-\section{Rhythmic interpretation}
-\label{sec:rhythmic-interpretation}
 
 Seen from a high level, rhythmic interpretation proceeds from coarse- to
 fine-grained. The segment-maker creates a *maquette* -- a model of the locations
@@ -563,8 +556,8 @@ music_setting = consort.MusicSetting(
         ratio=(1, 3, 2),
         ),
     timespan_maker=consort.FloodedTimespanMaker(),
-    violin_2='A',
-    viola=('B', 'C', 'D'),
+    violin_2_lh='A',
+    viola_lh=('B', 'C', 'D'),
     )
 </abjad>
 \end{comment}
@@ -1146,13 +1139,13 @@ After the timespan pruning outlined in
 \autoref{ssec:splitting-pruning-and-consolidation}, and the possibility of gaps
 introduced due to rest consolidation as outlined in \autoref{ssec:inscription},
 the overall stop offset of the maquette -- not the stop offset derived from the
-segment-maker's desired duration -- may have shifted earlier.
-
-Depending on the degree of shift, timespans in the maquette may no longer occur
-during one or more of the implicit timespans of the previously fitted meters.
-
-Segment-makers may be configured to discard these silences via their
-\texttt{discard\_final\_silence} property.
+segment-maker's desired duration -- may have shifted earlier. Depending on the
+degree of shift, timespans in the maquette may no longer occur during one or
+more of the implicit timespans of the previously fitted meters. Segment-makers
+may be configured to discard these silences via their
+\texttt{discard\_final\_silence} property, progressively removing meters from
+the end of the list of fitted meters until one overlaps at least one performed
+timespan in the maquette.
 
 \subsection{Populating dependent timespans}
 \label{ssec:populating-dependent-timespans}
@@ -1208,55 +1201,214 @@ music-specifier to the phrase and instantiates a performed timespan annotated
 with that phrase, adding it to the current voice's timespan inventory in the
 demultiplex maquette.
 
-\subsection{Rewriting meters}
-\label{ssec:rewriting-meters}
+\subsection{Rewriting meters, revisited}
+\label{ssec:rewriting-meters-revisited}
 
-\begin{markdown}
--   Meter timespans
--   Multi-measure rests
--   Staff line spanners for broken score appearance
--   Cleaning up logical ties
-\end{markdown}
+Once its maquette is completely populated, Consort's segment-maker performs
+meter rewriting. This proceeds in a more elaborate manner than the meter
+rewriting process as outlined in \autoref{sec:rewriting-meters} and
+\autoref{ssec:rewriting-meters}, and involves a number of notable differences.
+
+For reasons of computational efficiency, Consort rewrites the meters in
+each phrase of music annotating each performed timespan in the maquette before
+those phrases have even been inserted into the segment-maker's score. Meter
+rewriting involves potentially many alterations to the contents of containers
+due to fusing and splitting, as well as many duration and offset lookups.
+Anytime a component is replaced or its duration changed, the cached offsets of
+components located in the score tree after the changed component as well as
+the durations of its parents are invalidated. They must be recomputed and
+re-cached on the next offset lookup performed on any component the score tree.
+Delaying inserting each inscribed timespan's music into the segment-maker's
+score guarantees that that music's score depth remains shallow, and therefore
+limits the complexity of offset calculation during rewriting.
+
+When beginning the meter rewriting process, the segment-maker converts its
+fitted meters into a timespan collection -- Consort's optimized timespan
+inventory class -- containing timespans annotated with those fitted meters, one
+per timespan.
+
+\begin{comment}
+<abjad>
+meters = metertools.MeterInventory([(3, 4), (2, 4), (6, 8), (5, 16)])
+meter_timespans = consort.SegmentMaker.meters_to_timespans(meters)
+print(format(meter_timespans))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> meters = metertools.MeterInventory([(3, 4), (2, 4), (6, 8), (5, 16)])
+>>> meter_timespans = consort.SegmentMaker.meters_to_timespans(meters)
+>>> print(format(meter_timespans))
+consort.tools.TimespanCollection(
+    [
+        timespantools.AnnotatedTimespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(3, 4),
+            annotation=metertools.Meter(
+                '(3/4 (1/4 1/4 1/4))'
+                ),
+            ),
+        timespantools.AnnotatedTimespan(
+            start_offset=durationtools.Offset(3, 4),
+            stop_offset=durationtools.Offset(5, 4),
+            annotation=metertools.Meter(
+                '(2/4 (1/4 1/4))'
+                ),
+            ),
+        timespantools.AnnotatedTimespan(
+            start_offset=durationtools.Offset(5, 4),
+            stop_offset=durationtools.Offset(2, 1),
+            annotation=metertools.Meter(
+                '(6/8 ((3/8 (1/8 1/8 1/8)) (3/8 (1/8 1/8 1/8))))'
+                ),
+            ),
+        timespantools.AnnotatedTimespan(
+            start_offset=durationtools.Offset(2, 1),
+            stop_offset=durationtools.Offset(37, 16),
+            annotation=metertools.Meter(
+                '(5/16 (1/16 1/16 1/16 1/16 1/16))'
+                ),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent Representing meters as timespans provides two important benefits.
+First, meters intersecting a given division within a phrase can be efficiently
+located using the search methods implemented on \texttt{TimespanCollection}.
+Second, the time relation methods implemented on \texttt{Timespan} can be used
+to test if a given division's timespan is congruent -- that is, possesses an
+identical start and stop offset -- to a meter's timespan. Divisions containing
+solely rests which are also congruent to a meter timespan can be rewritten with
+full-bar rests.
+
+The segment-maker then proceeds through each demultiplexed timespan inventory
+in the maquette, iterating over each timespan, then over each division in that
+performed timespan's music. Timespans whose rhythm-maker forbids meter
+rewriting -- via the \texttt{forbid\_meter\_rewriting} flag on an optional
+\texttt{DurationSpellingSpecifier} -- are skipped over.\footnote{It may be
+undesirable to rewrite a rhythm's meter in certain situations, particularly if
+a composer is trying to avoid the introduction of ties or dots for whatever
+reason.} In order to determine which meter governs a division, that division's
+timespan must be retrieved and then translated before it can be used to search
+the inventory of meter timespans. Because each phrase of music annotating each
+performed timespan has not yet been inserted into the score, they all express
+their start offset as 0. Likewise, each phrase's child divisions express their
+start offsets relative to their parent phrase's 0 start offset. Translating
+each division's timespan relative to the start offset of the performed timespan
+annotated by that division's phrase provides a useful search target for the
+meter timespan inventory. The translated division timespan represents the
+timespan that division \emph{would} occupy if its phrase, and all other
+phrases, had already been inserted into the appropriate voice in the score.
+Intersecting meters can then be found through a simple search and retranslated
+relative to the current performed timespan's start offset, giving their
+appropriate location within the not-yet-inserted phrase. The following
+operations outline the translation and search process:
+
+\begin{comment}
+<abjad>
+inscribed_timespan = consort.PerformedTimespan(
+    start_offset=(5, 4),
+    stop_offset=(9, 5),
+    music=Container("{ c'4 }{ c'2 }{ c'4 }"),
+    )
+division = inscribed_timespan.music[1]
+division_timespan = inspect_(division).get_timespan()
+print(format(division_timespan))
+translation = inscribed_timespan.start_offset
+division_timespan = division_timespan.translate(translation)
+print(format(division_timespan))
+meter_timespan = meter_timespans.find_timespans_intersecting_timespan(
+    division_timespan)[0]
+print(format(meter_timespan))
+translation = -1 * division_timespan.start_offset
+meter_timespan = meter_timespan.translate(translation)
+print(format(meter_timespan))
+</abjad>
+\end{comment}
+
+%%% ABJADBOOK START %%%
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> inscribed_timespan = consort.PerformedTimespan(
+...     start_offset=(5, 4),
+...     stop_offset=(9, 5),
+...     music=Container("{ c'4 }{ c'2 }{ c'4 }"),
+...     )
+>>> division = inscribed_timespan.music[1]
+>>> division_timespan = inspect_(division).get_timespan()
+>>> print(format(division_timespan))
+timespantools.Timespan(
+    start_offset=durationtools.Offset(1, 4),
+    stop_offset=durationtools.Offset(3, 4),
+    )
+\end{lstlisting}
+\begin{lstlisting}
+>>> translation = inscribed_timespan.start_offset
+>>> division_timespan = division_timespan.translate(translation)
+>>> print(format(division_timespan))
+timespantools.Timespan(
+    start_offset=durationtools.Offset(3, 2),
+    stop_offset=durationtools.Offset(2, 1),
+    )
+\end{lstlisting}
+\begin{lstlisting}
+>>> meter_timespan = meter_timespans.find_timespans_intersecting_timespan(
+...     division_timespan)[0]
+>>> print(format(meter_timespan))
+timespantools.AnnotatedTimespan(
+    start_offset=durationtools.Offset(5, 4),
+    stop_offset=durationtools.Offset(2, 1),
+    annotation=metertools.Meter(
+        '(6/8 ((3/8 (1/8 1/8 1/8)) (3/8 (1/8 1/8 1/8))))'
+        ),
+    )
+\end{lstlisting}
+\begin{lstlisting}
+>>> translation = -1 * division_timespan.start_offset
+>>> meter_timespan = meter_timespan.translate(translation)
+>>> print(format(meter_timespan))
+timespantools.AnnotatedTimespan(
+    start_offset=durationtools.Offset(-1, 4),
+    stop_offset=durationtools.Offset(1, 2),
+    annotation=metertools.Meter(
+        '(6/8 ((3/8 (1/8 1/8 1/8)) (3/8 (1/8 1/8 1/8))))'
+        ),
+    )
+\end{lstlisting}
+\end{singlespacing}
+%%% ABJADBOOK END %%%
+
+\noindent With the appropriate meters selected, rewriting continues very much
+as described in \autoref{ssec:rewriting-meters}. Tuplets are rewritten solely
+with respect for the pre-prolated contents durations, and unprolated containers
+are rewritten with respect for their intersecting meter, with an initial
+offsets applied to the meter rewriting process if they happen to start later
+than their meter. Additionally, Consort's meter rewriting tests silent meters
+-- those whose leaves consist entirely of rests -- for congruency with the
+current meter. Any division consisting solely of rests which also begins and
+ends at the start and stop offsets of a meter's timespan can be rewritten
+instead as a single full-bar rest. The segment-maker also attaches a
+\texttt{StaffLinesSpanner} to the silent division, which collapses the staff
+down to a single line, giving the score a fragmented appearance. Finally,
+Consort's segment-maker performs a logical-tie cleanup pass, fusing all
+2-length logical ties consisting of matched pairs of 1/16 or 1/32 notes. This
+takes care of some possible artifacts of heavily subdivided meter-rewriting,
+and makes the final rhythmic output generally more readable.
 
 \subsection{Populating the score}
 \label{ssec:populating-the-score}
 
-Iterates through the maquette and unpopulated score in parallel, extracting the
-inscribed music from each timespan in the maquette and inserting those phrases
-into the score in the appropriate voice.
-
-Additionally, a time-signature context is created and inserted at the top
-of the score if the score does not already contain such a context.
-
-The segment-maker populates this time-signature context with measures filled
-with typographic spacer-skips, to create the appearance of floating
-time-signature indications.
-
-\subsection{Collecting attack points}
-
-Many of the handlers used during non-rhythmic interpretation rely on
-information about each pitched logical tie in the score.
-
-Including the position of the logical tie's head in the score regardless of
-voice -- its first leaf, and effectively its attack point -- as well as that
-head's index both within the division it occurs within, as well as which
-division within its phrase it occurs within.
-
-\begin{markdown}
--   AttackPointSignature
-    -   division_index
-    -   phrase_index
-    -   logical_tie_index
-    -   phrase_position (scaled position within the phrase)
-    -   division_position (scaled position within the division)
-    -   segment_position (scaled position within the entire segment)
-    -   is_first_of_division
-    -   is_first_of_phrase
--   Elucidate voice / phrase / division structure
--   SegmentMaker.logical_tie_to_division()
--   SegmentMaker.logical_tie_to_phrase()
--   SegmentMaker.logical_tie_to_voice()
-\end{markdown}
+After meter-rewriting, the segment-maker can finally populate its score. To do
+so, it iterates through its timespan maquette and still-unpopulated score in
+parallel, extracting the inscribed music from each performed timespan in the
+maquette and inserting those phrases into the score in the appropriate voice.
 
 \section{Non-rhythmic interpretation}
 
@@ -1492,6 +1644,32 @@ show(illustration)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-80f54cbdf2aeef9dd896ffa785f19332.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
+
+\subsection{Collecting attack points}
+
+Many of the handlers used during non-rhythmic interpretation rely on
+information about each pitched logical tie in the score.
+
+Including the position of the logical tie's head in the score regardless of
+voice -- its first leaf, and effectively its attack point -- as well as that
+head's index both within the division it occurs within, as well as which
+division within its phrase it occurs within.
+
+\begin{markdown}
+-   AttackPointSignature
+    -   division_index
+    -   phrase_index
+    -   logical_tie_index
+    -   phrase_position (scaled position within the phrase)
+    -   division_position (scaled position within the division)
+    -   segment_position (scaled position within the entire segment)
+    -   is_first_of_division
+    -   is_first_of_phrase
+-   Elucidate voice / phrase / division structure
+-   SegmentMaker.logical_tie_to_division()
+-   SegmentMaker.logical_tie_to_phrase()
+-   SegmentMaker.logical_tie_to_voice()
+\end{markdown}
 
 \subsection{Grace handlers}
 
@@ -2404,6 +2582,11 @@ a stylesheet located relative to a path defined on the segment-maker.
 By subclasses Consort's segment-maker, individual score packages can cause
 their own segment-makers to automatically locate the appropriate stylesheet
 file relative to the package where that segment-maker subclass was defined.
+
+A time-signature context is created and inserted at the top of the score if the
+score does not already contain such a context. The segment-maker populates this
+time-signature context with measures filled with typographic spacer-skips, to
+create the appearance of floating time-signature indications.
 
 \begin{markdown}
 -   Score configuration
