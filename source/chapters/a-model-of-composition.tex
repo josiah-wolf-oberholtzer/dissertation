@@ -226,23 +226,30 @@ segment definition's namespace.
 \label{ssec:music-specifiers}
 
 Music specifiers bundle all of the information necessary for a segment-maker to
-generate notation for a sequence of divisions, grouped as a phrase.
+generate the notational content for a sequence of one or more divisions,
+grouped as a phrase. This information includes optional rhythm-maker,
+grace-handler, pitch-handler and attachment-handler definitions -- all classes
+which describe strategies for creating or modifying notation --, as well as a
+variety of other properties including an optional \emph{seed} and \emph{minimum
+phrase duration}, described further in
+\autoref{ssec:splitting-pruning-and-consolidation}.
 
-a rhythm-maker, grace-handler, pitch-handler and attachment-handler, as well as
-a variety of other properties.
-
-As demonstrated in \autoref{ssec:dependent-timespan-makers}, dependent
-timespan-makers can be configured to create timespans according to the
-disposition of performed timespans associated with specific voices.
-
+Music specifiers can also be configured with a \emph{labels}: a tuple of one or
+more arbitrary strings, identifying some quality of those performed timespans.
+As demonstrated in \autoref{ssec:dependent-timespan-makers}, composers
+configure dependent timespan-makers in order to create timespans according to
+the disposition of performed timespans associated with specific voices.
 Dependent timespan-makers can also be configured to select depended-upon
-timespans based on the \texttt{label} property of those performed timespans'
-music specifiers.
+timespans based on the \texttt{labels} property of those performed timespans'
+music specifiers, allowing an additional category for filtering. This helps
+model the situation of creating a pedal voice mirroring not simply a pianist's
+left- and right-hand events, but only those that actually depress keys,
+ignoring guero events or other off-the-key percussive techniques for which no
+pedaling is desired.
 
-This helps model the situation of creating a pedal voice mirroring not simply a
-pianist's left- and right-hand events, but only those that actually depress
-keys, ignoring guero events or other off-the-key percussive techniques for
-which no pedaling is desired.
+Consider the following timespan inventory, populated with performed timespans
+associated with one of two voices, and annotated with music specifiers which
+are either labeled or not:
 
 \begin{comment}
 <abjad>
@@ -366,6 +373,10 @@ show(timespan_inventory, key='voice_name')
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent A dependent timespan-maker, configured to select timespans associated
+with \enquote{Voice 1} and \enquote{Voice 2} produces dependent timespans in
+the manner illustrated in \autoref{ssec:dependent-timespan-makers}:
+
 \begin{comment}
 <abjad>
 dependent_timespan_maker = consort.DependentTimespanMaker(
@@ -399,6 +410,11 @@ show(result, key='voice_name')
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-cacf84e69a9aeb754e2908597bc776a2.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Reconfiguring the above dependent timespan-maker to additionally
+filter timespans whose music specifier is labeled \enquote{labeled} produces a
+more restricted output. Note that the unlabeled 6/1-8/1 timespan in
+\enquote{Voice 1} and the 10/1-25/2 timespan in \enquote{Voice 2} are ignored:
 
 \begin{comment}
 <abjad>
@@ -434,33 +450,232 @@ show(result, key='voice_name')
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\begin{markdown}
--   A bundle of descriptors for what kind of music should fill a series of
-    1 or more timespans.
--   All of the descriptors are optional.
--   Rhythm-makers
--   Grace-handlers
--   Pitch-handlers
--   Attachment-handlers
--   Labels
-    -   This works in tandem with DependentTimespanMaker.
-    -   Example? Piano music with two hands and pedaling. The
-        hand-performed music might involve key presses, or it might involve
-        percussive techniques. All of the techniques that require pedaling
-        should be labeled 'pedaled'. A DependentTimespanMaker for the pedal
-        context can then be configured to look at timespans for both the LH
-        and RH of the piano, but only those timespans configured with a
-        music specifier labeled 'pedaled'.
-    -   Demonstrate.
--   minimum phrase duration
-    -   (should this be hoisted into PerformedTimespan?
--   seed
--   Composite music specifiers
-\end{markdown}
+Music specifiers can be grouped into sequences called, unsurprisingly, music
+specifier sequences, allowing a music setting to demand that the timespans it
+creates associated with a certain voice should be annotated with multiple music
+specifiers in a patterned way:
 
-A music specifier's \texttt{seed} property
+\begin{comment}
+<abjad>
+music_specifier_sequence = consort.MusicSpecifierSequence(
+    music_specifiers=['A', 'B', 'C'],
+    )
+</abjad>
+\end{comment}
 
-A music specifier's \texttt{minimum\_phrase\_duration} property
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> music_specifier_sequence = consort.MusicSpecifierSequence(
+...     music_specifiers=['A', 'B', 'C'],
+...     )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Recall from \autoref{ssec:talea-timespan-makers} that talea
+timespan-makers can create contiguous groups of 1 or more timespan associated
+with a specific voice. Music specifier sequences can be used to annotated a
+different music specifier to each timespan in a contiguous group, or to
+annotated a different music specifier to \emph{each} contiguous group. This
+behavior is controlled via the music specifier's \emph{application rate}
+property.
+
+\begin{comment}
+<abjad>
+music_specifiers = {'Voice': music_specifier_sequence}
+target_timespan = timespantools.Timespan(0, (7, 4))
+timespan_maker = consort.TaleaTimespanMaker(
+    playing_groupings=(3,),
+    )
+timespan_inventory = timespan_maker(
+    music_specifiers=music_specifiers,
+    target_timespan=target_timespan,
+    )
+print(format(timespan_inventory))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> music_specifiers = {'Voice': music_specifier_sequence}
+>>> target_timespan = timespantools.Timespan(0, (7, 4))
+>>> timespan_maker = consort.TaleaTimespanMaker(
+...     playing_groupings=(3,),
+...     )
+>>> timespan_inventory = timespan_maker(
+...     music_specifiers=music_specifiers,
+...     target_timespan=target_timespan,
+...     )
+>>> print(format(timespan_inventory))
+timespantools.TimespanInventory(
+    [
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(1, 4),
+            music_specifier='A',
+            voice_name='Voice',
+            ),
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(1, 4),
+            stop_offset=durationtools.Offset(1, 2),
+            music_specifier='A',
+            voice_name='Voice',
+            ),
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(1, 2),
+            stop_offset=durationtools.Offset(3, 4),
+            music_specifier='A',
+            voice_name='Voice',
+            ),
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(1, 1),
+            stop_offset=durationtools.Offset(5, 4),
+            music_specifier='B',
+            voice_name='Voice',
+            ),
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(5, 4),
+            stop_offset=durationtools.Offset(3, 2),
+            music_specifier='B',
+            voice_name='Voice',
+            ),
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(3, 2),
+            stop_offset=durationtools.Offset(7, 4),
+            music_specifier='B',
+            voice_name='Voice',
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Changing the application rate from the default value of
+\enquote{phrase} to \enquote{division} causes a different music specifier from
+the sequence to be annotated to each timespan, rather than each contiguous
+group of timespans.
+
+\begin{comment}
+<abjad>
+music_specifier_sequence = new(
+    music_specifier_sequence,
+    application_rate='division',
+    )
+music_specifiers = {'Voice': music_specifier_sequence}
+timespan_inventory = timespan_maker(
+    music_specifiers=music_specifiers,
+    target_timespan=target_timespan,
+    )
+print(format(timespan_inventory))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> music_specifier_sequence = consort.MusicSpecifierSequence(
+...     application_rate='division',
+...     music_specifiers=['A', 'B', 'C'],
+...     )
+>>> music_specifiers = {'Voice': music_specifier_sequence}
+>>> timespan_inventory = timespan_maker(
+...     music_specifiers=music_specifiers,
+...     target_timespan=target_timespan,
+...     )
+>>> print(format(timespan_inventory))
+timespantools.TimespanInventory(
+    [
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(1, 4),
+            music_specifier='A',
+            voice_name='Voice',
+            ),
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(1, 4),
+            stop_offset=durationtools.Offset(1, 2),
+            music_specifier='B',
+            voice_name='Voice',
+            ),
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(1, 2),
+            stop_offset=durationtools.Offset(3, 4),
+            music_specifier='C',
+            voice_name='Voice',
+            ),
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(1, 1),
+            stop_offset=durationtools.Offset(5, 4),
+            music_specifier='B',
+            voice_name='Voice',
+            ),
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(5, 4),
+            stop_offset=durationtools.Offset(3, 2),
+            music_specifier='C',
+            voice_name='Voice',
+            ),
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(3, 2),
+            stop_offset=durationtools.Offset(7, 4),
+            music_specifier='A',
+            voice_name='Voice',
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+Consort provides an additional variation of music specifier called a
+\emph{composite music specifier}, for use when defining music settings.
+Composite music specifiers allow for the definition of music for voices in
+tandem, such as the fingering- and bowing-voice in a split-hands string
+notation. When passed as part of a voice-name-to-music-specifier mapping to a
+timespan-maker, that timespan-maker will create timespans for the first voice
+of the composite music specifier and then create timespans for the second voice
+as though it had its own dependent timespan-maker solely for those timespans.
+This behavior ensures a degree of synchronization between pairs of voices which
+should always appear at the same time in a score.
+
+\begin{comment}
+<abjad>
+composite_music_specifier = consort.CompositeMusicSpecifier(
+    primary_music_specifier='one',
+    primary_voice_name='Viola 1 RH',
+    rotation_indices=(0, 1, -1),
+    secondary_voice_name='Viola 1 LH',
+    secondary_music_specifier=consort.MusicSpecifierSequence(
+        application_rate='phrase',
+        music_specifiers=['two', 'three', 'four'],
+        ),
+    )
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> composite_music_specifier = consort.CompositeMusicSpecifier(
+...     primary_music_specifier='one',
+...     primary_voice_name='Viola 1 RH',
+...     rotation_indices=(0, 1, -1),
+...     secondary_voice_name='Viola 1 LH',
+...     secondary_music_specifier=consort.MusicSpecifierSequence(
+...         application_rate='phrase',
+...         music_specifiers=['two', 'three', 'four'],
+...         ),
+...     )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
 
 \section{Rhythmic interpretation}
 \label{sec:rhythmic-interpretation}
