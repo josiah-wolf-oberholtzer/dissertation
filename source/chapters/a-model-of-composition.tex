@@ -1066,52 +1066,15 @@ consolidated timespan falls under that threshold, it is discarded.
 parseable = r'''
 \new Voice {
     {
-        {
-            \time 4/4
-            r4
-            c4
-        }
-        {
-            \times 2/3 {
-                c4
-                r8
-            }
-            r4
-        }
-        {
-            \time 4/4
-            r4
-            c4.
-            r8
-        }
-        {
-            r4
-            \break
-        }
-        {
-            \time 3/4
-            r4
-        }
-        {
-            c8
-            c4.
-        }
-        \times 2/3 {
-            \time 2/4
-            r4
-            c4
-            c4
-        }
-        {
-            \time 4/4
-            c4.
-            r8
-        }
-        {
-            r8
-            c4
-            r8
-        }
+        { \time 4/4 r4 c4 }
+        { \times 2/3 { c4 r8 } r4 }
+        { \time 4/4 r4 c4. r8 }
+        { r4 \break }
+        { \time 3/4 r4 }
+        { c8 c4. }
+        \times 2/3 { \time 2/4 r4 c4 c4 }
+        { \time 4/4 c4. r8 }
+        { r8 c4 r8 }
     }
 }
 '''
@@ -1128,52 +1091,15 @@ show(unconsolidated_staff)
 >>> parseable = r'''
 ... \new Voice {
 ...     {
-...         {
-...             \time 4/4
-...             r4
-...             c4
-...         }
-...         {
-...             \times 2/3 {
-...                 c4
-...                 r8
-...             }
-...             r4
-...         }
-...         {
-...             \time 4/4
-...             r4
-...             c4.
-...             r8
-...         }
-...         {
-...             r4
-...             \break
-...         }
-...         {
-...             \time 3/4
-...             r4
-...         }
-...         {
-...             c8
-...             c4.
-...         }
-...         \times 2/3 {
-...             \time 2/4
-...             r4
-...             c4
-...             c4
-...         }
-...         {
-...             \time 4/4
-...             c4.
-...             r8
-...         }
-...         {
-...             r8
-...             c4
-...             r8
-...         }
+...         { \time 4/4 r4 c4 }
+...         { \times 2/3 { c4 r8 } r4 }
+...         { \time 4/4 r4 c4. r8 }
+...         { r4 \break }
+...         { \time 3/4 r4 }
+...         { c8 c4. }
+...         \times 2/3 { \time 2/4 r4 c4 c4 }
+...         { \time 4/4 c4. r8 }
+...         { r8 c4 r8 }
 ...     }
 ... }
 ... '''
@@ -1354,7 +1280,6 @@ music_setting = consort.MusicSetting(
     timespan_maker=timespan_maker,
     v1=music_specifier,
     v2=music_specifier,
-    v3=music_specifier,
     )
 segment_maker = consort.SegmentMaker(
     desired_duration_in_seconds=8,
@@ -1362,7 +1287,7 @@ segment_maker = consort.SegmentMaker(
     omit_stylesheets=True,
     permitted_time_signatures=[(2, 4), (5, 16), (3, 4)],
     score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
-        staff_count=3,
+        staff_count=2,
         with_clefs=True,
         ),
     settings=[music_setting],
@@ -1394,7 +1319,6 @@ show(illustration)
 ...     timespan_maker=timespan_maker,
 ...     v1=music_specifier,
 ...     v2=music_specifier,
-...     v3=music_specifier,
 ...     )
 >>> segment_maker = consort.SegmentMaker(
 ...     desired_duration_in_seconds=8,
@@ -1402,7 +1326,7 @@ show(illustration)
 ...     omit_stylesheets=True,
 ...     permitted_time_signatures=[(2, 4), (5, 16), (3, 4)],
 ...     score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
-...         staff_count=3,
+...         staff_count=2,
 ...         with_clefs=True,
 ...         ),
 ...     settings=[music_setting],
@@ -1411,7 +1335,7 @@ show(illustration)
 >>> illustration = segment_maker(annotate=True, verbose=False)
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-28bd42514281017588e67e2de044aabc.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-140281b0d71dbf5aae188d9043c542cf.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1439,7 +1363,7 @@ show(illustration)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-b562fb0f5f4fae77558b8313231320ee.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c8b990269b792e5f5a1bb7a581945dcf.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1479,7 +1403,7 @@ show(illustration)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7ac60f430096c8928e649d9344ffcda9.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-20ecb4d9ff876902b4f8129814dfda62.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1515,7 +1439,7 @@ show(illustration)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-9e4e247741981b5582bafec5c48accfc.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8a7f2e5f06a7847e71709bc13d2bd0c7.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 
@@ -1551,7 +1475,7 @@ show(illustration)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-4e9383624bf57c348cbecff0a26a17e7.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-80f54cbdf2aeef9dd896ffa785f19332.pdf}
 \end{singlespacing}
 %%% ABJADBOOK END %%%
 

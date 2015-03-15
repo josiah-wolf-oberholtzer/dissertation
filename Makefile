@@ -6,7 +6,7 @@ all:
 	make open
 
 fast:
-	make abjad/book
+	make abjad/book/composition
 	make compile
 	make open
 
