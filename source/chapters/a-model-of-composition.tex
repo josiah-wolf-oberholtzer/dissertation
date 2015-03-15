@@ -450,10 +450,10 @@ show(result, key='voice_name')
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Music specifiers can be grouped into sequences called, unsurprisingly, music
-specifier sequences, allowing a music setting to demand that the timespans it
-creates associated with a certain voice should be annotated with multiple music
-specifiers in a patterned way:
+\noindent Music specifiers can be grouped into sequences called,
+unsurprisingly, music specifier sequences, allowing a music setting to specify
+that the timespans it creates associated with a certain voice should be
+annotated with multiple different music specifiers in a patterned way:
 
 \begin{comment}
 <abjad>
@@ -480,7 +480,7 @@ with a specific voice. Music specifier sequences can be used to annotated a
 different music specifier to each timespan in a contiguous group, or to
 annotated a different music specifier to \emph{each} contiguous group. This
 behavior is controlled via the music specifier's \emph{application rate}
-property.
+property:
 
 \begin{comment}
 <abjad>
@@ -558,7 +558,7 @@ timespantools.TimespanInventory(
 \noindent Changing the application rate from the default value of
 \enquote{phrase} to \enquote{division} causes a different music specifier from
 the sequence to be annotated to each timespan, rather than each contiguous
-group of timespans.
+group of timespans:
 
 \begin{comment}
 <abjad>
@@ -579,9 +579,9 @@ print(format(timespan_inventory))
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> music_specifier_sequence = consort.MusicSpecifierSequence(
+>>> music_specifier_sequence = new(
+...     music_specifier_sequence,
 ...     application_rate='division',
-...     music_specifiers=['A', 'B', 'C'],
 ...     )
 >>> music_specifiers = {'Voice': music_specifier_sequence}
 >>> timespan_inventory = timespan_maker(
@@ -634,7 +634,7 @@ timespantools.TimespanInventory(
 \end{abjadbookoutput}
 
 Consort provides an additional variation of music specifier called a
-\emph{composite music specifier}, for use when defining music settings.
+\emph{composite music specifier}.
 Composite music specifiers allow for the definition of music for voices in
 tandem, such as the fingering- and bowing-voice in a split-hands string
 notation. When passed as part of a voice-name-to-music-specifier mapping to a
@@ -642,7 +642,7 @@ timespan-maker, that timespan-maker will create timespans for the first voice
 of the composite music specifier and then create timespans for the second voice
 as though it had its own dependent timespan-maker solely for those timespans.
 This behavior ensures a degree of synchronization between pairs of voices which
-should always appear at the same time in a score.
+should always appear at the same time in a score:
 
 \begin{comment}
 <abjad>
@@ -656,6 +656,12 @@ composite_music_specifier = consort.CompositeMusicSpecifier(
         music_specifiers=['two', 'three', 'four'],
         ),
     )
+music_specifiers = {'Viola 1': composite_music_specifier}
+timespan_inventory = timespan_maker(
+    music_specifiers=music_specifiers,
+    target_timespan=target_timespan,
+    )
+show(timespan_inventory, key='voice_name')
 </abjad>
 \end{comment}
 
@@ -673,7 +679,14 @@ composite_music_specifier = consort.CompositeMusicSpecifier(
 ...         music_specifiers=['two', 'three', 'four'],
 ...         ),
 ...     )
+>>> music_specifiers = {'Viola 1': composite_music_specifier}
+>>> timespan_inventory = timespan_maker(
+...     music_specifiers=music_specifiers,
+...     target_timespan=target_timespan,
+...     )
+>>> show(timespan_inventory, key='voice_name')
 \end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8366833a47e42f51e9db864d5c6ad709.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -786,6 +799,12 @@ music_setting = consort.MusicSetting(
     timespan_maker=consort.FloodedTimespanMaker(),
     violin_2_lh='A',
     viola_lh=('B', 'C', 'D'),
+    cello=consort.CompositeMusicSpecifier(
+        primary_music_specifier='one',
+        secondary_music_specifier=consort.MusicSpecifierSequence(
+            music_specifiers=['two', 'three', 'four'],
+            ),
+        )
     )
 </abjad>
 \end{comment}
@@ -802,19 +821,31 @@ music_setting = consort.MusicSetting(
 ...     timespan_maker=consort.FloodedTimespanMaker(),
 ...     violin_2_lh='A',
 ...     viola_lh=('B', 'C', 'D'),
+...     cello=consort.CompositeMusicSpecifier(
+...         primary_music_specifier='one',
+...         secondary_music_specifier=consort.MusicSpecifierSequence(
+...             music_specifiers=['two', 'three', 'four'],
+...             ),
+...         )
 ...     )
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Consider the following string quartet score template, which will be
+used with the above music setting. Note the names of the various contexts
+defined in it, made visible when formatted as LilyPond syntax, where each
+context name is given by a quoted string on the lines beginning with
+\texttt{\textbackslash{}context}. The score contains a time signature context,
+and four staff groups, one for each instrument in the quartet. These staff
+groups then contain two staves, for the left and right hands of each
+performer, with each staff containing a single voice:
+
 \begin{comment}
 <abjad>
 score_template = consort.StringQuartetScoreTemplate()
-result = music_setting.resolve_music_specifiers(score_template)
-for voice_name, music_specifier_sequence in result.items():
-    print('VOICE:', voice_name)
-    print(format(music_specifier_sequence))
-
+score = score_template()
+print(format(score))
 </abjad>
 \end{comment}
 
@@ -823,26 +854,219 @@ for voice_name, music_specifier_sequence in result.items():
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> score_template = consort.StringQuartetScoreTemplate()
->>> result = music_setting.resolve_music_specifiers(score_template)
->>> for voice_name, music_specifier_sequence in result.items():
-...     print('VOICE:', voice_name)
-...     print(format(music_specifier_sequence))
+>>> score = score_template()
+>>> print(format(score))
+\context Score = "String Quartet Score" <<
+    \tag #'time
+    \context TimeSignatureContext = "TimeSignatureContext" {
+    }
+    \tag #'violin-1
+    \context StringPerformerGroup = "Violin 1 Performer Group" \with {
+        instrumentName = \markup {
+            \hcenter-in
+                #10
+                "Violin 1"
+            }
+        shortInstrumentName = \markup {
+            \hcenter-in
+                #10
+                "Vln. 1"
+            }
+    } <<
+        \context BowingStaff = "Violin 1 Bowing Staff" {
+            \clef "percussion"
+            \context Voice = "Violin 1 Bowing Voice" {
+            }
+        }
+        \context FingeringStaff = "Violin 1 Fingering Staff" {
+            \clef "treble"
+            \context Voice = "Violin 1 Fingering Voice" {
+            }
+        }
+    >>
+    \tag #'violin-2
+    \context StringPerformerGroup = "Violin 2 Performer Group" \with {
+        instrumentName = \markup {
+            \hcenter-in
+                #10
+                "Violin 2"
+            }
+        shortInstrumentName = \markup {
+            \hcenter-in
+                #10
+                "Vln. 2"
+            }
+    } <<
+        \context BowingStaff = "Violin 2 Bowing Staff" {
+            \clef "percussion"
+            \context Voice = "Violin 2 Bowing Voice" {
+            }
+        }
+        \context FingeringStaff = "Violin 2 Fingering Staff" {
+            \clef "treble"
+            \context Voice = "Violin 2 Fingering Voice" {
+            }
+        }
+    >>
+    \tag #'viola
+    \context StringPerformerGroup = "Viola Performer Group" \with {
+        instrumentName = \markup {
+            \hcenter-in
+                #10
+                Viola
+            }
+        shortInstrumentName = \markup {
+            \hcenter-in
+                #10
+                Va.
+            }
+    } <<
+        \context BowingStaff = "Viola Bowing Staff" {
+            \clef "percussion"
+            \context Voice = "Viola Bowing Voice" {
+            }
+        }
+        \context FingeringStaff = "Viola Fingering Staff" {
+            \clef "alto"
+            \context Voice = "Viola Fingering Voice" {
+            }
+        }
+    >>
+    \tag #'cello
+    \context StringPerformerGroup = "Cello Performer Group" \with {
+        instrumentName = \markup {
+            \hcenter-in
+                #10
+                Cello
+            }
+        shortInstrumentName = \markup {
+            \hcenter-in
+                #10
+                Vc.
+            }
+    } <<
+        \context BowingStaff = "Cello Bowing Staff" {
+            \clef "percussion"
+            \context Voice = "Cello Bowing Voice" {
+            }
+        }
+        \context FingeringStaff = "Cello Fingering Staff" {
+            \clef "bass"
+            \context Voice = "Cello Fingering Voice" {
+            }
+        }
+    >>
+>>
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Consort's score templates provide abbreviation-to-voice-name mappings
+via their \texttt{context\_name\_abbreviations} property. Likewise, they
+provide mappings for use with composite music specifiers which map
+\enquote{parent} context abbreviations to their relevant child abbreviation
+pairs:
+
+\begin{comment}
+<abjad>
+for abbr, context_name in score_template.context_name_abbreviations.items():
+    print(abbr, context_name)
+
+for parent, child_pair in score_template.composite_context_pairs.items():
+    print(parent, child_pair)
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for abbr, context_name in score_template.context_name_abbreviations.items():
+...     print(abbr, context_name)
 ...
-('VOICE:', 'Violin 2 Fingering Voice')
+('violin_1', 'Violin 1 Performer Group')
+('violin_1_rh', 'Violin 1 Bowing Voice')
+('violin_1_lh', 'Violin 1 Fingering Voice')
+('violin_2', 'Violin 2 Performer Group')
+('violin_2_rh', 'Violin 2 Bowing Voice')
+('violin_2_lh', 'Violin 2 Fingering Voice')
+('viola', 'Viola Performer Group')
+('viola_rh', 'Viola Bowing Voice')
+('viola_lh', 'Viola Fingering Voice')
+('cello', 'Cello Performer Group')
+('cello_rh', 'Cello Bowing Voice')
+('cello_lh', 'Cello Fingering Voice')
+\end{lstlisting}
+\begin{lstlisting}
+>>> for parent, child_pair in score_template.composite_context_pairs.items():
+...     print(parent, child_pair)
+...
+('violin_1', ('violin_1_rh', 'violin_1_lh'))
+('violin_2', ('violin_2_rh', 'violin_2_lh'))
+('viola', ('viola_rh', 'viola_lh'))
+('cello', ('cello_rh', 'cello_lh'))
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Resolving the previously defined music specifier against Consort's
+string quartet score template dereferences the correct context names, allowing
+them to be indexed into any score created by that score template:
+
+\begin{comment}
+<abjad>
+result = music_setting.resolve_music_specifiers(score_template)
+for context_name, resolved_music_specifier in result.items():
+    print('CONTEXT:', context_name)
+    print(format(resolved_music_specifier))
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> result = music_setting.resolve_music_specifiers(score_template)
+>>> for context_name, resolved_music_specifier in result.items():
+...     print('CONTEXT:', context_name)
+...     print(format(resolved_music_specifier))
+...
+('CONTEXT:', 'Violin 2 Fingering Voice')
 consort.tools.MusicSpecifierSequence(
     music_specifiers=datastructuretools.CyclicTuple(
         ['A']
         ),
     )
-('VOICE:', 'Viola Fingering Voice')
+('CONTEXT:', 'Viola Fingering Voice')
 consort.tools.MusicSpecifierSequence(
     music_specifiers=datastructuretools.CyclicTuple(
         ['B', 'C', 'D']
         ),
     )
+('CONTEXT:', 'Cello Performer Group')
+consort.tools.CompositeMusicSpecifier(
+    primary_music_specifier=consort.tools.MusicSpecifierSequence(
+        music_specifiers=datastructuretools.CyclicTuple(
+            ['one']
+            ),
+        ),
+    primary_voice_name='Cello Bowing Voice',
+    secondary_music_specifier=consort.tools.MusicSpecifierSequence(
+        music_specifiers=datastructuretools.CyclicTuple(
+            ['two', 'three', 'four']
+            ),
+        ),
+    secondary_voice_name='Cello Fingering Voice',
+    )
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Resolving a music setting's timespan identifier against the
+segment-maker's segment timespan results in one or more target timespans which
+can be used as argument to the music setting's timespan-maker:
 
 \begin{comment}
 <abjad>
@@ -869,6 +1093,11 @@ show(target_timespans, range_=(0, 8))
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Note that the start and stop offsets of the target timespans resolved
+above do not all align at offsets with power-of-two denominators, such as 1/2,
+1/4 or 1/8. By specifying a timespan quantization, the target timespans
+generated during resolution can be quantized to a grid:
+
 \begin{comment}
 <abjad>
 target_timespans = music_setting.resolve_target_timespans(
@@ -892,6 +1121,8 @@ show(target_timespans, range_=(0, 8))
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fdd1e78affa1ee5ba3e3e9b80feee1b2.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent A mask can also be applied to the target timespans:
 
 \begin{comment}
 <abjad>
@@ -925,11 +1156,12 @@ show(target_timespans, range_=(0, 8))
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Once resolved, each music setting can call its timespan-maker to create
-timespans with the appropriate voice-name-to-music-specifier mapping, target
-timespans and layer, adding the contents of the resulting inventory to the
-growing maquette of performed and silent timespans produced by previous music
-settings. The populating process repeats until no more music settings remain.
+\noindent Once resolved, each music setting can call its timespan-maker to
+create timespans with the appropriate voice-name-to-music-specifier mapping,
+target timespans and layer, adding the contents of the resulting inventory to
+the growing maquette of performed and silent timespans produced by previous
+music settings. The populating process repeats until no more music settings
+remain.
 
 \subsection{Resolving cascading overlap}
 \label{ssec:resolving-cascading-overlap}
