@@ -92,18 +92,6 @@ score = Score([staff_group])
 </abjad>
 \end{comment}
 
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> upper_staff = Staff(name='Upper Staff')
->>> lower_staff = Staff(name='Lower Staff')
->>> staff_group = StaffGroup([upper_staff, lower_staff])
->>> score = Score([staff_group])
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Durations, offsets \& timespans}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -119,24 +107,6 @@ Offset(1, 2) + Duration(3, 4)
 Offset(7, 8) - Offset(1, 12)
 </abjad>
 \end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> Duration(1, 2) + Duration(3, 4)
-Duration(5, 4)
-\end{lstlisting}
-\begin{lstlisting}
->>> Offset(1, 2) + Duration(3, 4)
-Offset(5, 4)
-\end{lstlisting}
-\begin{lstlisting}
->>> Offset(7, 8) - Offset(1, 12)
-Duration(19, 24)
-\end{lstlisting}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
 
 \subsection{Inspecting durations}
 
@@ -191,34 +161,12 @@ show(pitch_segment)
 </abjad>
 \end{comment}
 
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> pitch_segment = pitchtools.PitchSegment("c' ef' b' bf' f' e' b a")
->>> show(pitch_segment)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-98c254b3bf3525db1108455a9eb836a7.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
 \begin{comment}
 <abjad>
 transposition = pitchtools.Transposition(1)
 show(transposition(pitch_segment))
 </abjad>
 \end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> transposition = pitchtools.Transposition(1)
->>> show(transposition(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-749c176dfaf42985bd3b0d224300b46a.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
 
 \begin{comment}
 <abjad>
@@ -229,39 +177,12 @@ show(inversion_with_axis(pitch_segment))
 </abjad>
 \end{comment}
 
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> inversion = pitchtools.Inversion()
->>> show(inversion(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f5dccecbacdc176c5636cb8662091fbd.pdf}
-\begin{lstlisting}
->>> inversion_with_axis = pitchtools.Inversion(axis=NamedPitch("d'"))
->>> show(inversion_with_axis(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-3788337f7ed0f9f5205ea317fef25ba7.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
 \begin{comment}
 <abjad>
 retrogression = pitchtools.Retrogression()
 show(retrogression(pitch_segment))
 </abjad>
 \end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> retrogression = pitchtools.Retrogression()
->>> show(retrogression(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-deb23384afe7501bded563186defeabd.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
 
 \begin{comment}
 <abjad>
@@ -272,39 +193,12 @@ show(transposing_rotation(pitch_segment))
 </abjad>
 \end{comment}
 
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> untransposing_rotation = pitchtools.Rotation(-1, transpose=False)
->>> show(untransposing_rotation(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a64fe671be8f551e1d653f00a83a2e07.pdf}
-\begin{lstlisting}
->>> transposing_rotation = pitchtools.Rotation(-1, transpose=True)
->>> show(transposing_rotation(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7bd7aa6d7685f24919cad726cee57c04.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
-
 \begin{comment}
 <abjad>
 multiplication = pitchtools.Multiplication(3)
 show(multiplication(pitch_segment))
 </abjad>
 \end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> multiplication = pitchtools.Multiplication(3)
->>> show(multiplication(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ea43de43da8ed2236bf38e48fab7ca25.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
 
 \begin{comment}
 <abjad>
@@ -317,22 +211,6 @@ pitch_operation = pitchtools.PitchOperation(
 show(pitch_operation(pitch_segment))
 </abjad>
 \end{comment}
-
-%%% ABJADBOOK START %%%
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> pitch_operation = pitchtools.PitchOperation(
-...     operators=(
-...         pitchtools.Rotation(1),
-...         pitchtools.Transposition(2),
-...         ),
-...     )
->>> show(pitch_operation(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0adc9e231ee227673c0a09c603241ec2.pdf}
-\end{singlespacing}
-%%% ABJADBOOK END %%%
 
 \subsection{Other pitch modeling concepts}
 
@@ -368,7 +246,7 @@ show(pitch_operation(pitch_segment))
 \begin{markdown}
 -   Articulation
 -   BarLine
--   Clef 
+-   Clef
 -   Dynamic
 -   KeySignature
 -   Markup
@@ -451,11 +329,11 @@ foo
 \label{ssec:selection}
 
 \begin{markdown}
--   select() 
+-   select()
 -   Selection class
 -   Container.select_leaves()
     -   allow_discontiguous_leaves=True
--   inspect_(...).get_logical_tie() 
+-   inspect_(...).get_logical_tie()
 -   LogicalTie
     -   head
     -   tail
