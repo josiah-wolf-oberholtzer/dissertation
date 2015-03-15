@@ -102,7 +102,6 @@ within a single voice.
 <abjad>
 segment_maker = consort.SegmentMaker(
     desired_duration_in_seconds=9,
-    omit_stylesheets=True,
     permitted_time_signatures=[(3, 4)],
     score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
         staff_count=2,
@@ -119,7 +118,6 @@ segment_maker = consort.SegmentMaker(
 \begin{lstlisting}
 >>> segment_maker = consort.SegmentMaker(
 ...     desired_duration_in_seconds=9,
-...     omit_stylesheets=True,
 ...     permitted_time_signatures=[(3, 4)],
 ...     score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
 ...         staff_count=2,
@@ -149,11 +147,11 @@ show(segment_maker, verbose=False)
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
-faster_segment_maker = new(
+slower_segment_maker = new(
     segment_maker,
     tempo=indicatortools.Tempo((1, 4), 20),
     )
-show(faster_segment_maker, verbose=False)
+show(slower_segment_maker, verbose=False)
 </abjad>
 \end{comment}
 
@@ -161,11 +159,11 @@ show(faster_segment_maker, verbose=False)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> faster_segment_maker = new(
+>>> slower_segment_maker = new(
 ...     segment_maker,
 ...     tempo=indicatortools.Tempo((1, 4), 20),
 ...     )
->>> show(faster_segment_maker, verbose=False)
+>>> show(slower_segment_maker, verbose=False)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-dac8ffa35eb4dae93ba418fbf1eaf390.pdf}
 \end{singlespacing}
@@ -1186,11 +1184,29 @@ a few notable differences.
 \subsection{Populating silent timespans}
 \label{ssec:populating-silent-timespans}
 
-\begin{markdown}
--   creates timespans, splits and inscribes in one pass
--   there are no more layers to create, so no need to resolve overlap
-    conflicts
-\end{markdown}
+With the maquette finally populated by inscribed performed timespans, properly
+split, resolved and consolidated, the segment-maker can fill in the remaining
+gaps between phrases in each voice. This is accomplished by creating
+rest-inscribed timespans for each gap. As there are no more layers to add to
+the maquette, the segment-maker can populate, split and inscribe timespans for
+each of these gaps in a single pass. For each voice in the segment-maker's
+still-empty score, the segment-maker retrieves all timespans -- if any --
+associated with that voice and subtracts each of them in turn from a single
+silent timespan the length of the entire segment, as determined by the first
+and last meter boundaries. Any remaining shards from that segment-length silent
+timespan represent gaps between phrases in that voice. If the maquette contains
+no performed timespans associated with that voice, the segment-length silent
+timespan remains unaltered. The segment-maker then splits the remaining silent
+timespan shards at every intersecting meter boundary, as described in
+\autoref{ssec:splitting-pruning-and-consolidation}, guaranteeing that the
+resulting silent timespans do not cross bar-lines. Once split, the
+segment-maker partitions the silent timespans, and iterates over the
+partitioned groups. For each group of contiguous silent timespans, it generates
+a phrase of music containing only rests using a fully-masked note rhythm-maker
+-- as described in \autoref{ssec:inscription} --, attaches a dummy
+music-specifier to the phrase and instantiates a performed timespan annotated
+with that phrase, adding it to the current voice's timespan inventory in the
+demultiplex maquette.
 
 \subsection{Rewriting meters}
 \label{ssec:rewriting-meters}
@@ -1284,7 +1300,6 @@ music_setting = consort.MusicSetting(
 segment_maker = consort.SegmentMaker(
     desired_duration_in_seconds=8,
     discard_final_silence=True,
-    omit_stylesheets=True,
     permitted_time_signatures=[(2, 4), (5, 16), (3, 4)],
     score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
         staff_count=2,
@@ -1323,7 +1338,6 @@ show(illustration)
 >>> segment_maker = consort.SegmentMaker(
 ...     desired_duration_in_seconds=8,
 ...     discard_final_silence=True,
-...     omit_stylesheets=True,
 ...     permitted_time_signatures=[(2, 4), (5, 16), (3, 4)],
 ...     score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
 ...         staff_count=2,
@@ -1542,7 +1556,7 @@ Pitch material may be semantic or non-semantic.
 <abjad>[stylesheet=../consort.ily]
 segment_maker = consort.SegmentMaker(
     desired_duration_in_seconds=9,
-    omit_stylesheets=True,
+    #omit_stylesheets=True,
     permitted_time_signatures=[(3, 4)],
     score_template=templatetools.GroupedStavesScoreTemplate(
         staff_count=2,
@@ -1575,7 +1589,7 @@ show(segment_maker, verbose=False)
 \begin{lstlisting}
 >>> segment_maker = consort.SegmentMaker(
 ...     desired_duration_in_seconds=9,
-...     omit_stylesheets=True,
+...     #omit_stylesheets=True,
 ...     permitted_time_signatures=[(3, 4)],
 ...     score_template=templatetools.GroupedStavesScoreTemplate(
 ...         staff_count=2,
@@ -2132,7 +2146,6 @@ music_setting = consort.MusicSetting(
 segment_maker = consort.SegmentMaker(
     desired_duration_in_seconds=8,
     discard_final_silence=True,
-    omit_stylesheets=True,
     permitted_time_signatures=[(2, 4), (5, 16), (3, 4)],
     score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
         staff_count=2,
@@ -2170,7 +2183,6 @@ show(segment_maker, verbose=False)
 >>> segment_maker = consort.SegmentMaker(
 ...     desired_duration_in_seconds=8,
 ...     discard_final_silence=True,
-...     omit_stylesheets=True,
 ...     permitted_time_signatures=[(2, 4), (5, 16), (3, 4)],
 ...     score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
 ...         staff_count=2,
