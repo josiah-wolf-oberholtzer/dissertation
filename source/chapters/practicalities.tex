@@ -105,6 +105,39 @@ for package_name in dir(armilla.materials):
 </abjad>
 \end{comment}
 
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> import armilla
+>>> for package_name in dir(armilla.materials):
+...     if package_name[0].isalpha():
+...         package_name
+...
+'dense_timespan_maker'
+'intermittent_accents'
+'intermittent_circular'
+'intermittent_glissandi'
+'intermittent_tremoli'
+'intermittent_trills'
+'left_hand_diads_music_specifier'
+'left_hand_dietro_music_specifier'
+'left_hand_glissandi_music_specifier'
+'left_hand_pizzicati_music_specifier'
+'left_hand_stasis_music_specifier'
+'right_hand_circular_music_specifier'
+'right_hand_jete_music_specifier'
+'right_hand_overpressure_music_specifier'
+'right_hand_pizzicati_music_specifier'
+'right_hand_stasis_music_specifier'
+'sparse_timespan_maker'
+'sustained_timespan_maker'
+'synchronized_timespan_maker'
+'time_signatures'
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
