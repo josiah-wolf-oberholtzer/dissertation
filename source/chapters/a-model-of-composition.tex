@@ -174,53 +174,31 @@ show(slower_segment_maker, verbose=False)
 \end{abjadbookoutput}
 
 \noindent Most importantly, segment-makers may be configured with any number of
-\emph{music settings}, which aggregate a timespan-maker, a target timespan and
-any number of \emph{music specifiers} -- bundles of materials which describe
-how phrases of music should be produced within a single voice.
+\emph{music settings}, which object-model both \emph{when} and in \emph{which}
+voices musical materials should be deployed.
 
 \subsection{Music settings}
 \label{ssec:music-settings}
 
-\begin{markdown}
--   What kind of music, laid out in what pattern, in which general
-    time frame, for which voices, in what layer?
--   A timespan-maker
--   A target timespan
-    -   A timespan.
-    -   A timespan inventory.
-    -   A ratio/parts expression.
-        -   Demonstrate. Check.
--   Voice abbreviation / music specifier pairs
-    -   Why abbreviate? It's because of Python's key=value syntax for
-        keyword arguments.
-    -   How do we convert abbreviation to an actual context name?
-        -   Score templates need to define a mapping.
-        -   Demonstrate. Check.
-    -   What is the context name for?
-        -   Name-wise indexing in an actual score.
-        -   Demonstrate. Check.
-    -   Also, composite music specifiers: when two contexts need to be
-        discussed as a single unit.
-        -   Composite music specifiers need to convert one abbreviation into
-            two more abbreviations, each mapped to an actual context name.
-        -   Consort's ScoreTemplateManager takes care of calculating and
-            caching the appropriate names and abbreviations.
--   Layer is implicit, derived from the order of setting definitions.
-    -   Recall the discussion of timespan layer from earlier chapters.
-\end{markdown}
-
-Music settings object-model both \emph{when} and in
-\emph{which} voices musical materials should be deployed. The order in which
-composers configure segment-makers with music settings defines each music
-setting's \emph{layer} -- the first setting defined being layer 0, the second
-layer 1 and so forth, with each higher layer number indicating higher
-precedence or \enquote{foregroundness} --, determining how overlapping events
-in a single voice will mask one another. Score materials, including music
-settings, music specifiers, timespan-makers and any other class pertinent to
-score creation -- potentially even other segment-makers, may be defined from
-scratch in the same code module as the segment-maker currently being
-configured, templated from another material, or simply imported into the
-segment definition's namespace.
+Music settings represent a layer of musical texture, in one or more voices, of
+arbitrary length. Music settings aggregate a timespan-maker, a target timespan
+and any number of \emph{music specifiers}. The timespan-maker provides the
+overall phrasing and density structure, the optional timespan identifier
+defines in what portion of the current segment the timespan-maker's texture
+should be spooled out, and the music specifiers define both in which voices the
+timespan texture should appear as well as how those timespans should ultimately
+be rendered as notation. The order in which composers configure segment-makers
+with music settings defines each music setting's \emph{layer} -- the first
+setting defined being layer 0, the second layer 1 and so forth, with each
+higher layer number indicating higher precedence or \enquote{foregroundness}
+--, determining how overlapping events in a single voice will mask one another.
+The timespans created by music settings which are defined later during segment
+specification \enquote{hide} any timespans created by those music settings
+defined earlier. Score materials, including music settings, music specifiers,
+timespan-makers and any other class pertinent to score creation -- potentially
+even other segment-makers, may be defined from scratch in the same code module
+as the segment-maker currently being configured, templated from another
+material, or simply imported into the segment definition's namespace.
 
 \subsection{Music specifiers}
 \label{ssec:music-specifiers}
@@ -242,7 +220,7 @@ the disposition of performed timespans associated with specific voices.
 Dependent timespan-makers can also be configured to select depended-upon
 timespans based on the \texttt{labels} property of those performed timespans'
 music specifiers, allowing an additional category for filtering. This helps
-model the situation of creating a pedal voice mirroring not simply a pianist's
+model creating a pedal voice mirroring not simply a pianist's
 left- and right-hand events, but only those that actually depress keys,
 ignoring guero events or other off-the-key percussive techniques for which no
 pedaling is desired.
@@ -633,7 +611,7 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Consort provides an additional variation of music specifier called a
+\noindent Consort provides an additional variation of music specifier called a
 \emph{composite music specifier}.
 Composite music specifiers allow for the definition of music for voices in
 tandem, such as the fingering- and bowing-voice in a split-hands string
