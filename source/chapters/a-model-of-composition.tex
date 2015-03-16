@@ -1012,7 +1012,12 @@ for parent, child_pair in score_template.composite_context_pairs.items():
 
 \noindent Resolving the previously defined music specifier against Consort's
 string quartet score template dereferences the correct context names, allowing
-them to be indexed into any score created by that score template:
+them to be indexed into any score created by that score template. Note that not
+only are the two non-composite music specifiers now associated with voices in
+the score, but they have been recreated as music specifier sequences. Likewise,
+the composite music specifier has been reconfigured such that it knows the
+specific names of the two voices associated with its primary and secondary
+music specifiers, themselves recreated as music specifier sequences:
 
 \begin{comment}
 <abjad>
