@@ -5,6 +5,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\todo[inline]{\textbf{TODO:} Explain motivation for Consort.}
+
+\todo[inline]{\textbf{TODO:} Explain music specifier seeds.}
+
 \begin{comment}
 <abjad>[hide=true]
 import collections
@@ -205,12 +209,15 @@ material, or simply imported into the segment definition's namespace.
 
 Music specifiers bundle all of the information necessary for a segment-maker to
 generate the notational content for a sequence of one or more divisions,
-grouped as a phrase. This information includes optional rhythm-maker,
-grace-handler, pitch-handler and attachment-handler definitions -- all classes
-which describe strategies for creating or modifying notation --, as well as a
-variety of other properties including an optional \emph{seed} and \emph{minimum
-phrase duration}, described further in
-\autoref{ssec:splitting-pruning-and-consolidation}.
+grouped as a phrase. This information includes optional rhythm-maker
+(\autoref{sec:rhythm-makers}), \emph{grace-handler}
+(\autoref{ssec:grace-handlers}), \emph{pitch-handler}
+(\autoref{ssec:pitch-handlers}) and \emph{attachment-handler}
+(\autoref{ssec:attachment-handlers}) definitions -- all classes which describe
+strategies for creating or modifying notation --, as well as a variety of other
+properties including an optional \emph{minimum phrase duration} -- described
+further in \autoref{ssec:splitting-pruning-and-consolidation} --, and
+\emph{seed}.
 
 Music specifiers can also be configured with a \emph{labels}: a tuple of one or
 more arbitrary strings, identifying some quality of those performed timespans.
@@ -2257,7 +2264,8 @@ division within its phrase it occurs within.
 -   SegmentMaker.logical_tie_to_voice()
 \end{markdown}
 
-\subsection{Grace handlers}
+\subsection{Grace-handlers}
+\label{ssec:grace-handlers}
 
 Grace handlers attach *grace containers* to logical ties within a score in a
 patterned way.
