@@ -1930,25 +1930,26 @@ The previous few passages, from \autoref{ssec:populating-the-maquette} through
 \autoref*{ssec:meter-pruning}, describe the process of populating a
 segment-makers's timespan maquette with the products of its *independent* music
 settings -- those music settings whose timespan makers are independent, notably
-flooded and talea timespan-makers.
-
-With the maquette partially populated, those music settings with dependent
-timespan-makers -- timespan-makers which generate timespans based on the
-contents of a preexisting timespan inventory -- may finally be called to
-provide their contributions to the maquette.
-
-Dependent population proceeds almost identically to independent population with
-a few notable differences.
-
-\begin{markdown}
--   this occurs almost identically as with independent timespans,
-    but without any meter finding
--   populate demultiplexed timespans
--   demultiplex
--   split at meter boundaries
--   consolidate
--   inscribe
-\end{markdown}
+flooded and talea timespan-makers. With the maquette partially populated, those
+music settings with dependent timespan-makers -- timespan-makers which generate
+timespans based on the contents of a preexisting timespan inventory -- may
+finally be called to provide their contributions to the maquette. Dependent
+population proceeds almost identically to independent population with a few
+notable differences. For one, dependent population dispenses with meter finding
+entirely. Consort treats meter as entirely dependent upon independent
+timespans, as dependent timespans -- in practice -- are generally used for
+keyboard pedaling voices, and should therefore have little bearing on the
+overall metrical structure. And while maquette resolving, as described in
+\autoref{ssec:resolving-cascading-overlap}, results in a demultiplexed timespan
+inventory mapping -- a dictionary of voice-names to timespan inventories --,
+independent timespan population completes by \emph{re-multiplexing} that
+mapping -- effectively flattening -- back into a single timespan inventory.
+This flattening prepares the correct input for dependent timespan population,
+as dependent timespans require a single pre-populated timespan inventory as
+input. As there are no more passes of timespans to add after dependent timespan
+population -- discounting the population of silent timespans, as described in
+\autoref{ssec:populating-silent-timespans} -- dependent timespan population
+completes with its maquette still demultiplexed.
 
 \subsection{Populating silent timespans}
 \label{ssec:populating-silent-timespans}
