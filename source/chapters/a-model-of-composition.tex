@@ -47,12 +47,16 @@ import consort
 \end{comment}
 
 Consort, a Python library written as an extension to Abjad, models the
-composition of notated musical score as a repeated cycle containing three
+composition of notated musical score
+
+Working with Consort involves a repeated cycle containing three
 distinct stages: \emph{specification}, \emph{interpretation} and
 \emph{visualization}.
 
 What follows is a detailed analysis of the various algorithms and subroutines
 employed during Consort's specification and interpretation stages.
+Visualization, via Abjad's \emph{illustration protocol} was already discussed
+in \autoref{ch:a-model-of-notation}.
 
 \section{Specification}
 \label{sec:specification}
@@ -1156,6 +1160,12 @@ remain.
 \subsection{Resolving cascading overlap}
 \label{ssec:resolving-cascading-overlap}
 
+Consider the following three timespan inventories, created with three different
+timespan-makers and music-specifier mappings. The first inventory is created
+via a flooded timespan-maker, filling the entirety of a target timespan of 0/1
+to 19/4 in voices \enquote{Voice 2} and \enquote{Voice 3}. This inventory
+behaves like a constant \enquote{background layer} for those two voices:
+
 \begin{comment}
 <abjad>
 layer_1_timespan_maker = consort.FloodedTimespanMaker()
@@ -1193,6 +1203,14 @@ show(layer_1, key='voice_name', range_=(0, (21, 4)))
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f86c3ef83d7c5ffbef9e47999bb478a9.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent The second timespan inventory is created by a talea timespan-maker.
+This inventory covers all four voices -- \enquote{Voice 1}, \enquote{Voice 2},
+\enquote{Voice 3} and \enquote{Voice 4} -- with a texture of evenly distributed
+phrases and silences. However, unlike the first timespan inventory, this
+texture only spans the target timespan of 3/4 to 19/4, guaranteeing that the
+background layer for \enquote{Voice 2} and \enquote{Voice 3} is untouched in
+the span of 0/1 to 3/4:
 
 \begin{comment}
 <abjad>
@@ -1264,6 +1282,19 @@ show(layer_2, key='voice_name', range_=(0, (21, 4)))
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent The third timespan inventory consists of groups of near-simultaneous
+attacks in three voices -- \enquote{Voice 1}, \enquote{Voice 3} and
+\enquote{Voice 4}. This inventory's talea timespan-maker has padded
+1/4-duration silences around the beginning and end of each group, guaranteeing
+that any performed timespans with layers lower than 3 will be masked not only
+by this layer's performed timespans, but by its silent timespans as well.
+Additionally, the third timespan inventory was created with a target timespan
+of 6/4 to 21/4. While -- due to the complexities of the talea timespan-maker's
+patterns -- the generated timespan texture may not extend all of the way to its
+target timespan's stop offset at 21/4, it will certainly not contain any
+performed or silent timespans earlier than 6/4, leaving lower layers untouched
+from 0/1 to 6/4:
+
 \begin{comment}
 <abjad>
 layer_3_timespan_maker = consort.TaleaTimespanMaker(
@@ -1334,6 +1365,22 @@ show(layer_3, key='voice_name', range_=(0, (21, 4)))
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Recall from \autoref{sec:timespan-makers} that timespan-makers can
+modify a timespan inventory in-place when called, rather than generating a new
+one from scratch. The following code -- greatly simplified from Consort's
+\texttt{SegmentMaker.populate\_multiplexed\_maquette()} method -- demonstrates
+the process of calling multiple timespan-makers with their corresponding target
+timespans and voice-name-to-music-specifier mappings to progressively populate
+a single timespan inventory in-place. Note the use of two Python builtin
+iterators \texttt{zip()} and \texttt{enumerate()}. The \texttt{zip()} iterators
+iterates over the iterables with which it was instantiated yielding the first
+item of each of its iterables as a tuple, then the second of each of its
+iterables, then the third, and so forth. The \texttt{enumerate()} iterator
+yields each item of its input iterable paired with that item's index, filling
+the role in Python for the verbose \emph{for loop} loop idiom found in many
+C-like languages, such as Java or Javascript: \texttt{for(int x = 10; x < 20; x
+= x + 1) \{ ... \}}.
+
 \begin{comment}
 <abjad>
 timespan_makers = (
@@ -1361,7 +1408,6 @@ for layer, triple in enumerate(triples, 1):
         timespan_inventory=timespan_inventory,
         )
 
-show(timespan_inventory, key='voice_name', range_=(0, (21, 4)))
 </abjad>
 \end{comment}
 
@@ -1394,9 +1440,7 @@ show(timespan_inventory, key='voice_name', range_=(0, (21, 4)))
 ...         timespan_inventory=timespan_inventory,
 ...         )
 ...
->>> show(timespan_inventory, key='voice_name', range_=(0, (21, 4)))
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-cd13e1c03522127ffbfba2623f59a7fb.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -1413,6 +1457,22 @@ show(timespan_inventory, range_=(0, (21, 4)))
 >>> show(timespan_inventory, range_=(0, (21, 4)))
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-39bc7fc954dbcc692b2517c8195b821e.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+show(timespan_inventory, key='voice_name', sortkey='layer', range_=(0, (21, 4)))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> show(timespan_inventory, key='voice_name', sortkey='layer', range_=(0, (21, 4)))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7b84f6ec88dc9ff87fba45eab8bd201b.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2002,6 +2062,8 @@ After meter-rewriting, the segment-maker can finally populate its score. To do
 so, it iterates through its timespan maquette and still-unpopulated score in
 parallel, extracting the inscribed music from each performed timespan in the
 maquette and inserting those phrases into the score in the appropriate voice.
+With the segment-maker's score populated, rhythmic interpretation ends and
+non-rhythmic interpretation may begin.
 
 \section{Non-rhythmic interpretation}
 
