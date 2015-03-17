@@ -1713,8 +1713,8 @@ timespans = timespantools.TimespanInventory([
         ),
     ])
 show(timespans)
-timespans = consort.SegmentMaker.consolidate_timespans(timespans)
-show(timespans)
+consolidated_timespans = consort.SegmentMaker.consolidate_timespans(timespans)
+show(consolidated_timespans)
 </abjad>
 \end{comment}
 
@@ -1753,8 +1753,8 @@ show(timespans)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5f102816b004f8607b165bde7a9a4eb6.pdf}
 \begin{lstlisting}
->>> timespans = consort.SegmentMaker.consolidate_timespans(timespans)
->>> show(timespans)
+>>> consolidated_timespans = consort.SegmentMaker.consolidate_timespans(timespans)
+>>> show(consolidated_timespans)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-dabc429bbedead286bda82e3603f4457.pdf}
 \end{singlespacing}
@@ -1763,10 +1763,56 @@ show(timespans)
 \noindent Consolidation transforms performed timespans from free-floating cells
 in the maquette into components of larger phrases. The cached divisions also
 prepare these consolidated timespans for \emph{inscription} by defining the
-correct input for a rhythm-maker: a sequence of divisions. If the music
-specifier of the consolidated timespan was configured with a \emph{minimum
-phrase duration}, and the consolidated timespan falls under that threshold, it
-too is discarded.
+correct input for a rhythm-maker: a sequence of divisions.
+
+\begin{comment}
+<abjad>
+print(format(consolidated_timespans))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> print(format(consolidated_timespans))
+timespantools.TimespanInventory(
+    [
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(20, 1),
+            divisions=(
+                durationtools.Duration(10, 1),
+                durationtools.Duration(10, 1),
+                ),
+            music_specifier='foo',
+            ),
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(20, 1),
+            stop_offset=durationtools.Offset(25, 1),
+            divisions=(
+                durationtools.Duration(5, 1),
+                ),
+            music_specifier='bar',
+            ),
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(40, 1),
+            stop_offset=durationtools.Offset(58, 1),
+            divisions=(
+                durationtools.Duration(10, 1),
+                durationtools.Duration(8, 1),
+                ),
+            music_specifier='bar',
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent If the music specifier of the consolidated timespan was configured
+with a \emph{minimum phrase duration}, and the consolidated timespan falls
+under that threshold, it too is discarded.
 
 \subsection{Inscription}
 \label{ssec:inscription}
