@@ -81,7 +81,8 @@ compile:
 		-shell-escape \
 		-shell-restricted \
 		dissertation.tex
-	#bibtex dissertation.aux
+	bibtex dissertation.aux
+	bibtex dissertation.aux
 	xelatex \
 		-shell-escape \
 		-shell-restricted \
