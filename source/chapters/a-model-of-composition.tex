@@ -1978,6 +1978,78 @@ music-specifier to the phrase and instantiates a performed timespan annotated
 with that phrase, adding it to the current voice's timespan inventory in the
 demultiplex maquette.
 
+Recall the demultiplexed maquette created earlier in
+\autoref{ssec:resolving-cascading-overlap}:
+
+\begin{comment}
+<abjad>
+show(demultiplexed_maquette, range_=(0, 6))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> show(demultiplexed_maquette, range_=(0, 6))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-e3cd38c9cc43be27a4d132c287a15a2a.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent We can simulate the process of populating silent timespans in the
+following code, creating silent timespans -- purely for visualization purposes
+-- rather than the rest-inscribed timespans actually created during silent
+timespan population:
+
+\begin{comment}
+<abjad>
+segment_duration = Duration(24, 4)
+for voice_name, timespan_inventory in demultiplexed_maquette.items():
+    silent_timespans = timespantools.TimespanInventory([
+        consort.SilentTimespan(
+            start_offset=0,
+            stop_offset=segment_duration,
+            voice_name=voice_name,
+            ),
+        ])
+    for timespan in timespan_inventory:
+        silent_timespans -= timespan
+    timespan_inventory.extend(silent_timespans)
+    timespan_inventory.sort()
+
+show(demultiplexed_maquette, range_=(0, 6))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> segment_duration = Duration(24, 4)
+>>> for voice_name, timespan_inventory in demultiplexed_maquette.items():
+...     silent_timespans = timespantools.TimespanInventory([
+...         consort.SilentTimespan(
+...             start_offset=0,
+...             stop_offset=segment_duration,
+...             voice_name=voice_name,
+...             ),
+...         ])
+...     for timespan in timespan_inventory:
+...         silent_timespans -= timespan
+...     timespan_inventory.extend(silent_timespans)
+...     timespan_inventory.sort()
+...
+>>> show(demultiplexed_maquette, range_=(0, 6))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c49d2c79b38a6d5fdf78db3846702135.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent The above assumes a segment duration of 6 instead of the maquette's
+initial duration of 21/4, and therefore pads out the end of each timespan
+inventory to that stop offset with silence.
+
 \subsection{Rewriting meters, revisited}
 \label{ssec:rewriting-meters-revisited}
 
