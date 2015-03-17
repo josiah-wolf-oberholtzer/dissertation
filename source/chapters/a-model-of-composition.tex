@@ -1534,7 +1534,18 @@ demultiplexed_maquette = consort.SegmentMaker.resolve_maquette(
 </abjad>
 \end{comment}
 
-After resolution, no overlap remains in the timespans for any voice.
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> demultiplexed_maquette = consort.SegmentMaker.resolve_maquette(
+...     timespan_inventory,
+...     )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent After resolution, no overlap remains in the timespans for any voice.
 Note too that no silent timespans -- like those created as padding in the third
 timespan-maker above -- remain either. Silent timespans act solely as a means
 of \enquote{holding space} for a layer, masking but not replacing timespans in
@@ -1550,10 +1561,7 @@ show(demultiplexed_maquette, range_=(0, (21, 4)))
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> demultiplexed_timespans = consort.SegmentMaker.demultiplex_timespans(
-...     timespan_inventory,
-...     )
->>> show(demultiplexed_timespans, range_=(0, (21, 4)))
+>>> show(demultiplexed_maquette, range_=(0, (21, 4)))
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8d7921006d6bce021d9a284d12ed2e90.pdf}
 \end{singlespacing}
