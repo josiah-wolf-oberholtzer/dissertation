@@ -1160,6 +1160,16 @@ remain.
 \subsection{Resolving cascading overlap}
 \label{ssec:resolving-cascading-overlap}
 
+One of the driving motivations behind Consort is the ability to create musical
+textures consisting of multiple overlapping layers, each created by an
+independent maker and each with different materials from the other layers,
+allowing multiple materials of various provenances to appear in the same
+instrumental voice. Still, because acoustic instruments cannot simply
+\enquote{create} arbitrary numbers of voices like a synthesizer might, any
+overlap in material allocated for a given voice needs to be resolved. Consort
+handles resolution of overlap via a tournament, choosing only one material from
+a collection of overlapping candidates.
+
 Consider the following three timespan inventories, created with three different
 timespan-makers and music-specifier mappings. The first inventory is created
 via a flooded timespan-maker, filling the entirety of a target timespan of 0/1
@@ -1444,6 +1454,14 @@ for layer, triple in enumerate(triples, 1):
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Recall that the result of this process is still a timespan inventory,
+just as described in \autoref{sec:timespan-inventories}. While this document
+has taken pains to clarify the internal structure of timespan-maker-generated
+timespan inventories by sorting and displaying voice-names in their
+illustrations -- just as in the above three timespan inventory illustrations --
+that behavior derives from the timespan inventory's illustration protocol
+implementation, and does not reflect their actual, flat structure:
+
 \begin{comment}
 <abjad>
 show(timespan_inventory, range_=(0, (21, 4)))
@@ -1459,6 +1477,13 @@ show(timespan_inventory, range_=(0, (21, 4)))
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-39bc7fc954dbcc692b2517c8195b821e.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Just because timespan inventories are often displayed with
+voice-names, and contain performed timespans with voice-name attributes, does
+not mean that they are automatically or internally structured that way. Such
+sorting requires an additional pass -- demultiplexing. Visualizing the
+inventory, exploded by voice-name, then sorted by layer, shows the overlap in
+each voice:
 
 \begin{comment}
 <abjad>
@@ -1476,12 +1501,48 @@ show(timespan_inventory, key='voice_name', sortkey='layer', range_=(0, (21, 4)))
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent In order to resolve cascading overlap, the segment-maker must first
+demultiplex the performed and silent timespans in the still-multiplexed
+maquette into separate timespan inventories by their voice-name attributes. The
+segment-maker further separates each demultiplexed-by-voice-name timespan
+inventory into multiple timespan inventories according to their contents' layer
+attributes, with the lowest-layered inventory first, and the highest-layered
+inventory last. This results in one inventory per-voice, per-timespan-maker
+from the maquette population process.\footnote{Why not keep all timespan-maker
+output separated from the very beginning? Working with a single multiplexed
+timespan inventory for much of the rhythmic interpretation process simplifies
+many of the procedures used therein, such as dependent timespan-maker
+evaluation, splitting, consolidation, etc. Compared to many of the later
+rhythmic operations, such as meter rewriting, multiplexing and demultiplexing
+timespan inventories are computationally trivial.} With the maquette fully
+demultiplexed, the segment-maker can proceed through each layer in each voice,
+from lowest to highest. It progressively subtracts the timespans in each higher
+inventory from the lowest inventory, effectively cutting out holes outlining
+the shapes of that higher inventory's timespans, then adds that higher
+inventory's timespans into the lowest-layered inventory. This process masks
+lower-layered timespans with higher ones. The process repeats until no more
+timespan inventories remain for that voice, then moves onto the inventories for
+the next voice. The resolved, demultiplexed results are finally collected into
+a timespan inventory mapping, associating voice names with resolved timespan
+inventories, and returned.
+
 \begin{comment}
 <abjad>
-demultiplexed_timespans = consort.SegmentMaker.demultiplex_timespans(
+demultiplexed_maquette = consort.SegmentMaker.resolve_maquette(
     timespan_inventory,
     )
-show(demultiplexed_timespans, range_=(0, (21, 4)))
+</abjad>
+\end{comment}
+
+After resolution, no overlap remains in the timespans for any voice.
+Note too that no silent timespans -- like those created as padding in the third
+timespan-maker above -- remain either. Silent timespans act solely as a means
+of \enquote{holding space} for a layer, masking but not replacing timespans in
+lower layers:
+
+\begin{comment}
+<abjad>
+show(demultiplexed_maquette, range_=(0, (21, 4)))
 </abjad>
 \end{comment}
 
@@ -1497,6 +1558,14 @@ show(demultiplexed_timespans, range_=(0, (21, 4)))
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8d7921006d6bce021d9a284d12ed2e90.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Unlike many of the timespan-handling functions demonstrated in this
+chapter as well as in \autoref{ch:time-tools}, \texttt{resolve\_maquette()}
+returns a \texttt{TimespanInventoryMapping} rather than a
+\texttt{TimespanInventory}. The timespan inventory mapping already
+explicitly uses voice-names as keys, obviating the need for a
+\texttt{key='voice\_name'} keyword argument pair in the call to
+\texttt{show()}.
 
 \subsection{Finding meters, revisited}
 \label{ssec:finding-meters-revisited}
