@@ -1844,7 +1844,7 @@ all, the segment-maker returns a fully-masked note rhythm-maker.
 
 With the performed timespan's seed, rhythm-maker and division list ready, the
 segment-maker creates the performed timespan's music. This proceeds almost
-identically to the \texttt{make_music()} function described in
+identically to the \texttt{make\_music()} function described in
 \autoref{ssec:populating-voices}. Consort's segment-maker makes one additional
 adjustment on top of that algorithm, replacing trivially-prolated tuplets --
 tuplets with ratios of 1:1 -- with unprolated containers.
@@ -1949,48 +1949,176 @@ show(staff_group)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent
+\noindent Note the rests
 
 \begin{comment}
 <abjad>
-music_specifier = consort.MusicSpecifier(
-    rhythm_maker=rhythmmakertools.NoteRhythmMaker(
-        output_masks=[
-            rhythmmakertools.BooleanPattern(
-                indices=[0],
-                period=3,
-                ),
-            ],
-        ),
+rhythm_maker=rhythmmakertools.NoteRhythmMaker(
+    output_masks=[
+        rhythmmakertools.BooleanPattern(
+            indices=[0],
+            period=3,
+            ),
+        ],
     )
-show(music_specifier, divisions=[(1, 4)] * 7)
+divisions = [Duration(1, 4)] * 7
+show(rhythm_maker, divisions=divisions)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> rhythm_maker=rhythmmakertools.NoteRhythmMaker(
+...     output_masks=[
+...         rhythmmakertools.BooleanPattern(
+...             indices=[0],
+...             period=3,
+...             ),
+...         ],
+...     )
+>>> divisions = [Duration(1, 4)] * 7
+>>> show(rhythm_maker, divisions=divisions)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-41db2ebb806422340ff52eeaef4859ca.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent This performed timespan
+
+\begin{comment}
+<abjad>
 timespan = consort.PerformedTimespan(
-    divisions=[durationtools.Duration(1, 4)] * 7,
+    divisions=divisions,
     start_offset=0,
     stop_offset=(7, 4),
-    music_specifier=music_specifier,
+    music_specifier=consort.MusicSpecifier(
+        rhythm_maker=rhythm_maker,
+        ),
     )
 show(timespan)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> timespan = consort.PerformedTimespan(
+...     divisions=divisions,
+...     start_offset=0,
+...     stop_offset=(7, 4),
+...     music_specifier=consort.MusicSpecifier(
+...         rhythm_maker=rhythm_maker,
+...         ),
+...     )
+>>> show(timespan)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-afc1398492f58ffad86eeaffa0b1a3a3.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Note the gaps
+
+\begin{comment}
+<abjad>
 inscribed_timespans = consort.SegmentMaker.inscribe_timespan(timespan)
 show(inscribed_timespans, range_=(0, (7, 4)))
 print(format(inscribed_timespans))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> inscribed_timespans = consort.SegmentMaker.inscribe_timespan(timespan)
+>>> show(inscribed_timespans, range_=(0, (7, 4)))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-4626b71066d8fb3d04f25bd125810768.pdf}
+\begin{lstlisting}
+>>> print(format(inscribed_timespans))
+timespantools.TimespanInventory(
+    [
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(1, 4),
+            stop_offset=durationtools.Offset(3, 4),
+            music=scoretools.Container(
+                "{   c'4 } {   c'4 }"
+                ),
+            music_specifier=consort.tools.MusicSpecifier(
+                rhythm_maker=rhythmmakertools.NoteRhythmMaker(
+                    output_masks=(
+                        rhythmmakertools.BooleanPattern(
+                            indices=(0,),
+                            period=3,
+                            ),
+                        ),
+                    ),
+                ),
+            original_start_offset=durationtools.Offset(0, 1),
+            original_stop_offset=durationtools.Offset(7, 4),
+            ),
+        consort.tools.PerformedTimespan(
+            start_offset=durationtools.Offset(1, 1),
+            stop_offset=durationtools.Offset(3, 2),
+            music=scoretools.Container(
+                "{   c'4 } {   c'4 }"
+                ),
+            music_specifier=consort.tools.MusicSpecifier(
+                rhythm_maker=rhythmmakertools.NoteRhythmMaker(
+                    output_masks=(
+                        rhythmmakertools.BooleanPattern(
+                            indices=(0,),
+                            period=3,
+                            ),
+                        ),
+                    ),
+                ),
+            original_start_offset=durationtools.Offset(0, 1),
+            original_stop_offset=durationtools.Offset(7, 4),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent The split performed timespans replace the original
+
+Then, MusicSpecifier attachment
+
+\begin{comment}
+<abjad>
 music = inscribed_timespans[0].music
 indicator = inspect_(music).get_indicator(consort.MusicSpecifier)
 print(format(indicator))
 </abjad>
 \end{comment}
 
-\begin{markdown}
--   Seed
--   Divisions
--   Get rhythm maker (under what circumstances?)
--   Make simple music
--   Consolidate rests
--   Rhythmic post-processing
-    -   attaching a GeneralizedBeam
-    -   attaching the scoped music specifier
--   Reconfigure the timespan with the created music, but without the divisions
-\end{markdown}
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> music = inscribed_timespans[0].music
+>>> indicator = inspect_(music).get_indicator(consort.MusicSpecifier)
+>>> print(format(indicator))
+consort.tools.MusicSpecifier(
+    rhythm_maker=rhythmmakertools.NoteRhythmMaker(
+        output_masks=(
+            rhythmmakertools.BooleanPattern(
+                indices=(0,),
+                period=3,
+                ),
+            ),
+        ),
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Why attach the music specifier to the phrase container?
 
 \subsection{Meter pruning}
 \label{ssec:meter-pruning}
@@ -2350,6 +2478,22 @@ non-rhythmic interpretation may begin.
 
 \subsection{Score traversal}
 
+\begin{markdown}
+-   AttackPointSignature
+    -   division_index
+    -   phrase_index
+    -   logical_tie_index
+    -   phrase_position (scaled position within the phrase)
+    -   division_position (scaled position within the division)
+    -   segment_position (scaled position within the entire segment)
+    -   is_first_of_division
+    -   is_first_of_phrase
+-   Elucidate voice / phrase / division structure
+-   SegmentMaker.logical_tie_to_division()
+-   SegmentMaker.logical_tie_to_phrase()
+-   SegmentMaker.logical_tie_to_voice()
+\end{markdown}
+
 The various handlers which iterate through the score during non-rhythmic
 interpretation use one of two techniques.
 
@@ -2581,8 +2725,6 @@ show(illustration)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\subsection{Collecting attack points}
-
 Many of the handlers used during non-rhythmic interpretation rely on
 information about each pitched logical tie in the score.
 
@@ -2590,22 +2732,6 @@ Including the position of the logical tie's head in the score regardless of
 voice -- its first leaf, and effectively its attack point -- as well as that
 head's index both within the division it occurs within, as well as which
 division within its phrase it occurs within.
-
-\begin{markdown}
--   AttackPointSignature
-    -   division_index
-    -   phrase_index
-    -   logical_tie_index
-    -   phrase_position (scaled position within the phrase)
-    -   division_position (scaled position within the division)
-    -   segment_position (scaled position within the entire segment)
-    -   is_first_of_division
-    -   is_first_of_phrase
--   Elucidate voice / phrase / division structure
--   SegmentMaker.logical_tie_to_division()
--   SegmentMaker.logical_tie_to_phrase()
--   SegmentMaker.logical_tie_to_voice()
-\end{markdown}
 
 \subsection{Grace-handlers}
 \label{ssec:grace-handlers}
@@ -2624,6 +2750,84 @@ over the previously cached ordered dictionary of attack-points, generated at
 the end of rhythmic interpretation.
 
 Discuss sub-optimal grace-note spacing in proportional notation?
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+music_specifier = consort.MusicSpecifier(
+    grace_handler=consort.GraceHandler(
+        counts=(1, 2, 0, 0, 0),
+        ),
+    rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
+        extra_counts_per_division=(0, 1),
+        talea=rhythmmakertools.Talea([1, 2, 3, 1, 4], 16),
+        ),
+    )
+timespan_maker = consort.TaleaTimespanMaker(
+    initial_silence_talea=rhythmmakertools.Talea([0, 1], 4),
+    playing_groupings=(1, 2, 2),
+    playing_talea=rhythmmakertools.Talea([2, 3], 8),
+    silence_talea=rhythmmakertools.Talea([1, 2, 3, 4], 8),
+    )
+music_setting = consort.MusicSetting(
+    timespan_maker=timespan_maker,
+    v1=music_specifier,
+    v2=music_specifier,
+    )
+segment_maker = consort.SegmentMaker(
+    desired_duration_in_seconds=8,
+    discard_final_silence=True,
+    permitted_time_signatures=[(2, 4), (5, 16), (3, 4)],
+    score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
+        staff_count=2,
+        with_clefs=True,
+        ),
+    settings=[music_setting],
+    tempo=indicatortools.Tempo((1, 4), 72),
+    )
+show(segment_maker, verbose=False)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> music_specifier = consort.MusicSpecifier(
+...     grace_handler=consort.GraceHandler(
+...         counts=(1, 2, 0, 0, 0),
+...         ),
+...     rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
+...         extra_counts_per_division=(0, 1),
+...         talea=rhythmmakertools.Talea([1, 2, 3, 1, 4], 16),
+...         ),
+...     )
+>>> timespan_maker = consort.TaleaTimespanMaker(
+...     initial_silence_talea=rhythmmakertools.Talea([0, 1], 4),
+...     playing_groupings=(1, 2, 2),
+...     playing_talea=rhythmmakertools.Talea([2, 3], 8),
+...     silence_talea=rhythmmakertools.Talea([1, 2, 3, 4], 8),
+...     )
+>>> music_setting = consort.MusicSetting(
+...     timespan_maker=timespan_maker,
+...     v1=music_specifier,
+...     v2=music_specifier,
+...     )
+>>> segment_maker = consort.SegmentMaker(
+...     desired_duration_in_seconds=8,
+...     discard_final_silence=True,
+...     permitted_time_signatures=[(2, 4), (5, 16), (3, 4)],
+...     score_template=templatetools.GroupedRhythmicStavesScoreTemplate(
+...         staff_count=2,
+...         with_clefs=True,
+...         ),
+...     settings=[music_setting],
+...     tempo=indicatortools.Tempo((1, 4), 72),
+...     )
+>>> show(segment_maker, verbose=False)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fcdf7d5554035d7afe8bf1fb99bbe06f.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
 \subsection{Pitch-handlers}
 \label{ssec:pitch-handlers}
