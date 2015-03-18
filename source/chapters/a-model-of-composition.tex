@@ -46,17 +46,13 @@ import consort
 \end{markdown}
 \end{comment}
 
-Consort, a Python library written as an extension to Abjad, models the
-composition of notated musical score
-
-Working with Consort involves a repeated cycle containing three
-distinct stages: \emph{specification}, \emph{interpretation} and
-\emph{visualization}.
-
-What follows is a detailed analysis of the various algorithms and subroutines
-employed during Consort's specification and interpretation stages.
-Visualization, via Abjad's \emph{illustration protocol} was already discussed
-in \autoref{ch:a-model-of-notation}.
+Consort, a Python library I have written as an extension to Abjad, models the
+process of composing of notated musical scores in terms of a repeated cycle
+containing three distinct stages: \emph{specification}, \emph{interpretation}
+and \emph{visualization}. What follows is a detailed analysis of the various
+algorithms and subroutines employed during Consort's specification and
+interpretation stages. Visualization, via Abjad's \emph{illustration protocol}
+was already discussed in \autoref{ch:a-model-of-notation}.
 
 \section{Specification}
 \label{sec:specification}
@@ -1817,16 +1813,56 @@ under that threshold, it too is discarded.
 \subsection{Inscription}
 \label{ssec:inscription}
 
-\begin{markdown}
--   Divisions
--   Get rhythm maker (under what circumstances?)
--   Make simple music
--   Consolidate rests
--   Rhythmic post-processing
-    -   attaching a GeneralizedBeam
-    -   attaching the scoped music specifier
--   Reconfigure the timespan with the created music, but without the divisions
-\end{markdown}
+\emph{Inscription} describes the process of generating \emph{music} from a
+performed timespan's divisions and rhythm-maker and \emph{inscribing} the
+timespan with the result. Consort's segment-maker performs inscription by
+iterating over the timespans for each voice in the demultiplexed maquette, in
+score order. For each performed timespan encountered, the segment-maker
+retrieves that performed timespan's music specifier, and increments that music
+specifiers count in a counter. This allows each music specifier to maintain a
+seed value while inscribing each performed timespan, even in fragmentary
+textures, and to produce continuously varied results from each successive
+rhythm-maker belonging to the same music specifier. Recall from
+\autoref{ssec:populating-voices} that rhythm-makers can be called not only with
+a list of divisions, but also a seed value, rotating the rhythm-makers
+sequence-like properties when creating its rhythmic output. All of the handlers
+discussed in \autoref{sec:non-rhythmic-interpretation} employ similar -- or
+even more complex -- techniques for maintaining state across different phrases
+sharing the same music specifier.
+
+The segment-maker also retrieves the performed timespan's division list --
+created during consolidation, as described in
+\autoref{ssec:splitting-pruning-and-consolidation} -- and its rhythm-maker.
+Rhythm-maker retrieval, like seed retrieval, is non-trivial. A performed
+timespan's music specifier may not have rhythm-maker defined, or that performed
+timespan may not even have a music specifier defined. If a performed timespan
+\emph{has} a rhythm-maker defined on its music specifier, the segment-maker
+retrieves that. If the timespan has a music specifier, but no defined
+rhythm-maker, the segment-maker constructs a note rhythm-maker which ties all
+of its divisions together. If the timespan has no music specifier defined at
+all, the segment-maker returns a fully-masked note rhythm-maker.
+
+With the performed timespan's seed, rhythm-maker and division list ready, the
+segment-maker creates the performed timespan's music. This proceeds almost
+identically to the \texttt{make_music()} function described in
+\autoref{ssec:populating-voices}. Consort's segment-maker makes one additional
+adjustment on top of that algorithm, replacing trivially-prolated tuplets --
+tuplets with ratios of 1:1 -- with unprolated containers.
+
+Next, the segment-maker performs \emph{rest consolidation} on the
+newly-generated phrase, grouping all of the phrase's unprolated rests -- those
+not appearing in tuplets -- into their own containers, and leaving all other
+components -- all notes and chords, and any rests found within a tuplet -- in
+their original division within the phrase. Rest consolidation allows the
+segment-maker to not only regroup the contents of a phrase into silent and
+non-silent segments, but to actually split the performed timespan itself,
+creating larger gaps within the maquette, and improving the chances for
+notating full-bar rests when finally filling in silences between phrases.
+
+Consider the following phrase-like container -- annotated to show its internal
+division structure --, containing divisions in various configurations --
+with rests at the beginning, at the end, with prolated rests, no rests at all,
+and so forth:
 
 \begin{comment}
 <abjad>
@@ -1878,6 +1914,11 @@ show(unconsolidated_staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent A clear comparison can be made by duplicating the original phrase,
+consolidating its rests, annotating it, and grouping both the original
+unconsolidated phrase and the consolidated into a staff group, with the
+original above and the altered below:
+
 \begin{comment}
 <abjad>
 consolidated_staff = Staff(parseable, context_name='RhythmicStaff')
@@ -1907,6 +1948,49 @@ show(staff_group)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1ef1a4031465a364425aef4e059efda0.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent
+
+\begin{comment}
+<abjad>
+music_specifier = consort.MusicSpecifier(
+    rhythm_maker=rhythmmakertools.NoteRhythmMaker(
+        output_masks=[
+            rhythmmakertools.BooleanPattern(
+                indices=[0],
+                period=3,
+                ),
+            ],
+        ),
+    )
+show(music_specifier, divisions=[(1, 4)] * 7)
+timespan = consort.PerformedTimespan(
+    divisions=[durationtools.Duration(1, 4)] * 7,
+    start_offset=0,
+    stop_offset=(7, 4),
+    music_specifier=music_specifier,
+    )
+show(timespan)
+inscribed_timespans = consort.SegmentMaker.inscribe_timespan(timespan)
+show(inscribed_timespans, range_=(0, (7, 4)))
+print(format(inscribed_timespans))
+music = inscribed_timespans[0].music
+indicator = inspect_(music).get_indicator(consort.MusicSpecifier)
+print(format(indicator))
+</abjad>
+\end{comment}
+
+\begin{markdown}
+-   Seed
+-   Divisions
+-   Get rhythm maker (under what circumstances?)
+-   Make simple music
+-   Consolidate rests
+-   Rhythmic post-processing
+    -   attaching a GeneralizedBeam
+    -   attaching the scoped music specifier
+-   Reconfigure the timespan with the created music, but without the divisions
+\end{markdown}
 
 \subsection{Meter pruning}
 \label{ssec:meter-pruning}
@@ -2262,6 +2346,7 @@ With the segment-maker's score populated, rhythmic interpretation ends and
 non-rhythmic interpretation may begin.
 
 \section{Non-rhythmic interpretation}
+\label{sec:non-rhythmic-interpretation}
 
 \subsection{Score traversal}
 
