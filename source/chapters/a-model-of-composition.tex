@@ -1829,7 +1829,6 @@ sequence-like properties when creating its rhythmic output. All of the handlers
 discussed in \autoref{sec:non-rhythmic-interpretation} employ similar -- or
 even more complex -- techniques for maintaining state across different phrases
 sharing the same music specifier.
-
 The segment-maker also retrieves the performed timespan's division list --
 created during consolidation, as described in
 \autoref{ssec:splitting-pruning-and-consolidation} -- and its rhythm-maker.
@@ -1847,17 +1846,16 @@ segment-maker creates the performed timespan's music. This proceeds almost
 identically to the \texttt{make\_music()} function described in
 \autoref{ssec:populating-voices}. Consort's segment-maker makes one additional
 adjustment on top of that algorithm, replacing trivially-prolated tuplets --
-tuplets with ratios of 1:1 -- with unprolated containers.
-
-Next, the segment-maker performs \emph{rest consolidation} on the
-newly-generated phrase, grouping all of the phrase's unprolated rests -- those
-not appearing in tuplets -- into their own containers, and leaving all other
-components -- all notes and chords, and any rests found within a tuplet -- in
-their original division within the phrase. Rest consolidation allows the
-segment-maker to not only regroup the contents of a phrase into silent and
-non-silent segments, but to actually split the performed timespan itself,
-creating larger gaps within the maquette, and improving the chances for
-notating full-bar rests when finally filling in silences between phrases.
+tuplets with ratios of 1:1 -- with unprolated containers. Next, the
+segment-maker performs \emph{rest consolidation} on the newly-generated phrase,
+grouping all of the phrase's unprolated rests -- those not appearing in tuplets
+-- into their own containers, and leaving all other components -- all notes and
+chords, and any rests found within a tuplet -- in their original division
+within the phrase. Rest consolidation allows the segment-maker to not only
+regroup the contents of a phrase into silent and non-silent segments, but to
+actually split the performed timespan itself, creating larger gaps within the
+maquette, and improving the chances for notating full-bar rests when finally
+filling in silences between phrases.
 
 Consider the following phrase-like container -- annotated to show its internal
 division structure --, containing divisions in various configurations --
@@ -1949,7 +1947,12 @@ show(staff_group)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Note the rests
+\noindent Note above how after rest consolidation the rests in the lower staff have been grouped
+together into their own divisions -- annotated with dashed lines -- while all
+other components -- including rests within tuplets -- remain in their original
+divisions. Now consider the following simple rhythm-maker which, when passed a
+division sequence of seven 1/4-durations, generates a rhythm consisting
+of two groups of 1/4 notes delimited by rests:
 
 \begin{comment}
 <abjad>
@@ -1985,7 +1988,11 @@ show(rhythm_maker, divisions=divisions)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent This performed timespan
+\noindent The above rhythm-maker can be treated as the rhythm-maker for a music
+specifier annotating a performed timespan. Likewise, the divisions used above
+can be used as the division sequence for this same performed timespan. If this
+timespan's rhythm-maker would be called with its division list, the same rhythm
+as above would result:
 
 \begin{comment}
 <abjad>
@@ -2019,7 +2026,8 @@ show(timespan)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Note the gaps
+\noindent The timespan can then be inscribed by calling the segment-maker's
+\texttt{inscribe\_timespan()} method:
 
 \begin{comment}
 <abjad>
@@ -2085,9 +2093,16 @@ timespantools.TimespanInventory(
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent The split performed timespans replace the original
-
-Then, MusicSpecifier attachment
+\noindent After inscription -- including rest consolidation --, the original
+performed timespan has been split into two new performed timespans, whose start
+and stop offsets outline only those portions of the generated rhythm which do
+not contain rests. Their music attributes have likewise been populated with
+only the non-silent portions of that rhythm. During inscription, the
+segment-maker replaces each performed timespan against which inscription is
+called with the result of the inscription process. Additionally, the
+segment-maker performs some simple post-processing on each inscribed timespan's
+music, attaching both a beam spanner to the leaves of the phrase, as well as
+the music specifier used to specify the phrase's music to the phrase itself:
 
 \begin{comment}
 <abjad>
@@ -2118,7 +2133,10 @@ consort.tools.MusicSpecifier(
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Why attach the music specifier to the phrase container?
+\noindent Attaching the music specifier directly to the performed timespan's
+phrase container allows each leaf in the segment-maker's score to locate the
+music specifier which specified, without needing to resort to referencing the
+maquette.
 
 \subsection{Meter pruning}
 \label{ssec:meter-pruning}
@@ -2736,20 +2754,21 @@ division within its phrase it occurs within.
 \subsection{Grace-handlers}
 \label{ssec:grace-handlers}
 
-Grace handlers attach *grace containers* to logical ties within a score in a
-patterned way.
-
+Consort's segment-maker can be instructed to attach grace notes to various
+parts of the score by defining a \emph{grace-handler} on a music-specifier.
+Grace-handlers attach *grace containers* to logical ties within a score in a
+patterned way, according to a cyclic sequence of counts, as well as collection
+of flags which restrict what leaves may be selected for attachment.
 Abjad implements grace notes as normal leaves -- notes, chords and rests --
 within special components which act both as Abjad \texttt{Container} classes as
 well as attachable indicators. That is to say, grace notes must be placed
 within one of these grace containers which is then attached to another leaf in
-the score much like any other indicator, such as dynamics or articulations.
-
-Grace-handlers traverse the score by logical tie in time-order, by iterating
-over the previously cached ordered dictionary of attack-points, generated at
-the end of rhythmic interpretation.
-
-Discuss sub-optimal grace-note spacing in proportional notation?
+the score much like any other indicator such as a dynamic indication or
+articulation. Grace-handlers traverse the score by logical tie in time-order,
+iterating over the previously cached ordered dictionary of attack-points which
+was generated at the beginning of non-rhythmic interpretation. Consider the
+following music specifier, whose grace-handler places grace notes with a cyclic
+count of 1, 2, 0, 0, 0.
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -2828,6 +2847,22 @@ show(segment_maker, verbose=False)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fcdf7d5554035d7afe8bf1fb99bbe06f.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Note above that the first note in the score by time-wise ordering --
+the initial 1/16 note in the upper staff -- does not receive the expected
+single grace note. The grace note pattern starts instead on the 1/8 note that
+follows. For purely practical reasons, Consort's grace-handler will \emph{not}
+put grace notes before the first leaf in any voice in a score. LilyPond's grace
+spacing algorithm does not operate well with its strict proportional spacing
+algorithm. When spaced strictly proportionally, grace notes which are
+positioned before the beat -- via LilyPond's \texttt{\textbackslash{}grace},
+\texttt{\textbackslash{}appoggiatura} or \texttt{\textbackslash{}acciaccatura}
+commands -- may end up colliding with other glyphs in the staff. Consort works
+around this by using LilyPond's \texttt{\textbackslash{}afterGrace} command,
+which places grace notes after the note to which they attach. This positioning
+allows grace notes to avoid most collisions. Unfortunately, this also means
+that grace notes must always appear after a note or rest, making it impossible
+to start a segment with grace notes.
 
 \subsection{Pitch-handlers}
 \label{ssec:pitch-handlers}
