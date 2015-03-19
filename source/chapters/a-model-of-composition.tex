@@ -3195,7 +3195,6 @@ music_setting = consort.MusicSetting(
     v2=music_specifier,
     )
 segment_maker = new(segment_maker, settings=[music_setting])
-print(format(segment_maker))
 show(segment_maker, verbose=False)
 </abjad>
 \end{comment}
@@ -3214,123 +3213,6 @@ show(segment_maker, verbose=False)
 ...     v2=music_specifier,
 ...     )
 >>> segment_maker = new(segment_maker, settings=[music_setting])
->>> print(format(segment_maker))
-consort.tools.SegmentMaker(
-    desired_duration_in_seconds=durationtools.Duration(9, 1),
-    permitted_time_signatures=indicatortools.TimeSignatureInventory(
-        [
-            indicatortools.TimeSignature((3, 4)),
-            ]
-        ),
-    score_template=templatetools.GroupedStavesScoreTemplate(
-        staff_count=2,
-        ),
-    settings=(
-        consort.tools.MusicSetting(
-            timespan_maker=consort.tools.TaleaTimespanMaker(
-                initial_silence_talea=rhythmmakertools.Talea(
-                    counts=(0, 1),
-                    denominator=4,
-                    ),
-                playing_talea=rhythmmakertools.Talea(
-                    counts=(1,),
-                    denominator=8,
-                    ),
-                playing_groupings=(3,),
-                repeat=True,
-                silence_talea=rhythmmakertools.Talea(
-                    counts=(1,),
-                    denominator=8,
-                    ),
-                step_anchor=Right,
-                synchronize_groupings=False,
-                synchronize_step=False,
-                ),
-            v1=consort.tools.MusicSpecifier(
-                pitch_handler=consort.tools.AbsolutePitchHandler(
-                    pitch_specifier=consort.tools.PitchSpecifier(
-                        pitch_segments=(
-                            pitchtools.PitchSegment(
-                                (
-                                    pitchtools.NamedPitch("c'"),
-                                    pitchtools.NamedPitch("e'"),
-                                    pitchtools.NamedPitch("g'"),
-                                    ),
-                                item_class=pitchtools.NamedPitch,
-                                ),
-                            pitchtools.PitchSegment(
-                                (
-                                    pitchtools.NamedPitch("fs'"),
-                                    pitchtools.NamedPitch("g'"),
-                                    pitchtools.NamedPitch("a'"),
-                                    ),
-                                item_class=pitchtools.NamedPitch,
-                                ),
-                            pitchtools.PitchSegment(
-                                (
-                                    pitchtools.NamedPitch('b'),
-                                    pitchtools.NamedPitch("d'"),
-                                    ),
-                                item_class=pitchtools.NamedPitch,
-                                ),
-                            ),
-                        ratio=mathtools.Ratio(1, 2, 3),
-                        ),
-                    ),
-                rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
-                    talea=rhythmmakertools.Talea(
-                        counts=(1, 2, 3, 4),
-                        denominator=16,
-                        ),
-                    ),
-                ),
-            v2=consort.tools.MusicSpecifier(
-                pitch_handler=consort.tools.AbsolutePitchHandler(
-                    pitch_specifier=consort.tools.PitchSpecifier(
-                        pitch_segments=(
-                            pitchtools.PitchSegment(
-                                (
-                                    pitchtools.NamedPitch("c'"),
-                                    pitchtools.NamedPitch("e'"),
-                                    pitchtools.NamedPitch("g'"),
-                                    ),
-                                item_class=pitchtools.NamedPitch,
-                                ),
-                            pitchtools.PitchSegment(
-                                (
-                                    pitchtools.NamedPitch("fs'"),
-                                    pitchtools.NamedPitch("g'"),
-                                    pitchtools.NamedPitch("a'"),
-                                    ),
-                                item_class=pitchtools.NamedPitch,
-                                ),
-                            pitchtools.PitchSegment(
-                                (
-                                    pitchtools.NamedPitch('b'),
-                                    pitchtools.NamedPitch("d'"),
-                                    ),
-                                item_class=pitchtools.NamedPitch,
-                                ),
-                            ),
-                        ratio=mathtools.Ratio(1, 2, 3),
-                        ),
-                    ),
-                rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
-                    talea=rhythmmakertools.Talea(
-                        counts=(1, 2, 3, 4),
-                        denominator=16,
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    tempo=indicatortools.Tempo(
-        duration=durationtools.Duration(1, 4),
-        units_per_minute=60,
-        ),
-    )
-\end{lstlisting}
-\begin{lstlisting}
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f863612768a505f3f1a27901d8908c01.pdf}
@@ -3695,36 +3577,30 @@ have written with Consort, finding them sufficient for now.
 \label{ssec:attachment-handlers}
 
 Attachment-handlers manage the process of attaching indicators and spanners to
-selections of components within a score. They may also evaluate *component
-expressions* against selections of components, much like the logical tie
-expressions outlined in \autoref{ssec:pitch-handlers}.
-
-Attachment-handlers aggregate *attachment expressions* by associating those
-expressions with underscore-delimited string keys. This mechanism, nearly
-identical to that employed by music settings, allows attachment expressions --
+selections of components within a score. Unlike grace-handlers and
+pitch-handlers, they iterate over the score by voice and phrase, rather than by
+logical-tie time-wise. Phrase-wise iteration allows attachment-handlers to
+create highly-contextualized attachments, considering each component in a
+phrase in terms of each other component. Attachment-handlers aggregate
+\emph{attachment expressions}, objects pairing a \emph{component selector} --
+as described in \autoref{ssec:selectors} -- and an iterable of attachments --
+indicators and spanners -- or component expressions. Selectors chain together a
+series of \emph{callbacks} which progressively refine a selection as each
+callback processes it. Much like the other handler classes described already,
+an attachment-expression's attachments sequence cycles, allowing different
+groups of attachments to be attached each time the attachment-expression is
+called with a different seed value. Attachment-handler associate their
+attachment expressions with underscore-delimited string keys. This mechanism,
+nearly identical to that employed by music settings for associating music
+specifiers with voice-name abbreviations, allows attachment expressions --
 which may have an arbitrary number of such associations -- to be reconfigured
 through templating to add new attachment expressions or overwrite or nullify
 specific existing expressions.\footnote{The principle employed by both music
 settings and attachment handlers is crucial: named references beat positional
 references.}
 
-Attachment expressions pair a *component selector* -- as described in
-\autoref{ssec:selectors} -- and an iterable of attachments -- indicators and
-spanners -- or component expressions.
-
-Attachment-handlers provide various niceties for instantiation.
-
-\begin{markdown}
--   Attaches things to the score.
--   Aggregates AttachmentExpression instances together.
-    -   A bundle of a selector and an iterable of attachments or
-        expressions.
-    -   Reprise discussion of selectors.
--   Processes the score by voice, then by *phrase*.
-    -   Unlike the other handlers, attachment handlers require the entire
-        phrase to operate on, and selectors should be designed with that in
-        mind.
-\end{markdown}
+Consider the following two-staff segment containing phrases interspersed by
+rests and a surface-rhythm with a variety of tuplets and ties:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -3800,14 +3676,22 @@ show(segment_maker, verbose=False)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Accents can be attached to the first leaf of each phrase by
+configuring the music specifier's attachment-handler with an attachment
+expression whose attachments are simply an instance of an Abjad
+\texttt{Articulation} and whose selector has been configured to first select
+all leaves and then select the first item in that selection of leaves: the
+first leaf:
+
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
+attachment_expression = consort.AttachmentExpression(
+    attachments=Articulation('accent'),
+    selector=selectortools.Selector().by_leaves()[0],
+    )
 music_specifier = new(
     music_specifier,
-    attachment_handler__accents=consort.AttachmentExpression(
-        attachments=Articulation('accent'),
-        selector=selectortools.Selector().by_leaves()[0],
-        ),
+    attachment_handler__accents=attachment_expression,
     )
 music_setting = new(
     music_setting,
@@ -3823,12 +3707,13 @@ show(segment_maker,verbose=False)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
+>>> attachment_expression = consort.AttachmentExpression(
+...     attachments=Articulation('accent'),
+...     selector=selectortools.Selector().by_leaves()[0],
+...     )
 >>> music_specifier = new(
 ...     music_specifier,
-...     attachment_handler__accents=consort.AttachmentExpression(
-...         attachments=Articulation('accent'),
-...         selector=selectortools.Selector().by_leaves()[0],
-...         ),
+...     attachment_handler__accents=attachment_expression,
 ...     )
 >>> music_setting = new(
 ...     music_setting,
@@ -3842,6 +3727,14 @@ show(segment_maker,verbose=False)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Tenuto articulations can be attached to the head of every logical tie
+in each phrase -- except the very first -- with a more complex selector. The
+following tenuto-attaching attachment-expression's selector first selects all
+leaves in each phrase, then selects all pitched logical ties, then selects all
+but the first of those logical ties -- rather than all but the first leaf in
+\emph{each} of those logical ties -- and finally selects the first leaf in each
+selected logical tie:
+
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
 music_specifier = new(
@@ -3849,8 +3742,10 @@ music_specifier = new(
     attachment_handler__tenuti=consort.AttachmentExpression(
         attachments=Articulation('tenuto'),
         selector=selectortools.Selector()
-            .by_leaves()[1:]
-            .by_logical_tie(pitched=True)[0],
+            .by_leaves()
+            .by_logical_tie(pitched=True)
+            .get_slice(start=1, apply_to_each=False)
+            [0]
         ),
     )
 music_setting = new(
@@ -3872,8 +3767,10 @@ show(segment_maker, verbose=False)
 ...     attachment_handler__tenuti=consort.AttachmentExpression(
 ...         attachments=Articulation('tenuto'),
 ...         selector=selectortools.Selector()
-...             .by_leaves()[1:]
-...             .by_logical_tie(pitched=True)[0],
+...             .by_leaves()
+...             .by_logical_tie(pitched=True)
+...             .get_slice(start=1, apply_to_each=False)
+...             [0]
 ...         ),
 ...     )
 >>> music_setting = new(
@@ -3887,6 +3784,16 @@ show(segment_maker, verbose=False)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-254b71b1dd161525523b2dfc96ee5b18.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Attaching a spanner to the entirety of a phrase is a much simpler
+process. When configuring an attachment-handler with a new key, if the value of
+that key is not already an attachment expression, the attachment-handler
+creates a new attachment expression and sets the value as the attachment
+expression's attachment list. Likewise, an attachment expression which has no
+selector defined uses a default selector when called, which simply selects
+whatever the attachment expression was called against. In the following
+reconfiguration, a slur is attached to the entirety of each phrase, using the
+configuration coercion described above:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -3924,6 +3831,17 @@ show(segment_maker, verbose=False)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Attachment-handlers and their attachment expressions can also
+delegate to objects specifically designed for attaching indicators and
+spanners, much like the logical tie expressions outlined in
+\autoref{ssec:pitch-handlers}. For example, Consort's \emph{dynamic expression}
+attaches dynamic indications, potentially spanned by hairpins, to the first
+leaf in each division of a phrase, and to the last leaf of the phrase as well,
+taking care of special cases such as divisions with insufficient numbers of
+leaves. Dynamic expressions encapsulate their own selection logic which is
+generally too difficult to implement simply through chaining component selector
+callbacks:
+
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
 music_specifier = new(
@@ -3959,6 +3877,12 @@ show(segment_maker, verbose=False)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5134d656fed6cee151678103491f4f07.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Consider the above segment again, but with annotation brackets
+showing the phrase and division groupings. Note how each division in each
+phrase begins with a dynamic, and the last division in each phrase -- including
+those which are the \emph{only} division -- contain two dynamics, with the
+exception of those that only contain a single logical tie:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
