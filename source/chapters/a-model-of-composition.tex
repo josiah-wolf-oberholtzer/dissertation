@@ -3840,7 +3840,8 @@ leaf in each division of a phrase, and to the last leaf of the phrase as well,
 taking care of special cases such as divisions with insufficient numbers of
 leaves. Dynamic expressions encapsulate their own selection logic which is
 generally too difficult to implement simply through chaining component selector
-callbacks:
+callbacks. Consider the locations of the dynamics in the following annotated
+segment:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -3854,7 +3855,9 @@ music_setting = new(
     v2=music_specifier,
     )
 segment_maker = new(segment_maker, settings=[music_setting])
-show(segment_maker, verbose=False)
+lilypond_file = segment_maker(verbose=False)
+consort.annotate(lilypond_file.score)
+show(lilypond_file)
 </abjad>
 \end{comment}
 
@@ -3872,30 +3875,6 @@ show(segment_maker, verbose=False)
 ...     v2=music_specifier,
 ...     )
 >>> segment_maker = new(segment_maker, settings=[music_setting])
->>> show(segment_maker, verbose=False)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5134d656fed6cee151678103491f4f07.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\noindent Consider the above segment again, but with annotation brackets
-showing the phrase and division groupings. Note how each division in each
-phrase begins with a dynamic, and the last division in each phrase -- including
-those which are the \emph{only} division -- contain two dynamics, with the
-exception of those that only contain a single logical tie:
-
-\begin{comment}
-<abjad>[stylesheet=../consort.ily]
-lilypond_file = segment_maker(verbose=False)
-consort.annotate(lilypond_file.score)
-show(lilypond_file)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
 >>> lilypond_file = segment_maker(verbose=False)
 >>> consort.annotate(lilypond_file.score)
 >>> show(lilypond_file)
@@ -3904,17 +3883,142 @@ show(lilypond_file)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Note above how each division in each phrase begins with a dynamic,
+and the last division in each phrase -- including those which are the
+\emph{only} division -- contain two dynamics, with the exception of those that
+only contain a single logical tie.
+
 \subsection{Expressive attachments}
 \label{ssec:expressive-attachments}
 
-\begin{markdown}
--   Idiomatic indicators
--   DynamicExpression
--   BowContactSpanner
--   StringContactSpanner
--   Indicators attached as annotations
--   Spanners as a kind of clever post-processing
-\end{markdown}
+\noindent Complex attachment-based formatting scenarios can also be constructed
+without relying on component expressions such as \texttt{DynamicExpression}.
+One technique used extensively in my scores, especially \emph{Invisible Cities
+(ii): Armilla}, is to attach various idiomatic indicators as non-formatting
+annotations to components throughout each phrase, and then to attach a
+specially-designed spanner to the entirety of each phrase which knows how to
+inspect the leaves it covers for the previously attached annotations. For
+example, Consort's \texttt{StringContactSpanner} can inspect its leaves for
+\texttt{StringContactPoint} indicators and then construct markup for each
+contact point -- sul ponticello, ordinario, and so forth -- bridged by arrows
+when the contact points changed, and parenthesizing the contact point markup
+when cautionary. Likewise, the \texttt{BowContactSpanner} can inspect its
+leaves for \texttt{BowContactPoint} indicators -- which indicate the current
+position along the hair of the bow -- as well as \texttt{BowMotionTechnique}
+indicators -- which describe various motion qualities like \emph{jete} and
+tremolo -- replacing the note heads of the staff with fractions for the current
+bow position and adding up- or down-bow markup as necessary. When combined with
+the appropriate typographic overrides, complex graphic notation results:
+
+\begin{comment}
+<abjad>
+staff = Staff()
+staff.extend(r"c'4. c'8 \times 2/3 { c'4 c'4 c'4 }")
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff = Staff()
+>>> staff.extend(r"c'4. c'8 \times 2/3 { c'4 c'4 c'4 }")
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+leaves = staff.select_leaves()
+attach(indicatortools.BowMotionTechnique('jete'), leaves[0])
+attach(indicatortools.BowContactPoint((1, 4)), leaves[0])
+attach(indicatortools.BowContactPoint((3, 4)), leaves[1])
+attach(indicatortools.BowContactPoint((1, 2)), leaves[2])
+attach(indicatortools.BowMotionTechnique('circular'), leaves[3])
+attach(indicatortools.BowContactPoint((1, 1)), leaves[3])
+attach(indicatortools.BowContactPoint((0, 1)), leaves[4])
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> leaves = staff.select_leaves()
+>>> attach(indicatortools.BowMotionTechnique('jete'), leaves[0])
+>>> attach(indicatortools.BowContactPoint((1, 4)), leaves[0])
+>>> attach(indicatortools.BowContactPoint((3, 4)), leaves[1])
+>>> attach(indicatortools.BowContactPoint((1, 2)), leaves[2])
+>>> attach(indicatortools.BowMotionTechnique('circular'), leaves[3])
+>>> attach(indicatortools.BowContactPoint((1, 1)), leaves[3])
+>>> attach(indicatortools.BowContactPoint((0, 1)), leaves[4])
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+attach(Clef('percussion'), staff)
+override(staff).bar_line.transparent = True
+override(staff).dots.staff_position = -8
+override(staff).flag.Y_offset = -8.5
+override(staff).glissando.bound_details__left__padding = 1.5
+override(staff).glissando.bound_details__right__padding = 1.5
+override(staff).glissando.thickness = 2
+override(staff).script.staff_padding = 3
+override(staff).staff_symbol.transparent = True
+override(staff).stem.direction = Down
+override(staff).stem.length = 8
+override(staff).stem.stem_begin_position = -9
+override(staff).time_signature.stencil = False
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> attach(Clef('percussion'), staff)
+>>> override(staff).bar_line.transparent = True
+>>> override(staff).dots.staff_position = -8
+>>> override(staff).flag.Y_offset = -8.5
+>>> override(staff).glissando.bound_details__left__padding = 1.5
+>>> override(staff).glissando.bound_details__right__padding = 1.5
+>>> override(staff).glissando.thickness = 2
+>>> override(staff).script.staff_padding = 3
+>>> override(staff).staff_symbol.transparent = True
+>>> override(staff).stem.direction = Down
+>>> override(staff).stem.length = 8
+>>> override(staff).stem.stem_begin_position = -9
+>>> override(staff).time_signature.stencil = False
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+attach(spannertools.BowContactSpanner(), leaves)
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> attach(spannertools.BowContactSpanner(), leaves)
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-89bb634d4272124c25c324e04c897de7.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Notation created in this way treats spanners as typographic
+post-processors. The positioning of the various bowing indicators -- the bow
+motion technique indicators, the bow contact point indicators -- constitutes
+the compositional act, and the bookkeeping inherent to drawing the correctly
+formatted lines between them simply constitutes part of the typesetting
+process.
 
 \subsection{Post-processing}
 \label{ssec:post-processing}
