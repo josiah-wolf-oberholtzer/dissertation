@@ -2495,6 +2495,7 @@ non-rhythmic interpretation may begin.
 \label{sec:non-rhythmic-interpretation}
 
 \subsection{Score traversal}
+\label{ssec:score-traversal}
 
 \begin{markdown}
 -   AttackPointSignature
@@ -2867,44 +2868,12 @@ to start a segment with grace notes.
 \subsection{Pitch-handlers}
 \label{ssec:pitch-handlers}
 
-Pitch-handlers manage the process of applying pitch material to logical ties
-within a score in a patterned way.
-
-Pitch material may be semantic or non-semantic.
-
-\begin{markdown}
--   Applies pitches to logical ties in a patterned way.
--   Applies pitches to grace notes associated with a logical tie.
--   Applies logical-tie-expressions which can convert logical ties from
-    notes into chords, key-clusters or harmonics.
--   Processes the score time-wise by logical tie.
-    -   The goal is to limit pitch class repetition both vertically and
-        horizontally, but *only* with regard to phrases in the score scoped
-        by each music specifier. Other phrases are not considered.
--   Application rate: by logical tie, division, phrase
-    -   This requires the SeedSession class for keeping track of many
-        seeds, each advancing at a potentially different rate.
-    -   This also requires the AttackPointSignature class, which caches
-        information about each logical tie's position in its parent
-        division, phrase and overall segment.
--   MusicSpecifier: pitches are non-semantic (is this even used?)
--   Maps different patterns of pitches and different patterns of operations
-    across the timeline.
-    -   PitchHandler: `get_pitch_choice_timespans()`
-    -   Demonstrate.
--   Can act on absolute pitches, or registered pitch classes.
--   Other formulations are possible: selecting from vertical sonorities
-    based on register curves. (This is not currently implemented, but maybe
-    for Ersilia.)
--   Demonstrate simple PitchHandler examples.
--   Additionally:
-    -   SeedSession
-    -   Pitch operations
-    -   Logical tie expressions
-    -   Pitch application rate
-    -   Pitch specifier
-    -   Grace expressions
-\end{markdown}
+Consort's \emph{pitch-handlers} apply pitches to logical ties within a score in
+a patterned way, through the use of various cyclic sequences applied to each
+logical tie in time-wise order, much like grace-handlers. Consider the
+following short segment, containing two voices of 1/16 note rhythms
+interspersed with rests. Without any pitch-handler specified, both voices
+default to creating notes pitched at middle-C:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -2972,6 +2941,15 @@ show(segment_maker, verbose=False)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent By reconfiguring the above music specifier with an
+\texttt{AbsolutePitchHandler} -- a concrete subclass of Consort's abstract
+\texttt{PitchHandler} -- different pitches can be applied to each note in the
+segment. The following pitch-handler paints a C-major scale across all of the
+logical ties in the resulting segment. Note how the G4, A4, B4 and C5 of the
+applied C major scale alternate between the voices according to both their
+time-wise position and their score order, as discussed in
+\autoref{ssec:score-traversal}:
+
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
 music_specifier = new(
@@ -3012,6 +2990,9 @@ show(segment_maker, verbose=False)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Pitch-handlers apply their pitch patterns in time-wise order
+regardless of rhythmic texture:
+
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
 music_specifier = new(
@@ -3047,6 +3028,20 @@ show(segment_maker, verbose=False)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1548051ace14e831b1685f04ffc9bf04.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent As discussed in \autoref{ssec:inscription}, pitch-handlers, like
+rhythm-makers, maintain a seed value keyed to the music specifier in which they
+are defined, allowing them to maintain their pattern even in fragmentary or
+interrupted musical textures. Note how, when interrupted by phrases defined by
+a different music specifier, the previously defined texture continues its pitch
+application pattern after each interruption or silence exactly where it left
+off. For example, the A4 1/16 note in the lower voice in measure one is
+continued by the B4 1/8 note in the upper voice at the beginning of measure
+two, and followed by the C5 1/8 note directly below in the lower voice. The
+C-major pattern continues despite the intrusion of the triplet texture defined
+by the \texttt{other\_music\_specifier}:
+
+\todo[inline]{\textbf{TODO:} Fix seed-handling at pitch-choice boundaries.}
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -3102,18 +3097,97 @@ show(segment_maker, verbose=False)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Pitch-handlers may define explicit \emph{pitch specifiers}, which
+behave somewhat analogously to the ratio-parts expressions discussed in
+\autoref{ssec:populating-the-maquette}, describing which pitches or
+pitch-classes are to be used in which sections of a segment, as partitioned by
+a ratio.
+
+\begin{comment}
+<abjad>
+pitch_specifier = consort.PitchSpecifier(
+    pitch_segments=(
+        "c' e' g'",
+        "fs' g' a'",
+        "b d'",
+        ),
+    ratio=(1, 2, 3),
+    )
+pitch_choice_timespans = consort.PitchHandler.get_pitch_choice_timespans(
+    pitch_specifier=pitch_specifier,
+    duration=segment_maker.desired_duration,
+    )
+print(format(pitch_choice_timespans))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> pitch_specifier = consort.PitchSpecifier(
+...     pitch_segments=(
+...         "c' e' g'",
+...         "fs' g' a'",
+...         "b d'",
+...         ),
+...     ratio=(1, 2, 3),
+...     )
+>>> pitch_choice_timespans = consort.PitchHandler.get_pitch_choice_timespans(
+...     pitch_specifier=pitch_specifier,
+...     duration=segment_maker.desired_duration,
+...     )
+>>> print(format(pitch_choice_timespans))
+consort.tools.TimespanCollection(
+    [
+        timespantools.AnnotatedTimespan(
+            start_offset=durationtools.Offset(0, 1),
+            stop_offset=durationtools.Offset(3, 8),
+            annotation=datastructuretools.CyclicTuple(
+                [
+                    pitchtools.NamedPitch("c'"),
+                    pitchtools.NamedPitch("e'"),
+                    pitchtools.NamedPitch("g'"),
+                    ]
+                ),
+            ),
+        timespantools.AnnotatedTimespan(
+            start_offset=durationtools.Offset(3, 8),
+            stop_offset=durationtools.Offset(9, 8),
+            annotation=datastructuretools.CyclicTuple(
+                [
+                    pitchtools.NamedPitch("fs'"),
+                    pitchtools.NamedPitch("g'"),
+                    pitchtools.NamedPitch("a'"),
+                    ]
+                ),
+            ),
+        timespantools.AnnotatedTimespan(
+            start_offset=durationtools.Offset(9, 8),
+            stop_offset=durationtools.Offset(9, 4),
+            annotation=datastructuretools.CyclicTuple(
+                [
+                    pitchtools.NamedPitch('b'),
+                    pitchtools.NamedPitch("d'"),
+                    ]
+                ),
+            ),
+        ]
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent When used to reconfigure the previously-defined music specifier's
+pitch-handler, each of the pitch specifier's pitch segments appears in only one
+portion of the resulting score, as defined by the pitch-choice timespan
+inventory:
+
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
 music_specifier = new(
     music_specifier,
-    pitch_handler__pitch_specifier=consort.PitchSpecifier(
-        pitch_segments=(
-            "c' e' g'",
-            "fs' g' a'",
-            "b d'",
-            ),
-        ratio=(1, 2, 3),
-        ),
+    pitch_handler__pitch_specifier=pitch_specifier,
     )
 music_setting = consort.MusicSetting(
     timespan_maker=timespan_maker,
@@ -3121,6 +3195,7 @@ music_setting = consort.MusicSetting(
     v2=music_specifier,
     )
 segment_maker = new(segment_maker, settings=[music_setting])
+print(format(segment_maker))
 show(segment_maker, verbose=False)
 </abjad>
 \end{comment}
@@ -3131,14 +3206,7 @@ show(segment_maker, verbose=False)
 \begin{lstlisting}
 >>> music_specifier = new(
 ...     music_specifier,
-...     pitch_handler__pitch_specifier=consort.PitchSpecifier(
-...         pitch_segments=(
-...             "c' e' g'",
-...             "fs' g' a'",
-...             "b d'",
-...             ),
-...         ratio=(1, 2, 3),
-...         ),
+...     pitch_handler__pitch_specifier=pitch_specifier,
 ...     )
 >>> music_setting = consort.MusicSetting(
 ...     timespan_maker=timespan_maker,
@@ -3146,11 +3214,138 @@ show(segment_maker, verbose=False)
 ...     v2=music_specifier,
 ...     )
 >>> segment_maker = new(segment_maker, settings=[music_setting])
+>>> print(format(segment_maker))
+consort.tools.SegmentMaker(
+    desired_duration_in_seconds=durationtools.Duration(9, 1),
+    permitted_time_signatures=indicatortools.TimeSignatureInventory(
+        [
+            indicatortools.TimeSignature((3, 4)),
+            ]
+        ),
+    score_template=templatetools.GroupedStavesScoreTemplate(
+        staff_count=2,
+        ),
+    settings=(
+        consort.tools.MusicSetting(
+            timespan_maker=consort.tools.TaleaTimespanMaker(
+                initial_silence_talea=rhythmmakertools.Talea(
+                    counts=(0, 1),
+                    denominator=4,
+                    ),
+                playing_talea=rhythmmakertools.Talea(
+                    counts=(1,),
+                    denominator=8,
+                    ),
+                playing_groupings=(3,),
+                repeat=True,
+                silence_talea=rhythmmakertools.Talea(
+                    counts=(1,),
+                    denominator=8,
+                    ),
+                step_anchor=Right,
+                synchronize_groupings=False,
+                synchronize_step=False,
+                ),
+            v1=consort.tools.MusicSpecifier(
+                pitch_handler=consort.tools.AbsolutePitchHandler(
+                    pitch_specifier=consort.tools.PitchSpecifier(
+                        pitch_segments=(
+                            pitchtools.PitchSegment(
+                                (
+                                    pitchtools.NamedPitch("c'"),
+                                    pitchtools.NamedPitch("e'"),
+                                    pitchtools.NamedPitch("g'"),
+                                    ),
+                                item_class=pitchtools.NamedPitch,
+                                ),
+                            pitchtools.PitchSegment(
+                                (
+                                    pitchtools.NamedPitch("fs'"),
+                                    pitchtools.NamedPitch("g'"),
+                                    pitchtools.NamedPitch("a'"),
+                                    ),
+                                item_class=pitchtools.NamedPitch,
+                                ),
+                            pitchtools.PitchSegment(
+                                (
+                                    pitchtools.NamedPitch('b'),
+                                    pitchtools.NamedPitch("d'"),
+                                    ),
+                                item_class=pitchtools.NamedPitch,
+                                ),
+                            ),
+                        ratio=mathtools.Ratio(1, 2, 3),
+                        ),
+                    ),
+                rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
+                    talea=rhythmmakertools.Talea(
+                        counts=(1, 2, 3, 4),
+                        denominator=16,
+                        ),
+                    ),
+                ),
+            v2=consort.tools.MusicSpecifier(
+                pitch_handler=consort.tools.AbsolutePitchHandler(
+                    pitch_specifier=consort.tools.PitchSpecifier(
+                        pitch_segments=(
+                            pitchtools.PitchSegment(
+                                (
+                                    pitchtools.NamedPitch("c'"),
+                                    pitchtools.NamedPitch("e'"),
+                                    pitchtools.NamedPitch("g'"),
+                                    ),
+                                item_class=pitchtools.NamedPitch,
+                                ),
+                            pitchtools.PitchSegment(
+                                (
+                                    pitchtools.NamedPitch("fs'"),
+                                    pitchtools.NamedPitch("g'"),
+                                    pitchtools.NamedPitch("a'"),
+                                    ),
+                                item_class=pitchtools.NamedPitch,
+                                ),
+                            pitchtools.PitchSegment(
+                                (
+                                    pitchtools.NamedPitch('b'),
+                                    pitchtools.NamedPitch("d'"),
+                                    ),
+                                item_class=pitchtools.NamedPitch,
+                                ),
+                            ),
+                        ratio=mathtools.Ratio(1, 2, 3),
+                        ),
+                    ),
+                rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
+                    talea=rhythmmakertools.Talea(
+                        counts=(1, 2, 3, 4),
+                        denominator=16,
+                        ),
+                    ),
+                ),
+            ),
+        ),
+    tempo=indicatortools.Tempo(
+        duration=durationtools.Duration(1, 4),
+        units_per_minute=60,
+        ),
+    )
+\end{lstlisting}
+\begin{lstlisting}
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f863612768a505f3f1a27901d8908c01.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Likewise, a pitch-handler may define a pitch-operation specifier,
+which behaves similarly to pitch specifiers. Pitch-operation specifiers combine
+a sequence of pitch-operations -- described in \autoref{ssec:pitch-operators}
+-- with a ratio defining where those operations should appear during the course
+of a segment. Pitch-operation specifiers may be used alongside pitch
+specifiers, and with differing ratios. The following pitch-operation specifier
+partitions the segment into three unequal parts, applying an operation to the
+first 1/4, no operation to the middle 1/2, and another operation to the final
+1/4 of the segment:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -3212,6 +3407,11 @@ show(segment_maker, verbose=False)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Pitch-handlers may also be configured to forbid immediate pitch
+repetitions within the same voice via the \texttt{forbid\_repetitions} flag,
+assuming the current logical tie has more than one pitch available via its
+pitch-choices:
+
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
 music_specifier = new(
@@ -3247,6 +3447,18 @@ show(segment_maker, verbose=False)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-e8337085639c633444a1e65214aa5493.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Chords may be applied in a patterned way to the logical ties a
+pitch-handler iterates over by defining a sequence of \emph{logical tie
+expressions} -- classes which, when called on a logical tie, modify or replace
+each of the leaves in that logical tie, leaving the tie itself in place.
+Consort provides a few subclasses of logical tie expression, such as the
+\texttt{ChordExpression}, \texttt{HarmonicExpression} and
+\texttt{KeyClusterExpression}. When called on a logical tie, chord expression
+replace each note in the tie with a chord whose pitches may be specified either
+absolutely or in terms of intervals relative to the original pitch. Note that
+Python's \texttt{None}, like in the previously defined pitch-operation
+specifier, acts as a \enquote{no-op}, making no change at all:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -3292,6 +3504,10 @@ show(segment_maker, verbose=False)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent All of the above pattern definitions -- pitch specifiers,
+pitch-operation specifiers and sequence of logical tie expressions -- continue
+to apply in order even over an interrupted or otherwise fragmentary texture:
+
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
 segment_maker = new(
@@ -3315,6 +3531,15 @@ show(segment_maker, verbose=False)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-9b48c7c7d8ec2ca4e86b9da611fdef17.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Now, consider again the 1/16 note music specifier from earlier in
+this section, whose pitch-handler cycled through a C-major scale.
+Pitch-handlers may be configure to use the same pitch for each division, or
+even phrase, rather than choosing a new pitch for each encountered logical tie.
+This behavior is defined by the pitch-handler's \emph{application rate}. The
+following pitch handler applies the same pitch from its pitch specifier to each
+logical tie within each division. Both the divisions and phrases have been
+annotated for clarity:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -3362,6 +3587,15 @@ show(lilypond_file)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Per-division and per-phrase pitch application rates rely on the
+attack-point signature objects collected at the beginning of non-rhythmic
+interpretation to determine if any encountered logical tie is the first of its
+division or phrase. Pitch-handlers also require more complex seed-tracking
+logic -- maintained by a dedicated \texttt{SeedSession} class --, as each
+encountered logical tie may not require choosing a new pitch, but could still
+require choosing a new logical tie expression. The above music specifier can be
+re-configured to apply the same pitch to every logical tie in a phrase:
+
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
 music_specifier = new(
@@ -3402,6 +3636,11 @@ show(lilypond_file)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Additionally, a pattern of interval deviations may be applied on top
+of any chosen pitches, regardless of the pitch-handler's application rate. This
+provides a mechanism for intermittently varying an otherwise stable melodic
+contour:
+
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
 music_specifier = new(
@@ -3441,6 +3680,16 @@ show(lilypond_file)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ff0b1c46ddbd29c5a690fe7c182da0aa.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Other pitch-handlers are possible. For example, Consort's
+\texttt{PitchClassPitchHandler} first applies pitch-classes to each logical
+tie, then an octavation according a \emph{register specifier} which acts
+similarly to a break-point function, shifting the pitch-class up and down by
+octaves according to the shape of the specifier and the logical tie's position
+within its division, phrase and segment. Pitch-handlers based on vertical
+sonoroties, spectral information, or various other techniques could also be
+implemented. As it stands, I have so far only implemeted two for the pieces I
+have written with Consort, finding them sufficient for now.
 
 \subsection{Attachment-handlers}
 \label{ssec:attachment-handlers}
