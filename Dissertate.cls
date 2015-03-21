@@ -66,11 +66,11 @@
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
 \renewcommand{\cftchapfont}{\normalsize \scshape}
 \usepackage{fixltx2e}
-\usepackage{ragged2e}
+%\usepackage{ragged2e}
 
 \renewcommand\bibname{References}
 \renewcommand\listfigurename{Listing of figures}
-\RaggedRight
+%\RaggedRight
 
 \parindent 12pt
 \RequirePackage{mathspec}
@@ -100,7 +100,8 @@
 \RequirePackage[
     labelfont={bf,sf,footnotesize,singlespacing},
     textfont={sf,footnotesize,singlespacing},
-    justification={justified,RaggedRight},
+    %justification={justified,RaggedRight},
+    justification=justified,
     singlelinecheck=false,
     margin=0pt,
     figurewithin=chapter,
