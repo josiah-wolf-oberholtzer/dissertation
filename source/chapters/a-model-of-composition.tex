@@ -2516,17 +2516,21 @@ non-rhythmic interpretation may begin.
 The various handlers which iterate through the score during non-rhythmic
 interpretation use one of two techniques.
 
-*Voice-wise* iterations iterates through all voice contexts in the score, then
-iterates through the top-level containers in those voices. These top-level
+\emph{Voice-wise} iterations iterates through all voice contexts in the score,
+then iterates through the top-level containers in those voices. These top-level
 containers are the same containers reference by each performed timespan's
 \texttt{music} property, and represent each phrase in the maquette.
 
-*Attack-point* iteration iterates through all logical ties in the score in
-*time order* according to their start offset in the score, regardless of their
-vertical position within the score. Logical ties with identical start offsets
--- those appearing at simultaneities across voices -- are then sorted by their
-*score order*. This results in an iteration which moves first forward in time
-and the top-of-score to bottom.
+\emph{Attack-point} iteration iterates through all logical ties in the score in
+\emph{time order} according to their start offset in the score, regardless of
+their vertical position within the score. Logical ties with identical start
+offsets -- those appearing at simultaneities across voices -- are then sorted
+by their \emph{score order}. This results in an iteration which moves first
+forward in time and the top-of-score to bottom.
+
+
+Consider the following two voice score, produced by a segment-maker and
+annotated to show each division and phrase:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -2604,9 +2608,24 @@ show(illustration)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent The segment-maker caches its attack-point map on its instance,
+allowing it to be referenced by its own methods, as well as examined after
+interpretation completes. The attack-point map maps logical ties against
+attack-point signatures. Consort's \texttt{AttackPointSignature} class caches
+information about the location of each pitched logical tie in the segment,
+including its normalized position within its division, phrase and segment and
+its indices within the same. The attack-point map is also stored in time-wise
+order, allowing each cached logical tie to be visited in time order when
+iterating over it. The following example iterates over the attack-point map,
+retrieving each key/value pair -- comprised of a logical-tie selection and an
+attack-point signature -- while enumerating them -- producing the index of that
+pair, e.g. first, second, third, etc. -- and attaches some markup to the
+head of that logical tie comprised of its index formatted within a padded box:
+
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
-for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
+key_value_pairs = segment_maker.attack_point_map.items()
+for index, key_value_pair in enumerate(key_value_pairs):
     logical_tie, attack_point_signature = key_value_pair
     markup = Markup(index, Up)
     markup = markup.smaller().pad_around(0.5).box()
@@ -2631,6 +2650,14 @@ show(illustration)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c8b990269b792e5f5a1bb7a581945dcf.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Attack-point signatures cache each logical-tie's \emph{logical tie
+index} and \emph{division index}. A logical tie's logical tie index gives its
+index within the list of all logical ties starting within its division. A
+logical tie's division index give the index of the division within which it
+starts within the phrase itself. The following iteration shows the division
+index and logical tie index of each attack-point, boxed and separated by a
+colon. The annotation brackets clarify the divisions within each phrase:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -2672,6 +2699,11 @@ show(illustration)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Attack-point signatures maintain the position of each logical tie's
+start offset normalized between 0 and 1 within its division, as well as its
+phrase. The following iteration show each logical tie's phrase position as a
+fraction:
+
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
 for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
@@ -2707,6 +2739,9 @@ show(illustration)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8a7f2e5f06a7847e71709bc13d2bd0c7.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Attack-point signatures also maintain the position of each logical
+tie's start offset in the context of the entire segment's timespan:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -2744,13 +2779,14 @@ show(illustration)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Many of the handlers used during non-rhythmic interpretation rely on
-information about each pitched logical tie in the score.
-
-Including the position of the logical tie's head in the score regardless of
-voice -- its first leaf, and effectively its attack point -- as well as that
-head's index both within the division it occurs within, as well as which
-division within its phrase it occurs within.
+Some of the handlers used during non-rhythmic interpretation rely on
+information about each pitched logical tie in the score. Both grace- and
+pitch-handlers iterate through the score in time order. While grace-handlers do
+not make use of information stored within each logical tie's associated
+attack-point signature -- in the current implementation of Consort only
+pitch-handlers rely on attack-point signatures --, simply caching the
+time-order of all logical ties within the segment saves multiple complex
+iteration procedures.
 
 \subsection{Grace-handlers}
 \label{ssec:grace-handlers}
