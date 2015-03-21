@@ -4017,56 +4017,65 @@ show(staff)
 post-processors. The positioning of the various bowing indicators -- the bow
 motion technique indicators, the bow contact point indicators -- constitutes
 the compositional act, and the bookkeeping inherent to drawing the correctly
-formatted lines between them simply constitutes part of the typesetting
-process.
+formatted lines between them simply constitutes one part of the automated
+typesetting process.
 
 \subsection{Post-processing}
 \label{ssec:post-processing}
 
-Score configuration.
+With grace-, pitch- and attachment-handling completed, non-rhythmic
+interpretation proceeds to its final step -- post-processing --, during which
+various typographic adjustments are made to the score.
 
-Adding a time signature context, as described in
-\autoref{ssec:score-post-processing}.
+First, Consort's segment-maker creates a \emph{floating time-signature context}
+-- described in \autoref{ssec:score-post-processing} -- and inserts it as the
+first child of the score, assuming the score template did not already provide
+for one. The segment-maker then populates its time-signature context with
+measures containing typographic spacer-skips, creating the appearance of time
+signature indications floating above each bar-line at the top of the score. The
+segment-maker attaches other objects to this context as well, such as the its
+tempo indication and any configured rehearsal mark or segment name, e.g.
+\enquote{Interlude...}. Segments can also be configured with repeat signs or
+final bar-line indications. Consort's segment-maker attaches such indicators to
+the appropriate leaves in the score during post-processing. Likewise, if a
+segment has been configured as the final segment, any colophon information --
+the locations and dates of composition -- will be added beneath the last
+measure of the score.
 
-Consort also allows for inserting a LilyPond \texttt{\\include} statement at
-the top of any LilyPond file constructed through interpretation which points to
-a stylesheet located relative to a path defined on the segment-maker.
+More complex post-processing may also be carried out. For reasons related
+solely to how LilyPond handles various typographic constructs during
+typesetting, it may prove necessary to copy certain voices in the score,
+maintaining all rhythmic information therein, but changing their context name
+and filtering out various spanners and indicators so that only a specific
+subset of typographic commands remain. In doing so, it is possible to isolate
+typographic effects to each voice performed \enquote{simultaneously} in a
+staff. For example, my score \emph{Invisible Cities (ii): Armilla} employs this
+voice-copying technique to create its bowing-staff typography. Up until the
+post-processing step of non-rhythmic interpretation, \emph{Armilla}'s bowing
+voices contain a rhythm with many indicators and spanners attached -- bow
+contact points, string contact points, bow motion techniques, bow contact
+spanners, string contact spanners, and so forth. Bow contact spanners and
+string contact spanners create conflicting typographic overrides when
+formatted, so it is necessary to duplicate the bowing voice multiple times,
+maintaining only the relevant indicators and spanners in each duplicate. By
+subclassing Consort's built-in segment-maker \emph{Armilla} can extend its
+score post-processing with an additional step consisting of these voice copying
+operations.
 
-By subclasses Consort's segment-maker, individual score packages can cause
-their own segment-makers to automatically locate the appropriate stylesheet
-file relative to the package where that segment-maker subclass was defined.
-
-A time-signature context is created and inserted at the top of the score if the
-score does not already contain such a context. The segment-maker populates this
-time-signature context with measures filled with typographic spacer-skips, to
-create the appearance of floating time-signature indications.
-
-\begin{markdown}
--   Score configuration
-    -   Time signature context
-        -   Adding time signatures
-        -   Rehearsal marks
-        -   Repeat signs
--   LilyPond configuration
-    -   Style-sheets
-\end{markdown}
-
-\subsection{Voice copying}
-\label{ssec:voice-copying}
-
-For reasons related solely to how LilyPond handles various typographic
-constructs during typesetting, it may prove necessary to copy certain voices in
-the score, maintaining all rhythmic information therein, but changing their
-context name and filtering out various spanners and indicators so that only a
-specific subset of typographic commands remain.
-
-My score \emph{Invisible Cities (ii): Armilla} employs this voice-copying
-technique to create the desired typography.
-
-This is achieved by subclassing Consort's segment-maker.
-
-Voice-copying treats the output of interpretation as \enquote{semantic}, but
-not necessarily fully-ready for typesetting.
+Last, the segment-maker wraps the score inside a \texttt{LilyPondFile} instance
+-- Abjad's object model for LilyPond input files -- and configures the LilyPond
+file with any necessary stylesheet file includes. By subclassing Consort's
+segment-maker, individual score packages can teach their segment-maker
+subclasses to automatically locate their stylesheet files relative to the
+package where that segment-maker subclass was defined. Such stylesheets should
+include context definitions for the \texttt{TimeSignatureContext} as well as
+any other custom contexts defined for the score. As a final test, the
+segment-maker runs Abjad's battery of component well-formedness checks against
+the score. These checks look for score-structure errors such as components
+appearing in multiple places in the score, ties which join notes with differing
+pitches, overlapping glissandi, or components with null parent references. If
+all tests pass, the segment-maker returns the LilyPond file object.
+Interpretation is complete.
 
 \section{Persistence \& visualization}
 
