@@ -2497,37 +2497,23 @@ non-rhythmic interpretation may begin.
 \subsection{Score traversal}
 \label{ssec:score-traversal}
 
-\begin{markdown}
--   AttackPointSignature
-    -   division_index
-    -   phrase_index
-    -   logical_tie_index
-    -   phrase_position (scaled position within the phrase)
-    -   division_position (scaled position within the division)
-    -   segment_position (scaled position within the entire segment)
-    -   is_first_of_division
-    -   is_first_of_phrase
--   Elucidate voice / phrase / division structure
--   SegmentMaker.logical_tie_to_division()
--   SegmentMaker.logical_tie_to_phrase()
--   SegmentMaker.logical_tie_to_voice()
-\end{markdown}
-
-The various handlers which iterate through the score during non-rhythmic
-interpretation use one of two techniques.
-
-\emph{Voice-wise} iterations iterates through all voice contexts in the score,
-then iterates through the top-level containers in those voices. These top-level
-containers are the same containers reference by each performed timespan's
-\texttt{music} property, and represent each phrase in the maquette.
-
-\emph{Attack-point} iteration iterates through all logical ties in the score in
-\emph{time order} according to their start offset in the score, regardless of
-their vertical position within the score. Logical ties with identical start
-offsets -- those appearing at simultaneities across voices -- are then sorted
-by their \emph{score order}. This results in an iteration which moves first
-forward in time and the top-of-score to bottom.
-
+Recall the earlier discussion in \autoref{ssec:iteration} regarding score
+iteration techniques. Of the various possible types of iteration, Consort's
+handlers primarily make use of two during non-rhythmic interpretation. The
+first -- \emph{attack-point} or \emph{time-wise logical tie} iteration --
+iterates through all logical ties in the score in \emph{time order} according
+to their start offset in the score, regardless of their vertical position
+within the score. Logical ties with identical start offsets -- those appearing
+at simultaneities across voices -- are then sorted by their \emph{score order}.
+This results in an iteration which moves first forward in time and the
+top-of-score to bottom. The second -- \emph{phrase-wise} iteration -- locates
+each voice context in the score, then iterates through the top-level containers
+in that voice. These top-level containers are the same containers reference by
+each performed timespan's \texttt{music} property, and represent each phrase in
+the maquette. Attack-point iteration helps maintain the continuity of some
+process across multiple voices in time, while phrase-wise iteration returns
+entire phrases and therefore allows processes to treat those phrases and all of
+the components located in the subtree rooted at the phrase as a group.
 
 Consider the following two voice score, produced by a segment-maker and
 annotated to show each division and phrase:
@@ -2608,19 +2594,26 @@ show(illustration)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent The segment-maker caches its attack-point map on its instance,
+\noindent At the beginning of non-rhythmic interpretation, the segment-maker
+constructs an \emph{attack-point map}: a mapping of pitched logical ties
+against \emph{attack-point signatures}. Consort's \texttt{AttackPointSignature}
+class caches information about the location of each pitched logical tie in the
+segment, including its normalized position within its division, phrase and
+segment and its indices within the same. The segment-maker constructs the
+attack-point map by iterating over all note and chords in its score in
+time-wise order. It selects the logical tie for each iterated leaf, skipping
+those for which the leaf is not the logical tie's head, and constructs an
+attack-point signature for the logical tie, storing both in an ordered
+dictionary. The segment-maker caches its attack-point map on its instance,
 allowing it to be referenced by its own methods, as well as examined after
 interpretation completes. The attack-point map maps logical ties against
-attack-point signatures. Consort's \texttt{AttackPointSignature} class caches
-information about the location of each pitched logical tie in the segment,
-including its normalized position within its division, phrase and segment and
-its indices within the same. The attack-point map is also stored in time-wise
-order, allowing each cached logical tie to be visited in time order when
+attack-point signatures. Because the attack-point map was constructed in
+time-wise order, each cached logical tie can be visited in time order when
 iterating over it. The following example iterates over the attack-point map,
 retrieving each key/value pair -- comprised of a logical-tie selection and an
 attack-point signature -- while enumerating them -- producing the index of that
-pair, e.g. first, second, third, etc. -- and attaches some markup to the
-head of that logical tie comprised of its index formatted within a padded box:
+pair, e.g. first, second, third, etc. -- and attaches some markup to the head
+of that logical tie comprised of its index formatted within a padded box:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
