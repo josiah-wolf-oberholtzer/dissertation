@@ -2592,7 +2592,7 @@ show(illustration)
 >>> illustration = segment_maker(annotate=True, verbose=False)
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-140281b0d71dbf5aae188d9043c542cf.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ff54af542bf50de861b864274b7bdbe3.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2677,7 +2677,7 @@ show(illustration)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c8b990269b792e5f5a1bb7a581945dcf.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-4ed73fdcd3ad68adb9963b27f88189b9.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2723,14 +2723,14 @@ show(illustration)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-20ecb4d9ff876902b4f8129814dfda62.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-713c750430da4663bed61cdcd4f3f7b7.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
 \noindent Attack-point signatures maintain the position of each logical tie's
 start offset normalized between 0 and 1 within its division, as well as its
 phrase. The following iteration show each logical tie's phrase position as a
-fraction:
+fraction, after detaching the previously attached markup:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -2762,7 +2762,7 @@ show(illustration)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8a7f2e5f06a7847e71709bc13d2bd0c7.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-268c7d3054200deab1c6059cf02a61f3.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2772,7 +2772,6 @@ tie's start offset in the context of the entire segment's timespan:
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
 for logical_tie, attack_point_signature in attack_point_map.items():
-    logical_tie, attack_point_signature = key_value_pair
     for markup in inspect_(logical_tie.head).get_markup():
         detached = detach(markup, logical_tie.head)
     segment_position = attack_point_signature.segment_position
@@ -2790,7 +2789,6 @@ show(illustration)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> for logical_tie, attack_point_signature in attack_point_map.items():
-...     logical_tie, attack_point_signature = key_value_pair
 ...     for markup in inspect_(logical_tie.head).get_markup():
 ...         detached = detach(markup, logical_tie.head)
 ...     segment_position = attack_point_signature.segment_position
@@ -2801,12 +2799,87 @@ show(illustration)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ea56218decbc79fbf86925bfa262c9fe.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-6eeb1fd06f74aa43763dc86a0216c2a5.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Consort's phrase-wise iteration can be demonstrated by building an
+iterator function. The following function iterates through its \texttt{score}
+argument by voice, then iterates over the top-level containers within that
+voice. For each iterated container, it checks if that container's
+\emph{effective} music specifier is equivalent to the \enquote{silent} music
+specifier which Consort attaches to its silent phrases. If the music specifiers
+match, the phrase must be silent, and the function \emph{continues} past it. If
+the music specifiers don't match, the phrase must have some significant musical
+content, and therefore the function yields that phrase.
+
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
+def iterate_phrasewise(score):
+    prototype = consort.MusicSpecifier
+    silent_music_specifier = consort.MusicSpecifier()
+    for voice in iterate(score).by_class(Voice):
+        for phrase in voice:
+            music_specifier = inspect_(phrase).get_effective(prototype)
+            if music_specifier == silent_music_specifier:
+                continue
+            yield phrase
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> def iterate_phrasewise(score):
+...     prototype = consort.MusicSpecifier
+...     silent_music_specifier = consort.MusicSpecifier()
+...     for voice in iterate(score).by_class(Voice):
+...         for phrase in voice:
+...             music_specifier = inspect_(phrase).get_effective(prototype)
+...             if music_specifier == silent_music_specifier:
+...                 continue
+...             yield phrase
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Before running the iterator to attach the phrase-index markup, the
+previously attached markup must be removed:
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+for logical_tie in attack_point_map.keys():
+    for markup in inspect_(logical_tie.head).get_markup():
+        detached = detach(markup, logical_tie.head)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for logical_tie in attack_point_map.keys():
+...     for markup in inspect_(logical_tie.head).get_markup():
+...         detached = detach(markup, logical_tie.head)
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent By chaining a call to the above-created
+\texttt{iterate\_phrasewise()} function with Python's built-in
+\texttt{enumerate()}, phrases can be extracted from the score along with their
+index. The result simply counts each non-silent phrase left-to-right in each
+voice, from the top of the score to the bottom:
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+for index, phrase in enumerate(iterate_phrasewise(segment_maker.score)):
+    first_leaf = phrase.select_leaves()[0]
+    markup = Markup(index, Up)
+    markup = markup.smaller().pad_around(0.5).box()
+    attach(markup, first_leaf)
+
 show(illustration)
 </abjad>
 \end{comment}
@@ -2815,9 +2888,15 @@ show(illustration)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
+>>> for index, phrase in enumerate(iterate_phrasewise(segment_maker.score)):
+...     first_leaf = phrase.select_leaves()[0]
+...     markup = Markup(index, Up)
+...     markup = markup.smaller().pad_around(0.5).box()
+...     attach(markup, first_leaf)
+...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ea56218decbc79fbf86925bfa262c9fe.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-3e4622fe7fb0203b7f0f36bb53a7d15d.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3957,7 +4036,7 @@ show(lilypond_file)
 >>> consort.annotate(lilypond_file.score)
 >>> show(lilypond_file)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-6e9d587e5ee37ad6583f5197bed09814.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-2de13fd35f822f573a5f09ac9f7302f9.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
