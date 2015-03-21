@@ -2370,7 +2370,7 @@ The segment-maker then proceeds through each demultiplexed timespan inventory
 in the maquette, iterating over each timespan, then over each division in that
 performed timespan's music. Timespans whose rhythm-maker forbids meter
 rewriting -- via the \texttt{forbid\_meter\_rewriting} flag on an optional
-\texttt{DurationSpellingSpecifier} -- are skipped over.\footnote{It may be
+\texttt{Duration\-Spelling\-Specifier} -- are skipped over.\footnote{It may be
 undesirable to rewrite a rhythm's meter in certain situations, particularly if
 a composer is trying to avoid the introduction of ties or dots for whatever
 reason.} In order to determine which meter governs a division, that division's
@@ -2494,6 +2494,8 @@ non-rhythmic interpretation may begin.
 \section{Non-rhythmic interpretation}
 \label{sec:non-rhythmic-interpretation}
 
+!!!
+
 \subsection{Score traversal}
 \label{ssec:score-traversal}
 
@@ -2606,19 +2608,54 @@ those for which the leaf is not the logical tie's head, and constructs an
 attack-point signature for the logical tie, storing both in an ordered
 dictionary. The segment-maker caches its attack-point map on its instance,
 allowing it to be referenced by its own methods, as well as examined after
-interpretation completes. The attack-point map maps logical ties against
-attack-point signatures. Because the attack-point map was constructed in
-time-wise order, each cached logical tie can be visited in time order when
-iterating over it. The following example iterates over the attack-point map,
-retrieving each key/value pair -- comprised of a logical-tie selection and an
-attack-point signature -- while enumerating them -- producing the index of that
-pair, e.g. first, second, third, etc. -- and attaches some markup to the head
-of that logical tie comprised of its index formatted within a padded box:
+interpretation completes.
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
-key_value_pairs = segment_maker.attack_point_map.items()
-for index, key_value_pair in enumerate(key_value_pairs):
+attack_point_map = segment_maker.attack_point_map
+all_pairs = list(attack_point_map.items())
+first_logical_tie, first_attack_point_signature = all_pairs[0]
+print(first_logical_tie)
+print(format(first_attack_point_signature))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> attack_point_map = segment_maker.attack_point_map
+>>> all_pairs = list(attack_point_map.items())
+>>> first_logical_tie, first_attack_point_signature = all_pairs[0]
+>>> print(first_logical_tie)
+LogicalTie(Note("c'8"),)
+\end{lstlisting}
+\begin{lstlisting}
+>>> print(format(first_attack_point_signature))
+consort.tools.AttackPointSignature(
+    division_index=0,
+    division_position=durationtools.Multiplier(0, 1),
+    logical_tie_index=0,
+    phrase_position=durationtools.Multiplier(0, 1),
+    segment_position=durationtools.Multiplier(0, 1),
+    total_divisions_in_phrase=1,
+    total_logical_ties_in_division=2,
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Because the attack-point map was constructed in time-wise order, each
+cached logical tie can be visited in time order when iterating over it. The
+following example iterates over the attack-point map, retrieving each key/value
+pair -- comprised of a logical-tie selection and an attack-point signature --
+while enumerating them -- producing the index of that pair, e.g. first, second,
+third, etc. -- and attaches some markup to the head of that logical tie
+comprised of its index formatted within a padded box:
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+for index, key_value_pair in enumerate(attack_point_map.items()):
     logical_tie, attack_point_signature = key_value_pair
     markup = Markup(index, Up)
     markup = markup.smaller().pad_around(0.5).box()
@@ -2632,7 +2669,7 @@ show(illustration)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
+>>> for index, key_value_pair in enumerate(attack_point_map.items()):
 ...     logical_tie, attack_point_signature = key_value_pair
 ...     markup = Markup(index, Up)
 ...     markup = markup.smaller().pad_around(0.5).box()
@@ -2654,8 +2691,7 @@ colon. The annotation brackets clarify the divisions within each phrase:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
-for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
-    logical_tie, attack_point_signature = key_value_pair
+for logical_tie, attack_point_signature in attack_point_map.items():
     for markup in inspect_(logical_tie.head).get_markup():
         detached = detach(markup, logical_tie.head)
     string = '{}:{}'.format(
@@ -2674,8 +2710,7 @@ show(illustration)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
-...     logical_tie, attack_point_signature = key_value_pair
+>>> for logical_tie, attack_point_signature in attack_point_map.items():
 ...     for markup in inspect_(logical_tie.head).get_markup():
 ...         detached = detach(markup, logical_tie.head)
 ...     string = '{}:{}'.format(
@@ -2699,8 +2734,7 @@ fraction:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
-for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
-    logical_tie, attack_point_signature = key_value_pair
+for logical_tie, attack_point_signature in attack_point_map.items():
     for markup in inspect_(logical_tie.head).get_markup():
         detached = detach(markup, logical_tie.head)
     phrase_position = attack_point_signature.phrase_position
@@ -2717,8 +2751,7 @@ show(illustration)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
-...     logical_tie, attack_point_signature = key_value_pair
+>>> for logical_tie, attack_point_signature in attack_point_map.items():
 ...     for markup in inspect_(logical_tie.head).get_markup():
 ...         detached = detach(markup, logical_tie.head)
 ...     phrase_position = attack_point_signature.phrase_position
@@ -2738,7 +2771,7 @@ tie's start offset in the context of the entire segment's timespan:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
-for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
+for logical_tie, attack_point_signature in attack_point_map.items():
     logical_tie, attack_point_signature = key_value_pair
     for markup in inspect_(logical_tie.head).get_markup():
         detached = detach(markup, logical_tie.head)
@@ -2756,7 +2789,7 @@ show(illustration)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> for index, key_value_pair in enumerate(segment_maker.attack_point_map.items()):
+>>> for logical_tie, attack_point_signature in attack_point_map.items():
 ...     logical_tie, attack_point_signature = key_value_pair
 ...     for markup in inspect_(logical_tie.head).get_markup():
 ...         detached = detach(markup, logical_tie.head)
@@ -2768,7 +2801,23 @@ show(illustration)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-80f54cbdf2aeef9dd896ffa785f19332.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ea56218decbc79fbf86925bfa262c9fe.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>[stylesheet=../consort.ily]
+show(illustration)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> show(illustration)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ea56218decbc79fbf86925bfa262c9fe.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
