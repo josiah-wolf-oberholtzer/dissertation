@@ -675,8 +675,8 @@ show(timespan_inventory, key='voice_name')
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\section{Rhythmic interpretation}
-\label{sec:rhythmic-interpretation}
+\section{Interpretation}
+\label{sec:interpretation}
 
 At any point during specification, a segment-maker may be interpreted to
 produce an illustration. Score interpretation proceeds conceptually much like
@@ -698,9 +698,12 @@ rhythmic information, and the second stage applying grace notes, pitches,
 indicators, spanners and various typographic overrides to the
 previously-constructed rhythmic skeleton.
 
-Seen from a high level, rhythmic interpretation proceeds from coarse- to
-fine-grained. The segment-maker creates a *maquette* -- a model of the locations
-of musical materials in the score -- by calling each of its
+\section{Rhythmic interpretation}
+\label{sec:rhythmic-interpretation}
+
+Broadly speaking, rhythmic interpretation proceeds from coarse- to
+fine-grained. The segment-maker creates a *maquette* -- a model of the
+locations of musical materials in the score -- by calling each of its
 music-settings in turn to populate a timespan inventory. It then resolves
 overlap conflicts within that inventory, fits meters against the resolved
 inventory's offsets, splits and prunes the contents of the inventory according
@@ -2662,7 +2665,7 @@ comprised of its index formatted within a padded box:
 for index, key_value_pair in enumerate(attack_point_map.items()):
     logical_tie, attack_point_signature = key_value_pair
     markup = Markup(index, Up)
-    markup = markup.smaller().pad_around(0.5).box()
+    markup = markup.smaller().pad_around(0.25).box()
     attach(markup, logical_tie.head)
 
 show(illustration)
@@ -2676,12 +2679,12 @@ show(illustration)
 >>> for index, key_value_pair in enumerate(attack_point_map.items()):
 ...     logical_tie, attack_point_signature = key_value_pair
 ...     markup = Markup(index, Up)
-...     markup = markup.smaller().pad_around(0.5).box()
+...     markup = markup.smaller().pad_around(0.25).box()
 ...     attach(markup, logical_tie.head)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-4ed73fdcd3ad68adb9963b27f88189b9.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-4ddacdb209934b170ad932dc9e6d855c.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2703,7 +2706,7 @@ for logical_tie, attack_point_signature in attack_point_map.items():
         attack_point_signature.logical_tie_index,
         )
     markup = Markup(string, Up)
-    markup = markup.smaller().pad_around(0.5).box()
+    markup = markup.smaller().pad_around(0.25).box()
     attach(markup, logical_tie.head)
 
 show(illustration)
@@ -2722,12 +2725,12 @@ show(illustration)
 ...         attack_point_signature.logical_tie_index,
 ...         )
 ...     markup = Markup(string, Up)
-...     markup = markup.smaller().pad_around(0.5).box()
+...     markup = markup.smaller().pad_around(0.25).box()
 ...     attach(markup, logical_tie.head)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-713c750430da4663bed61cdcd4f3f7b7.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-23e8373569fdba32b20703b8ec2b0339.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2744,7 +2747,7 @@ for logical_tie, attack_point_signature in attack_point_map.items():
     phrase_position = attack_point_signature.phrase_position
     markup = Markup.fraction(phrase_position)
     markup = Markup(markup, Up)
-    markup = markup.smaller().pad_around(0.5).box()
+    markup = markup.smaller().pad_around(0.25).box()
     attach(markup, logical_tie.head)
 
 show(illustration)
@@ -2761,12 +2764,12 @@ show(illustration)
 ...     phrase_position = attack_point_signature.phrase_position
 ...     markup = Markup.fraction(phrase_position)
 ...     markup = Markup(markup, Up)
-...     markup = markup.smaller().pad_around(0.5).box()
+...     markup = markup.smaller().pad_around(0.25).box()
 ...     attach(markup, logical_tie.head)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-268c7d3054200deab1c6059cf02a61f3.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-d337e3bb50343f90f0d039c7d0dfccaa.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2781,7 +2784,7 @@ for logical_tie, attack_point_signature in attack_point_map.items():
     segment_position = attack_point_signature.segment_position
     markup = Markup.fraction(segment_position)
     markup = Markup(markup, Up)
-    markup = markup.smaller().pad_around(0.5).box()
+    markup = markup.smaller().pad_around(0.25).box()
     attach(markup, logical_tie.head)
 
 show(illustration)
@@ -2798,12 +2801,12 @@ show(illustration)
 ...     segment_position = attack_point_signature.segment_position
 ...     markup = Markup.fraction(segment_position)
 ...     markup = Markup(markup, Up)
-...     markup = markup.smaller().pad_around(0.5).box()
+...     markup = markup.smaller().pad_around(0.25).box()
 ...     attach(markup, logical_tie.head)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-6eeb1fd06f74aa43763dc86a0216c2a5.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-6a9482e09cb7db510dda880739f3377c.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2881,7 +2884,7 @@ voice, from the top of the score to the bottom:
 for index, phrase in enumerate(iterate_phrasewise(segment_maker.score)):
     first_leaf = phrase.select_leaves()[0]
     markup = Markup(index, Up)
-    markup = markup.smaller().pad_around(0.5).box()
+    markup = markup.smaller().pad_around(0.25).box()
     attach(markup, first_leaf)
 
 show(illustration)
@@ -2895,12 +2898,12 @@ show(illustration)
 >>> for index, phrase in enumerate(iterate_phrasewise(segment_maker.score)):
 ...     first_leaf = phrase.select_leaves()[0]
 ...     markup = Markup(index, Up)
-...     markup = markup.smaller().pad_around(0.5).box()
+...     markup = markup.smaller().pad_around(0.25).box()
 ...     attach(markup, first_leaf)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-3e4622fe7fb0203b7f0f36bb53a7d15d.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-08012562798884e37d1a487bb18ac90c.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 

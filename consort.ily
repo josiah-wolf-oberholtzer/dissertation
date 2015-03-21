@@ -168,7 +168,7 @@
         \override SustainPedalLineSpanner.to-barline = ##t
         \override TextScript.add-stem-support = ##t
         \override TextScript.outside-staff-padding = 1
-        \override TextScript.padding = 0.25
+        \override TextScript.padding = 0
         \override TextScript.staff-padding = 1
         \override TextSpanner.bound-details.right.padding = 2.5
         \override TrillPitchAccidental.avoid-slur = #'ignore
