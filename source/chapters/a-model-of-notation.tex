@@ -30,81 +30,6 @@ foo
 \end{markdown}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Components, leaves \& containers}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{markdown}
--   The score tree
--   Component
--   Count-time components
--   Non-count-time components
--   One, and only one, parent per component. They *cannot* be in more than one
-    container. This is both confusing, and liable to cause reference problems.
-\end{markdown}
-
-\subsection{Leaves}
-
-\begin{markdown}
--   Leaf
--   These are components which do not contain other components.
--   Note
--   Rest
--   Chord
--   NoteHead
-\end{markdown}
-
-\subsection{Containers}
-
-\begin{markdown}
--   Container
--   LilyPond and { }
--   Measure
--   LilyPond has no explicit measures
--   Tuplet and FixedDurationTuplet
-\end{markdown}
-
-\subsection{Contexts}
-
-\begin{markdown}
--   Context
--   Contexts are containers, but not *count-time*
--   Voice
--   Staff
--   StaffGroup
--   Score
-\end{markdown}
-
-\subsection{Inspection}
-
-\begin{markdown}
--   inspect_()
--   not *inspect()*, as that would cause a name conflict with Python's inspect
-    module
--   inspect(...).get_parentage()
-\end{markdown}
-
-\begin{comment}
-<abjad>
-upper_staff = Staff(name='Upper Staff')
-lower_staff = Staff(name='Lower Staff')
-staff_group = StaffGroup([upper_staff, lower_staff])
-score = Score([staff_group])
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> upper_staff = Staff(name='Upper Staff')
->>> lower_staff = Staff(name='Lower Staff')
->>> staff_group = StaffGroup([upper_staff, lower_staff])
->>> score = Score([staff_group])
-\end{lstlisting}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Durations, offsets \& timespans}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -355,6 +280,281 @@ show(pitch_operation(pitch_segment))
 \end{markdown}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Components, leaves \& containers}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{comment}
+<abjad>
+upper_voice = Voice(name='Upper Voice')
+upper_staff = Staff([upper_voice], name='Upper Staff')
+lower_voice_a = Voice(name='Lower Voice A')
+lower_voice_b = Voice(name='Lower Voice B')
+lower_staff = Staff([lower_voice_a, lower_voice_b], name='Lower Staff')
+piano_staff = StaffGroup([upper_staff, lower_staff], context_name='PianoStaff')
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> upper_voice = Voice(name='Upper Voice')
+>>> upper_staff = Staff([upper_voice], name='Upper Staff')
+>>> lower_voice_a = Voice(name='Lower Voice A')
+>>> lower_voice_b = Voice(name='Lower Voice B')
+>>> lower_staff = Staff([lower_voice_a, lower_voice_b], name='Lower Staff')
+>>> piano_staff = StaffGroup([upper_staff, lower_staff], context_name='PianoStaff')
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{markdown}
+-   The score tree
+-   Component
+-   Count-time components
+-   Non-count-time components
+-   One, and only one, parent per component. They *cannot* be in more than one
+    container. This is both confusing, and liable to cause reference problems.
+\end{markdown}
+
+\subsection{Leaves}
+
+\begin{markdown}
+-   Leaf
+-   These are components which do not contain other components.
+-   Note
+-   Rest
+-   Chord
+-   NoteHead
+\end{markdown}
+
+\begin{comment}
+<abjad>
+note = Note("fs'4.")
+show(note)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> note = Note("fs'4.")
+>>> show(note)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-3899aee7438e42c8270d14ffdc03cb30.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+note = Note(6, (3, 8))
+show(note)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> note = Note(6, (3, 8))
+>>> show(note)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-3899aee7438e42c8270d14ffdc03cb30.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+chord = Chord("<c'' ef'' g''>2")
+show(chord)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> chord = Chord("<c'' ef'' g''>2")
+>>> show(chord)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-82ef35ebb9d559540a877d9291a02ca8.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+chord = Chord((12, 15, 19), (1, 2))
+show(chord)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> chord = Chord((12, 15, 19), (1, 2))
+>>> show(chord)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-82ef35ebb9d559540a877d9291a02ca8.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+rest = Rest("r4")
+show(rest)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> rest = Rest("r4")
+>>> show(rest)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-78f6872e9c498f4e522a51716ff458dd.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+rest = Rest((1, 4))
+show(rest)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> rest = Rest((1, 4))
+>>> show(rest)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-78f6872e9c498f4e522a51716ff458dd.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+multimeasure_rest = scoretools.MultimeasureRest(1)
+show(multimeasure_rest)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> multimeasure_rest = scoretools.MultimeasureRest(1)
+>>> show(multimeasure_rest)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-099f7141431afa5ae3a046415764f35b.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+skip = scoretools.Skip(1)
+show(skip)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> skip = scoretools.Skip(1)
+>>> show(skip)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-23f5992f0758dbf9cdee4ac0a923bc09.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+note.note_head
+note.note_head.is_cautionary = True
+show(note)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> note.note_head
+NoteHead("fs'")
+\end{lstlisting}
+\begin{lstlisting}
+>>> note.note_head.is_cautionary = True
+>>> show(note)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-cb1badca7eef4417a7ce0afba8009a29.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+for note_head in chord.note_heads:
+    note_head
+
+chord.note_heads.append("a'")
+show(chord)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for note_head in chord.note_heads:
+...     note_head
+...
+NoteHead("c''")
+NoteHead("ef''")
+NoteHead("g''")
+\end{lstlisting}
+\begin{lstlisting}
+>>> chord.note_heads.append("a'")
+>>> show(chord)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f6ffc8242c578f619b7b053e9eab2333.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\subsection{Containers}
+
+\begin{markdown}
+-   Container
+-   LilyPond and { }
+-   Measure
+-   LilyPond has no explicit measures
+-   Tuplet and FixedDurationTuplet
+\end{markdown}
+
+\subsection{Contexts}
+
+\begin{markdown}
+-   Context
+-   Contexts are containers, but not *count-time*
+-   Voice
+-   Staff
+-   StaffGroup
+-   Score
+\end{markdown}
+
+\subsection{Inspection}
+
+\begin{markdown}
+-   inspect_()
+-   not *inspect()*, as that would cause a name conflict with Python's inspect
+    module
+-   inspect(...).get_parentage()
+\end{markdown}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Indicators}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -399,6 +599,31 @@ show(pitch_operation(pitch_segment))
 -   attach(x, y, is_annotation=True)
 \end{markdown}
 
+\subsection{Multipliers}
+
+\begin{comment}
+<abjad>
+show(multimeasure_rest)
+attach(Multiplier(4), multimeasure_rest)
+show(multimeasure_rest)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> show(multimeasure_rest)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-099f7141431afa5ae3a046415764f35b.pdf}
+\begin{lstlisting}
+>>> attach(Multiplier(4), multimeasure_rest)
+>>> show(multimeasure_rest)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a8fdc5cae1a0a9fb72680a5d18862c4e.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Spanners}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -436,8 +661,6 @@ foo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Score iteration, selections \& selectors}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-foo
 
 \subsection{Indexing}
 \label{ssec:indexing}

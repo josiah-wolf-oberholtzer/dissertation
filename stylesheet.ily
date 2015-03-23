@@ -86,6 +86,7 @@
         \override TupletBracket.staff-padding = 2.25
         \override TupletNumber.text = #tuplet-number::calc-fraction-text
         proportionalNotationDuration = #(ly:make-moment 1 24)
+        skipBars = ##t 
         tupletFullLength = ##t
     }
 }
