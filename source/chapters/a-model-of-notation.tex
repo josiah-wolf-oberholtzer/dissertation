@@ -1,287 +1,246 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{\emph{Abjad}: a model of notation}
 \label{chap:a-model-of-notation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{comment}
-<abjad>[hide=true]
-import collections
-import consort
-</abjad>
-\end{comment}
+\begin{markdown}
 
 Abjad models notation.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{The illustration protocol}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# The illustration protocol
 
-foo
-
-\begin{markdown}
 -   print()
 -   repr() and __repr__()
 -   str() and __str__()
 -   format() and __format__()
 -   show() and __illustrate__()
 -   graph() and __graph__()
-\end{markdown}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Durations, offsets \& timespans}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Components, indicators & spanners
 
-foo
+Abjad models notated musical scores as a *tree* consisting of *components*,
+*indicators* and *spanners*.
 
-\subsection{Operations on durations}
+## Components
 
-\begin{comment}
-<abjad>
-Duration(1, 2) + Duration(3, 4)
-Offset(1, 2) + Duration(3, 4)
-Offset(7, 8) - Offset(1, 12)
-</abjad>
-\end{comment}
+Score components make up the *nodes* of the tree, from its *root* to its
+*leaves*. 
 
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> Duration(1, 2) + Duration(3, 4)
-Duration(5, 4)
-\end{lstlisting}
-\begin{lstlisting}
->>> Offset(1, 2) + Duration(3, 4)
-Offset(5, 4)
-\end{lstlisting}
-\begin{lstlisting}
->>> Offset(7, 8) - Offset(1, 12)
-Duration(19, 24)
-\end{lstlisting}
-\end{singlespacing}
-\end{abjadbookoutput}
+-   components, leaves, containers (and contexts)
+-   components are formattable and illustrable 
+-   components are mutable, while indicators are generally not
+    -   likewise, durations and pitches are immutable
+-   count-time components
+    -   note, chord, rest, skip, container, tuplet, measure
+-   non-count-time (contexts)
+    -   voice, staff, staff group, score
+-   leaves do not contain anything else
+    -   chord do *not* contain notes
+    -   chords and notes contain note heads
+    -   chord and notes share a single stem
+    -   this must be disambiguated from note columns
+-   all containers derive their duration from their contents (with some
+    exceptions, but even there a mismatch is an error)
+-   One, and only one, parent per component. They *cannot* be in more than one
+    container. This is both confusing, and liable to cause reference problems.
+-   score hierarchy is not fixed: any node is the root, if it has no parent
+-   contexts are assumed to last from the beginning to the end of the total
+    timespan of the score
+-   in practice, they may be intermittent
+-   contexts may be named, allowing concatenation
 
-\subsection{Inspecting durations}
+-   written duration vs prolated duration
 
-\begin{markdown}
+# Inspection
+
+Work aspects of this into appropriate sections
+
+-   inspect_()
+-   not *inspect()*, as that would cause a name conflict with Python's inspect
+    module
+-   inspect(...).get_parentage()
 -   inspect_(...).get_duration()
+    -   in_seconds=True
 -   inspect_(...).get_timespan()
--   in_seconds=True
-\end{markdown}
+    -   in_seconds=True
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Pitches, pitch-classes, intervals and operators}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+## Indicators
 
-foo
+Indicators attach to individual components
 
-\subsection{Pitch representations}
+-   some have notational reality
+-   some have context scope
+-   but they can be totally arbitrary
 
-\begin{markdown}
-- NamedPitch
-- NumberedPitch
-- NamedPitchClass
-- NumberedPitchClass
-\end{markdown}
+-   attach(x, y, scope=..., is_annotation=..., name=...)
 
-\begin{markdown}
-- NamedInterval
-- NumberedInterval
-- NamedIntervalClass
-- NumberedIntervalClass
-- NamedInversionEquivalentIntervalClass
-- NumberedInversionEquivalentIntervalClass
-\end{markdown}
+-   Articulation
+-   BarLine
+-   Clef
+-   Dynamic
+-   KeySignature
+-   Markup
+-   Tempo
+-   TimeSignature
 
-\subsection{Pitch collections}
+-   What is scope?
+-   Default scope
+-   Explicit scope
 
-\begin{markdown}
-- Set, Segment, Vector
-- Pitch, PitchClass, Interval, IntervalClass
-\end{markdown}
+-   Idiomatic indicators, used by other processes:
+    -   BowContactPoint
+    -   IsAtSoundingPitch
+    -   IsUnpitched
+    -   StringContactPoint
+    -   StringTuning
+    -   etc.
+-   Annotation
+-   attach(x, y, is_annotation=True)
 
-\begin{markdown}
-- PitchSegment
-- PitchClassSegment
-\end{markdown}
+-   inspect_(...).get_indicator()
+-   inspect_(...).has_indicator()
+-   inspect_(...).get_effective()
+-   inspect_(...).has_effective_indicator()
 
-\subsection{Pitch operators}
-\label{ssec:pitch-operators}
+## Spanners
 
-\begin{comment}
-<abjad>
-pitch_segment = pitchtools.PitchSegment("c' ef' b' bf' f' e' b a")
-show(pitch_segment)
-</abjad>
-\end{comment}
+Spanners *span* across different levels of hierarchy.
 
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> pitch_segment = pitchtools.PitchSegment("c' ef' b' bf' f' e' b a")
->>> show(pitch_segment)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-98c254b3bf3525db1108455a9eb836a7.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
+-   logical voices
+-   attach to  
 
-\begin{comment}
-<abjad>
-transposition = pitchtools.Transposition(1)
-show(transposition(pitch_segment))
-</abjad>
-\end{comment}
+-   graph cyclicity
+-   Beam
+-   Glissando
+-   Hairpin
+-   Slur
+-   Trill
+-   Tie
 
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> transposition = pitchtools.Transposition(1)
->>> show(transposition(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-749c176dfaf42985bd3b0d224300b46a.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
+-   typographic overrides
 
-\begin{comment}
-<abjad>
-inversion = pitchtools.Inversion()
-show(inversion(pitch_segment))
-inversion_with_axis = pitchtools.Inversion(axis=NamedPitch("d'"))
-show(inversion_with_axis(pitch_segment))
-</abjad>
-\end{comment}
+# Typographic overrides
 
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> inversion = pitchtools.Inversion()
->>> show(inversion(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f5dccecbacdc176c5636cb8662091fbd.pdf}
-\begin{lstlisting}
->>> inversion_with_axis = pitchtools.Inversion(axis=NamedPitch("d'"))
->>> show(inversion_with_axis(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-3788337f7ed0f9f5205ea317fef25ba7.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
+-   On components
+    - \\override & \\revert
+-   On spanners
 
-\begin{comment}
-<abjad>
-retrogression = pitchtools.Retrogression()
-show(retrogression(pitch_segment))
-</abjad>
-\end{comment}
+# Modeling time
 
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> retrogression = pitchtools.Retrogression()
->>> show(retrogression(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-deb23384afe7501bded563186defeabd.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
+-   Duration
+-   Offset
+-   Multiplier
+-   Timespan
+-   Prolation
+-   Pre-prolated durations
+-   Contents duration
 
-\begin{comment}
-<abjad>
-untransposing_rotation = pitchtools.Rotation(-1, transpose=False)
-show(untransposing_rotation(pitch_segment))
-transposing_rotation = pitchtools.Rotation(-1, transpose=True)
-show(transposing_rotation(pitch_segment))
-</abjad>
-\end{comment}
+# Modeling pitch
 
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> untransposing_rotation = pitchtools.Rotation(-1, transpose=False)
->>> show(untransposing_rotation(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a64fe671be8f551e1d653f00a83a2e07.pdf}
-\begin{lstlisting}
->>> transposing_rotation = pitchtools.Rotation(-1, transpose=True)
->>> show(transposing_rotation(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7bd7aa6d7685f24919cad726cee57c04.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
+## Pitch representations
 
-\begin{comment}
-<abjad>
-multiplication = pitchtools.Multiplication(3)
-show(multiplication(pitch_segment))
-</abjad>
-\end{comment}
+-   The most important distinction is between *named* and *numbered* pitch
+    objects.
+-   All pitched score components (notes and chords) rely on *named*
+    representations of pitch, not numbered
+-   *Named* pitch objects are enharmonically explicit
+-   *Numbered* pitch objects require some interpretation
+-   Abjad has provided one interpretation, but that is for sufficiency
+-   Abjad does *not* make smart guesses about converting numbered to named
+    pitches
 
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> multiplication = pitchtools.Multiplication(3)
->>> show(multiplication(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ea43de43da8ed2236bf38e48fab7ca25.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
+-   NamedPitch
+-   NumberedPitch
+-   NamedPitchClass
+-   NumberedPitchClass
 
-\begin{comment}
-<abjad>
-pitch_operation = pitchtools.PitchOperation(
-    operators=(
-        pitchtools.Rotation(1),
-        pitchtools.Transposition(2),
-        ),
-    )
-show(pitch_operation(pitch_segment))
-</abjad>
-\end{comment}
+-   NamedInterval
+-   NumberedInterval
+-   NamedIntervalClass
+-   NumberedIntervalClass
+-   NamedInversionEquivalentIntervalClass
+-   NumberedInversionEquivalentIntervalClass
 
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> pitch_operation = pitchtools.PitchOperation(
-...     operators=(
-...         pitchtools.Rotation(1),
-...         pitchtools.Transposition(2),
-...         ),
-...     )
->>> show(pitch_operation(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0adc9e231ee227673c0a09c603241ec2.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
+## Pitch collections
 
-\subsection{Other pitch modeling concepts}
+-   Set, Segment, Vector
+-   Pitch, PitchClass, Interval, IntervalClass
 
-\begin{markdown}
+-   PitchSegment
+-   PitchClassSegment
+
+## Pitch operators
+
+## Other pitch modeling concepts
+
 -   Accidental
 -   Octave
 -   PitchRange
 -   StaffPosition
-\end{markdown}
 
-\subsection{Inspecting leaf pitches}
+## Inspecting leaf pitches
 
-\begin{markdown}
 -   Note("c'4").written_pitch
 -   Note("c'4").note_head.written_pitch
 -   Chord("<c' e' g'>4").written_pitches
 -   inspect_(note).get_sounding_pitch()
 -   inspect_(note).get_sounding_pitches()
+
+# Navigating through score
+
+## Indexing
+
+-   By name
+-   By index
+-   By slice
+
+## Selection
+
+-   select()
+-   Selection class
+-   Container.select_leaves()
+    -   allow_discontiguous_leaves=True
+-   inspect_(...).get_logical_tie()
+-   LogicalTie
+    -   head
+    -   tail
+    -   timespan
+    -   trivial logical ties
+
+## Iteration
+
+-   By __iter__()
+-   By iterate(...)by_...()
+    -   by_class()
+    -   by_logical_tie()
+    -   by_run()
+    -   by_timeline()
+    -   by_vertical_moment()
+    -   depth_first()
+
+## Selectors
+
+-   Demonstrate a gallery of selectors.
+    -   by duration
+    -   by leaves
+    -   by length
+    -   by logical tie
+    -   by counts (with negative counts too)
+
+# Notation factories
+
+-   rhythm-makers
+-   score templates
+-   parsers
+    -   LilyPond parser
+    -   PLY
+    -   SchemeParser
+    -   RhythmTreeParser
+    -   ReducedLyParser
+
 \end{markdown}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Components, leaves \& containers}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Examples}
 
 \begin{comment}
 <abjad>
@@ -307,26 +266,6 @@ piano_staff = StaffGroup([upper_staff, lower_staff], context_name='PianoStaff')
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
-
-\begin{markdown}
--   The score tree
--   Component
--   Count-time components
--   Non-count-time components
--   One, and only one, parent per component. They *cannot* be in more than one
-    container. This is both confusing, and liable to cause reference problems.
-\end{markdown}
-
-\subsection{Leaves}
-
-\begin{markdown}
--   Leaf
--   These are components which do not contain other components.
--   Note
--   Rest
--   Chord
--   NoteHead
-\end{markdown}
 
 \begin{comment}
 <abjad>
@@ -524,83 +463,6 @@ NoteHead("g''")
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\subsection{Containers}
-
-\begin{markdown}
--   Container
--   LilyPond and { }
--   Measure
--   LilyPond has no explicit measures
--   Tuplet and FixedDurationTuplet
-\end{markdown}
-
-\subsection{Contexts}
-
-\begin{markdown}
--   Context
--   Contexts are containers, but not *count-time*
--   Voice
--   Staff
--   StaffGroup
--   Score
-\end{markdown}
-
-\subsection{Inspection}
-
-\begin{markdown}
--   inspect_()
--   not *inspect()*, as that would cause a name conflict with Python's inspect
-    module
--   inspect(...).get_parentage()
-\end{markdown}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Indicators}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Attachment}
-
-\begin{markdown}
--   attach(x, y, scope=..., is_annotation=..., name=...)
-\end{markdown}
-
-\subsection{Tour of indicators}
-
-\begin{markdown}
--   Articulation
--   BarLine
--   Clef
--   Dynamic
--   KeySignature
--   Markup
--   Tempo
--   TimeSignature
-\end{markdown}
-
-\subsection{Context scoping}
-
-\begin{markdown}
--   What is scope?
--   Default scope
--   Explicit scope
-\end{markdown}
-
-\subsection{Non-formatting annotations}
-
-\begin{markdown}
--   Annotation
--   Idiomatic indicators, used by other processes:
-    -   BowContactPoint
-    -   IsAtSoundingPitch
-    -   IsUnpitched
-    -   StringContactPoint
-    -   StringTuning
-    -   etc.
--   attach(x, y, is_annotation=True)
-\end{markdown}
-
-\subsection{Multipliers}
-
 \begin{comment}
 <abjad>
 show(multimeasure_rest)
@@ -624,118 +486,152 @@ show(multimeasure_rest)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Spanners}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{comment}
+<abjad>
+pitch_segment = pitchtools.PitchSegment("c' ef' b' bf' f' e' b a")
+show(pitch_segment)
+</abjad>
+\end{comment}
 
-\begin{markdown}
--   graph cyclicity
--   logical voices
-\end{markdown}
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> pitch_segment = pitchtools.PitchSegment("c' ef' b' bf' f' e' b a")
+>>> show(pitch_segment)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-98c254b3bf3525db1108455a9eb836a7.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
-\subsection{Tour of spanners}
+\begin{comment}
+<abjad>
+transposition = pitchtools.Transposition(1)
+show(transposition(pitch_segment))
+</abjad>
+\end{comment}
 
-\begin{markdown}
--   Beam
--   Glissando
--   Hairpin
--   Slur
--   Trill
--   Tie
-\end{markdown}
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> transposition = pitchtools.Transposition(1)
+>>> show(transposition(pitch_segment))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-749c176dfaf42985bd3b0d224300b46a.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
-\subsection{LilyPond format bundles}
+\begin{comment}
+<abjad>
+inversion = pitchtools.Inversion()
+show(inversion(pitch_segment))
+inversion_with_axis = pitchtools.Inversion(axis=NamedPitch("d'"))
+show(inversion_with_axis(pitch_segment))
+</abjad>
+\end{comment}
 
-foo
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> inversion = pitchtools.Inversion()
+>>> show(inversion(pitch_segment))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f5dccecbacdc176c5636cb8662091fbd.pdf}
+\begin{lstlisting}
+>>> inversion_with_axis = pitchtools.Inversion(axis=NamedPitch("d'"))
+>>> show(inversion_with_axis(pitch_segment))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-3788337f7ed0f9f5205ea317fef25ba7.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
-\subsection{Complex conditional formatting}
+\begin{comment}
+<abjad>
+retrogression = pitchtools.Retrogression()
+show(retrogression(pitch_segment))
+</abjad>
+\end{comment}
 
-foo
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> retrogression = pitchtools.Retrogression()
+>>> show(retrogression(pitch_segment))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-deb23384afe7501bded563186defeabd.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
-\subsection{Complex indicators}
+\begin{comment}
+<abjad>
+untransposing_rotation = pitchtools.Rotation(-1, transpose=False)
+show(untransposing_rotation(pitch_segment))
+transposing_rotation = pitchtools.Rotation(-1, transpose=True)
+show(transposing_rotation(pitch_segment))
+</abjad>
+\end{comment}
 
-\begin{markdown}
--   KeyCluster
-\end{markdown}
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> untransposing_rotation = pitchtools.Rotation(-1, transpose=False)
+>>> show(untransposing_rotation(pitch_segment))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a64fe671be8f551e1d653f00a83a2e07.pdf}
+\begin{lstlisting}
+>>> transposing_rotation = pitchtools.Rotation(-1, transpose=True)
+>>> show(transposing_rotation(pitch_segment))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7bd7aa6d7685f24919cad726cee57c04.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Score iteration, selections \& selectors}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{comment}
+<abjad>
+multiplication = pitchtools.Multiplication(3)
+show(multiplication(pitch_segment))
+</abjad>
+\end{comment}
 
-\subsection{Indexing}
-\label{ssec:indexing}
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> multiplication = pitchtools.Multiplication(3)
+>>> show(multiplication(pitch_segment))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ea43de43da8ed2236bf38e48fab7ca25.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
-\begin{markdown}
--   By name
--   By index
--   By slice
-\end{markdown}
+\begin{comment}
+<abjad>
+pitch_operation = pitchtools.PitchOperation(
+    operators=(
+        pitchtools.Rotation(1),
+        pitchtools.Transposition(2),
+        ),
+    )
+show(pitch_operation(pitch_segment))
+</abjad>
+\end{comment}
 
-\subsection{Selection}
-\label{ssec:selection}
-
-\begin{markdown}
--   select()
--   Selection class
--   Container.select_leaves()
-    -   allow_discontiguous_leaves=True
--   inspect_(...).get_logical_tie()
--   LogicalTie
-    -   head
-    -   tail
-    -   timespan
-    -   trivial logical ties
-\end{markdown}
-
-\subsection{Iteration}
-\label{ssec:iteration}
-
-\begin{markdown}
--   By __iter__()
--   By iterate(...)by_...()
-    -   by_class()
-    -   by_logical_tie()
-    -   by_run()
-    -   by_timeline()
-    -   by_vertical_moment()
-    -   depth_first()
-\end{markdown}
-
-\subsection{Selectors}
-\label{ssec:selectors}
-
-\begin{markdown}
--   Demonstrate a gallery of selectors.
-    -   by duration
-    -   by leaves
-    -   by length
-    -   by logical tie
-    -   by counts (with negative counts too)
-\end{markdown}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Notation factories}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-foo
-
-\subsection{Rhythm makers}
-
-foo
-
-\subsection{Score templates}
-\label{ssec:score-templates}
-
-\begin{markdown}
--   Simplify score creation process
-\end{markdown}
-
-\subsection{Parsers}
-
-\begin{markdown}
--   LilyPond parser
--   PLY
--   SchemeParser
--   RhythmTreeParser
--   ReducedLyParser
-\end{markdown}
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> pitch_operation = pitchtools.PitchOperation(
+...     operators=(
+...         pitchtools.Rotation(1),
+...         pitchtools.Transposition(2),
+...         ),
+...     )
+>>> show(pitch_operation(pitch_segment))
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0adc9e231ee227673c0a09c603241ec2.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
