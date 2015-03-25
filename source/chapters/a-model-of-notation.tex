@@ -3,89 +3,215 @@
 \label{chap:a-model-of-notation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{markdown}
-
 Abjad models notation.
 
-# The illustration protocol
+\section{Representing objects}
 
 -   print()
--   repr() and __repr__()
--   str() and __str__()
--   format() and __format__()
--   show() and __illustrate__()
--   graph() and __graph__()
+-   repr() and \_\_repr\_\_()
 
-# Components, indicators & spanners
+-   str() and \_\_str\_\_()
+-   format() and \_\_format\_\_()
+-   show() and \_\_illustrate\_\_()
+-   graph() and \_\_graph\_\_()
 
-Abjad models notated musical scores as a *tree* consisting of *components*,
-*indicators* and *spanners*.
+\section{Components, indicators \& spanners}
+\label{sec:components-indicators-spanners}
 
-Components make up the *nodes* of the score tree, treating the score as an
-acyclic directed rooted graph, or *arborescence*, rooted on a single component.
+Abjad models notated musical scores as a \emph{tree} consisting of
+\emph{components}, \emph{indicators} and \emph{spanners}. All objects appearing
+in a score fall into one of those three categories.
 
-All components inherit from Abjad's `Component` class, which encapsulates logic
-crucial to maintaining the correctness of the score tree, and affords behaviors
-common to all component subclasses. MORE.
+\subsection{Components}
+\label{ssec:components}
 
-Abjad divides score components into *containers* -- those components which may
-contain other other components, such as staves, voices, tuplets, measures and
-so forth -- and *leaves* -- those components which may contain no other
-components, such as notes, chords and rests, as well as LilyPond's
-multi-measure rests and non-printing typographic *skips*.
+Components make up the \emph{nodes} of the score tree, treating the score as an
+acyclic directed rooted graph, or \emph{arborescence}, rooted on a single
+component. All components inherit from Abjad's \texttt{Component} class, which
+encapsulates logic crucial to maintaining the correctness of the score tree,
+and affords behaviors common to all component subclasses including
+illustrability, formattability and naming. Abjad divides score components into
+\emph{containers} -- those components which may contain other other components,
+such as staves, voices, tuplets, measures and so forth -- and \emph{leaves} --
+those components which may contain no other components, such as notes, chords
+and rests, as well as LilyPond's multi-measure rests and non-printing
+typographic \emph{skips}. Additionally, components can each be instantiated
+from a variety of input, from parsable LilyPond syntax strings to parametric
+arguments -- both numeric and explicitly object-modeled via pitch and duration
+objects. For example, we can instantiate and illustrate a middle-C quarter
+note:
 
-Abjad's containers implement Python's *mutable sequence protocol*, allowing
-them to be used transparently as though they were lists. Components can be
-appended, extended, or inserted into a container just like lists. Likewise,
-containers can be indexed, measured for length and iterated over.
+\begin{comment}
+<abjad>
+note = Note("c'4")
+show(note)
+</abjad>
+\end{comment}
 
-Note that Abjad's `Chord` class aggregates multiple *note heads* rather than
-notes. Likewise Abjad's `Note` class aggregates a single note head. While
-chords implement containment in terms of note heads, delegating to a dedicated
-note head inventory, they are not themselves "containers" in the same sense
-that a voice, measure or tuplet are containers.
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> note = Note("c'4")
+>>> show(note)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c018a545d264ff34225e9a3a5babb6c1.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
--   describe and demonstrate instantiation and simple aggregation
+\noindent a half-note rest:
 
-Abjad's *inspector* exposes a component's *inspection interface*, a
-collection of methods for accessing information about that component, many of
-which depend on that components position within the score hierarchy, such as
-its parentage and duration.
+\begin{comment}
+<abjad>
+rest = Rest((1, 2))
+show(rest)
+</abjad>
+\end{comment}
 
--   list some behaviors, introduce inspect_()
--   why inspect? many accessors depend on the *context* of a component in the
-    tree
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> rest = Rest((1, 2))
+>>> show(rest)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8144dc38435e18921a5d584ad635d2e3.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
-Every components may have one and no more than one parent container in the
-score tree. Any component whose parent is null is necessarily the root of its
-tree. Furthermore, no component may appear in its own *proper parentage* -- the
+\noindent and a D-minor chord:
+
+\begin{comment}
+<abjad>
+chord = Chord([2, 5, 9], Duration(1, 4))
+show(chord)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> chord = Chord([2, 5, 9], Duration(1, 4))
+>>> show(chord)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fef850f162448b1e8d3c6be53e362436.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Note above that the LilyPond output shows a \sfrac{4}{4} time
+signature even though none of the created leaves takes up an whole note's
+duration. LilyPond simply treats all music as \sfrac{4}{4} unless explicitly
+instructed otherwise. We can make the \sfrac{4}{4} time signature explicit by
+instantiating a \sfrac{4}{4} measure to contain the above three leaf instances:
+
+\begin{comment}
+<abjad>
+measure = Measure((4, 4), [note, rest, chord])
+show(measure)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> measure = Measure((4, 4), [note, rest, chord])
+>>> show(measure)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-cad7b59ce37e423c6cdc4729377818c7.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+Abjad's containers implement Python's \emph{mutable sequence protocol},
+allowing them to be used transparently as though they were lists. Components
+can be appended, extended, or inserted into a container and that container can
+also be indexed into, measured for length and iterated over.
+
+-   demonstrate some container properties
+
+\begin{comment}
+<abjad>
+measure[1]
+outer_tuplet = Tuplet((2, 3), "a'4 b4 cs'4")
+measure[1] = outer_tuplet
+show(measure)
+inner_tuplet = Tuplet((4, 5), "b'8 a'8 g'8 f'8 e'8")
+outer_tuplet[1:] = [inner_tuplet]
+show(measure)
+</abjad>
+\end{comment}
+
+\noindent Iterating over the contents of the \sfrac{4}{4} measure yields only
+the top-most components in that container -- its immediate children:
+
+\begin{comment}
+<abjad>
+for component in measure:
+    component
+
+</abjad>
+\end{comment}
+
+\noindent To retrieve all of the leaves of a container, recursion must be used,
+as any container may contain other containers, and those in turn still more
+containers. To mitigate this complexity, every container provides a
+\texttt{select\_leaves()} method, which returns a selection of the bottom-most
+leaf instances in the subtree rooted at that container:
+
+Note that Abjad's \texttt{Chord} class aggregates multiple \emph{note heads}
+rather than notes. Likewise Abjad's \texttt{Note} class aggregates a single
+note head. While chords implement containment in terms of note heads --
+delegating to a dedicated note head inventory -- they are not themselves
+"containers" in the same sense that a voice, measure or tuplet are containers.
+
+\begin{comment}
+<abjad>
+for note_head in chord:
+    note_head
+
+chord.append(NamedPitch("c''")
+show(chord)
+</abjad>
+\end{comment}
+
+The container that contains a given component is called its \emph{parent}, and
+the components contained in a container are known as that container's
+\emph{children}. Every component may have one and only one parent container,
+although a component may also have no parent -- a null parent reference. Any
+component whose parent is null is necessarily the root of its own score tree.
+Furthermore, no component may appear in its own \emph{proper parentage} -- the
 sequence of components comprising the unique path from a given component to the
 root of its tree, excepting the component itself -- as this would induce
 reference cycles within the score tree.
 
+Abjad object-models the concept of parentage explicitly as a \texttt{Parentage}
+\emph{selection} class, accessible via the \emph{inspector} which exposes a
+given component's \emph{inspection interface}: a collection of methods for
+accessing information about that component, many of which depend on that
+component's position within the score hierarchy, including the component's
+parentage or duration. An inspector can be instantiated by calling Abjad's
+top-level \texttt{inspect\_()} function on a component.
+
 -   demonstrate simple parentage inspection
 
-Abjad object-models the concept of parentage explicitly as a `Parentage`
-*selection* class, accessible via Abjad's *inspector*.
+Every component may be expressed in terms of their duration, as well as their
+start offset relative to the score origin and, by extension, their timespan --
+the span of time bounded by their start offset and their stop offset.
 
-Every component may be expressed in terms of their duration, offset and
-timespan.
-
-The duration of each leaf derives from the product of its *written duration*
--- a duration representing the actual glyphs used in the score as represented
-by some combination of note heads, stems, beams and dots -- and their
-*prolation* -- the cumulative product of all of the duration multipliers of the
-containers in a component's proper parentage.
+The duration of each leaf derives from the product of its \emph{written
+duration} -- a duration representing the actual glyphs used in the score as
+represented by some combination of note heads, stems, beams and dots -- and
+their \emph{prolation} -- the cumulative product of all of the duration
+multipliers of the containers in a component's proper parentage.
 
 -   demonstrate prolation property of parentage
-
-\end{markdown}
 
 Written durations must be \emph{assignable}. Assignability describes the set of
 durations describable in Western common practice notation solely through
 combining a single note head, its flags and dots, without recourse to ties or
-tuplets. Any rational duration $\sfrac{n}{d}$ is considered assignable when and only
-when it adheres to the form
+tuplets. Any rational duration $\sfrac{n}{d}$ is considered assignable when and
+only when it adheres to the form
 
 \begin{equation}
 { 2^k * (2^u - j) \over 2^v }
@@ -100,8 +226,6 @@ precludes durations such as $\sfrac{1}{3}$ or $\sfrac{2}{5}$. Likewise,
 assignability permits numerators such as 1, 2, 3, 4, 6, 7, 8, 12, 14 and 15 but
 forbids 5, 9, 10, 13 and 17, as they imply ties.
 
-\begin{markdown}
-
 The duration of each container then derives from the product of its prolation
 and its *contents duration* -- the sum of the durations of its children.
 Ultimately, all scores derive their durations from the durations of their
@@ -109,13 +233,15 @@ leaves, prolated as necessary by any tuplets.
 
 Every component may be named.
 
+\begin{markdown}
+
 ## Components
 
 -   components, leaves, containers (and contexts)
--   components are formattable and illustrable 
+-   components are formattable and illustrable
 -   components are mutable, while indicators are generally not
     -   likewise, durations and pitches are immutable
-    
+
 -   count-time components
     -   note, chord, rest, skip, container, tuplet, measure
 -   non-count-time (contexts)
@@ -198,7 +324,7 @@ Indicators attach to individual components
 Spanners *span* across different levels of hierarchy.
 
 -   logical voices
--   attach to  
+-   attach to
 
 -   graph cyclicity
 -   Beam
