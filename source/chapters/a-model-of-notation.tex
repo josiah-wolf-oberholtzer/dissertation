@@ -24,17 +24,33 @@ Abjad models notated musical scores as a *tree* consisting of *components*,
 Components make up the *nodes* of the score tree, treating the score as an
 acyclic directed rooted graph, or *arborescence*, rooted on a single component.
 
+All components inherit from Abjad's `Component` class, which encapsulates logic
+crucial to maintaining the correctness of the score tree, and affords behaviors
+common to all component subclasses. MORE.
+
 Abjad divides score components into *containers* -- those components which may
 contain other other components, such as staves, voices, tuplets, measures and
 so forth -- and *leaves* -- those components which may contain no other
 components, such as notes, chords and rests, as well as LilyPond's
 multi-measure rests and non-printing typographic *skips*.
 
+Abjad's containers implement Python's *mutable sequence protocol*, allowing
+them to be used transparently as though they were lists. Components can be
+appended, extended, or inserted into a container just like lists. Likewise,
+containers can be indexed, measured for length and iterated over.
+
+Note that Abjad's `Chord` class aggregates multiple *note heads* rather than
+notes. Likewise Abjad's `Note` class aggregates a single note head. While
+chords implement containment in terms of note heads, delegating to a dedicated
+note head inventory, they are not themselves "containers" in the same sense
+that a voice, measure or tuplet are containers.
+
 -   describe and demonstrate instantiation and simple aggregation
 
-All components inherit from Abjad's `Component` class, which provides crucial
-logic pertinent to maintaining the correctness of the score tree and guarantees
-certain common behaviors.
+Abjad's *inspector* exposes a component's *inspection interface*, a
+collection of methods for accessing information about that component, many of
+which depend on that components position within the score hierarchy, such as
+its parentage and duration.
 
 -   list some behaviors, introduce inspect_()
 -   why inspect? many accessors depend on the *context* of a component in the
@@ -49,6 +65,9 @@ reference cycles within the score tree.
 
 -   demonstrate simple parentage inspection
 
+Abjad object-models the concept of parentage explicitly as a `Parentage`
+*selection* class, accessible via Abjad's *inspector*.
+
 Every component may be expressed in terms of their duration, offset and
 timespan.
 
@@ -58,27 +77,35 @@ by some combination of note heads, stems, beams and dots -- and their
 *prolation* -- the cumulative product of all of the duration multipliers of the
 containers in a component's proper parentage.
 
-Written durations must be *assignable*.
-
-Assignability describes the set of durations describable in Western common
-practice notation solely through combining a single note head, its flags and
-dots, without recourse to ties or tuplets.
+-   demonstrate prolation property of parentage
 
 \end{markdown}
 
-Any duration $n/d$ is considered assignable when -- and only when -- its
-numerator $n$ is of the form $k * (2^u - j)$ and its denominator $d$ is of the
-form $2^v$, where $u$ and $v$ are nonnegative integers -- $0 \leq u$ --, $k$ is
-a positive integer -- $0 < k$ -- and $j$ is either 1 or 0. Assignability
-guarantees that a duration's denominator is always a positive power-of-two
-integer, such as 1, 2, 4, 8, 16 and so forth, and therefore precludes durations
-such as 1/3 or 2/5. Likewise, assignability permits numerators such as 1, 2, 3,
-4, 7 and 15 but forbids 5, 9 and 17 as they imply ties.
+Written durations must be \emph{assignable}. Assignability describes the set of
+durations describable in Western common practice notation solely through
+combining a single note head, its flags and dots, without recourse to ties or
+tuplets. Any rational duration $n/d$ is considered assignable when and only
+when it adheres to the form
+
+\begin{equation}
+{ 2^k * (2^u - j) \over 2^v }
+\end{equation}
+
+\noindent where $u$, $v$ and $k$ are nonnegative integers ($0 \leq u$), $j \leq
+u$ and $j$ is either 1 or 0.
+
+Assignability guarantees that a duration's denominator is always a positive
+power-of-two integer, such as 1, 2, 4, 8, 16 and so forth, and therefore
+precludes durations such as 1/3 or 2/5. Likewise, assignability permits
+numerators such as 1, 2, 3, 4, 6, 7, 8, 12, 14 and 15 but forbids 5, 9, 10, 13
+and 17, as they imply ties.
 
 \begin{markdown}
 
-The duration of each container then derives from the product of its *contents
-duration* and its prolation. 
+The duration of each container then derives from the product of its prolation
+and its *contents duration* -- the sum of the durations of its children.
+Ultimately, all scores derive their durations from the durations of their
+leaves, prolated as necessary by any tuplets.
 
 Every component may be named.
 
