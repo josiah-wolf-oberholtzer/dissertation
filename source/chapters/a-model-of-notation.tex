@@ -84,21 +84,21 @@ containers in a component's proper parentage.
 Written durations must be \emph{assignable}. Assignability describes the set of
 durations describable in Western common practice notation solely through
 combining a single note head, its flags and dots, without recourse to ties or
-tuplets. Any rational duration $n/d$ is considered assignable when and only
+tuplets. Any rational duration $\sfrac{n}{d}$ is considered assignable when and only
 when it adheres to the form
 
 \begin{equation}
 { 2^k * (2^u - j) \over 2^v }
 \end{equation}
 
-\noindent where $u$, $v$ and $k$ are nonnegative integers ($0 \leq u$), $j \leq
+\noindent where $u$, $v$ and $k$ are nonnegative integers, $j \leq
 u$ and $j$ is either 1 or 0.
 
 Assignability guarantees that a duration's denominator is always a positive
 power-of-two integer, such as 1, 2, 4, 8, 16 and so forth, and therefore
-precludes durations such as 1/3 or 2/5. Likewise, assignability permits
-numerators such as 1, 2, 3, 4, 6, 7, 8, 12, 14 and 15 but forbids 5, 9, 10, 13
-and 17, as they imply ties.
+precludes durations such as $\sfrac{1}{3}$ or $\sfrac{2}{5}$. Likewise,
+assignability permits numerators such as 1, 2, 3, 4, 6, 7, 8, 12, 14 and 15 but
+forbids 5, 9, 10, 13 and 17, as they imply ties.
 
 \begin{markdown}
 
