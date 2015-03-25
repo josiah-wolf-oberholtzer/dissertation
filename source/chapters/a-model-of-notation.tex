@@ -126,21 +126,76 @@ show(measure)
 Abjad's containers implement Python's \emph{mutable sequence protocol},
 allowing them to be used transparently as though they were lists. Components
 can be appended, extended, or inserted into a container and that container can
-also be indexed into, measured for length and iterated over.
-
--   demonstrate some container properties
+also be indexed into, measured for length and iterated over. For example, the
+second component contained by the measure can be retrieved by subscripting the
+measure with the index 1:
 
 \begin{comment}
 <abjad>
 measure[1]
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> measure[1]
+Rest('r2')
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+That second component -- the half-note rest -- can be replaced by
+another container, a triplet:
+
+\begin{comment}
+<abjad>
 outer_tuplet = Tuplet((2, 3), "a'4 b4 cs'4")
 measure[1] = outer_tuplet
 show(measure)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> outer_tuplet = Tuplet((2, 3), "a'4 b4 cs'4")
+>>> measure[1] = outer_tuplet
+>>> show(measure)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f9a8a92bd9dbe5f480a4003ade9c81aa.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+Furthermore, the last two leaves in the triplet can be replaced by a quintuplet
+using Python's \emph{slice assignment} syntax. In the following code, the text
+\texttt{outer_tuplet[1:]} references the selection of components in the
+original triplet starting from the second component and going \enquote{to the
+end} -- effectively the second and third item, as there are only three. That
+selection is then replaced by a list containing a quintuplet, substituting the
+contents of one sequence of components for the contents of another.
+
+\begin{comment}
+<abjad>
 inner_tuplet = Tuplet((4, 5), "b'8 a'8 g'8 f'8 e'8")
 outer_tuplet[1:] = [inner_tuplet]
 show(measure)
 </abjad>
 \end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> inner_tuplet = Tuplet((4, 5), "b'8 a'8 g'8 f'8 e'8")
+>>> outer_tuplet[1:] = [inner_tuplet]
+>>> show(measure)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-774102cf7b91119d6d9bb4b6b75ac925.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
 \noindent Iterating over the contents of the \sfrac{4}{4} measure yields only
 the top-most components in that container -- its immediate children:
@@ -153,27 +208,93 @@ for component in measure:
 </abjad>
 \end{comment}
 
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for component in measure:
+...     component
+...
+Note("c'4")
+Tuplet(Multiplier(2, 3), 'a\'4 Tuplet(Multiplier(4, 5), "b\'8 a\'8 g\'8 f\'8 e\'8")')
+Chord("<d' f' a'>4")
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
 \noindent To retrieve all of the leaves of a container, recursion must be used,
 as any container may contain other containers, and those in turn still more
 containers. To mitigate this complexity, every container provides a
 \texttt{select\_leaves()} method, which returns a selection of the bottom-most
 leaf instances in the subtree rooted at that container:
 
+\begin{comment}
+<abjad>
+for leaf in measure.select_leaves():
+    leaf
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for leaf in measure.select_leaves():
+...     leaf
+...
+Note("c'4")
+Note("a'4")
+Note("b'8")
+Note("a'8")
+Note("g'8")
+Note("f'8")
+Note("e'8")
+Chord("<d' f' a'>4")
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
 Note that Abjad's \texttt{Chord} class aggregates multiple \emph{note heads}
 rather than notes. Likewise Abjad's \texttt{Note} class aggregates a single
 note head. While chords implement containment in terms of note heads --
 delegating to a dedicated note head inventory -- they are not themselves
 "containers" in the same sense that a voice, measure or tuplet are containers.
+It is important here to differentiate between the concept of a \enquote{chord}
+as a single duration paired with a collection of pitches and a \enquote{chord}
+as the sounding sonority at some given point in a piece spread over some number
+of voices. Abjad always makes use of the former rather than the latter.
 
 \begin{comment}
 <abjad>
-for note_head in chord:
+note_head_inventory = chord.note_heads
+for note_head in note_head_inventory:
     note_head
 
-chord.append(NamedPitch("c''")
+chord.note_heads.append(NamedPitch("c''"))
 show(chord)
 </abjad>
 \end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> note_head_inventory = chord.note_heads
+>>> for note_head in note_head_inventory:
+...     note_head
+...
+NoteHead("d'")
+NoteHead("f'")
+NoteHead("a'")
+\end{lstlisting}
+\begin{lstlisting}
+>>> chord.note_heads.append(NamedPitch("c''"))
+>>> show(chord)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0419b405f12cba5bff2e20c17c72e860.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
 The container that contains a given component is called its \emph{parent}, and
 the components contained in a container are known as that container's
@@ -191,9 +312,47 @@ given component's \emph{inspection interface}: a collection of methods for
 accessing information about that component, many of which depend on that
 component's position within the score hierarchy, including the component's
 parentage or duration. An inspector can be instantiated by calling Abjad's
-top-level \texttt{inspect\_()} function on a component.
+top-level \texttt{inspect\_()} function on a component.\footnote{Abjad uses
+\texttt{inspect\_()} rather than \texttt{inspect()} as Python already provides
+an \texttt{inspect} module for object introspection, and it is considered bad
+practice to overwrite names of functions, classes or modules found in the
+standard library such as \texttt{set} or \texttt{object}. When a name conflict
+would occur, projects traditionally append an underscore to the name they wish
+to use.}
 
--   demonstrate simple parentage inspection
+\begin{comment}
+<abjad>
+inner_b_eighth = measure[1][1][0]
+inspector = inspect_(inner_b_eighth)
+parentage = inspector.get_parentage()
+parentage.parent
+for component in parentage:
+    component
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> inner_b_eighth = measure[1][1][0]
+>>> inspector = inspect_(inner_b_eighth)
+>>> parentage = inspector.get_parentage()
+>>> parentage.parent
+Tuplet(Multiplier(4, 5), "b'8 a'8 g'8 f'8 e'8")
+\end{lstlisting}
+\begin{lstlisting}
+>>> for component in parentage:
+...     component
+...
+Note("b'8")
+Tuplet(Multiplier(4, 5), "b'8 a'8 g'8 f'8 e'8")
+Tuplet(Multiplier(2, 3), 'a\'4 Tuplet(Multiplier(4, 5), "b\'8 a\'8 g\'8 f\'8 e\'8")')
+Measure((4, 4), 'c\'4 Tuplet(Multiplier(2, 3), \'a\\\'4 Tuplet(Multiplier(4, 5), "b\\\'8 a\\\'8 g\\\'8 f\\\'8 e\\\'8")\') <d\' f\' a\' c\'\'>4')
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
 
 Every component may be expressed in terms of their duration, as well as their
 start offset relative to the score origin and, by extension, their timespan --
