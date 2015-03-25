@@ -21,37 +21,101 @@ Abjad models notation.
 Abjad models notated musical scores as a *tree* consisting of *components*,
 *indicators* and *spanners*.
 
-## Components
+Components make up the *nodes* of the score tree, treating the score as an
+acyclic directed rooted graph, or *arborescence*, rooted on a single component.
 
-Score components make up the *nodes* of the tree, from its *root* to its
-*leaves*. 
+Abjad divides score components into *containers* -- those components which may
+contain other other components, such as staves, voices, tuplets, measures and
+so forth -- and *leaves* -- those components which may contain no other
+components, such as notes, chords and rests, as well as LilyPond's
+multi-measure rests and non-printing typographic *skips*.
+
+-   describe and demonstrate instantiation and simple aggregation
+
+All components inherit from Abjad's `Component` class, which provides crucial
+logic pertinent to maintaining the correctness of the score tree and guarantees
+certain common behaviors.
+
+-   list some behaviors, introduce inspect_()
+-   why inspect? many accessors depend on the *context* of a component in the
+    tree
+
+Every components may have one and no more than one parent container in the
+score tree. Any component whose parent is null is necessarily the root of its
+tree. Furthermore, no component may appear in its own *proper parentage* -- the
+sequence of components comprising the unique path from a given component to the
+root of its tree, excepting the component itself -- as this would induce
+reference cycles within the score tree.
+
+-   demonstrate simple parentage inspection
+
+Every component may be expressed in terms of their duration, offset and
+timespan.
+
+The duration of each leaf derives from the product of its *written duration*
+-- a duration representing the actual glyphs used in the score as represented
+by some combination of note heads, stems, beams and dots -- and their
+*prolation* -- the cumulative product of all of the duration multipliers of the
+containers in a component's proper parentage.
+
+Written durations must be *assignable*.
+
+Assignability describes the set of durations describable in Western common
+practice notation solely through combining a single note head, its flags and
+dots, without recourse to ties or tuplets.
+
+\end{markdown}
+
+Any duration $n/d$ is considered assignable when -- and only when -- its
+numerator $n$ is of the form $k * (2^u - j)$ and its denominator $d$ is of the
+form $2^v$, where $u$ and $v$ are nonnegative integers -- $0 \leq u$ --, $k$ is
+a positive integer -- $0 < k$ -- and $j$ is either 1 or 0. Assignability
+guarantees that a duration's denominator is always a positive power-of-two
+integer, such as 1, 2, 4, 8, 16 and so forth, and therefore precludes durations
+such as 1/3 or 2/5. Likewise, assignability permits numerators such as 1, 2, 3,
+4, 7 and 15 but forbids 5, 9 and 17 as they imply ties.
+
+\begin{markdown}
+
+The duration of each container then derives from the product of its *contents
+duration* and its prolation. 
+
+Every component may be named.
+
+## Components
 
 -   components, leaves, containers (and contexts)
 -   components are formattable and illustrable 
 -   components are mutable, while indicators are generally not
     -   likewise, durations and pitches are immutable
+    
 -   count-time components
     -   note, chord, rest, skip, container, tuplet, measure
 -   non-count-time (contexts)
     -   voice, staff, staff group, score
+
 -   leaves do not contain anything else
     -   chord do *not* contain notes
     -   chords and notes contain note heads
     -   chord and notes share a single stem
     -   this must be disambiguated from note columns
+
 -   all containers derive their duration from their contents (with some
     exceptions, but even there a mismatch is an error)
+-   written duration, prolated duration, pre-prolated duration, contents
+    duration
+
 -   One, and only one, parent per component. They *cannot* be in more than one
     container. This is both confusing, and liable to cause reference problems.
 -   score hierarchy is not fixed: any node is the root, if it has no parent
+
 -   contexts are assumed to last from the beginning to the end of the total
-    timespan of the score
--   in practice, they may be intermittent
+    timespan of the score, but in practice they may be intermittent
 -   contexts may be named, allowing concatenation
 
--   written duration vs prolated duration
+-   Leaves reside at the "bottom" of the score hierarchy.
 
-# Inspection
+### Inspection
 
 Work aspects of this into appropriate sections
 
