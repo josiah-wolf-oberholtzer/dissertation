@@ -74,7 +74,8 @@
 
 \parindent 12pt
 \RequirePackage{mathspec}
-\setmathsfont(Digits,Latin,Greek)[Numbers={Proportional}]{EB Garamond}
+%\setmathsfont(Digits,Latin,Greek)[Numbers={Proportional}]{EB Garamond}
+\setmathsfont(Digits,Latin,Greek)[Numbers={Lining}]{EB Garamond}
 \setmathrm{EB Garamond}
 
 \widowpenalty=300
