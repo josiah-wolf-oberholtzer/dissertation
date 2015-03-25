@@ -7,23 +7,22 @@ Abjad models notation.
 
 \section{Representing objects}
 
+\begin{comment}
 -   print()
 -   repr() and \_\_repr\_\_()
-
 -   str() and \_\_str\_\_()
 -   format() and \_\_format\_\_()
 -   show() and \_\_illustrate\_\_()
 -   graph() and \_\_graph\_\_()
+\end{comment}
 
 \section{Components, indicators \& spanners}
-\label{sec:components-indicators-spanners}
 
 Abjad models notated musical scores as a \emph{tree} consisting of
 \emph{components}, \emph{indicators} and \emph{spanners}. All objects appearing
 in a score fall into one of those three categories.
 
-\subsection{Components}
-\label{ssec:components}
+\section{Components}
 
 Components make up the \emph{nodes} of the score tree, treating the score as an
 acyclic directed rooted graph, or \emph{arborescence}, rooted on a single
@@ -216,7 +215,7 @@ for component in measure:
 ...     component
 ...
 Note("c'4")
-Tuplet(Multiplier(2, 3), 'a\'4 Tuplet(Multiplier(4, 5), "b\'8 a\'8 g\'8 f\'8 e\'8")')
+Tuplet(Multiplier(2, 3), "a'4 { 4/5 b'8 a'8 g'8 f'8 e'8 }")
 Chord("<d' f' a'>4")
 \end{lstlisting}
 \end{singlespacing}
@@ -296,6 +295,8 @@ NoteHead("a'")
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\subsection{Parentage}
+
 The container that contains a given component is called its \emph{parent}, and
 the components contained in a container are known as that container's
 \emph{children}. Every component may have one and only one parent container,
@@ -348,11 +349,13 @@ Tuplet(Multiplier(4, 5), "b'8 a'8 g'8 f'8 e'8")
 ...
 Note("b'8")
 Tuplet(Multiplier(4, 5), "b'8 a'8 g'8 f'8 e'8")
-Tuplet(Multiplier(2, 3), 'a\'4 Tuplet(Multiplier(4, 5), "b\'8 a\'8 g\'8 f\'8 e\'8")')
-Measure((4, 4), 'c\'4 Tuplet(Multiplier(2, 3), \'a\\\'4 Tuplet(Multiplier(4, 5), "b\\\'8 a\\\'8 g\\\'8 f\\\'8 e\\\'8")\') <d\' f\' a\' c\'\'>4')
+Tuplet(Multiplier(2, 3), "a'4 { 4/5 b'8 a'8 g'8 f'8 e'8 }")
+Measure((4, 4), "c'4 { 2/3 a'4 { 4/5 b'8 a'8 g'8 f'8 e'8 } } <d' f' a' c''>4")
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\subsection{Component duration}
 
 Every component may be expressed in terms of their duration, as well as their
 start offset relative to the score origin and, by extension, their timespan --
@@ -385,6 +388,51 @@ precludes durations such as $\sfrac{1}{3}$ or $\sfrac{2}{5}$. Likewise,
 assignability permits numerators such as 1, 2, 3, 4, 6, 7, 8, 12, 14 and 15 but
 forbids 5, 9, 10, 13 and 17, as they imply ties.
 
+More elegantly, any integer can be considered if its binary representation does
+not contain the substring \enquote{01}:
+
+\begin{comment}
+<abjad>
+for i in range(17):
+    binary_string = mathtools.integer_to_binary_string(i)
+    is_assignable = mathtools.is_assignable_integer(i)
+    string = '{}: {} [{}]'.format(i, binary_string, is_assignable)
+    print(string)
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for i in range(17):
+...     binary_string = mathtools.integer_to_binary_string(i)
+...     is_assignable = mathtools.is_assignable_integer(i)
+...     string = '{}: {} [{}]'.format(i, binary_string, is_assignable)
+...     print(string)
+...
+0: 0 [False]
+1: 1 [True]
+2: 10 [True]
+3: 11 [True]
+4: 100 [True]
+5: 101 [False]
+6: 110 [True]
+7: 111 [True]
+8: 1000 [True]
+9: 1001 [False]
+10: 1010 [False]
+11: 1011 [False]
+12: 1100 [True]
+13: 1101 [False]
+14: 1110 [True]
+15: 1111 [True]
+16: 10000 [True]
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
 The duration of each container then derives from the product of its prolation
 and its *contents duration* -- the sum of the durations of its children.
 Ultimately, all scores derive their durations from the durations of their
@@ -392,10 +440,7 @@ leaves, prolated as necessary by any tuplets.
 
 Every component may be named.
 
-\begin{markdown}
-
-## Components
-
+\begin{comment}
 -   components, leaves, containers (and contexts)
 -   components are formattable and illustrable
 -   components are mutable, while indicators are generally not
@@ -427,8 +472,6 @@ Every component may be named.
 
 -   Leaves reside at the "bottom" of the score hierarchy.
 
-### Inspection
-
 Work aspects of this into appropriate sections
 
 -   inspect_()
@@ -439,17 +482,20 @@ Work aspects of this into appropriate sections
     -   in_seconds=True
 -   inspect_(...).get_timespan()
     -   in_seconds=True
+\end{comment}
 
-## Indicators
+\section{Indicators}
 
+\subsection{Attachment}
+
+\subsection{Scope}
+
+\begin{comment}
 Indicators attach to individual components
-
 -   some have notational reality
 -   some have context scope
 -   but they can be totally arbitrary
-
 -   attach(x, y, scope=..., is_annotation=..., name=...)
-
 -   Articulation
 -   BarLine
 -   Clef
@@ -458,11 +504,9 @@ Indicators attach to individual components
 -   Markup
 -   Tempo
 -   TimeSignature
-
 -   What is scope?
 -   Default scope
 -   Explicit scope
-
 -   Idiomatic indicators, used by other processes:
     -   BowContactPoint
     -   IsAtSoundingPitch
@@ -472,19 +516,18 @@ Indicators attach to individual components
     -   etc.
 -   Annotation
 -   attach(x, y, is_annotation=True)
-
 -   inspect_(...).get_indicator()
 -   inspect_(...).has_indicator()
 -   inspect_(...).get_effective()
 -   inspect_(...).has_effective_indicator()
+\end{comment}
 
-## Spanners
+\section{Spanners}
 
+\begin{comment}
 Spanners *span* across different levels of hierarchy.
-
 -   logical voices
 -   attach to
-
 -   graph cyclicity
 -   Beam
 -   Glissando
@@ -492,17 +535,12 @@ Spanners *span* across different levels of hierarchy.
 -   Slur
 -   Trill
 -   Tie
-
 -   typographic overrides
-
 # Typographic overrides
-
 -   On components
     - \\override & \\revert
 -   On spanners
-
 # Modeling time
-
 -   Duration
 -   Offset
 -   Multiplier
@@ -510,11 +548,12 @@ Spanners *span* across different levels of hierarchy.
 -   Prolation
 -   Pre-prolated durations
 -   Contents duration
+\end{comment}
 
-# Modeling pitch
+\section{Representing pitches}
 
+\begin{comment}
 ## Pitch representations
-
 -   The most important distinction is between *named* and *numbered* pitch
     objects.
 -   All pitched score components (notes and chords) rely on *named*
@@ -524,54 +563,43 @@ Spanners *span* across different levels of hierarchy.
 -   Abjad has provided one interpretation, but that is for sufficiency
 -   Abjad does *not* make smart guesses about converting numbered to named
     pitches
-
 -   NamedPitch
 -   NumberedPitch
 -   NamedPitchClass
 -   NumberedPitchClass
-
 -   NamedInterval
 -   NumberedInterval
 -   NamedIntervalClass
 -   NumberedIntervalClass
 -   NamedInversionEquivalentIntervalClass
 -   NumberedInversionEquivalentIntervalClass
-
 ## Pitch collections
-
 -   Set, Segment, Vector
 -   Pitch, PitchClass, Interval, IntervalClass
-
 -   PitchSegment
 -   PitchClassSegment
-
 ## Pitch operators
-
 ## Other pitch modeling concepts
-
 -   Accidental
 -   Octave
 -   PitchRange
 -   StaffPosition
-
 ## Inspecting leaf pitches
-
 -   Note("c'4").written_pitch
 -   Note("c'4").note_head.written_pitch
 -   Chord("<c' e' g'>4").written_pitches
 -   inspect_(note).get_sounding_pitch()
 -   inspect_(note).get_sounding_pitches()
+\end{comment}
 
-# Navigating through score
+\section{Selecting components}
 
+\begin{comment}
 ## Indexing
-
 -   By name
 -   By index
 -   By slice
-
 ## Selection
-
 -   select()
 -   Selection class
 -   Container.select_leaves()
@@ -582,9 +610,7 @@ Spanners *span* across different levels of hierarchy.
     -   tail
     -   timespan
     -   trivial logical ties
-
 ## Iteration
-
 -   By __iter__()
 -   By iterate(...)by_...()
     -   by_class()
@@ -593,18 +619,20 @@ Spanners *span* across different levels of hierarchy.
     -   by_timeline()
     -   by_vertical_moment()
     -   depth_first()
-
 ## Selectors
-
 -   Demonstrate a gallery of selectors.
     -   by duration
     -   by leaves
     -   by length
     -   by logical tie
     -   by counts (with negative counts too)
+\end{comment}
 
-# Notation factories
+\section{Mutation}
 
+\section{Notation factories}
+
+\begin{comment}
 -   rhythm-makers
 -   score templates
 -   parsers
@@ -613,8 +641,7 @@ Spanners *span* across different levels of hierarchy.
     -   SchemeParser
     -   RhythmTreeParser
     -   ReducedLyParser
-
-\end{markdown}
+\end{comment}
 
 \section{Examples}
 
