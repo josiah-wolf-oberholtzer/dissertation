@@ -16,7 +16,7 @@ Abjad models notation.
 -   graph() and \_\_graph\_\_()
 \end{comment}
 
-\section{Components, indicators \& spanners}
+\section{The score tree}
 
 Abjad models notated musical scores as a \emph{tree} consisting of
 \emph{components}, \emph{indicators} and \emph{spanners}. All objects appearing
@@ -741,11 +741,57 @@ Work aspects of this into appropriate sections
     -   in_seconds=True
 \end{comment}
 
+\subsection{Naming}
+
+Components may be named.
+
+Any named component found in the subtree of a given container may be accessed,
+regardless of its depth in that container, by subscripting the container with
+its name.
+
 \section{Indicators}
 
 \subsection{Attachment}
 
 \subsection{Scope}
+
+\begin{comment}
+<abjad>
+voice_1 = Voice(name='Voice 1')
+voice_2 = Voice(name='Voice 2')
+upper_staff = Staff(
+    [voice_1, voice_2],
+    name='Upper Staff',
+    )
+voice_3 = Voice(name='Voice 3')
+lower_staff = Staff(
+    [voice_3],
+    name='Lower Staff',
+    )
+staff_group = StaffGroup(
+    [upper_staff, lower_staff],
+    context_name='Piano Staff',
+    )
+score = Score([staff_group])
+show(score)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+attach(Clef('treble'), upper_staff)
+attach(Clef('bass'), lower_staff)
+attach(LilyPondCommand('voiceOne', format_slot='opening'), voice_1)
+attach(LilyPondCommand('voiceTwo', format_slot='opening'), voice_2)
+</abjad>
+\end{comment}
+
+-   One clef per staff (staff scope)
+-   Separate dynamics per voice (voice scope)
+-   One tempo (score scope)
+-   Arbitrary scoped object (score scope?)
+
+\subsection{Annotation}
 
 \begin{comment}
 Indicators attach to individual components
@@ -807,6 +853,44 @@ Spanners *span* across different levels of hierarchy.
 -   Contents duration
 \end{comment}
 
+\section{Selecting components}
+
+\begin{comment}
+## Indexing
+-   By name
+-   By index
+-   By slice
+## Selection
+-   select()
+-   Selection class
+-   Container.select_leaves()
+    -   allow_discontiguous_leaves=True
+-   inspect_(...).get_logical_tie()
+-   LogicalTie
+    -   head
+    -   tail
+    -   timespan
+    -   trivial logical ties
+## Iteration
+-   By __iter__()
+-   By iterate(...)by_...()
+    -   by_class()
+    -   by_logical_tie()
+    -   by_run()
+    -   by_timeline()
+    -   by_vertical_moment()
+    -   depth_first()
+## Selectors
+-   Demonstrate a gallery of selectors.
+    -   by duration
+    -   by leaves
+    -   by length
+    -   by logical tie
+    -   by counts (with negative counts too)
+\end{comment}
+
+\section{Mutating components}
+
 \section{Representing pitches}
 
 \begin{comment}
@@ -848,44 +932,6 @@ Spanners *span* across different levels of hierarchy.
 -   inspect_(note).get_sounding_pitch()
 -   inspect_(note).get_sounding_pitches()
 \end{comment}
-
-\section{Selecting components}
-
-\begin{comment}
-## Indexing
--   By name
--   By index
--   By slice
-## Selection
--   select()
--   Selection class
--   Container.select_leaves()
-    -   allow_discontiguous_leaves=True
--   inspect_(...).get_logical_tie()
--   LogicalTie
-    -   head
-    -   tail
-    -   timespan
-    -   trivial logical ties
-## Iteration
--   By __iter__()
--   By iterate(...)by_...()
-    -   by_class()
-    -   by_logical_tie()
-    -   by_run()
-    -   by_timeline()
-    -   by_vertical_moment()
-    -   depth_first()
-## Selectors
--   Demonstrate a gallery of selectors.
-    -   by duration
-    -   by leaves
-    -   by length
-    -   by logical tie
-    -   by counts (with negative counts too)
-\end{comment}
-
-\section{Mutation}
 
 \section{Notation factories}
 
