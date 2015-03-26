@@ -643,6 +643,59 @@ leaves, prolated as necessary by any tuplets.
 
 -   Demonstrate that these change when new objects are inserted
 
+-   Demonstrate multipliers
+
+\begin{comment}
+<abjad>
+multimeasure_rest = scoretools.MultimeasureRest(1)
+inspect_(multimeasure_rest).get_duration()
+show(multimeasure_rest)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> multimeasure_rest = scoretools.MultimeasureRest(1)
+>>> inspect_(multimeasure_rest).get_duration()
+Duration(1, 1)
+\end{lstlisting}
+\begin{lstlisting}
+>>> show(multimeasure_rest)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-099f7141431afa5ae3a046415764f35b.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+show(multimeasure_rest)
+attach(Multiplier(4), multimeasure_rest)
+inspect_(multimeasure_rest).get_duration()
+show(multimeasure_rest)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> show(multimeasure_rest)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-099f7141431afa5ae3a046415764f35b.pdf}
+\begin{lstlisting}
+>>> attach(Multiplier(4), multimeasure_rest)
+>>> inspect_(multimeasure_rest).get_duration()
+Duration(4, 1)
+\end{lstlisting}
+\begin{lstlisting}
+>>> show(multimeasure_rest)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a8fdc5cae1a0a9fb72680a5d18862c4e.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
 \begin{comment}
 -   Every component may be named.
 -   components, leaves, containers (and contexts)
@@ -984,24 +1037,6 @@ show(rest)
 
 \begin{comment}
 <abjad>
-multimeasure_rest = scoretools.MultimeasureRest(1)
-show(multimeasure_rest)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> multimeasure_rest = scoretools.MultimeasureRest(1)
->>> show(multimeasure_rest)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-099f7141431afa5ae3a046415764f35b.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
 skip = scoretools.Skip(1)
 show(skip)
 </abjad>
@@ -1067,29 +1102,6 @@ NoteHead("g''")
 >>> show(chord)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f6ffc8242c578f619b7b053e9eab2333.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-show(multimeasure_rest)
-attach(Multiplier(4), multimeasure_rest)
-show(multimeasure_rest)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> show(multimeasure_rest)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-099f7141431afa5ae3a046415764f35b.pdf}
-\begin{lstlisting}
->>> attach(Multiplier(4), multimeasure_rest)
->>> show(multimeasure_rest)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a8fdc5cae1a0a9fb72680a5d18862c4e.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
