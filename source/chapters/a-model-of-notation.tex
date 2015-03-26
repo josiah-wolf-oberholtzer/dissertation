@@ -122,6 +122,8 @@ show(measure)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\subsection{Containers}
+
 Abjad's containers implement Python's \emph{mutable sequence protocol},
 allowing them to be used transparently as though they were lists. Components
 can be appended, extended, or inserted into a container and that container can
@@ -178,7 +180,7 @@ contents of one sequence of components for the contents of another.
 
 \begin{comment}
 <abjad>
-inner_tuplet = Tuplet((4, 5), "b'8 a'8 g'8 f'8 e'8")
+inner_tuplet = Tuplet((4, 5), "b'8 a'8. g'16 f'8.. e'32")
 outer_tuplet[1:] = [inner_tuplet]
 show(measure)
 </abjad>
@@ -188,11 +190,11 @@ show(measure)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> inner_tuplet = Tuplet((4, 5), "b'8 a'8 g'8 f'8 e'8")
+>>> inner_tuplet = Tuplet((4, 5), "b'8 a'8. g'16 f'8.. e'32")
 >>> outer_tuplet[1:] = [inner_tuplet]
 >>> show(measure)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-774102cf7b91119d6d9bb4b6b75ac925.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-958463d38eb75b71ce0e7aaa2b9ae94e.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -215,7 +217,7 @@ for component in measure:
 ...     component
 ...
 Note("c'4")
-Tuplet(Multiplier(2, 3), "a'4 { 4/5 b'8 a'8 g'8 f'8 e'8 }")
+Tuplet(Multiplier(2, 3), "a'4 { 4/5 b'8 a'8. g'16 f'8.. e'32 }")
 Chord("<d' f' a'>4")
 \end{lstlisting}
 \end{singlespacing}
@@ -245,10 +247,10 @@ for leaf in measure.select_leaves():
 Note("c'4")
 Note("a'4")
 Note("b'8")
-Note("a'8")
-Note("g'8")
-Note("f'8")
-Note("e'8")
+Note("a'8.")
+Note("g'16")
+Note("f'8..")
+Note("e'32")
 Chord("<d' f' a'>4")
 \end{lstlisting}
 \end{singlespacing}
@@ -319,7 +321,10 @@ an \texttt{inspect} module for object introspection, and it is considered bad
 practice to overwrite names of functions, classes or modules found in the
 standard library such as \texttt{set} or \texttt{object}. When a name conflict
 would occur, projects traditionally append an underscore to the name they wish
-to use.}
+to use.} Consider the parentage for the first eighth note of the inner tuplet.
+Its parentage -- \emph{improper} by default -- includes itself, its immediate
+quintuplet parent, its triplet grandparent and the \sfrac{4}{4} measure as its
+great-grandparent:
 
 \begin{comment}
 <abjad>
@@ -341,21 +346,157 @@ for component in parentage:
 >>> inspector = inspect_(inner_b_eighth)
 >>> parentage = inspector.get_parentage()
 >>> parentage.parent
-Tuplet(Multiplier(4, 5), "b'8 a'8 g'8 f'8 e'8")
+Tuplet(Multiplier(4, 5), "b'8 a'8. g'16 f'8.. e'32")
 \end{lstlisting}
 \begin{lstlisting}
 >>> for component in parentage:
 ...     component
 ...
 Note("b'8")
-Tuplet(Multiplier(4, 5), "b'8 a'8 g'8 f'8 e'8")
-Tuplet(Multiplier(2, 3), "a'4 { 4/5 b'8 a'8 g'8 f'8 e'8 }")
-Measure((4, 4), "c'4 { 2/3 a'4 { 4/5 b'8 a'8 g'8 f'8 e'8 } } <d' f' a' c''>4")
+Tuplet(Multiplier(4, 5), "b'8 a'8. g'16 f'8.. e'32")
+Tuplet(Multiplier(2, 3), "a'4 { 4/5 b'8 a'8. g'16 f'8.. e'32 }")
+Measure((4, 4), "c'4 { 2/3 a'4 { 4/5 b'8 a'8. g'16 f'8.. e'32 } } <d' f' a' c''>4")
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\subsection{Component duration}
+By default, every component's parent is null.
+
+\begin{comment}
+<abjad>
+whole_note = Note("c'1")
+inspector = inspect_(whole_note)
+inspector.get_parentage().parent is None
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> whole_note = Note("c'1")
+>>> inspector = inspect_(whole_note)
+>>> inspector.get_parentage().parent is None
+True
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+Inserting the above whole note into a container sets the whole note's parent
+to that container. Additionally, the container is now aware that it contains
+the whole note, demonstrating the bi-directional references inherent to Abjad's
+score tree model:
+
+\begin{comment}
+<abjad>
+container_one = Container()
+container_one.append(whole_note)
+inspector.get_parentage().parent is container_one
+whole_note in container_one
+print(format(container_one))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> container_one = Container()
+>>> container_one.append(whole_note)
+>>> inspector.get_parentage().parent is container_one
+True
+\end{lstlisting}
+\begin{lstlisting}
+>>> whole_note in container_one
+True
+\end{lstlisting}
+\begin{lstlisting}
+>>> print(format(container_one))
+{
+    c'1
+}
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+Inserting the same whole note into a different container removes it from the
+first, demonstrating that components can only exist in one container at a time:
+
+\begin{comment}
+<abjad>
+container_two = Container()
+container_two.append(whole_note)
+inspector.get_parentage().parent is container_two
+whole_note in container_two
+whole_note in container_one
+print(format(container_two))
+print(format(container_one))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> container_two = Container()
+>>> container_two.append(whole_note)
+>>> inspector.get_parentage().parent is container_two
+True
+\end{lstlisting}
+\begin{lstlisting}
+>>> whole_note in container_two
+True
+\end{lstlisting}
+\begin{lstlisting}
+>>> whole_note in container_one
+False
+\end{lstlisting}
+\begin{lstlisting}
+>>> print(format(container_two))
+{
+    c'1
+}
+\end{lstlisting}
+\begin{lstlisting}
+>>> print(format(container_one))
+{
+}
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+Likewise, while the first container can be inserted into the second, the second
+container cannot be inserted back into the first. Such an arrangement would
+cause the second container to become its own grandparent, and therefore
+generates an error:
+
+\begin{comment}
+<abjad>[allow_exceptions]
+container_two.append(container_one)
+container_one.append(container_two)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> container_two.append(container_one)
+>>> container_one.append(container_two)
+Traceback (most recent call last):
+  File "<abjadbook>", line 1, in <module>
+  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 922, in append
+    self.__setitem__(slice(len(self), len(self)), [component])
+  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 130, in __setitem__
+    return self._set_item(i, expr)
+  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 441, in _set_item
+    raise ParentageError('Attempted to induce cycles.')
+ParentageError: Attempted to induce cycles.
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\subsection{Duration}
 
 Every component may be expressed in terms of their duration, as well as their
 start offset relative to the score origin and, by extension, their timespan --
@@ -367,7 +508,67 @@ represented by some combination of note heads, stems, beams and dots -- and
 their \emph{prolation} -- the cumulative product of all of the duration
 multipliers of the containers in a component's proper parentage.
 
--   demonstrate prolation property of parentage
+Consider again the B eighth-note starting the inner tuplet. Its parentage
+provides its prolation:
+
+\begin{comment}
+<abjad>
+inspect_(inner_b_eighth).get_parentage().prolation
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> inspect_(inner_b_eighth).get_parentage().prolation
+Multiplier(8, 15)
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+By multiplying each leaf's written duration by its prolation, we can determine
+that leaf's actual, or prolated, duration. Note too that this conforms to the
+results of the inspector's \texttt{get\_duration()} method:
+
+\begin{comment}
+<abjad>
+for leaf in measure.select_leaves():
+    inspector = inspect_(leaf)
+    written_duration = leaf.written_duration
+    prolation = inspector.get_parentage().prolation
+    actual_duration = inspector.get_duration()
+    string = '{!s}: {!s} * {!s} = {!s}'
+    string = string.format(leaf, written_duration, prolation, actual_duration)
+    print(string)
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for leaf in measure.select_leaves():
+...     inspector = inspect_(leaf)
+...     written_duration = leaf.written_duration
+...     prolation = inspector.get_parentage().prolation
+...     actual_duration = inspector.get_duration()
+...     string = '{!s}: {!s} * {!s} = {!s}'
+...     string = string.format(leaf, written_duration, prolation, actual_duration)
+...     print(string)
+...
+c'4: 1/4 * 1 = 1/4
+a'4: 1/4 * 2/3 = 1/6
+b'8: 1/8 * 8/15 = 1/15
+a'8.: 3/16 * 8/15 = 1/10
+g'16: 1/16 * 8/15 = 1/30
+f'8..: 7/32 * 8/15 = 7/60
+e'32: 1/32 * 8/15 = 1/60
+<d' f' a' c''>4: 1/4 * 1 = 1/4
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
 
 Written durations must be \emph{assignable}. Assignability describes the set of
 durations describable in Western common practice notation solely through
