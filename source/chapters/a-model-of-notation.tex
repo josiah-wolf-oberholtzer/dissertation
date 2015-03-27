@@ -5,7 +5,48 @@
 
 Abjad models notation.
 
+-   Discuss boilerplate from Tenor 2015 paper.
+
+-   Abjad is not a stand-alone application, Abjad extends Python.
+
+-   Abjad extends Python with an object-model of musical notation, and with a
+    collection of classes and functions for modeling musical concepts and
+    operations on musical objects.
+
+-   Demonstrate the extent of Abjad's library.
+
 \section{Representing objects}
+
+-   In Python everything is an object, even functions.
+
+-   Python is interpreted. It has an interpreter which users can interact with,
+    which is necessarily textual.
+
+-   Because Python is interpreted, everything that exists in Python can be
+    inspected and represented.
+
+-   Representation takes a variety of forms.
+
+-   Objects may explicitly specify how they should be represented textually.
+    Python will also fall back on other potential representations.
+
+-   Objects explain how they should behave in respect to Python's various
+    built-in functions and classes, and in terms of \emph{protocols} which are
+    established by convention rather than enforced at the system level.
+
+-   This explanation takes place via \enquote{dunder} methods --
+    double-underscore methods -- such as \_\_repr\_\_() for providing an
+    interpreter representation via Python's repr() and \_\_str\_\_() for a
+    string representation via Python's str().
+
+-   Discuss print()
+
+-   In the spirit of Python's dunder convention, Abjad provides its own dunder
+    method: \_\_illustrate\_\_()
+
+-   This method will be used throughout this document to create and display
+    notation and otherwise graphic representations of various objects created
+    in the interpreter sessions demonstrated here.
 
 \begin{comment}
 -   print()
@@ -98,8 +139,16 @@ show(chord)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Note above that the LilyPond output shows a \sfrac{4}{4} time
-signature even though none of the created leaves takes up an whole note's
+\subsection{Containers}
+
+Abjad's container classes -- measures, tuplets, voice, staves, staff groups,
+scores and so forth -- implement Python's \emph{mutable sequence protocol},
+allowing them to be used transparently as though they were lists.
+
+Components can be appended, extended, or inserted into a container, and
+container can be instantiated with lists of components to be contained as one
+of their arguments. Note above that the LilyPond output shows a \sfrac{4}{4}
+time signature even though none of the created leaves takes up an whole note's
 duration. LilyPond simply treats all music as \sfrac{4}{4} unless explicitly
 instructed otherwise. We can make the \sfrac{4}{4} time signature explicit by
 instantiating a \sfrac{4}{4} measure to contain the above three leaf instances:
@@ -122,14 +171,9 @@ show(measure)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\subsection{Containers}
-
-Abjad's containers implement Python's \emph{mutable sequence protocol},
-allowing them to be used transparently as though they were lists. Components
-can be appended, extended, or inserted into a container and that container can
-also be indexed into, measured for length and iterated over. For example, the
-second component contained by the measure can be retrieved by subscripting the
-measure with the index 1:
+Containers can also be indexed into, measured for length and iterated over. For
+example, the second component contained by the measure can be retrieved by
+subscripting the measure with the index 1:
 
 \begin{comment}
 <abjad>
@@ -195,6 +239,28 @@ show(measure)
 >>> show(measure)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-958463d38eb75b71ce0e7aaa2b9ae94e.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+The measure can be inspected for its length by using Python's built-in
+\texttt{len()} function. Note that this returns the number of components
+\emph{immediately} contained by the measure -- 3 --, but not the total number
+of components, total number of leaves or total duration. The latter queries can
+be satisfied by other means.
+
+\begin{comment}
+<abjad>
+len(measure)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> len(measure)
+3
+\end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -307,7 +373,8 @@ component whose parent is null is necessarily the root of its own score tree.
 Furthermore, no component may appear in its own \emph{proper parentage} -- the
 sequence of components comprising the unique path from a given component to the
 root of its tree, excepting the component itself -- as this would induce
-reference cycles within the score tree.
+reference cycles within the score tree.\footnote{Disambiguate proper and
+improper parentage in terms of set-theory.}
 
 Abjad object-models the concept of parentage explicitly as a \texttt{Parentage}
 \emph{selection} class, accessible via the \emph{inspector} which exposes a
@@ -324,7 +391,9 @@ would occur, projects traditionally append an underscore to the name they wish
 to use.} Consider the parentage for the first eighth note of the inner tuplet.
 Its parentage -- \emph{improper} by default -- includes itself, its immediate
 quintuplet parent, its triplet grandparent and the \sfrac{4}{4} measure as its
-great-grandparent:
+great-grandparent:\footnote{The component summary strings in the interpreter
+representations of the components in the parentage are \emph{note} valid
+LilyPond syntax, but simply a concise LilyPond-like syntax.}
 
 \begin{comment}
 <abjad>
@@ -496,11 +565,30 @@ ParentageError: Attempted to induce cycles.
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\subsection{Duration}
+-   Why make a big deal out of cycle references? When we create score by hand,
+    notes are simply black marks on a page. When working with computer, we can
+    choose how to model - simply as dots in a vector program, in which case we
+    don't have an explicit model of where or what notes are. Or we can model
+    explicit, in which case notes exist as "objects" in a rich network of
+    references. In the latter case, certain invariants must be maintained. A
+    note cannot be in two places at once (although a duration or pitch can).
+
+\subsection{Durations}
 
 Every component may be expressed in terms of their duration, as well as their
 start offset relative to the score origin and, by extension, their timespan --
 the span of time bounded by their start offset and their stop offset.
+
+-   Discuss how Abjad models duration, offset, timespan (and pitch, in passing)
+    as immutable constant-like objects.
+
+-   Why do we have separate Duration, Offset and Multiplier classes, which are
+    all essentially just Duration subclasses? A) They provide instantiation
+    conveniences and B) they clarify the intention of code. Talk about
+    operations on durations and offsets.
+
+\begin{comment}
+\end{comment}
 
 The duration of each leaf derives from the product of its \emph{written
 duration} -- a duration representing the actual glyphs used in the score as
@@ -639,7 +727,7 @@ and its *contents duration* -- the sum of the durations of its children.
 Ultimately, all scores derive their durations from the durations of their
 leaves, prolated as necessary by any tuplets.
 
--   Demonstrate offsets and timespans
+-   Demonstrate accessing offsets and timespans of components
 
 -   Demonstrate that these change when new objects are inserted
 
@@ -741,7 +829,7 @@ Work aspects of this into appropriate sections
     -   in_seconds=True
 \end{comment}
 
-\subsection{Naming}
+\subsection{Named components}
 
 Components may be named.
 
@@ -749,49 +837,112 @@ Any named component found in the subtree of a given container may be accessed,
 regardless of its depth in that container, by subscripting the container with
 its name.
 
-\section{Indicators}
+-   Demonstrate setting up a small score with named contexts and retrieving
+    them.
 
-\subsection{Attachment}
-
-\subsection{Scope}
+-   Explain contexts as distinct from containers. What is a context? Count-time
+    and non-count-time containers. LilyPond context concatenation.
 
 \begin{comment}
 <abjad>
 voice_1 = Voice(name='Voice 1')
-voice_2 = Voice(name='Voice 2')
 upper_staff = Staff(
-    [voice_1, voice_2],
+    [voice_1],
     name='Upper Staff',
     )
+voice_2 = Voice(name='Voice 2')
 voice_3 = Voice(name='Voice 3')
 lower_staff = Staff(
-    [voice_3],
+    [voice_2, voice_3],
+    is_simultaneous=True,
     name='Lower Staff',
     )
 staff_group = StaffGroup(
     [upper_staff, lower_staff],
-    context_name='Piano Staff',
+    context_name='PianoStaff',
+    name='Staff Group',
     )
 score = Score([staff_group])
-show(score)
 </abjad>
 \end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> voice_1 = Voice(name='Voice 1')
+>>> upper_staff = Staff(
+...     [voice_1],
+...     name='Upper Staff',
+...     )
+>>> voice_2 = Voice(name='Voice 2')
+>>> voice_3 = Voice(name='Voice 3')
+>>> lower_staff = Staff(
+...     [voice_2, voice_3],
+...     is_simultaneous=True,
+...     name='Lower Staff',
+...     )
+>>> staff_group = StaffGroup(
+...     [upper_staff, lower_staff],
+...     context_name='PianoStaff',
+...     name='Staff Group',
+...     )
+>>> score = Score([staff_group])
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
 
 \begin{comment}
 <abjad>
-attach(Clef('treble'), upper_staff)
-attach(Clef('bass'), lower_staff)
-attach(LilyPondCommand('voiceOne', format_slot='opening'), voice_1)
-attach(LilyPondCommand('voiceTwo', format_slot='opening'), voice_2)
+print(format(score))
 </abjad>
 \end{comment}
 
--   One clef per staff (staff scope)
--   Separate dynamics per voice (voice scope)
--   One tempo (score scope)
--   Arbitrary scoped object (score scope?)
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> print(format(score))
+\new Score <<
+    \context PianoStaff = "Staff Group" <<
+        \context Staff = "Upper Staff" {
+            \context Voice = "Voice 1" {
+            }
+        }
+        \context Staff = "Lower Staff" <<
+            \context Voice = "Voice 2" {
+            }
+            \context Voice = "Voice 3" {
+            }
+        >>
+    >>
+>>
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
 
-\subsection{Annotation}
+\begin{comment}
+<abjad>
+score['Voice 1']
+score['Voice 1'] is voice_1
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> score['Voice 1']
+Voice()
+\end{lstlisting}
+\begin{lstlisting}
+>>> score['Voice 1'] is voice_1
+True
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\section{Indicators}
 
 \begin{comment}
 Indicators attach to individual components
@@ -825,6 +976,54 @@ Indicators attach to individual components
 -   inspect_(...).has_effective_indicator()
 \end{comment}
 
+\subsection{Attachment}
+
+\subsection{Scope}
+
+\begin{comment}
+<abjad>
+attach(Clef('treble'), upper_staff)
+attach(Clef('bass'), lower_staff)
+voice_one_command = indicatortools.LilyPondCommand(
+    'voiceOne',
+    format_slot='opening',
+    )
+voice_two_command = indicatortools.LilyPondCommand(
+    'voiceTwo',
+    format_slot='opening',
+    )
+attach(voice_one_command, voice_1)
+attach(voice_two_command, voice_2)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> attach(Clef('treble'), upper_staff)
+>>> attach(Clef('bass'), lower_staff)
+>>> voice_one_command = indicatortools.LilyPondCommand(
+...     'voiceOne',
+...     format_slot='opening',
+...     )
+>>> voice_two_command = indicatortools.LilyPondCommand(
+...     'voiceTwo',
+...     format_slot='opening',
+...     )
+>>> attach(voice_one_command, voice_1)
+>>> attach(voice_two_command, voice_2)
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+-   One clef per staff (staff scope)
+-   Separate dynamics per voice (voice scope)
+-   One tempo (score scope)
+-   Arbitrary scoped object (score scope?)
+
+\subsection{Annotation}
+
 \section{Spanners}
 
 \begin{comment}
@@ -855,83 +1054,147 @@ Spanners *span* across different levels of hierarchy.
 
 \section{Selecting components}
 
-\begin{comment}
-## Indexing
+-   Selections
+
+\subsection{Indexing}
+
 -   By name
+
 -   By index
+
 -   By slice
-## Selection
+
+\subsection{Selection}
+
 -   select()
+
 -   Selection class
--   Container.select_leaves()
-    -   allow_discontiguous_leaves=True
--   inspect_(...).get_logical_tie()
+
+-   Container.select\_leaves()
+
+    -   allow\_discontiguous\_leaves=True
+
+-   inspect\_(...).get\_logical\_tie()
+
 -   LogicalTie
+
     -   head
+
     -   tail
+
     -   timespan
+
     -   trivial logical ties
-## Iteration
--   By __iter__()
--   By iterate(...)by_...()
-    -   by_class()
-    -   by_logical_tie()
-    -   by_run()
-    -   by_timeline()
-    -   by_vertical_moment()
-    -   depth_first()
-## Selectors
+
+\subsection{Iteration}
+
+-   By \_\_iter\_\_()
+
+-   By iterate(...)by\_...()
+
+    -   by\_class()
+
+    -   by\_logical\_tie()
+
+    -   by\_run()
+
+    -   by\_timeline()
+
+    -   by\_vertical\_moment()
+
+    -   depth\_first()
+
+\subsection{Selectors}
+
 -   Demonstrate a gallery of selectors.
+
     -   by duration
+
     -   by leaves
+
     -   by length
+
     -   by logical tie
+
     -   by counts (with negative counts too)
-\end{comment}
 
 \section{Mutating components}
 
+-   replace()
+
+-   split()
+
+-   transpose()
+
 \section{Representing pitches}
 
-\begin{comment}
-## Pitch representations
--   The most important distinction is between *named* and *numbered* pitch
+-   The most important distinction is between named and numbered pitch
     objects.
--   All pitched score components (notes and chords) rely on *named*
+
+-   All pitched score components (notes and chords) rely on named
     representations of pitch, not numbered
--   *Named* pitch objects are enharmonically explicit
--   *Numbered* pitch objects require some interpretation
+
+-   Named pitch objects are enharmonically explicit
+
+-   Numbered pitch objects require some interpretation
+
 -   Abjad has provided one interpretation, but that is for sufficiency
--   Abjad does *not* make smart guesses about converting numbered to named
+
+-   Abjad does not make smart guesses about converting numbered to named
     pitches
+
+\subsection{Named and numbered pitch objects}
+
+-   Pitches and pitch-classes
+
+-   Intervals and interval-classes
+
 -   NamedPitch
--   NumberedPitch
--   NamedPitchClass
--   NumberedPitchClass
+    -   NamedPitchClass
+    -   Accidental
+    -   Octave
+    -   StaffPosition
+
 -   NamedInterval
--   NumberedInterval
--   NamedIntervalClass
--   NumberedIntervalClass
--   NamedInversionEquivalentIntervalClass
--   NumberedInversionEquivalentIntervalClass
-## Pitch collections
+    -   Quality
+
+-   NumberedPitch is more equivalent 
+
+\subsection{Collections}
+
 -   Set, Segment, Vector
--   Pitch, PitchClass, Interval, IntervalClass
+
 -   PitchSegment
+
 -   PitchClassSegment
-## Pitch operators
-## Other pitch modeling concepts
--   Accidental
--   Octave
+
 -   PitchRange
--   StaffPosition
-## Inspecting leaf pitches
--   Note("c'4").written_pitch
--   Note("c'4").note_head.written_pitch
--   Chord("<c' e' g'>4").written_pitches
--   inspect_(note).get_sounding_pitch()
--   inspect_(note).get_sounding_pitches()
-\end{comment}
+
+\subsection{Pitch operations}
+
+-   PitchOperation
+
+-   Transposition
+
+-   Inversion
+
+-   Retrogression
+
+-   Multiplication
+
+-   Rotation
+
+\subsection{Inspecting leaf pitches}
+
+-   Note("c'4").written\_pitch
+
+-   Note("c'4").note\_head.written\_pitch
+
+-   Chord("<c' e' g'>4").written\_pitches
+
+-   inspect\_(note).get\_sounding\_pitch()
+
+-   inspect\_(note).get\_sounding\_pitches()
 
 \section{Notation factories}
 

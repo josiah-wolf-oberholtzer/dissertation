@@ -2058,11 +2058,13 @@ timespantools.TimespanInventory(
                 ),
             music_specifier=consort.tools.MusicSpecifier(
                 rhythm_maker=rhythmmakertools.NoteRhythmMaker(
-                    output_masks=(
-                        rhythmmakertools.BooleanPattern(
-                            indices=(0,),
-                            period=3,
-                            ),
+                    output_masks=rhythmmakertools.BooleanPatternInventory(
+                        (
+                            rhythmmakertools.BooleanPattern(
+                                indices=(0,),
+                                period=3,
+                                ),
+                            )
                         ),
                     ),
                 ),
@@ -2077,11 +2079,13 @@ timespantools.TimespanInventory(
                 ),
             music_specifier=consort.tools.MusicSpecifier(
                 rhythm_maker=rhythmmakertools.NoteRhythmMaker(
-                    output_masks=(
-                        rhythmmakertools.BooleanPattern(
-                            indices=(0,),
-                            period=3,
-                            ),
+                    output_masks=rhythmmakertools.BooleanPatternInventory(
+                        (
+                            rhythmmakertools.BooleanPattern(
+                                indices=(0,),
+                                period=3,
+                                ),
+                            )
                         ),
                     ),
                 ),
@@ -2122,11 +2126,13 @@ print(format(indicator))
 >>> print(format(indicator))
 consort.tools.MusicSpecifier(
     rhythm_maker=rhythmmakertools.NoteRhythmMaker(
-        output_masks=(
-            rhythmmakertools.BooleanPattern(
-                indices=(0,),
-                period=3,
-                ),
+        output_masks=rhythmmakertools.BooleanPatternInventory(
+            (
+                rhythmmakertools.BooleanPattern(
+                    indices=(0,),
+                    period=3,
+                    ),
+                )
             ),
         ),
     )

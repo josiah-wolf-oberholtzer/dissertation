@@ -122,7 +122,7 @@ def make_silent_music(start_offset, stop_offset, meter_boundaries):
     silence_timespan = timespantools.Timespan(start_offset, stop_offset)
     shards = silence_timespan.split_at_offsets(meter_boundaries)
     durations = [_.duration for _ in shards if _.duration]
-    mask = rhythmmakertools.mask_all()
+    mask = rhythmmakertools.silence_all()
     rhythm_maker = rhythmmakertools.NoteRhythmMaker(output_masks=[mask])
     music = make_music(rhythm_maker, durations)
     return music
