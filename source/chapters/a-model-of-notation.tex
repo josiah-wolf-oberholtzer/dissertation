@@ -3,23 +3,26 @@
 \label{chap:a-model-of-notation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Abjad is an open-source Python package which extends the Python programming
+Abjad\cite{baca2011xi, trevino2013compositional} is an open-source
+Python\cite{vanrossum2003ys} package which extends the Python programming
 language with a computational model of music notation. Abjad allows its users
 to construct scores in an object-oriented fashion and visualize their work as
 publication-quality notation at any point in the composition process.
 Additionally, Abjad can be installed and imported into a Python interpreter
 session just like any other Python package. Importantly, Abjad is not a
 stand-alone application and has no GUI -- no graphic user interface -- unlike
-many other related projects such as PWGL, OpenMusic, Max/MSP and many others.
-All work is done in the command-line, either directly in an interactive Python
-console session, or by writing modules of code to be imported into one another
-and executed by Python's interpreter. Nearly all of the code examples in the
-body of this document are presented as part of a single interactive Python
-console session simply because Python's interactive console clearly
-distinguishes input from output. Lines preceded by \texttt{>>>} will be passed
-to Python for interpretation. Those preceded by \texttt{...} indicate the
-continuation of a incomplete language construct. All other lines are
-necessarily returned as output from Python's interpreter.
+many other related projects such as PWGL\cite{laurson2009qf,
+kuuskankare2004recent}, OpenMusic\cite{assayag1999sw},
+BACH\cite{agostini2013real} and many others. All work is done in the
+command-line, either directly in an interactive Python console session, or by
+writing modules of code to be imported into one another and executed by
+Python's interpreter. Nearly all of the code examples in the body of this
+document are presented as part of a single interactive Python console session
+simply because Python's interactive console clearly distinguishes input from
+output. Lines preceded by \texttt{>>>} will be passed to Python for
+interpretation. Those preceded by \texttt{...} indicate the continuation of a
+incomplete language construct. All other lines are necessarily returned as
+output from Python's interpreter.
 
 We can import Abjad into Python with the following incantation:
 
@@ -39,13 +42,13 @@ import abjad
 \end{abjadbookoutput}
 
 \noindent Abjad is implemented as a collection of over 900 public classes and
-functions spread across nearly 40 subpackages, totally 200,000 lines of source
-code. Many of these classes and functions are available immediately within
-Abjad's root \emph{namespace}. We can enumerate these \enquote{top-level} names
-by calling Python's built-in \texttt{dir()} function on the imported
-\texttt{abjad} module object. After stripping out all \enquote{private} names
--- those starting with underscores -- Abjad's top-level names can be printed to
-Python's interactive console:
+functions spread across nearly 40 subpackages, totally almost 200,000 lines of
+source code. Many of these classes and functions are available immediately
+within Abjad's root \emph{namespace}. We can enumerate these
+\enquote{top-level} names by calling Python's built-in \texttt{dir()} function
+on the imported \texttt{abjad} module object. After stripping out all
+\enquote{private} names -- those starting with underscores -- Abjad's top-level
+names can be printed to Python's interactive console:
 
 \begin{comment}
 <abjad>[text_width=105]
@@ -135,28 +138,34 @@ print(pitchtools_names)
 compositional devices, certainly useful for some composers but by no means
 considered core to Abjad's notational model. For example, Abjad's
 \texttt{quantizationtools} provides a rhythmic quantizer inspired by Paul
-Nauert's concept of \enquote{Q-grids}, \texttt{rhythmtreetools} parses a
-Lisp-like \enquote{RTM-syntax} -- which should be familiar to anyone working
-with OpenMusic, PWGL or Lisp CommonMusic -- into object-oriented rhythm-tree
-data structures, and the \texttt{sievetools} subpackage models Iannis Xenakis'
-pitch sieves. Still other subpackages implement more \enquote{objective}
-functionality, such as \texttt{mathtools} or \texttt{durationtools}. Many of
-the remaining subpackages collect together related musical and typographic
-classes and functions, e.g. \texttt{scoretools}, \texttt{spannertools},
-\texttt{markuptools}, and \texttt{indicatortools}. Others simply exist for
-\enquote{internal} use by Abjad's developers, assisting in the development and
-maintenance of the system, such as \texttt{abctools},
-\texttt{developerscripttools}, \texttt{documentationtools} and
-\texttt{systemtools}. The remaining names in Abjad's namespace represent its
-\enquote{top-level} functions, including \texttt{attach}, \texttt{detach},
-\texttt{inspect\_}, \texttt{iterate}, \texttt{mutate}, \texttt{new},
-\texttt{override}, \texttt{parse}, \texttt{persist}, \texttt{play},
-\texttt{select}, \texttt{set\_}, and -- most importantly -- \texttt{show}.
-These functions provide a powerful set of tools for interacting with Abjad's
-notational objects and factories, and will be explained in detail as they are
-encountered. For the sake of brevity, this document -- across each chapter --
-will behave as though the contents of Abjad's namespace has been imported into
-Python's global namespace:
+Nauert's concept of \enquote{Q-grids}\cite{nauert1997timespan},
+\texttt{rhythmtreetools} parses a Lisp-like \enquote{RTM-syntax} -- which
+should be familiar to anyone working with OpenMusic\cite{assayag1999sw},
+PWGL\cite{laurson2009qf, kuuskankare2004recent} or Bach\cite{agostini2013real},
+-- into object-oriented rhythm-tree data structures, and the
+\texttt{sievetools} subpackage models Iannis Xenakis' pitch
+sieves\cite{xenakis1992formalized}. Still other subpackages implement more
+\enquote{objective} functionality, such as \texttt{mathtools} or
+\texttt{durationtools}. Many of the remaining subpackages collect together
+related musical and typographic classes and functions, e.g.
+\texttt{scoretools}, \texttt{spannertools}, \texttt{markuptools}, and
+\texttt{indicatortools}. Others simply exist for \enquote{internal} use by
+Abjad's developers, assisting in the development and maintenance of the system,
+such as \texttt{abctools}, \texttt{developerscripttools},
+\texttt{documentationtools} and \texttt{systemtools}.
+
+The remaining names in Abjad's namespace represent its \enquote{top-level}
+functions, including \texttt{attach()}, \texttt{detach()},
+\texttt{inspect\_()}, \texttt{iterate()}, \texttt{mutate()}, \texttt{new()},
+\texttt{override()}, \texttt{parse()}, \texttt{persist()}, \texttt{play()},
+\texttt{select()}, \texttt{set\_()}, and -- most importantly --
+\texttt{show()}. These functions provide a powerful set of tools for
+interacting with Abjad's notational objects and factories, and will be
+explained in detail as we encounter each of them.
+
+For the sake of brevity, this document -- across each chapter -- will behave as
+though the contents of Abjad's namespace has been imported into Python's global
+namespace:
 
 \begin{comment}
 <abjad>
@@ -175,45 +184,346 @@ from abjad import *
 
 \section{Representing objects}
 
--   In Python everything is an object, even functions.
+In Python, everything is an object, even integers, boolean values and
+functions. Because Python is also interpreted and can be used interactively,
+those objects must be representable in an interpreter session, which is
+necessarily textual. Objects' text, or \emph{string}, representations can take
+a variety of forms, and those same objects may specify explicitly how they
+should be represented textually, just as they may specify how they should
+behave in relation to operations such as addition, multiplication, or
+iteration.
 
--   Python is interpreted. It has an interpreter which users can interact with,
-    which is necessarily textual.
+Python classes often specify their behavior in terms of \emph{protocols}.
+Protocols are established by convention rather than enforced at the system
+level. This explanation takes place via \enquote{dunder} methods --
+double-underscore methods -- such as \texttt{\_\_repr\_\_()} which provides an
+object's \emph{interpreter representation} in cooperation with Python's
+\texttt{repr()} function and \texttt{\_\_str\_\_()} which provides an object's
+string representation in cooperation with Python's \texttt{str()}
+function. By overriding these dunder methods, a class may specify its own
+version of string or interpreter representation behavior.
 
--   Because Python is interpreted, everything that exists in Python can be
-    inspected and represented.
-
--   Representation takes a variety of forms.
-
--   Objects may explicitly specify how they should be represented textually.
-    Python will also fall back on other potential representations.
-
--   Objects explain how they should behave in respect to Python's various
-    built-in functions and classes, and in terms of \emph{protocols} which are
-    established by convention rather than enforced at the system level.
-
--   This explanation takes place via \enquote{dunder} methods --
-    double-underscore methods -- such as \_\_repr\_\_() for providing an
-    interpreter representation via Python's repr() and \_\_str\_\_() for a
-    string representation via Python's str().
-
--   Discuss print()
-
--   In the spirit of Python's dunder convention, Abjad provides its own dunder
-    method: \_\_illustrate\_\_()
-
--   This method will be used throughout this document to create and display
-    notation and otherwise graphic representations of various objects created
-    in the interpreter sessions demonstrated here.
+For example, a simple \texttt{Foo} class, which overrides neither
+\texttt{\_\_str\_\_()} nor \texttt{\_\_repr\_\_()} may be defined and
+instantiated:
 
 \begin{comment}
--   print()
--   repr() and \_\_repr\_\_()
--   str() and \_\_str\_\_()
--   format() and \_\_format\_\_()
--   show() and \_\_illustrate\_\_()
--   graph() and \_\_graph\_\_()
+<abjad>
+class Foo(object):
+    pass
+
+foo = Foo()
+</abjad>
 \end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> class Foo(object):
+...     pass
+...
+>>> foo = Foo()
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent When printed to the terminal, cast as a string, and represented,
+Python's default object representation is used, giving the module and name of
+the class as well as its memory location. Note that when calling Python's
+\texttt{print()} function on an object, that object is converted to a string
+and then printed to the console, resulting in text without quotation marks:
+
+\begin{comment}
+<abjad>
+print(foo)
+repr(foo)
+str(foo)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> print(foo)
+<__main__.Foo object at 0x103a1f890>
+\end{lstlisting}
+\begin{lstlisting}
+>>> repr(foo)
+'<__main__.Foo object at 0x103a1f890>'
+\end{lstlisting}
+\begin{lstlisting}
+>>> str(foo)
+'<__main__.Foo object at 0x103a1f890>'
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Defining a new class, \texttt{Foo2}, which overrides both string and
+interpreter representation provides customized output. Note that printing the
+\texttt{Foo2} instance relies on its string representation, rather than its
+interpreter representation, while simply referencing the instantiated
+\texttt{Foo2} object uses its interpreter representation -- its \enquote{repr}:
+
+\begin{comment}
+<abjad>
+class Foo2(object):
+    def __repr__(self):
+        return '<I am Foo2>'
+    def __str__(self):
+        return 'foofoo'
+
+foo2 = Foo2()
+foo2
+print(foo2)
+repr(foo2)
+str(foo2)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> class Foo2(object):
+...     def __repr__(self):
+...         return '<I am Foo2>'
+...     def __str__(self):
+...         return 'foofoo'
+...
+>>> foo2 = Foo2()
+>>> foo2
+<I am Foo2>
+\end{lstlisting}
+\begin{lstlisting}
+>>> print(foo2)
+foofoo
+\end{lstlisting}
+\begin{lstlisting}
+>>> repr(foo2)
+'<I am Foo2>'
+\end{lstlisting}
+\begin{lstlisting}
+>>> str(foo2)
+'foofoo'
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Defining a third version of \texttt{Foo} with an overridden
+\texttt{\_\_format\_\_()} method allows for creating alternate string
+representations. By calling Python's built-in \texttt{format()} function on a
+\texttt{Foo3} instance, either the normal string representation or a
+\enquote{special} representation can be created. This formatting behavior can
+also be extended to support an arbitrary number of format specifications:
+
+\begin{comment}
+<abjad>
+class Foo3(object):
+    def __format__(self, format_specification=''):
+        if format_specification == 'special':
+            return '~~~ special foo format ~~~~'
+        return str(self)
+    def __repr__(self):
+        return '<I am Foo3>'
+    def __str__(self):
+        return 'foofoofoo'
+
+foo3 = Foo3()
+foo3
+print(foo3)
+repr(foo3)
+str(foo3)
+format(foo3)
+format(foo3, 'special')
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> class Foo3(object):
+...     def __format__(self, format_specification=''):
+...         if format_specification == 'special':
+...             return '~~~ special foo format ~~~~'
+...         return str(self)
+...     def __repr__(self):
+...         return '<I am Foo3>'
+...     def __str__(self):
+...         return 'foofoofoo'
+...
+>>> foo3 = Foo3()
+>>> foo3
+<I am Foo3>
+\end{lstlisting}
+\begin{lstlisting}
+>>> print(foo3)
+foofoofoo
+\end{lstlisting}
+\begin{lstlisting}
+>>> repr(foo3)
+'<I am Foo3>'
+\end{lstlisting}
+\begin{lstlisting}
+>>> str(foo3)
+'foofoofoo'
+\end{lstlisting}
+\begin{lstlisting}
+>>> format(foo3)
+'foofoofoo'
+\end{lstlisting}
+\begin{lstlisting}
+>>> format(foo3, 'special')
+'~~~ special foo format ~~~~'
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Many Abjad objects have multiple possible string representations. For
+example, a \texttt{Note} object can be represented by its normal interpreter
+representation, as a LilyPond string, or by its \emph{storage format} -- a more
+verbose, potentially multi-line string representation generally used when
+persisting complex objects to disk.
+
+\begin{comment}
+<abjad>
+note = Note(NamedPitch("g'"), Duration(3, 4))
+note
+print(repr(note))
+print(note)
+print(str(note))
+print(format(note))
+print(format(note, 'lilypond'))
+print(format(note, 'storage'))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> note = Note(NamedPitch("g'"), Duration(3, 4))
+>>> note
+Note("g'2.")
+\end{lstlisting}
+\begin{lstlisting}
+>>> print(repr(note))
+Note("g'2.")
+\end{lstlisting}
+\begin{lstlisting}
+>>> print(note)
+g'2.
+\end{lstlisting}
+\begin{lstlisting}
+>>> print(str(note))
+g'2.
+\end{lstlisting}
+\begin{lstlisting}
+>>> print(format(note))
+g'2.
+\end{lstlisting}
+\begin{lstlisting}
+>>> print(format(note, 'lilypond'))
+g'2.
+\end{lstlisting}
+\begin{lstlisting}
+>>> print(format(note, 'storage'))
+scoretools.Note("g'2.")
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent For some Abjad classes -- especially those representing glyphs in
+music notation -- their default string format is their LilyPond string
+representation. Other classes -- especially Abjad's various highly-configurable
+notation factory classes -- default their string format to their storage
+format, allowing for complex but still human-readable interpreter output:
+
+\begin{comment}
+<abjad>
+rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
+    talea=rhythmmakertools.Talea([1, 2, 3], 16),
+    extra_counts_per_division=(1, 0, 2, 1, 0),
+    output_masks=[
+        rhythmmakertools.SustainMask([1], 3, 1, -1),
+        rhythmmakertools.SilenceMask([-1]),
+        ],
+    tie_specifier=rhythmmakertools.TieSpecifier(
+        tie_across_divisions=True,
+        ),
+    )
+print(format(rhythm_maker))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
+...     talea=rhythmmakertools.Talea([1, 2, 3], 16),
+...     extra_counts_per_division=(1, 0, 2, 1, 0),
+...     output_masks=[
+...         rhythmmakertools.SustainMask([1], 3, 1, -1),
+...         rhythmmakertools.SilenceMask([-1]),
+...         ],
+...     tie_specifier=rhythmmakertools.TieSpecifier(
+...         tie_across_divisions=True,
+...         ),
+...     )
+>>> print(format(rhythm_maker))
+rhythmmakertools.TaleaRhythmMaker(
+    talea=rhythmmakertools.Talea(
+        counts=(1, 2, 3),
+        denominator=16,
+        ),
+    extra_counts_per_division=(1, 0, 2, 1, 0),
+    output_masks=rhythmmakertools.BooleanPatternInventory(
+        (
+            rhythmmakertools.SustainMask(
+                indices=(1,),
+                period=3,
+                start=1,
+                stop=-1,
+                ),
+            rhythmmakertools.SilenceMask(
+                indices=(-1,),
+                ),
+            )
+        ),
+    tie_specifier=rhythmmakertools.TieSpecifier(
+        tie_across_divisions=True,
+        ),
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Finally, in the spirit of Python's protocols and dunder conventions,
+Abjad provides its own \emph{illustration protocol} and
+\texttt{\_\_illustrate\_\_()} dunder method. This method works with Abjad's
+top-level \texttt{show()} function to generate graphic realizations of
+illustratable Python objects via LilyPond. Abjad's \texttt{show()} function
+will be used throughout this document to create and display notation and
+otherwise graphic representations:
+
+\begin{comment}
+<abjad>
+show(note)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> show(note)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5cfff2844553f774341de4a66c379061.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
 \section{The score tree}
 
@@ -221,7 +531,52 @@ Abjad models notated musical scores as a \emph{tree} consisting of
 \emph{components}, \emph{indicators} and \emph{spanners}. All objects appearing
 in a score fall into one of those three categories.
 
-\section{Components}
+\subsection{Components}
+
+\begin{comment}
+-   Every component may be named.
+-   components, leaves, containers (and contexts)
+-   components are formattable and illustrable
+-   components are mutable, while indicators are generally not
+    -   likewise, durations and pitches are immutable
+
+-   count-time components
+    -   note, chord, rest, skip, container, tuplet, measure
+-   non-count-time (contexts)
+    -   voice, staff, staff group, score
+
+-   leaves do not contain anything else
+    -   chord do *not* contain notes
+    -   chords and notes contain note heads
+    -   chord and notes share a single stem
+    -   this must be disambiguated from note columns
+
+-   all containers derive their duration from their contents (with some
+    exceptions, but even there a mismatch is an error)
+-   written duration, prolated duration, pre-prolated duration, contents
+    duration
+
+-   One, and only one, parent per component. They *cannot* be in more than one
+    container. This is both confusing, and liable to cause reference problems.
+-   score hierarchy is not fixed: any node is the root, if it has no parent
+
+-   contexts are assumed to last from the beginning to the end of the total
+    timespan of the score, but in practice they may be intermittent
+-   contexts may be named, allowing concatenation
+
+-   Leaves reside at the "bottom" of the score hierarchy.
+
+Work aspects of this into appropriate sections
+
+-   inspect_()
+-   not *inspect()*, as that would cause a name conflict with Python's inspect
+    module
+-   inspect(...).get_parentage()
+-   inspect_(...).get_duration()
+    -   in_seconds=True
+-   inspect_(...).get_timespan()
+    -   in_seconds=True
+\end{comment}
 
 Components make up the \emph{nodes} of the score tree, treating the score as an
 acyclic directed rooted graph, or \emph{arborescence}, rooted on a single
@@ -281,7 +636,10 @@ show(rest)
 
 \begin{comment}
 <abjad>
-chord = Chord([2, 5, 9], Duration(1, 4))
+chord = Chord(
+    [NamedPitch("d'"), NamedPitch("f'"), NamedPitch("a'")],
+    Duration(1, 4),
+    )
 show(chord)
 </abjad>
 \end{comment}
@@ -290,10 +648,43 @@ show(chord)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> chord = Chord([2, 5, 9], Duration(1, 4))
+>>> chord = Chord(
+...     [NamedPitch("d'"), NamedPitch("f'"), NamedPitch("a'")],
+...     Duration(1, 4),
+...     )
 >>> show(chord)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fef850f162448b1e8d3c6be53e362436.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Each of the above three leaf instantiations demonstrates a different
+means of creating score objects, none of which is unique to the particular
+class they have been demonstrated with here. The \texttt{Note} instantiation
+demonstrates creating a score object via LilyPond syntax, the rest
+instantiation demonstrates creating a score object from
+sequences of integers -- in this case the pair (1, 2), representing the
+duration of a half-note -- and the chord instantiation demonstrates using
+explicit \texttt{NamedPitch} and \texttt{Duration} objects. The latter two
+instantiation techniques afford parametric approaches, while the LilyPond
+syntax allows for a great degree of expressivity as score components can be
+created with articulations, dynamics and other indicators already attached:
+
+\begin{comment}
+<abjad>
+fancy_chord = Chord(r"<g' bf'? d''>4. -\accent -\staccato ^\markup{ \italic gently }")
+show(fancy_chord)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> fancy_chord = Chord(r"<g' bf'? d''>4. -\accent -\staccato ^\markup{ \italic gently }")
+>>> show(fancy_chord)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ffbf3288650db529c52c1e9ac804f9f0.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -309,7 +700,8 @@ of their arguments. Note above that the LilyPond output shows a \sfrac{4}{4}
 time signature even though none of the created leaves takes up an whole note's
 duration. LilyPond simply treats all music as \sfrac{4}{4} unless explicitly
 instructed otherwise. We can make the \sfrac{4}{4} time signature explicit by
-instantiating a \sfrac{4}{4} measure to contain the above three leaf instances:
+instantiating a \sfrac{4}{4} measure to contain the previously-created three
+leaf instances:
 
 \begin{comment}
 <abjad>
@@ -329,9 +721,9 @@ show(measure)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Containers can also be indexed into, measured for length and iterated over. For
-example, the second component contained by the measure can be retrieved by
-subscripting the measure with the index 1:
+\noindent Containers can also be indexed into, measured for length and iterated
+over. For example, the second component contained by the measure can be
+retrieved by subscripting the measure with the index 1:
 
 \begin{comment}
 <abjad>
@@ -349,7 +741,7 @@ Rest('r2')
 \end{singlespacing}
 \end{abjadbookoutput}
 
-That second component -- the half-note rest -- can be replaced by
+\noindent That second component -- the half-note rest -- can be replaced by
 another container, a triplet:
 
 \begin{comment}
@@ -372,13 +764,14 @@ show(measure)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Furthermore, the last two leaves in the triplet can be replaced by a quintuplet
-using Python's \emph{slice assignment} syntax. In the following code, the text
-\texttt{outer\_tuplet[1:]} references the selection of components in the
-original triplet starting from the second component and going \enquote{to the
-end} -- effectively the second and third item, as there are only three. That
-selection is then replaced by a list containing a quintuplet, substituting the
-contents of one sequence of components for the contents of another.
+\noindent Furthermore, the last two leaves in the triplet can be replaced by a
+quintuplet using Python's \emph{slice assignment} syntax. In the following
+code, the text \texttt{outer\_tuplet[1:]} references the selection of
+components in the original triplet starting from the second component and going
+\enquote{to the end} -- effectively the second and third item, as there are
+only three. That selection is then replaced by a list containing a quintuplet,
+substituting the contents of one sequence of components for the contents of
+another.
 
 \begin{comment}
 <abjad>
@@ -400,11 +793,11 @@ show(measure)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-The measure can be inspected for its length by using Python's built-in
-\texttt{len()} function. Note that this returns the number of components
-\emph{immediately} contained by the measure -- 3 --, but not the total number
-of components, total number of leaves or total duration. The latter queries can
-be satisfied by other means.
+\noindent The measure can be inspected for its length by using Python's
+built-in \texttt{len()} function. Note that this returns the number of
+components \emph{immediately} contained by the measure -- 3 --, but not the
+total number of components, total number of leaves or total duration. The
+latter queries can be satisfied by other means.
 
 \begin{comment}
 <abjad>
@@ -480,9 +873,9 @@ Chord("<d' f' a'>4")
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Note that Abjad's \texttt{Chord} class aggregates multiple \emph{note heads}
-rather than notes. Likewise Abjad's \texttt{Note} class aggregates a single
-note head. While chords implement containment in terms of note heads --
+\noindent Note that Abjad's \texttt{Chord} class aggregates multiple \emph{note
+heads} rather than notes. Likewise Abjad's \texttt{Note} class aggregates a
+single note head. While chords implement containment in terms of note heads --
 delegating to a dedicated note head inventory -- they are not themselves
 "containers" in the same sense that a voice, measure or tuplet are containers.
 It is important here to differentiate between the concept of a \enquote{chord}
@@ -587,7 +980,7 @@ Measure((4, 4), "c'4 { 2/3 a'4 { 4/5 b'8 a'8. g'16 f'8.. e'32 } } <d' f' a' c''>
 \end{singlespacing}
 \end{abjadbookoutput}
 
-By default, every component's parent is null.
+\noindent By default, every component's parent is null.
 
 \begin{comment}
 <abjad>
@@ -609,10 +1002,10 @@ True
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Inserting the above whole note into a container sets the whole note's parent
-to that container. Additionally, the container is now aware that it contains
-the whole note, demonstrating the bi-directional references inherent to Abjad's
-score tree model:
+\noindent Inserting the above whole note into a container sets the whole note's
+parent to that container. Additionally, the container is now aware that it
+contains the whole note, demonstrating the bi-directional references inherent
+to Abjad's score tree model:
 
 \begin{comment}
 <abjad>
@@ -646,8 +1039,9 @@ True
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Inserting the same whole note into a different container removes it from the
-first, demonstrating that components can only exist in one container at a time:
+\noindent Inserting the same whole note into a different container removes it
+from the first, demonstrating that components can only exist in one container
+at a time:
 
 \begin{comment}
 <abjad>
@@ -692,10 +1086,10 @@ False
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Likewise, while the first container can be inserted into the second, the second
-container cannot be inserted back into the first. Such an arrangement would
-cause the second container to become its own grandparent, and therefore
-generates an error:
+\noindent Likewise, while the first container can be inserted into the second,
+the second container cannot be inserted back into the first. Such an
+arrangement would cause the second container to become its own grandparent, and
+therefore generates an error:
 
 \begin{comment}
 <abjad>[allow_exceptions]
@@ -723,19 +1117,36 @@ ParentageError: Attempted to induce cycles.
 \end{singlespacing}
 \end{abjadbookoutput}
 
--   Why make a big deal out of cycle references? When we create score by hand,
-    notes are simply black marks on a page. When working with computer, we can
-    choose how to model - simply as dots in a vector program, in which case we
-    don't have an explicit model of where or what notes are. Or we can model
-    explicit, in which case notes exist as "objects" in a rich network of
-    references. In the latter case, certain invariants must be maintained. A
-    note cannot be in two places at once (although a duration or pitch can).
+\noindent Why should we be concerned with reference cycles? When we create
+score by hand, notes are simply black marks on a page. When working with
+computer, we can choose how to model musical objects. Again, a \enquote{note}
+could simply exist as an amalgam of dots and lines in a vector-graphics
+program, in which case it may not be possible to know where or what that note
+or any other note is except in terms of dots and lines. In that case, there is
+no semantic model of music, only a typographic model devoid of explicit musical
+relationships. Alternatively, we can model explicitly, in which case notes
+exist as "objects" in a rich network of references. In this latter case,
+certain conditions must be maintained to protect the integrity of the reference
+network.. Depending on the implementation, a note likely cannot be in two
+places at once. That is the certainly the case in Abjad's model of musical
+notation: notes can only have one parent, and cannot exist in more than one
+parent. Note that these restrictions mainly derive from the fact that notes,
+like other scores components, are both \emph{mutable} -- that is, changeable
+after they have been instantiated, and therefore \emph{stateful} -- and possess
+many references to objects \enquote{outside} of themselves. In contrast,
+Abjad's pitch and duration classes have no state -- they are \emph{immutable}
+-- and reference no other objects. They can therefore appear in many places
+within the same score. Arbitrarily many score components can reference the same
+duration in memory, much as arbitrarily many objects can reference the same
+integer.
 
 \subsection{Durations}
 
 Every component may be expressed in terms of their duration, as well as their
 start offset relative to the score origin and, by extension, their timespan --
 the span of time bounded by their start offset and their stop offset.
+
+-   Discuss rationals
 
 -   Discuss how Abjad models duration, offset, timespan (and pitch, in passing)
     as immutable constant-like objects.
@@ -848,9 +1259,9 @@ Multiplier(8, 15)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-By multiplying each leaf's written duration by its prolation, we can determine
-that leaf's actual, or prolated, duration. Note too that this conforms to the
-results of the inspector's \texttt{get\_duration()} method:
+\noindent By multiplying each leaf's written duration by its prolation, we can
+determine that leaf's actual, or prolated, duration. Note too that this
+conforms to the results of the inspector's \texttt{get\_duration()} method:
 
 \begin{comment}
 <abjad>
@@ -891,27 +1302,24 @@ e'32: 1/32 * 8/15 = 1/60
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Written durations must be \emph{assignable}. Assignability describes the set of
-durations describable in Western common practice notation solely through
-combining a single note head, its flags and dots, without recourse to ties or
-tuplets. Any rational duration $\sfrac{n}{d}$ is considered assignable when and
-only when it adheres to the form
+\noindent Written durations must be \emph{assignable}. Assignability describes
+the set of durations describable in Western common practice notation solely
+through combining a single note head, its flags and dots, without recourse to
+ties or tuplets. Any rational duration $\sfrac{n}{d}$ is considered assignable
+when and only when it adheres to the form
 
 \begin{equation}
 { 2^k * (2^u - j) \over 2^v }
 \end{equation}
 
-\noindent where $u$, $v$ and $k$ are nonnegative integers, $j \leq
-u$ and $j$ is either 1 or 0.
-
-Assignability guarantees that a duration's denominator is always a positive
-power-of-two integer, such as 1, 2, 4, 8, 16 and so forth, and therefore
-precludes durations such as $\sfrac{1}{3}$ or $\sfrac{2}{5}$. Likewise,
-assignability permits numerators such as 1, 2, 3, 4, 6, 7, 8, 12, 14 and 15 but
-forbids 5, 9, 10, 13 and 17, as they imply ties.
-
-More elegantly, any integer can be considered if its binary representation does
-not contain the substring \enquote{01}:
+\noindent where $u$, $v$ and $k$ are nonnegative integers, $j \leq u$ and $j$
+is either 1 or 0. Assignability guarantees that a duration's denominator is
+always a positive power-of-two integer, such as 1, 2, 4, 8, 16 and so forth,
+and therefore precludes durations such as $\sfrac{1}{3}$ or $\sfrac{2}{5}$.
+Likewise, assignability permits numerators such as 1, 2, 3, 4, 6, 7, 8, 12, 14
+and 15 but forbids 5, 9, 10, 13 and 17, as they imply ties. More elegantly, any
+integer can be considered if its binary representation does not contain the
+substring \enquote{01}:
 
 \begin{comment}
 <abjad>
@@ -955,10 +1363,10 @@ for i in range(17):
 \end{singlespacing}
 \end{abjadbookoutput}
 
-The duration of each container then derives from the product of its prolation
-and its *contents duration* -- the sum of the durations of its children.
-Ultimately, all scores derive their durations from the durations of their
-leaves, prolated as necessary by any tuplets.
+\noindent The duration of each container then derives from the product of its
+prolation and its *contents duration* -- the sum of the durations of its
+children. Ultimately, all scores derive their durations from the durations of
+their leaves, prolated as necessary by any tuplets.
 
 -   Demonstrate accessing offsets and timespans of components
 
@@ -1016,51 +1424,6 @@ Duration(4, 1)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a8fdc5cae1a0a9fb72680a5d18862c4e.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
-
-\begin{comment}
--   Every component may be named.
--   components, leaves, containers (and contexts)
--   components are formattable and illustrable
--   components are mutable, while indicators are generally not
-    -   likewise, durations and pitches are immutable
-
--   count-time components
-    -   note, chord, rest, skip, container, tuplet, measure
--   non-count-time (contexts)
-    -   voice, staff, staff group, score
-
--   leaves do not contain anything else
-    -   chord do *not* contain notes
-    -   chords and notes contain note heads
-    -   chord and notes share a single stem
-    -   this must be disambiguated from note columns
-
--   all containers derive their duration from their contents (with some
-    exceptions, but even there a mismatch is an error)
--   written duration, prolated duration, pre-prolated duration, contents
-    duration
-
--   One, and only one, parent per component. They *cannot* be in more than one
-    container. This is both confusing, and liable to cause reference problems.
--   score hierarchy is not fixed: any node is the root, if it has no parent
-
--   contexts are assumed to last from the beginning to the end of the total
-    timespan of the score, but in practice they may be intermittent
--   contexts may be named, allowing concatenation
-
--   Leaves reside at the "bottom" of the score hierarchy.
-
-Work aspects of this into appropriate sections
-
--   inspect_()
--   not *inspect()*, as that would cause a name conflict with Python's inspect
-    module
--   inspect(...).get_parentage()
--   inspect_(...).get_duration()
-    -   in_seconds=True
--   inspect_(...).get_timespan()
-    -   in_seconds=True
-\end{comment}
 
 \subsection{Named components}
 
@@ -1175,7 +1538,7 @@ True
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\section{Indicators}
+\subsection{Indicators}
 
 \begin{comment}
 Indicators attach to individual components
@@ -1257,7 +1620,7 @@ attach(voice_two_command, voice_2)
 
 \subsection{Annotation}
 
-\section{Spanners}
+\subsection{Spanners}
 
 \begin{comment}
 Spanners *span* across different levels of hierarchy.
@@ -1431,16 +1794,23 @@ Spanners *span* across different levels of hierarchy.
 
 \section{Notation factories}
 
-\begin{comment}
 -   rhythm-makers
+
 -   score templates
+
 -   parsers
+
     -   LilyPond parser
+
     -   PLY
+
     -   SchemeParser
+
     -   RhythmTreeParser
+
     -   ReducedLyParser
-\end{comment}
+
+- Templating
 
 \section{Examples}
 
