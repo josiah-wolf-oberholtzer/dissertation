@@ -247,15 +247,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x103a1f890>
+<__main__.Foo object at 0x103a2d110>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x103a1f890>'
+'<__main__.Foo object at 0x103a2d110>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x103a1f890>'
+'<__main__.Foo object at 0x103a2d110>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -689,6 +689,7 @@ show(fancy_chord)
 \end{abjadbookoutput}
 
 \subsection{Containers}
+\label{ssec:containers}
 
 Abjad's container classes -- measures, tuplets, voice, staves, staff groups,
 scores and so forth -- implement Python's \emph{mutable sequence protocol},
@@ -915,6 +916,7 @@ NoteHead("a'")
 \end{abjadbookoutput}
 
 \subsection{Parentage}
+\label{ssec:parentage}
 
 The container that contains a given component is called its \emph{parent}, and
 the components contained in a container are known as that container's
@@ -980,7 +982,8 @@ Measure((4, 4), "c'4 { 2/3 a'4 { 4/5 b'8 a'8. g'16 f'8.. e'32 } } <d' f' a' c''>
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent By default, every component's parent is null.
+\noindent By default, every component's parent is null, represented in Python
+by Python's \texttt{None} object:
 
 \begin{comment}
 <abjad>
@@ -1118,49 +1121,57 @@ ParentageError: Attempted to induce cycles.
 \end{abjadbookoutput}
 
 \noindent Why should we be concerned with reference cycles? When we create
-score by hand, notes are simply black marks on a page. When working with
-computer, we can choose how to model musical objects. Again, a \enquote{note}
-could simply exist as an amalgam of dots and lines in a vector-graphics
-program, in which case it may not be possible to know where or what that note
-or any other note is except in terms of dots and lines. In that case, there is
-no semantic model of music, only a typographic model devoid of explicit musical
-relationships. Alternatively, we can model explicitly, in which case notes
-exist as "objects" in a rich network of references. In this latter case,
-certain conditions must be maintained to protect the integrity of the reference
-network.. Depending on the implementation, a note likely cannot be in two
-places at once. That is the certainly the case in Abjad's model of musical
-notation: notes can only have one parent, and cannot exist in more than one
-parent. Note that these restrictions mainly derive from the fact that notes,
-like other scores components, are both \emph{mutable} -- that is, changeable
-after they have been instantiated, and therefore \emph{stateful} -- and possess
-many references to objects \enquote{outside} of themselves. In contrast,
-Abjad's pitch and duration classes have no state -- they are \emph{immutable}
--- and reference no other objects. They can therefore appear in many places
-within the same score. Arbitrarily many score components can reference the same
-duration in memory, much as arbitrarily many objects can reference the same
-integer.
+score by hand, notes -- no matter how we may have arrived at them or conceived
+of them creatively -- are ultimately simply black marks on a page. When working
+with computer, we can choose how to model musical objects. Again, a
+\enquote{note} could simply exist as an amalgam of dots and lines in a
+vector-graphics program, in which case it may not be possible to know where or
+even what that note or any other note \emph{is} except in terms of dots and
+lines -- the affordances provided by that vector-graphics editor. In that case,
+there is no semantic model of music, only a typographic model devoid of
+explicit musical relationships. Alternatively, we can model explicitly, in
+which case notes exist as "objects" in a rich network of references. In this
+latter case, certain conditions must be maintained to protect the integrity of
+the reference network. Depending on the implementation, a note likely cannot
+be in two places at once. That is the certainly the case in Abjad's model of
+musical notation: notes can only have one parent, and cannot exist in more than
+one parent. Note that these restrictions mainly derive from the fact that
+notes, like other scores components, are both \emph{mutable} -- that is,
+changeable after they have been instantiated, and therefore \emph{stateful} --
+and possess many references to objects \enquote{outside} of themselves. In
+contrast, Abjad's pitch and duration classes have no state -- they are
+\emph{immutable} -- and reference no other objects. They can therefore appear
+in many places within the same score. Arbitrarily many score components can
+reference the same duration in memory, much as arbitrarily many objects can
+reference the same integer. Such an arrangement is often referred to as a
+\emph{flyweight}\cite{gamma1994design}.
 
 \subsection{Durations}
 
-Every component may be expressed in terms of their duration, as well as their
-start offset relative to the score origin and, by extension, their timespan --
-the span of time bounded by their start offset and their stop offset.
+Every Abjad score component may be expressed in terms of its duration, as
+well as its start offset relative to the score origin and, by extension,
+its timespan -- the span of time bounded by their start offset and their stop
+offset. Abjad models all such duration objects as \emph{rationals}: ratios of
+real numbers, e.g. \sfrac{1}{2}, \sfrac{7}{23} or {16}{1}. This concern arises
+from the realization that all durations and offsets expressible in Western
+common practice notation are rational, rather than floating-point or any other
+representation. Necessarily, Abjad's \texttt{Duration}, \texttt{Offset} and
+\texttt{Multiplier} classes all derive from Python's
+\texttt{fractions.Fraction} class. Both \texttt{Offset} and \texttt{Multiplier}
+are little more than aliases to Abjad's \texttt{Duration} class. However, their
+use throughout Abjad's code-base, and those projects heavily dependent upon
+Abjad, such as Consort, greatly clarify compositional intent and increase the
+source's legibility.
 
--   Discuss rationals
-
--   Discuss how Abjad models duration, offset, timespan (and pitch, in passing)
-    as immutable constant-like objects.
-
--   Why do we have separate Duration, Offset and Multiplier classes, which are
-    all essentially just Duration subclasses? A) They provide instantiation
-    conveniences and B) they clarify the intention of code. Talk about
-    operations on durations and offsets.
+Abjad's \texttt{Duration} class extends Python's \texttt{Fraction} class with a
+number of new initialization patterns and a variety of notation-specific
+properties. For example, a \sfrac{7}{16} duration can be instantiated from a
+numerator/denominator pair, or from a LilyPond syntax duration string:
 
 \begin{comment}
 <abjad>
-Duration(7, 8)
-Duration((7, 8))
-Duration.from_lilypond_duration_string('8..')
+Duration(7, 16)
+Duration.from_lilypond_duration_string('4..')
 </abjad>
 \end{comment}
 
@@ -1168,25 +1179,58 @@ Duration.from_lilypond_duration_string('8..')
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> Duration(7, 8)
-Duration(7, 8)
+>>> Duration(7, 16)
+Duration(7, 16)
 \end{lstlisting}
 \begin{lstlisting}
->>> Duration((7, 8))
-Duration(7, 8)
-\end{lstlisting}
-\begin{lstlisting}
->>> Duration.from_lilypond_duration_string('8..')
-Duration(7, 32)
+>>> Duration.from_lilypond_duration_string('4..')
+Duration(7, 16)
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Duration objects can provide information about how they should be
+interpreted notationally, including how many dots or flags they would have if
+used to instantiate a leaf. A \sfrac{7}{16} duration, without resorting to
+tuplets or ties, might be represented in notation by a double-dotted quarter
+note, thus giving a dot count of 2 and a flag count of 0:
+
+\begin{comment}
+<abjad>
+Duration(7, 16).dot_count
+Duration(7, 16).flag_count
+Duration(7, 16).lilypond_duration_string
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> Duration(7, 16).dot_count
+2
+\end{lstlisting}
+\begin{lstlisting}
+>>> Duration(7, 16).flag_count
+0
+\end{lstlisting}
+\begin{lstlisting}
+>>> Duration(7, 16).lilypond_duration_string
+'4..'
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent As mentioned in \autoref{ssec:parentage}, duration are immutable.
+Like other immutable objects in Python -- e.g. integers and string --, they
+raise errors when anything attempts to alter them in anyway:
 
 \begin{comment}
 <abjad>[allow_exceptions]
 string = 'abcdefghi'
 string[1:-1] = 'xyz'
 Duration(3, 4).numerator = 7
+Duration(1, 2).nonexistant_property = 'This will never work'
 </abjad>
 \end{comment}
 
@@ -1206,8 +1250,19 @@ Traceback (most recent call last):
   File "<abjadbook>", line 1, in <module>
 AttributeError: can't set attribute
 \end{lstlisting}
+\begin{lstlisting}
+>>> Duration(1, 2).nonexistant_property = 'This will never work'
+Traceback (most recent call last):
+  File "<abjadbook>", line 1, in <module>
+AttributeError: 'Duration' object has no attribute 'nonexistant_property'
+\end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Additionally, some mathematical operations between offsets and
+durations provide results typed in a musically-sensible fashion. For example,
+the difference between two offsets returns a duration, while a duration added
+to an offset returns another offset:
 
 \begin{comment}
 <abjad>
@@ -1234,18 +1289,17 @@ Offset(17, 8)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-The duration of each leaf derives from the product of its \emph{written
-duration} -- a duration representing the actual glyphs used in the score as
-represented by some combination of note heads, stems, beams and dots -- and
-their \emph{prolation} -- the cumulative product of all of the duration
-multipliers of the containers in a component's proper parentage.
+\noindent The duration of each leaf derives from the product of its
+\emph{written duration} -- a duration representing the actual glyphs used in
+the score as represented by some combination of note heads, stems, beams and
+dots -- and their \emph{prolation} -- the cumulative product of all of the
+duration multipliers of the containers in a component's proper parentage.
 
-Consider again the B eighth-note starting the inner tuplet. Its parentage
-provides its prolation:
+Consider again the measure created earlier in \autoref{ssec:containers}:
 
 \begin{comment}
 <abjad>
-inspect_(inner_b_eighth).get_parentage().prolation
+show(measure)
 </abjad>
 \end{comment}
 
@@ -1253,7 +1307,45 @@ inspect_(inner_b_eighth).get_parentage().prolation
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> inspect_(inner_b_eighth).get_parentage().prolation
+>>> show(measure)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-90dec32270a651cac6d00667c9c50fd2.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent The B eighth-note starting the quintuplet is nested within two
+different tuplets with different multipliers. While the note's parentage object
+can calculate its prolation, we can also calculate the prolation by hand in
+order to demonstrate the technique:
+
+\begin{comment}
+<abjad>
+parentage = inspect_(inner_b_eighth).get_parentage()
+parentage.prolation
+by_hand_prolation = 1
+for parent in parentage[1:]:
+    if isinstance(parent, Tuplet):
+        by_hand_prolation = by_hand_prolation * parent.multiplier
+
+by_hand_prolation
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> parentage = inspect_(inner_b_eighth).get_parentage()
+>>> parentage.prolation
+Multiplier(8, 15)
+\end{lstlisting}
+\begin{lstlisting}
+>>> by_hand_prolation = 1
+>>> for parent in parentage[1:]:
+...     if isinstance(parent, Tuplet):
+...         by_hand_prolation = by_hand_prolation * parent.multiplier
+...
+>>> by_hand_prolation
 Multiplier(8, 15)
 \end{lstlisting}
 \end{singlespacing}
@@ -1270,7 +1362,7 @@ for leaf in measure.select_leaves():
     written_duration = leaf.written_duration
     prolation = inspector.get_parentage().prolation
     actual_duration = inspector.get_duration()
-    string = '{!s}: {!s} * {!s} = {!s}'
+    string = '{!r}: {!s} * {!s} = {!s}'
     string = string.format(leaf, written_duration, prolation, actual_duration)
     print(string)
 
@@ -1286,18 +1378,18 @@ for leaf in measure.select_leaves():
 ...     written_duration = leaf.written_duration
 ...     prolation = inspector.get_parentage().prolation
 ...     actual_duration = inspector.get_duration()
-...     string = '{!s}: {!s} * {!s} = {!s}'
+...     string = '{!r}: {!s} * {!s} = {!s}'
 ...     string = string.format(leaf, written_duration, prolation, actual_duration)
 ...     print(string)
 ...
-c'4: 1/4 * 1 = 1/4
-a'4: 1/4 * 2/3 = 1/6
-b'8: 1/8 * 8/15 = 1/15
-a'8.: 3/16 * 8/15 = 1/10
-g'16: 1/16 * 8/15 = 1/30
-f'8..: 7/32 * 8/15 = 7/60
-e'32: 1/32 * 8/15 = 1/60
-<d' f' a' c''>4: 1/4 * 1 = 1/4
+Note("c'4"): 1/4 * 1 = 1/4
+Note("a'4"): 1/4 * 2/3 = 1/6
+Note("b'8"): 1/8 * 8/15 = 1/15
+Note("a'8."): 3/16 * 8/15 = 1/10
+Note("g'16"): 1/16 * 8/15 = 1/30
+Note("f'8.."): 7/32 * 8/15 = 7/60
+Note("e'32"): 1/32 * 8/15 = 1/60
+Chord("<d' f' a' c''>4"): 1/4 * 1 = 1/4
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -1366,17 +1458,115 @@ for i in range(17):
 \noindent The duration of each container then derives from the product of its
 prolation and its *contents duration* -- the sum of the durations of its
 children. Ultimately, all scores derive their durations from the durations of
-their leaves, prolated as necessary by any tuplets.
+their leaves, prolated as necessary by any tuplets. As components enter and
+leave a container, the duration of that container and the offsets of components
+following the inserted or deleted component adjust dynamically to reflect the
+altered structure:
 
--   Demonstrate accessing offsets and timespans of components
+\begin{comment}
+<abjad>
+staff = Staff("c'4 d'4 e'4 f'4")
+show(staff)
+inspect_(staff).get_duration()
+for leaf in staff:
+    offset = inspect_(leaf).get_timespan().start_offset
+    print(offset, leaf)
 
--   Demonstrate that these change when new objects are inserted
+staff[2:2] = "f''4 e''4 d''4 c''4"
+show(staff)
+inspect_(staff).get_duration()
+for leaf in staff:
+    offset = inspect_(leaf).get_timespan().start_offset
+    print(offset, leaf)
 
--   Demonstrate multipliers
+staff[3:5] = []
+show(staff)
+inspect_(staff).get_duration()
+for leaf in staff:
+    offset = inspect_(leaf).get_timespan().start_offset
+    print(offset, leaf)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff = Staff("c'4 d'4 e'4 f'4")
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-3947a1689e36c26dfc1db5d199985257.pdf}
+\begin{lstlisting}
+>>> inspect_(staff).get_duration()
+Duration(1, 1)
+\end{lstlisting}
+\begin{lstlisting}
+>>> for leaf in staff:
+...     offset = inspect_(leaf).get_timespan().start_offset
+...     print(offset, leaf)
+...
+(Offset(0, 1), Note("c'4"))
+(Offset(1, 4), Note("d'4"))
+(Offset(1, 2), Note("e'4"))
+(Offset(3, 4), Note("f'4"))
+\end{lstlisting}
+\begin{lstlisting}
+>>> staff[2:2] = "f''4 e''4 d''4 c''4"
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-378ec9dd2a14b504935cd7108d9b08b9.pdf}
+\begin{lstlisting}
+>>> inspect_(staff).get_duration()
+Duration(2, 1)
+\end{lstlisting}
+\begin{lstlisting}
+>>> for leaf in staff:
+...     offset = inspect_(leaf).get_timespan().start_offset
+...     print(offset, leaf)
+...
+(Offset(0, 1), Note("c'4"))
+(Offset(1, 4), Note("d'4"))
+(Offset(1, 2), Note("f''4"))
+(Offset(3, 4), Note("e''4"))
+(Offset(1, 1), Note("d''4"))
+(Offset(5, 4), Note("c''4"))
+(Offset(3, 2), Note("e'4"))
+(Offset(7, 4), Note("f'4"))
+\end{lstlisting}
+\begin{lstlisting}
+>>> staff[3:5] = []
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-64d327db461ddb041d653c1bd1d31ee6.pdf}
+\begin{lstlisting}
+>>> inspect_(staff).get_duration()
+Duration(3, 2)
+\end{lstlisting}
+\begin{lstlisting}
+>>> for leaf in staff:
+...     offset = inspect_(leaf).get_timespan().start_offset
+...     print(offset, leaf)
+(Offset(0, 1), Note("c'4"))
+(Offset(1, 4), Note("d'4"))
+(Offset(1, 2), Note("f''4"))
+(Offset(3, 4), Note("c''4"))
+(Offset(1, 1), Note("e'4"))
+(Offset(5, 4), Note("f'4"))
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Finally, multiplier objects may be attached to leaves to multiply
+their duration. When attached to multi-measure rests, not only does the overall
+duration of the leaf change, but LilyPond is able to generate typography
+representing multiple bars of tacet music compressed together:
 
 \begin{comment}
 <abjad>
 multimeasure_rest = scoretools.MultimeasureRest(1)
+inspect_(multimeasure_rest).get_duration()
+show(multimeasure_rest)
+attach(Multiplier(4), multimeasure_rest)
 inspect_(multimeasure_rest).get_duration()
 show(multimeasure_rest)
 </abjad>
@@ -1390,25 +1580,6 @@ show(multimeasure_rest)
 >>> inspect_(multimeasure_rest).get_duration()
 Duration(1, 1)
 \end{lstlisting}
-\begin{lstlisting}
->>> show(multimeasure_rest)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-099f7141431afa5ae3a046415764f35b.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-show(multimeasure_rest)
-attach(Multiplier(4), multimeasure_rest)
-inspect_(multimeasure_rest).get_duration()
-show(multimeasure_rest)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> show(multimeasure_rest)
 \end{lstlisting}
