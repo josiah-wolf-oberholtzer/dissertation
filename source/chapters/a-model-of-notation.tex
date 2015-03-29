@@ -73,8 +73,8 @@ print(abjad_names)
 'agenttools', 'attach', 'datastructuretools', 'detach', 'developerscripttools', 'documentationtools',
 'durationtools', 'exceptiontools', 'f', 'graph', 'handlertools', 'indicatortools', 'inspect_',
 'instrumenttools', 'ipythontools', 'iterate', 'labeltools', 'layouttools', 'lilypondfiletools',
-'lilypondnametools', 'lilypondparsertools', 'markuptools', 'mathtools', 'metertools', 'mutate', 'new',
-'override', 'parse', 'persist', 'pitchtools', 'play', 'quantizationtools', 'rhythmmakertools',
+'lilypondnametools', 'lilypondparsertools', 'ly', 'markuptools', 'mathtools', 'metertools', 'mutate',
+'new', 'override', 'parse', 'persist', 'pitchtools', 'play', 'quantizationtools', 'rhythmmakertools',
 'rhythmtreetools', 'schemetools', 'scoretools', 'select', 'selectiontools', 'selectortools',
 'sequencetools', 'set_', 'show', 'sievetools', 'spannertools', 'stringtools', 'systemtools',
 'templatetools', 'timespantools', 'tonalanalysistools', 'topleveltools']
@@ -247,15 +247,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x10392d1d0>
+<__main__.Foo object at 0x103f532d0>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x10392d1d0>'
+'<__main__.Foo object at 0x103f532d0>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x10392d1d0>'
+'<__main__.Foo object at 0x103f532d0>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -525,12 +525,6 @@ show(note)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\section{The score tree}
-
-Abjad models notated musical scores as a \emph{tree} consisting of
-\emph{components}, \emph{indicators} and \emph{spanners}. All objects appearing
-in a score fall into one of those three categories.
-
 \section{Components}
 
 \begin{comment}
@@ -578,21 +572,24 @@ Work aspects of this into appropriate sections
     -   in_seconds=True
 \end{comment}
 
-Components make up the \emph{nodes} of the score tree, treating the score as an
-acyclic directed rooted graph, or \emph{arborescence}, rooted on a single
-component. All components inherit from Abjad's \texttt{Component} class, which
-encapsulates logic crucial to maintaining the correctness of the score tree,
-and affords behaviors common to all component subclasses including
-illustration, formatting and naming. Abjad divides score components into
-\emph{containers} -- those components which may contain other other components,
-such as staves, voices, tuplets, measures and so forth -- and \emph{leaves} --
-those components which may contain no other components, such as notes, chords
-and rests, as well as LilyPond's multi-measure rests and non-printing
-typographic \emph{skips}. Additionally, components can each be instantiated
-from a variety of input, from parsable LilyPond syntax strings to parametric
-arguments -- both numeric and explicitly object-modeled via pitch and duration
-objects. For example, we can instantiate and illustrate a middle-C quarter
-note:
+Abjad models notated musical scores as a \emph{tree} consisting of
+\emph{components}, \emph{indicators} and \emph{spanners}. All objects appearing
+in a score fall into one of those three categories. The most important and most
+complex of the three groups, components, make up the \emph{nodes} of the score
+tree, treating the score as an acyclic directed rooted graph, or
+\emph{arborescence}, rooted on a single component. All components inherit from
+Abjad's \texttt{Component} class, which encapsulates logic crucial to
+maintaining the correctness of the score tree, and affords behaviors common to
+all component subclasses including illustration, formatting and naming. Abjad
+divides score components into \emph{containers} -- those components which may
+contain other other components, such as staves, voices, tuplets, measures and
+so forth -- and \emph{leaves} -- those components which may contain no other
+components, such as notes, chords and rests, as well as LilyPond's
+multi-measure rests and non-printing typographic \emph{skips}. Additionally,
+components can each be instantiated from a variety of input, from parsable
+LilyPond syntax strings to parametric arguments -- both numeric and explicitly
+object-modeled via pitch and duration objects. For example, we can instantiate
+and illustrate a middle-C quarter note:
 
 \begin{comment}
 <abjad>
@@ -1472,19 +1469,6 @@ for leaf in staff:
     offset = inspect_(leaf).get_timespan().start_offset
     print(offset, leaf)
 
-staff[2:2] = "f''4 e''4 d''4 c''4"
-show(staff)
-inspect_(staff).get_duration()
-for leaf in staff:
-    offset = inspect_(leaf).get_timespan().start_offset
-    print(offset, leaf)
-
-staff[3:5] = []
-show(staff)
-inspect_(staff).get_duration()
-for leaf in staff:
-    offset = inspect_(leaf).get_timespan().start_offset
-    print(offset, leaf)
 </abjad>
 \end{comment}
 
@@ -1510,6 +1494,28 @@ Duration(1, 1)
 (Offset(1, 2), Note("e'4"))
 (Offset(3, 4), Note("f'4"))
 \end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent After inserting an additional four quarter-notes into the staff, the
+staff reports its duration as doubled, and all of the leaves -- both new and
+old -- report their expected start offsets:
+
+\begin{comment}
+<abjad>
+staff[2:2] = "f''4 e''4 d''4 c''4"
+show(staff)
+inspect_(staff).get_duration()
+for leaf in staff:
+    offset = inspect_(leaf).get_timespan().start_offset
+    print(offset, leaf)
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> staff[2:2] = "f''4 e''4 d''4 c''4"
 >>> show(staff)
@@ -1533,6 +1539,27 @@ Duration(2, 1)
 (Offset(3, 2), Note("e'4"))
 (Offset(7, 4), Note("f'4"))
 \end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Likewise, removing the middle two of the previously inserted leaves
+results in the staff reporting a decreased duration, and all leaves updating
+their offsets to reflect the deletion:
+
+\begin{comment}
+<abjad>
+staff[3:5] = []
+show(staff)
+inspect_(staff).get_duration()
+for leaf in staff:
+    offset = inspect_(leaf).get_timespan().start_offset
+    print(offset, leaf)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> staff[3:5] = []
 >>> show(staff)
@@ -1786,25 +1813,196 @@ different files and then concatenated together.
 
 \section{Indicators}
 
-Indicators attach to single score components.
+Abjad's indicators include any object attached to a single score component,
+such as articulations, textual markup, clefs, tempo or time signature
+indications. Unlike score components and spanners, indicators do not share a
+common base class. Instead, they are unified by the means by which they have
+been attached to components: Abjad's top-level \texttt{attach()} function.
+Indicators are generally immutable, like integers and durations. Regardless, in
+being attached to a score component they do not receive a reference to that
+component, allowing the same indicator to be attached to many components. Abjad
+binds the indicator to the component via an \texttt{IndicatorExpression}
+object, which holds the necessary references to both the indicator and the
+component along with other important information about the behavior of the
+attachment.
 
-Indicators are generally immutable, like integers and durations. In being
-attached to a score component they do not receive a reference to that
-component, allowing the same indicator to be attached to many components.
-Instead, Abjad binds the indicator to the component with an
-\texttt{IndicatorExpression}, which holds the necessary references along with
-other important information about the behavior of the attachment.
+Consider a simple four note staff. A single accent articulation can be attached
+to each note in the staff via \texttt{attach()}:
 
-\subsection{Attachment}
+\begin{comment}
+<abjad>
+staff = Staff("c'4 d'4 e'4 f'4")
+accent = Articulation('accent')
+for note in staff:
+    attach(accent, note)
 
--   Discuss common indicators: Articulation, BarLine, Clef, Dynamic,
-    KeySignature, Markup, Tempo, TimeSignature
+show(staff)
+</abjad>
+\end{comment}
 
--   Demonstrate attach(), detach()
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff = Staff("c'4 d'4 e'4 f'4")
+>>> accent = Articulation('accent')
+>>> for note in staff:
+...     attach(accent, note)
+...
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-28933ab8c116701be372aeadc38a025e.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
--   Demonstrate inspect\_(...).get\_indicator(), .get\_indicators()
+\noindent Once attached, indicators can be removed via the top-level
+\texttt{detach()} function. For example, the attached accents can be detached
+from the last three leaves of the above staff via the \texttt{detach()}
+function:
 
--   Demonstrate inspect\_(...).has\_indicator()
+\begin{comment}
+<abjad>
+for note in staff[1:]:
+    detach(accent, note)
+
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for note in staff[1:]:
+...     detach(accent, note)
+...
+(Articulation('accent'),)
+(Articulation('accent'),)
+(Articulation('accent'),)
+\end{lstlisting}
+\begin{lstlisting}
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-712238b1f24829bf1654cbf459e3fb22.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent At this point, only the first note in the staff has anything
+attached. As with durations and parentage, we can use the component inspector
+to verify that this is true by testing each note for the existence of an
+indicator of the class \texttt{Articulation}:
+
+\begin{comment}
+<abjad>
+for note in staff:
+    has_articulation = inspect_(note).has_indicator(Articulation)
+    print(note, has_articulation)
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for note in staff:
+...     has_articulation = inspect_(note).has_indicator(Articulation)
+...     print(note, has_articulation)
+...
+(Note("c'4"), True)
+(Note("d'4"), False)
+(Note("e'4"), False)
+(Note("f'4"), False)
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Likewise, we can use the component inspector to retrieve the attached
+articulation. The inspector provides two methods for retrieving indicators
+attached to a single component: \texttt{get\_indicator()} and
+\texttt{get\_indicators()}. The latter returns a tuple of zero or more
+indicators matching any supplied class prototype, while the former returns only
+one and raises an error if more or less than one indicator matching the
+supplied class prototype is attached. In the case of retrieving any attached
+articulations, both methods work perfectly.
+
+\begin{comment}
+<abjad>[allow_exceptions]
+inspect_(staff[0]).get_indicators(Articulation)
+inspect_(staff[0]).get_indicator(Articulation)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> inspect_(staff[0]).get_indicators(Articulation)
+(Articulation('accent'),)
+\end{lstlisting}
+\begin{lstlisting}
+>>> inspect_(staff[0]).get_indicator(Articulation)
+Articulation('accent')
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Consider again the two-staff score created earlier:
+
+\begin{comment}
+<abjad>
+show(score)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> show(score)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-3b3b1ccc13440fed0bfc98128a97df9b.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent A variety of indicators can be attached to the leaves in this score
+to present a more convincing musical result, including clefs, dynamics, tempi
+and articulations. Note that indicators can be attached to both leaf and
+container components:
+
+\begin{comment}
+<abjad>
+attach(Clef('treble'), score['Upper Staff'])
+attach(Clef('bass'), score['Lower Staff'])
+lower_leaves = score['Lower Staff'].select_leaves()
+for i in [1, 3, 5, 12]:
+    attach(Articulation('staccato'), lower_leaves[i])
+
+attach(Tempo((1, 4), 88), score['Voice 1'][0][0])
+attach(Dynamic('p'), score['Voice 1'][0][0])
+attach(Dynamic('f'), score['Voice 1'][1][0])
+show(score)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> attach(Clef('treble'), score['Upper Staff'])
+>>> attach(Clef('bass'), score['Lower Staff'])
+>>> lower_leaves = score['Lower Staff'].select_leaves()
+>>> for i in [1, 3, 5, 12]:
+...     attach(Articulation('staccato'), lower_leaves[i])
+...
+>>> attach(Tempo((1, 4), 88), score['Voice 1'][0][0])
+>>> attach(Dynamic('p'), score['Voice 1'][0][0])
+>>> attach(Dynamic('f'), score['Voice 1'][1][0])
+>>> show(score)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-df5a9f76b832d46a9258a1d0fd60058e.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
 \subsection{Indicator scope}
 
@@ -1879,7 +2077,7 @@ Spanners span across different levels of hierarchy.
 
 -   By slice
 
-\subsection{Selection}
+\subsection{Selections}
 
 -   select()
 
