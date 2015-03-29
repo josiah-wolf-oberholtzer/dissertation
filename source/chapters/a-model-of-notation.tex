@@ -247,15 +247,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x1039286d0>
+<__main__.Foo object at 0x10392d1d0>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x1039286d0>'
+'<__main__.Foo object at 0x10392d1d0>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x1039286d0>'
+'<__main__.Foo object at 0x10392d1d0>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -531,7 +531,7 @@ Abjad models notated musical scores as a \emph{tree} consisting of
 \emph{components}, \emph{indicators} and \emph{spanners}. All objects appearing
 in a score fall into one of those three categories.
 
-\subsection{Components}
+\section{Components}
 
 \begin{comment}
 -   Every component may be named.
@@ -1784,7 +1784,7 @@ LilyPond to stitch together different sections of music into a single
 continuous score, allowing different segments of a work to be defined in
 different files and then concatenated together.
 
-\subsection{Indicators}
+\section{Indicators}
 
 Indicators attach to single score components.
 
@@ -1802,9 +1802,9 @@ other important information about the behavior of the attachment.
 
 -   Demonstrate attach(), detach()
 
--   Demonstrate inspect_(...).get_indicator(), .get_indicators()
+-   Demonstrate inspect\_(...).get\_indicator(), .get\_indicators()
 
--   Demonstrate inspect_(...).has_indicator()
+-   Demonstrate inspect\_(...).has\_indicator()
 
 \subsection{Indicator scope}
 
@@ -1818,8 +1818,8 @@ other important information about the behavior of the attachment.
 
 -   An explicitly-scoped object: Marimba at the StaffGroup scope
 
--   Demonstrate: inspect_(...).get_effective(), 
-    inspect_(...).has_effective_indicator()
+-   Demonstrate: inspect\_(...).get\_effective(),
+    inspect\_(...).has\_effective\_indicator()
 
 \subsection{Annotation}
 
@@ -1829,7 +1829,7 @@ formatting to a score hierarchy's LilyPond output. Additionally, any attached
 indication which cannot contribute formatting is considered an implicit
 annotation.
 
--   Demonstrate a non-formatting indication: attach(x, y, is_annotation=True)
+-   Demonstrate a non-formatting indication: attach(x, y, is\_annotation=True)
 
 -   Demonstrate an annotated formatting indication
 
@@ -1838,7 +1838,7 @@ annotation.
 -   Idiomatic indicators: BowContactPoint, IsAtSoundingPitch, IsUnpitched,
     StringContactPoint, StringTuning, etc.
 
-\subsection{Spanners}
+\section{Spanners}
 
 Spanners span across different levels of hierarchy.
 
@@ -1854,11 +1854,15 @@ Spanners span across different levels of hierarchy.
     treats ties as a spanner, spanning over arbitrary numbers of leaves,
     allowing them to reference each other fluidly.
 
+-   Demonstrate inspect\_(...).get\_spanner(), .get\_spanners()
+
+-   Demonstrate spanner.components
+
 \subsection{Typographic overrides}
 
 -   Demonstrate on components, and on components
 
--   Discuss graphic objects (grobs) versus context settings
+-   Discuss graphic objects ("Grobs") versus context settings
 
 -   These commands differ between Abjad and LilyPond due to Abjad's attachment
     model and LilyPond's stream event model.
