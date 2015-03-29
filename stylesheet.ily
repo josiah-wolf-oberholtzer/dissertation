@@ -67,14 +67,12 @@
     \context {
         \Score
         \remove Bar_number_engraver
-        \override Beam.positions = #'(4 . 4)
         \override NoteCollision.merge-differently-dotted = ##t
         \override NoteCollision.merge-differently-headed = ##t
         \override NoteColumn.ignore-collision = ##t
         %\override SpacingSpanner.strict-grace-spacing = ##t
         %\override SpacingSpanner.strict-note-spacing = ##t
         \override SpacingSpanner.uniform-stretching = ##t
-        \override Stem.length = 8.25
         \override TextScript.outside-staff-padding = 1
         \override TimeSignature.style = #'numbered
         \override TupletBracket.bracket-visibility = ##t
