@@ -73,8 +73,8 @@ print(abjad_names)
 'agenttools', 'attach', 'datastructuretools', 'detach', 'developerscripttools', 'documentationtools',
 'durationtools', 'exceptiontools', 'f', 'graph', 'handlertools', 'indicatortools', 'inspect_',
 'instrumenttools', 'ipythontools', 'iterate', 'labeltools', 'layouttools', 'lilypondfiletools',
-'lilypondnametools', 'lilypondparsertools', 'ly', 'markuptools', 'mathtools', 'metertools', 'mutate',
-'new', 'override', 'parse', 'persist', 'pitchtools', 'play', 'quantizationtools', 'rhythmmakertools',
+'lilypondnametools', 'lilypondparsertools', 'markuptools', 'mathtools', 'metertools', 'mutate', 'new',
+'override', 'parse', 'persist', 'pitchtools', 'play', 'quantizationtools', 'rhythmmakertools',
 'rhythmtreetools', 'schemetools', 'scoretools', 'select', 'selectiontools', 'selectortools',
 'sequencetools', 'set_', 'show', 'sievetools', 'spannertools', 'stringtools', 'systemtools',
 'templatetools', 'timespantools', 'tonalanalysistools', 'topleveltools']
@@ -247,15 +247,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x103f532d0>
+<__main__.Foo object at 0x10392f4d0>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x103f532d0>'
+'<__main__.Foo object at 0x10392f4d0>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x103f532d0>'
+'<__main__.Foo object at 0x10392f4d0>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -2004,20 +2004,324 @@ show(score)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\subsection{Indicator scope}
+\subsection{Scope}
 
--   Demonstrate implicit (default) scoping and explicit scoping
+Abjad models how the influence of certain types of indicators persists across
+components subsequent to the component they attach to via the concept of
+\emph{scope}. Indicator scoping describes how, for example, all components in a
+score are governed by one tempo from the moment that tempo appears until the
+moment a different appears. Likewise, scoping describes how all leaves in a
+staff are understood to be governed by the staff's clef up until the point that
+that clef changes. Different indicators govern different scopes by default. As
+just described, tempo indications govern the score context, while clef, key
+signature and dynamics govern the staff context. An indicator governing some
+component is known as that component's \emph{effective} indicator. As with
+non-scoped indicators, the component inspector can be used to examine if and
+what indicator of a given type is effective for a given component.
 
--   Clefs per staff
+Consider the score above, to which a variety of indicators have just been
+attached. By inspecting the leaves in both staves, we can determine what
+indicators are effective for each leaf. For example, all of the leaves in the
+upper staff will report that their clef is a treble clef, while all of the
+leaves in the lower staff will report that theirs is a bass clef:
 
--   Time signatures within each measure, already attached implicitly
+\begin{comment}
+<abjad>
+for leaf in score['Upper Staff'].select_leaves():
+    clef = inspect_(leaf).get_effective(Clef)
+    print(leaf, clef)
 
--   Score-scope tempo
+for leaf in score['Lower Staff'].select_leaves():
+    clef = inspect_(leaf).get_effective(Clef)
+    print(leaf, clef)
+</abjad>
+\end{comment}
 
--   An explicitly-scoped object: Marimba at the StaffGroup scope
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for leaf in score['Upper Staff'].select_leaves():
+...     clef = inspect_(leaf).get_effective(Clef)
+...     print(leaf, clef)
+...
+(Note("c'4.."), Clef(name='treble'))
+(Note("c'16"), Clef(name='treble'))
+(Note("c'4"), Clef(name='treble'))
+(Note("c'4."), Clef(name='treble'))
+(Note("c'8"), Clef(name='treble'))
+(Note("c'8"), Clef(name='treble'))
+(Note("c'4."), Clef(name='treble'))
+(Note("c'8."), Clef(name='treble'))
+(Note("c'16"), Clef(name='treble'))
+\end{lstlisting}
+\begin{lstlisting}
+>>> for leaf in score['Lower Staff'].select_leaves():
+...     clef = inspect_(leaf).get_effective(Clef)
+...     print(leaf, clef)
+(Rest('r8'), Clef(name='bass'))
+(Note("c'8"), Clef(name='bass'))
+(Rest('r8'), Clef(name='bass'))
+(Note("c'8"), Clef(name='bass'))
+(Rest('r8'), Clef(name='bass'))
+(Note("c'8"), Clef(name='bass'))
+(Rest('r4'), Clef(name='bass'))
+(Note("c'4"), Clef(name='bass'))
+(Note("c'4"), Clef(name='bass'))
+(Note("c'8"), Clef(name='bass'))
+(Note("c'8"), Clef(name='bass'))
+(Rest('r4.'), Clef(name='bass'))
+(Note("c'8"), Clef(name='bass'))
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
 
--   Demonstrate: inspect\_(...).get\_effective(),
-    inspect\_(...).has\_effective\_indicator()
+\noindent Despite the tempo indication being attached to the first leaf in the
+upper staff, all leaves in the entire score report that same tempo as their
+effective tempo:
+
+\begin{comment}
+<abjad>
+for leaf in score['Upper Staff'].select_leaves():
+    tempo = inspect_(leaf).get_effective(Tempo)
+    print(leaf, tempo)
+
+for leaf in score['Lower Staff'].select_leaves():
+    tempo = inspect_(leaf).get_effective(Tempo)
+    print(leaf, tempo)
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for leaf in score['Upper Staff'].select_leaves():
+...     tempo = inspect_(leaf).get_effective(Tempo)
+...     print(leaf, tempo)
+...
+(Note("c'4.."), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'16"), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'4"), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'4."), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'8"), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'8"), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'4."), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'8."), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'16"), Tempo(duration=Duration(1, 4), units_per_minute=88))
+\end{lstlisting}
+\begin{lstlisting}
+>>> for leaf in score['Lower Staff'].select_leaves():
+...     tempo = inspect_(leaf).get_effective(Tempo)
+...     print(leaf, tempo)
+...
+(Rest('r8'), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'8"), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Rest('r8'), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'8"), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Rest('r8'), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'8"), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Rest('r4'), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'4"), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'4"), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'8"), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'8"), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Rest('r4.'), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note("c'8"), Tempo(duration=Duration(1, 4), units_per_minute=88))
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent However, the dynamic indications attached to the leaves in the upper
+staff are effective only for those leaves, and not for the leaves in the lower
+staff:
+
+\begin{comment}
+<abjad>
+for leaf in score['Upper Staff'].select_leaves():
+    dynamic = inspect_(leaf).get_effective(Dynamic)
+    print(leaf, dynamic)
+
+for leaf in score['Lower Staff'].select_leaves():
+    dynamic = inspect_(leaf).get_effective(Dynamic)
+    print(leaf, dynamic)
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for leaf in score['Upper Staff'].select_leaves():
+...     dynamic = inspect_(leaf).get_effective(Dynamic)
+...     print(leaf, dynamic)
+...
+(Note("c'4.."), Dynamic(name='p'))
+(Note("c'16"), Dynamic(name='p'))
+(Note("c'4"), Dynamic(name='p'))
+(Note("c'4."), Dynamic(name='f'))
+(Note("c'8"), Dynamic(name='f'))
+(Note("c'8"), Dynamic(name='f'))
+(Note("c'4."), Dynamic(name='f'))
+(Note("c'8."), Dynamic(name='f'))
+(Note("c'16"), Dynamic(name='f'))
+\end{lstlisting}
+\begin{lstlisting}
+>>> for leaf in score['Lower Staff'].select_leaves():
+...     dynamic = inspect_(leaf).get_effective(Dynamic)
+...     print(leaf, dynamic)
+...
+(Rest('r8'), None)
+(Note("c'8"), None)
+(Rest('r8'), None)
+(Note("c'8"), None)
+(Rest('r8'), None)
+(Note("c'8"), None)
+(Rest('r4'), None)
+(Note("c'4"), None)
+(Note("c'4"), None)
+(Note("c'8"), None)
+(Note("c'8"), None)
+(Rest('r4.'), None)
+(Note("c'8"), None)
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Both the clef, tempo and dynamics inspected above made use of their
+\emph{default scope} when being attached, specifying implicitly that they be
+effective at either the staff or score context-level. Indicators can also be
+attached with an explicitly-specified scope, overriding any default the
+indicator class might provide. By detaching the
+implicitly-staff-scoped dynamics, those same dynamic indications can be
+reattached, explicitly scoped for the \enquote{PianoStaff} context, allowing
+all leaves contained by that piano staff to detect their appropriate dynamic
+level:
+
+\begin{comment}
+<abjad>
+piano_dynamic = detach(Dynamic, score['Voice 1'][0][0])[0]
+forte_dynamic = detach(Dynamic, score['Voice 1'][1][0])[0]
+attach(piano_dynamic, score['Voice 1'][0][0], scope='PianoStaff')
+attach(forte_dynamic, score['Voice 1'][1][0], scope='PianoStaff')
+for leaf in score['Upper Staff'].select_leaves():
+    dynamic = inspect_(leaf).get_effective(Dynamic)
+    print(leaf, dynamic)
+
+for leaf in score['Lower Staff'].select_leaves():
+    dynamic = inspect_(leaf).get_effective(Dynamic)
+    print(leaf, dynamic)
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> piano_dynamic = detach(Dynamic, score['Voice 1'][0][0])[0]
+>>> forte_dynamic = detach(Dynamic, score['Voice 1'][1][0])[0]
+>>> attach(piano_dynamic, score['Voice 1'][0][0], scope='PianoStaff')
+>>> attach(forte_dynamic, score['Voice 1'][1][0], scope='PianoStaff')
+>>> for leaf in score['Upper Staff'].select_leaves():
+...     dynamic = inspect_(leaf).get_effective(Dynamic)
+...     print(leaf, dynamic)
+...
+(Note("c'4.."), Dynamic(name='p'))
+(Note("c'16"), Dynamic(name='p'))
+(Note("c'4"), Dynamic(name='p'))
+(Note("c'4."), Dynamic(name='f'))
+(Note("c'8"), Dynamic(name='f'))
+(Note("c'8"), Dynamic(name='f'))
+(Note("c'4."), Dynamic(name='f'))
+(Note("c'8."), Dynamic(name='f'))
+(Note("c'16"), Dynamic(name='f'))
+\end{lstlisting}
+\begin{lstlisting}
+>>> for leaf in score['Lower Staff'].select_leaves():
+...     dynamic = inspect_(leaf).get_effective(Dynamic)
+...     print(leaf, dynamic)
+...
+(Rest('r8'), Dynamic(name='p'))
+(Note("c'8"), Dynamic(name='p'))
+(Rest('r8'), Dynamic(name='p'))
+(Note("c'8"), Dynamic(name='p'))
+(Rest('r8'), Dynamic(name='p'))
+(Note("c'8"), Dynamic(name='p'))
+(Rest('r4'), Dynamic(name='f'))
+(Note("c'4"), Dynamic(name='f'))
+(Note("c'4"), Dynamic(name='f'))
+(Note("c'8"), Dynamic(name='f'))
+(Note("c'8"), Dynamic(name='f'))
+(Rest('r4.'), Dynamic(name='f'))
+(Note("c'8"), Dynamic(name='f'))
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Recall the voices in the score were populated by Abjad
+\texttt{Measure} objects. While LilyPond's musical model does not make use of
+explicit measures, Abjad provides measure-like containers as a convenience.
+When instantiated, Abjad measures attach the appropriate time signature
+indication to themselves. These indicators are also scoped by default, allowing
+all of the leaves contained in that measure to detect their appropriate time
+signature:
+
+\begin{comment}
+<abjad>
+measure_1 = score['Voice 1'][0]
+measure_2 = score['Voice 1'][1]
+inspect_(measure_1).get_indicator(TimeSignature)
+for leaf in measure_1.select_leaves():
+    time_signature = inspect_(leaf).get_effective(TimeSignature)
+    print(leaf, time_signature)
+
+inspect_(measure_2).get_indicator(TimeSignature)
+for leaf in measure_2.select_leaves():
+    time_signature = inspect_(leaf).get_effective(TimeSignature)
+    print(leaf, time_signature)
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> measure_1 = score['Voice 1'][0]
+>>> measure_2 = score['Voice 1'][1]
+>>> inspect_(measure_1).get_indicator(TimeSignature)
+TimeSignature((3, 4))
+\end{lstlisting}
+\begin{lstlisting}
+>>> for leaf in measure_1.select_leaves():
+...     time_signature = inspect_(leaf).get_effective(TimeSignature)
+...     print(leaf, time_signature)
+...
+(Note("c'4.."), TimeSignature((3, 4)))
+(Note("c'16"), TimeSignature((3, 4)))
+(Note("c'4"), TimeSignature((3, 4)))
+\end{lstlisting}
+\begin{lstlisting}
+>>> inspect_(measure_2).get_indicator(TimeSignature)
+TimeSignature((5, 4))
+\end{lstlisting}
+\begin{lstlisting}
+>>> for leaf in measure_2.select_leaves():
+...     time_signature = inspect_(leaf).get_effective(TimeSignature)
+...     print(leaf, time_signature)
+...
+(Note("c'4."), TimeSignature((5, 4)))
+(Note("c'8"), TimeSignature((5, 4)))
+(Note("c'8"), TimeSignature((5, 4)))
+(Note("c'4."), TimeSignature((5, 4)))
+(Note("c'8."), TimeSignature((5, 4)))
+(Note("c'16"), TimeSignature((5, 4)))
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
 
 \subsection{Annotation}
 
@@ -2025,20 +2329,192 @@ Indicators may be attached to score components as \emph{annotations},
 \enquote{visible} to inspection and potentially scoped, but contributing no
 formatting to a score hierarchy's LilyPond output. Additionally, any attached
 indication which cannot contribute formatting is considered an implicit
-annotation.
+annotation. Consider some of the indicators used above, such as clefs, time
+signatures, dynamics and tempo indications. All of these objects can be
+formatted as LilyPond syntax, and when attached to components in a score will
+appear in the output if and when the score itself is formatted as LilyPond
+syntax:
 
--   Demonstrate a non-formatting indication: attach(x, y, is\_annotation=True)
+\begin{comment}
+<abjad>
+clef = Clef('bass')
+print(format(clef, 'lilypond'))
+time_signature = TimeSignature((5, 4))
+print(format(time_signature, 'lilypond'))
+dynamic = Dynamic('p')
+print(format(dynamic, 'lilypond'))
+tempo = Tempo((1, 4), 88)
+print(format(tempo, 'lilypond'))
+</abjad>
+\end{comment}
 
--   Demonstrate an annotated formatting indication
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> clef = Clef('bass')
+>>> print(format(clef, 'lilypond'))
+\clef "bass"
+\end{lstlisting}
+\begin{lstlisting}
+>>> time_signature = TimeSignature((5, 4))
+>>> print(format(time_signature, 'lilypond'))
+\time 5/4
+\end{lstlisting}
+\begin{lstlisting}
+>>> dynamic = Dynamic('p')
+>>> print(format(dynamic, 'lilypond'))
+\p
+\end{lstlisting}
+\begin{lstlisting}
+>>> tempo = Tempo((1, 4), 88)
+>>> print(format(tempo, 'lilypond'))
+\tempo 4=88
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
 
--   Discuss where formatting comes from: LilyPond format bundles
+\noindent For example, the above four indicators can be attached to the
+contents of the following staff which, when formatted, shows the expected
+format contributions of each indicator. Note that the staff must be wrapped in
+a score container so that its tempo indication can find the appropriate
+context:
 
--   Idiomatic indicators: BowContactPoint, IsAtSoundingPitch, IsUnpitched,
-    StringContactPoint, StringTuning, etc.
+\begin{comment}
+<abjad>
+staff = Staff("g f e d c")
+attach(clef, staff)
+attach(dynamic, staff)
+attach(tempo, staff)
+attach(time_signature, staff)
+score = Score([staff])
+print(format(score))
+show(score)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff = Staff("g f e d c")
+>>> attach(clef, staff)
+>>> attach(dynamic, staff)
+>>> attach(tempo, staff)
+>>> attach(time_signature, staff)
+>>> score = Score([staff])
+>>> print(format(score))
+\new Score <<
+    \new Staff {
+        \clef "bass"
+        \tempo 4=88
+        \time 5/4
+        g4
+        f4
+        e4
+        d4
+        c4
+    }
+>>
+\end{lstlisting}
+\begin{lstlisting}
+>>> show(score)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-be87179fc519f5ca8991bedfafdd50df.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent The above staff can be recreated with the indicators attached as
+annotations, still effective for each leaf, but providing no format
+contributions in the output. This results in rather poor notation, falling back
+on LilyPond's default \sfrac{4}{4} time signature and treble clef:
+
+\begin{comment}
+<abjad>
+staff = Staff("g f e d c")
+attach(clef, staff, is_annotation=True)
+attach(dynamic, staff, is_annotation=True)
+attach(tempo, staff, is_annotation=True)
+attach(time_signature, staff, is_annotation=True)
+score = Score([staff])
+print(format(score))
+show(score)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff = Staff("g f e d c")
+>>> attach(clef, staff, is_annotation=True)
+>>> attach(dynamic, staff, is_annotation=True)
+>>> attach(tempo, staff, is_annotation=True)
+>>> attach(time_signature, staff, is_annotation=True)
+>>> score = Score([staff])
+>>> print(format(score))
+\new Score <<
+    \new Staff {
+        g4
+        f4
+        e4
+        d4
+        c4
+    }
+>>
+\end{lstlisting}
+\begin{lstlisting}
+>>> show(score)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-988af0bd1c87a7ef3257db1abf7d3033.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Still, the leaves in this second staff can be inspected and will all
+report that various indicators attached to the staff, although annotative, are
+effective for them:
+
+\begin{comment}
+<abjad>
+for note in staff:
+    tempo = inspect_(note).get_effective(Tempo)
+    print(note, tempo)
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for note in staff:
+...     tempo = inspect_(note).get_effective(Tempo)
+...     print(note, tempo)
+...
+(Note('g4'), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note('f4'), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note('e4'), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note('d4'), Tempo(duration=Duration(1, 4), units_per_minute=88))
+(Note('c4'), Tempo(duration=Duration(1, 4), units_per_minute=88))
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Annotation allows arbitrary objects to be attached to any score
+component as a kind of metadata without directly affecting LilyPond's
+typesetting, allowing other later compositional processes to inspect or react
+to those annotations. Abjad provides a variety of indicator classes for this
+purpose, none of which contribute any formatting, but all of which can be
+attached and scoped, allowing composers to better model instrumental technique
+or compositional intent. Some of these annotative indicators include
+\texttt{BowContactPoint}, \texttt{IsAtSoundingPitch}, \texttt{IsUnpitched},
+\texttt{StringContactPoint} and \texttt{StringTuning}.
 
 \section{Spanners}
 
-Spanners span across different levels of hierarchy.
+The final collection of classes, \emph{spanners}, attach to not just one but
+many components in a score tree, \emph{spanning} across both time and different
+levels of hierarchy.
 
 -   Demonstrate spanners attaching to leaves and to containers
 
@@ -2228,358 +2704,3 @@ Spanners span across different levels of hierarchy.
     -   ReducedLyParser
 
 - Templating
-
-\section{Examples}
-
-\begin{comment}
-<abjad>
-upper_voice = Voice(name='Upper Voice')
-upper_staff = Staff([upper_voice], name='Upper Staff')
-lower_voice_a = Voice(name='Lower Voice A')
-lower_voice_b = Voice(name='Lower Voice B')
-lower_staff = Staff([lower_voice_a, lower_voice_b], name='Lower Staff')
-piano_staff = StaffGroup([upper_staff, lower_staff], context_name='PianoStaff')
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> upper_voice = Voice(name='Upper Voice')
->>> upper_staff = Staff([upper_voice], name='Upper Staff')
->>> lower_voice_a = Voice(name='Lower Voice A')
->>> lower_voice_b = Voice(name='Lower Voice B')
->>> lower_staff = Staff([lower_voice_a, lower_voice_b], name='Lower Staff')
->>> piano_staff = StaffGroup([upper_staff, lower_staff], context_name='PianoStaff')
-\end{lstlisting}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-note = Note("fs'4.")
-show(note)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> note = Note("fs'4.")
->>> show(note)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-3899aee7438e42c8270d14ffdc03cb30.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-note = Note(6, (3, 8))
-show(note)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> note = Note(6, (3, 8))
->>> show(note)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-3899aee7438e42c8270d14ffdc03cb30.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-chord = Chord("<c'' ef'' g''>2")
-show(chord)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> chord = Chord("<c'' ef'' g''>2")
->>> show(chord)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-82ef35ebb9d559540a877d9291a02ca8.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-chord = Chord((12, 15, 19), (1, 2))
-show(chord)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> chord = Chord((12, 15, 19), (1, 2))
->>> show(chord)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-82ef35ebb9d559540a877d9291a02ca8.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-rest = Rest("r4")
-show(rest)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> rest = Rest("r4")
->>> show(rest)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-78f6872e9c498f4e522a51716ff458dd.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-rest = Rest((1, 4))
-show(rest)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> rest = Rest((1, 4))
->>> show(rest)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-78f6872e9c498f4e522a51716ff458dd.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-skip = scoretools.Skip(1)
-show(skip)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> skip = scoretools.Skip(1)
->>> show(skip)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-23f5992f0758dbf9cdee4ac0a923bc09.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-note.note_head
-note.note_head.is_cautionary = True
-show(note)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> note.note_head
-NoteHead("fs'")
-\end{lstlisting}
-\begin{lstlisting}
->>> note.note_head.is_cautionary = True
->>> show(note)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-cb1badca7eef4417a7ce0afba8009a29.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-for note_head in chord.note_heads:
-    note_head
-
-chord.note_heads.append("a'")
-show(chord)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> for note_head in chord.note_heads:
-...     note_head
-...
-NoteHead("c''")
-NoteHead("ef''")
-NoteHead("g''")
-\end{lstlisting}
-\begin{lstlisting}
->>> chord.note_heads.append("a'")
->>> show(chord)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f6ffc8242c578f619b7b053e9eab2333.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-pitch_segment = pitchtools.PitchSegment("c' ef' b' bf' f' e' b a")
-show(pitch_segment)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> pitch_segment = pitchtools.PitchSegment("c' ef' b' bf' f' e' b a")
->>> show(pitch_segment)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-98c254b3bf3525db1108455a9eb836a7.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-transposition = pitchtools.Transposition(1)
-show(transposition(pitch_segment))
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> transposition = pitchtools.Transposition(1)
->>> show(transposition(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-749c176dfaf42985bd3b0d224300b46a.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-inversion = pitchtools.Inversion()
-show(inversion(pitch_segment))
-inversion_with_axis = pitchtools.Inversion(axis=NamedPitch("d'"))
-show(inversion_with_axis(pitch_segment))
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> inversion = pitchtools.Inversion()
->>> show(inversion(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f5dccecbacdc176c5636cb8662091fbd.pdf}
-\begin{lstlisting}
->>> inversion_with_axis = pitchtools.Inversion(axis=NamedPitch("d'"))
->>> show(inversion_with_axis(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-3788337f7ed0f9f5205ea317fef25ba7.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-retrogression = pitchtools.Retrogression()
-show(retrogression(pitch_segment))
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> retrogression = pitchtools.Retrogression()
->>> show(retrogression(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-deb23384afe7501bded563186defeabd.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-untransposing_rotation = pitchtools.Rotation(-1, transpose=False)
-show(untransposing_rotation(pitch_segment))
-transposing_rotation = pitchtools.Rotation(-1, transpose=True)
-show(transposing_rotation(pitch_segment))
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> untransposing_rotation = pitchtools.Rotation(-1, transpose=False)
->>> show(untransposing_rotation(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a64fe671be8f551e1d653f00a83a2e07.pdf}
-\begin{lstlisting}
->>> transposing_rotation = pitchtools.Rotation(-1, transpose=True)
->>> show(transposing_rotation(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7bd7aa6d7685f24919cad726cee57c04.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-multiplication = pitchtools.Multiplication(3)
-show(multiplication(pitch_segment))
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> multiplication = pitchtools.Multiplication(3)
->>> show(multiplication(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ea43de43da8ed2236bf38e48fab7ca25.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-pitch_operation = pitchtools.PitchOperation(
-    operators=(
-        pitchtools.Rotation(1),
-        pitchtools.Transposition(2),
-        ),
-    )
-show(pitch_operation(pitch_segment))
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> pitch_operation = pitchtools.PitchOperation(
-...     operators=(
-...         pitchtools.Rotation(1),
-...         pitchtools.Transposition(2),
-...         ),
-...     )
->>> show(pitch_operation(pitch_segment))
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0adc9e231ee227673c0a09c603241ec2.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
