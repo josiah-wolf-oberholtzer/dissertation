@@ -2387,9 +2387,9 @@ attach(clef, staff)
 attach(dynamic, staff)
 attach(tempo, staff)
 attach(time_signature, staff)
-score = Score([staff])
-print(format(score))
-show(score)
+Score([staff])
+print(format(staff))
+show(staff)
 </abjad>
 \end{comment}
 
@@ -2436,9 +2436,9 @@ attach(clef, staff, is_annotation=True)
 attach(dynamic, staff, is_annotation=True)
 attach(tempo, staff, is_annotation=True)
 attach(time_signature, staff, is_annotation=True)
-score = Score([staff])
-print(format(score))
-show(score)
+Score([staff])
+print(format(staff))
+show(staff)
 </abjad>
 \end{comment}
 
@@ -2534,7 +2534,24 @@ levels of hierarchy.
 
 \begin{comment}
 <abjad>
-staff = Staff(r"c'4 ~ \times 2/3 { c'4 r4 g'4 ~ } g'4")
+show(score)
+upper_leaves = score['Voice 1'].select_leaves()
+attach(Crescendo(), upper_leaves[0:4])
+attach(Tie(), upper_leaves[2:4])
+attach(Tie(), upper_leaves[6:8])
+attach(Slur(direction=Down), score['Voice 2'][0])
+attach(Glissando(), score['Voice 2'][1])
+show(score)
+</abjad>
+\end{comment}
+
+\begin{comment}
+<abjad>
+staff = Staff(r"c'4 { d' ef' } f'")
+attach(Slur(), staff[1])
+show(staff)
+staff[1].extend("f' g' a' bf'")
+show(staff)
 </abjad>
 \end{comment}
 
