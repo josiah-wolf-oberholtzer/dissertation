@@ -247,15 +247,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x10392f4d0>
+<__main__.Foo object at 0x10392e590>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x10392f4d0>'
+'<__main__.Foo object at 0x10392e590>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x10392f4d0>'
+'<__main__.Foo object at 0x10392e590>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -773,7 +773,7 @@ another.
 
 \begin{comment}
 <abjad>
-inner_tuplet = Tuplet((4, 5), "b'8 a'8. g'16 f'8.. e'32")
+inner_tuplet = Tuplet((4, 5), "b'8 a'8. g'16 f'32 e'8..")
 outer_tuplet[1:] = [inner_tuplet]
 show(measure)
 </abjad>
@@ -783,11 +783,11 @@ show(measure)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> inner_tuplet = Tuplet((4, 5), "b'8 a'8. g'16 f'8.. e'32")
+>>> inner_tuplet = Tuplet((4, 5), "b'8 a'8. g'16 f'32 e'8..")
 >>> outer_tuplet[1:] = [inner_tuplet]
 >>> show(measure)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-958463d38eb75b71ce0e7aaa2b9ae94e.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-b783a8dad0c3003152ef1b148bc60ca8.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -832,7 +832,7 @@ for component in measure:
 ...     component
 ...
 Note("c'4")
-Tuplet(Multiplier(2, 3), "a'4 { 4/5 b'8 a'8. g'16 f'8.. e'32 }")
+Tuplet(Multiplier(2, 3), "a'4 { 4/5 b'8 a'8. g'16 f'32 e'8.. }")
 Chord("<d' f' a'>4")
 \end{lstlisting}
 \end{singlespacing}
@@ -864,8 +864,8 @@ Note("a'4")
 Note("b'8")
 Note("a'8.")
 Note("g'16")
-Note("f'8..")
-Note("e'32")
+Note("f'32")
+Note("e'8..")
 Chord("<d' f' a'>4")
 \end{lstlisting}
 \end{singlespacing}
@@ -965,16 +965,16 @@ for component in parentage:
 >>> inspector = inspect_(inner_b_eighth)
 >>> parentage = inspector.get_parentage()
 >>> parentage.parent
-Tuplet(Multiplier(4, 5), "b'8 a'8. g'16 f'8.. e'32")
+Tuplet(Multiplier(4, 5), "b'8 a'8. g'16 f'32 e'8..")
 \end{lstlisting}
 \begin{lstlisting}
 >>> for component in parentage:
 ...     component
 ...
 Note("b'8")
-Tuplet(Multiplier(4, 5), "b'8 a'8. g'16 f'8.. e'32")
-Tuplet(Multiplier(2, 3), "a'4 { 4/5 b'8 a'8. g'16 f'8.. e'32 }")
-Measure((4, 4), "c'4 { 2/3 a'4 { 4/5 b'8 a'8. g'16 f'8.. e'32 } } <d' f' a' c''>4")
+Tuplet(Multiplier(4, 5), "b'8 a'8. g'16 f'32 e'8..")
+Tuplet(Multiplier(2, 3), "a'4 { 4/5 b'8 a'8. g'16 f'32 e'8.. }")
+Measure((4, 4), "c'4 { 2/3 a'4 { 4/5 b'8 a'8. g'16 f'32 e'8.. } } <d' f' a' c''>4")
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -1306,7 +1306,7 @@ show(measure)
 \begin{lstlisting}
 >>> show(measure)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-90dec32270a651cac6d00667c9c50fd2.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-12ab406580e016c3647c6966e70bbc2f.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -1384,8 +1384,8 @@ Note("a'4"): 1/4 * 2/3 = 1/6
 Note("b'8"): 1/8 * 8/15 = 1/15
 Note("a'8."): 3/16 * 8/15 = 1/10
 Note("g'16"): 1/16 * 8/15 = 1/30
-Note("f'8.."): 7/32 * 8/15 = 7/60
-Note("e'32"): 1/32 * 8/15 = 1/60
+Note("f'32"): 1/32 * 8/15 = 1/60
+Note("e'8.."): 7/32 * 8/15 = 7/60
 Chord("<d' f' a' c''>4"): 1/4 * 1 = 1/4
 \end{lstlisting}
 \end{singlespacing}
@@ -2532,6 +2532,21 @@ levels of hierarchy.
 
 -   Demonstrate spanner.components
 
+\begin{comment}
+<abjad>
+staff = Staff(r"c'4 ~ \times 2/3 { c'4 r4 g'4 ~ } g'4")
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff = Staff(r"c'4 ~ \times 2/3 { c'4 r4 g'4 ~ } g'4")
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
 \subsection{Typographic overrides}
 
 -   Demonstrate on components, and on components
@@ -2540,6 +2555,120 @@ levels of hierarchy.
 
 -   These commands differ between Abjad and LilyPond due to Abjad's attachment
     model and LilyPond's stream event model.
+
+\begin{comment}
+<abjad>
+staff = Staff()
+staff.append(Measure((3, 4), "c'4 d' r"))
+staff.append(Measure((5, 4), r"e'4 \times 2/3 { f' g' r4 } a' b"))
+staff.append(Measure((2, 4), "c''8 g' c'4"))
+articulation = Articulation('staccato')
+for leaf in staff.select_leaves():
+    if isinstance(leaf, Note):
+        attach(articulation, leaf)
+
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff = Staff()
+>>> staff.append(Measure((3, 4), "c'4 d' r"))
+>>> staff.append(Measure((5, 4), r"e'4 \times 2/3 { f' g' r4 } a' b"))
+>>> staff.append(Measure((2, 4), "c''8 g' c'4"))
+>>> articulation = Articulation('staccato')
+>>> for leaf in staff.select_leaves():
+...     if isinstance(leaf, Note):
+...         attach(articulation, leaf)
+...
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-335fabac755e9f43c6612175f46e41d0.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+override(staff[1]).script.font_size = 10
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> override(staff[1]).script.font_size = 10
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-159a2f0600d4bc7482fa8d8b96f72e41.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+slur = spannertools.Slur(direction=Down)
+attach(slur, staff.select_leaves()[1:-1])
+override(slur).note_head.style = 'cross'
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> slur = spannertools.Slur(direction=Down)
+>>> attach(slur, staff.select_leaves()[1:-1])
+>>> override(slur).note_head.style = 'cross'
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ca02eccb3e94b5f77d471649cca62c70.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+staff[1][1:2] = "f'8 -. g'8 -. fs'8 -. g'8- ."
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff[1][1:2] = "f'8 -. g'8 -. fs'8 -. g'8- ."
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-b9f0b722e88c76a69e3c1f0dd42dfd94.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+for index in (0, -2, -1):
+    override(staff[1][index]).note_head.style = 'slash'
+
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for index in (0, -2, -1):
+...     override(staff[1][index]).note_head.style = 'slash'
+...
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-2b17b587265cfc4bae3ef8ddc8440459.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
 \section{Selecting components}
 
