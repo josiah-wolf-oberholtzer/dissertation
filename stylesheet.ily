@@ -67,19 +67,18 @@
     \context {
         \Score
         \remove Bar_number_engraver
+        \override Glissando.thickness = 2
         \override NoteCollision.merge-differently-dotted = ##t
         \override NoteCollision.merge-differently-headed = ##t
         \override NoteColumn.ignore-collision = ##t
-        %\override SpacingSpanner.strict-grace-spacing = ##t
-        %\override SpacingSpanner.strict-note-spacing = ##t
         \override SpacingSpanner.uniform-stretching = ##t
         \override TextScript.outside-staff-padding = 1
         \override TimeSignature.style = #'numbered
         \override TupletBracket.bracket-visibility = ##t
+        \override TupletBracket.breakable = ##t
         \override TupletBracket.minimum-length = 3
         \override TupletBracket.outside-staff-padding = 1.5
         \override TupletBracket.padding = 1.5
-        \override TupletBracket.breakable = ##t
         \override TupletBracket.springs-and-rods = #ly:spanner::set-spacing-rods
         \override TupletBracket.staff-padding = 2.25
         \override TupletNumber.text = #tuplet-number::calc-fraction-text
