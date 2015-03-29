@@ -247,15 +247,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x103a2d110>
+<__main__.Foo object at 0x1039286d0>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x103a2d110>'
+'<__main__.Foo object at 0x1039286d0>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x103a2d110>'
+'<__main__.Foo object at 0x1039286d0>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -1148,15 +1148,15 @@ reference the same integer. Such an arrangement is often referred to as a
 
 \subsection{Durations}
 
-Every Abjad score component may be expressed in terms of its duration, as
-well as its start offset relative to the score origin and, by extension,
-its timespan -- the span of time bounded by their start offset and their stop
+Every Abjad score component may be expressed in terms of its duration, as well
+as its start offset relative to the score origin and, by extension, its
+timespan -- the span of time bounded by their start offset and their stop
 offset. Abjad models all such duration objects as \emph{rationals}: ratios of
-real numbers, e.g. \sfrac{1}{2}, \sfrac{7}{23} or {16}{1}. This concern arises
-from the realization that all durations and offsets expressible in Western
-common practice notation are rational, rather than floating-point or any other
-representation. Necessarily, Abjad's \texttt{Duration}, \texttt{Offset} and
-\texttt{Multiplier} classes all derive from Python's
+real numbers, e.g. \sfrac{1}{2}, \sfrac{7}{23} or \sfrac{16}{1}. This concern
+arises from the realization that all durations and offsets expressible in
+Western common practice notation are rational, rather than floating-point or
+any other representation. Necessarily, Abjad's \texttt{Duration},
+\texttt{Offset} and \texttt{Multiplier} classes all derive from Python's
 \texttt{fractions.Fraction} class. Both \texttt{Offset} and \texttt{Multiplier}
 are little more than aliases to Abjad's \texttt{Duration} class. However, their
 use throughout Abjad's code-base, and those projects heavily dependent upon
@@ -1598,38 +1598,37 @@ Duration(4, 1)
 
 \subsection{Named components}
 
-Components may be named.
+Abjad's scores components may be given unique names via their \texttt{name}
+property. Any named component found in the subtree of a given container may be
+accessed by subscripting the container with its name, regardless of its depth
+in that container.
 
-Any named component found in the subtree of a given container may be accessed,
-regardless of its depth in that container, by subscripting the container with
-its name.
-
--   Demonstrate setting up a small score with named contexts and retrieving
-    them.
-
--   Explain contexts as distinct from containers. What is a context? Count-time
-    and non-count-time containers. LilyPond context concatenation.
+Consider the following score, containing a piano staff grouping two staves,
+each with one voice:
 
 \begin{comment}
 <abjad>
 voice_1 = Voice(name='Voice 1')
+voice_1.append(Measure((3, 4), "c'4.. c'16 c'4"))
+voice_1.append(Measure((5, 4), "c'4. c'8 c'8 c'4. c'8. c'16"))
 upper_staff = Staff(
     [voice_1],
     name='Upper Staff',
     )
 voice_2 = Voice(name='Voice 2')
-voice_3 = Voice(name='Voice 3')
+voice_2.append(Measure((3, 4), "r8 c'8 r8 c'8 r8 c'8"))
+voice_2.append(Measure((5, 4), r"r4 \times 2/3 { c'4 c'4 c'8 c'8 } r4. c'8"))
 lower_staff = Staff(
-    [voice_2, voice_3],
-    is_simultaneous=True,
+    [voice_2],
     name='Lower Staff',
     )
 staff_group = StaffGroup(
     [upper_staff, lower_staff],
     context_name='PianoStaff',
-    name='Staff Group',
+    name='Both Staves',
     )
 score = Score([staff_group])
+show(score)
 </abjad>
 \end{comment}
 
@@ -1638,26 +1637,35 @@ score = Score([staff_group])
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> voice_1 = Voice(name='Voice 1')
+>>> voice_1.append(Measure((3, 4), "c'4.. c'16 c'4"))
+>>> voice_1.append(Measure((5, 4), "c'4. c'8 c'8 c'4. c'8. c'16"))
 >>> upper_staff = Staff(
 ...     [voice_1],
 ...     name='Upper Staff',
 ...     )
 >>> voice_2 = Voice(name='Voice 2')
->>> voice_3 = Voice(name='Voice 3')
+>>> voice_2.append(Measure((3, 4), "r8 c'8 r8 c'8 r8 c'8"))
+>>> voice_2.append(Measure((5, 4), r"r4 \times 2/3 { c'4 c'4 c'8 c'8 } r4. c'8"))
 >>> lower_staff = Staff(
-...     [voice_2, voice_3],
-...     is_simultaneous=True,
+...     [voice_2],
 ...     name='Lower Staff',
 ...     )
 >>> staff_group = StaffGroup(
 ...     [upper_staff, lower_staff],
 ...     context_name='PianoStaff',
-...     name='Staff Group',
+...     name='Both Staves',
 ...     )
 >>> score = Score([staff_group])
+>>> show(score)
 \end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-3b3b1ccc13440fed0bfc98128a97df9b.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Printing the score as a LilyPond syntax string clearly shows the
+nested quality of the score hierarchy. Additionally, the previously provided
+names of some of the containers -- e.g. \enquote{Voice 1} and \enquote{Lower
+Staff} -- also appear in the LilyPond output:
 
 \begin{comment}
 <abjad>
@@ -1671,22 +1679,63 @@ print(format(score))
 \begin{lstlisting}
 >>> print(format(score))
 \new Score <<
-    \context PianoStaff = "Staff Group" <<
+    \context PianoStaff = "Both Staves" <<
         \context Staff = "Upper Staff" {
             \context Voice = "Voice 1" {
+                {
+                    \time 3/4
+                    c'4..
+                    c'16
+                    c'4
+                }
+                {
+                    \time 5/4
+                    c'4.
+                    c'8
+                    c'8
+                    c'4.
+                    c'8.
+                    c'16
+                }
             }
         }
-        \context Staff = "Lower Staff" <<
+        \context Staff = "Lower Staff" {
             \context Voice = "Voice 2" {
+                {
+                    \time 3/4
+                    r8
+                    c'8
+                    r8
+                    c'8
+                    r8
+                    c'8
+                }
+                {
+                    \time 5/4
+                    r4
+                    \times 2/3 {
+                        c'4
+                        c'4
+                        c'8
+                        c'8
+                    }
+                    r4.
+                    c'8
+                }
             }
-            \context Voice = "Voice 3" {
-            }
-        >>
+        }
     >>
 >>
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Any of the named components within the score hierarchy can be
+retrieved by subscripting any container in their proper parentage with their
+name. For example, the voice container named \enquote{Voice 1} can be retrieved
+by subscripting the score object with its name, even though it is not
+immediately contained by the score but is in fact a \enquote{great-grandchild}
+of the score:
 
 \begin{comment}
 <abjad>
@@ -1700,7 +1749,7 @@ score['Voice 1'] is voice_1
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> score['Voice 1']
-Voice()
+<Voice-"Voice 1"{2}>
 \end{lstlisting}
 \begin{lstlisting}
 >>> score['Voice 1'] is voice_1
@@ -1709,115 +1758,110 @@ True
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Note that the staff group definition above received both a
+\texttt{name} and a \texttt{context\_name} keyword argument. While the various
+voices and staves in the above score all appear in the LilyPond syntax output
+as \texttt{\textbackslash{}context Staff = "Upper Staff"} or
+\texttt{\textbackslash{}context Voice = "Voice 2"}, the staff group appears
+instead as \texttt{\textbackslash{}context PianoStaff = "Both Staves"}. Its
+\enquote{context name} has been substituted for where \texttt{StaffGroup} would
+normally appear, allowing Abjad to specify a different LilyPond \emph{context}
+for the music it contains.
+
+Some Abjad container classes correspond to LilyPond's notion of
+\emph{contexts}. These include voices, staves, staff groups and scores, but not
+measures, tuplets or \enquote{bare} containers. LilyPond uses contexts during
+typesetting to maintain various kinds of musical information hierarchically.
+For example, LilyPond's \texttt{Staff} context maintains information about the
+accidentals that have appeared so far in any voice contained by that staff and
+the staff's current clef -- which are necessarily local to a single staff --,
+while the \texttt{Score} context maintains more global information, such as the
+current tempo and measure number. LilyPond also allows for the definition of
+new contexts, and provides a number of specially-defined contexts, e.g.
+\texttt{ChoirStaff}, \texttt{TabVoice} and \texttt{FiguredBass}. While
+LilyPond's contexts may be either named or anonymous, named contexts allow
+LilyPond to stitch together different sections of music into a single
+continuous score, allowing different segments of a work to be defined in
+different files and then concatenated together.
+
 \subsection{Indicators}
 
-\begin{comment}
-Indicators attach to individual components
--   some have notational reality
--   some have context scope
--   but they can be totally arbitrary
--   attach(x, y, scope=..., is_annotation=..., name=...)
--   Articulation
--   BarLine
--   Clef
--   Dynamic
--   KeySignature
--   Markup
--   Tempo
--   TimeSignature
--   What is scope?
--   Default scope
--   Explicit scope
--   Idiomatic indicators, used by other processes:
-    -   BowContactPoint
-    -   IsAtSoundingPitch
-    -   IsUnpitched
-    -   StringContactPoint
-    -   StringTuning
-    -   etc.
--   Annotation
--   attach(x, y, is_annotation=True)
--   inspect_(...).get_indicator()
--   inspect_(...).has_indicator()
--   inspect_(...).get_effective()
--   inspect_(...).has_effective_indicator()
-\end{comment}
+Indicators attach to single score components.
+
+Indicators are generally immutable, like integers and durations. In being
+attached to a score component they do not receive a reference to that
+component, allowing the same indicator to be attached to many components.
+Instead, Abjad binds the indicator to the component with an
+\texttt{IndicatorExpression}, which holds the necessary references along with
+other important information about the behavior of the attachment.
 
 \subsection{Attachment}
 
-\subsection{Scope}
+-   Discuss common indicators: Articulation, BarLine, Clef, Dynamic,
+    KeySignature, Markup, Tempo, TimeSignature
 
-\begin{comment}
-<abjad>
-attach(Clef('treble'), upper_staff)
-attach(Clef('bass'), lower_staff)
-voice_one_command = indicatortools.LilyPondCommand(
-    'voiceOne',
-    format_slot='opening',
-    )
-voice_two_command = indicatortools.LilyPondCommand(
-    'voiceTwo',
-    format_slot='opening',
-    )
-attach(voice_one_command, voice_1)
-attach(voice_two_command, voice_2)
-</abjad>
-\end{comment}
+-   Demonstrate attach(), detach()
 
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> attach(Clef('treble'), upper_staff)
->>> attach(Clef('bass'), lower_staff)
->>> voice_one_command = indicatortools.LilyPondCommand(
-...     'voiceOne',
-...     format_slot='opening',
-...     )
->>> voice_two_command = indicatortools.LilyPondCommand(
-...     'voiceTwo',
-...     format_slot='opening',
-...     )
->>> attach(voice_one_command, voice_1)
->>> attach(voice_two_command, voice_2)
-\end{lstlisting}
-\end{singlespacing}
-\end{abjadbookoutput}
+-   Demonstrate inspect_(...).get_indicator(), .get_indicators()
 
--   One clef per staff (staff scope)
--   Separate dynamics per voice (voice scope)
--   One tempo (score scope)
--   Arbitrary scoped object (score scope?)
+-   Demonstrate inspect_(...).has_indicator()
+
+\subsection{Indicator scope}
+
+-   Demonstrate implicit (default) scoping and explicit scoping
+
+-   Clefs per staff
+
+-   Time signatures within each measure, already attached implicitly
+
+-   Score-scope tempo
+
+-   An explicitly-scoped object: Marimba at the StaffGroup scope
+
+-   Demonstrate: inspect_(...).get_effective(), 
+    inspect_(...).has_effective_indicator()
 
 \subsection{Annotation}
 
+Indicators may be attached to score components as \emph{annotations},
+\enquote{visible} to inspection and potentially scoped, but contributing no
+formatting to a score hierarchy's LilyPond output. Additionally, any attached
+indication which cannot contribute formatting is considered an implicit
+annotation.
+
+-   Demonstrate a non-formatting indication: attach(x, y, is_annotation=True)
+
+-   Demonstrate an annotated formatting indication
+
+-   Discuss where formatting comes from: LilyPond format bundles
+
+-   Idiomatic indicators: BowContactPoint, IsAtSoundingPitch, IsUnpitched,
+    StringContactPoint, StringTuning, etc.
+
 \subsection{Spanners}
 
-\begin{comment}
-Spanners *span* across different levels of hierarchy.
--   logical voices
--   attach to
--   graph cyclicity
--   Beam
--   Glissando
--   Hairpin
--   Slur
--   Trill
--   Tie
--   typographic overrides
-# Typographic overrides
--   On components
-    - \\override & \\revert
--   On spanners
-# Modeling time
--   Duration
--   Offset
--   Multiplier
--   Timespan
--   Prolation
--   Pre-prolated durations
--   Contents duration
-\end{comment}
+Spanners span across different levels of hierarchy.
+
+-   Demonstrate spanners attaching to leaves and to containers
+
+-   Discuss cyclic spanner graph, logical voices
+
+-   Important subclasses: Beam, Slur, Hairpin, Glissando, Tie
+
+-   Mention that ties are treated specially in Abjad, and distinctly from many
+    other systems. Other systems might treat "tied-ness" as a flag on a note,
+    indicating that the next leaf will be tied to the "tied-set" leaf. Abjad
+    treats ties as a spanner, spanning over arbitrary numbers of leaves,
+    allowing them to reference each other fluidly.
+
+\subsection{Typographic overrides}
+
+-   Demonstrate on components, and on components
+
+-   Discuss graphic objects (grobs) versus context settings
+
+-   These commands differ between Abjad and LilyPond due to Abjad's attachment
+    model and LilyPond's stream event model.
 
 \section{Selecting components}
 
