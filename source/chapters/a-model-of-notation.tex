@@ -247,15 +247,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x10393f150>
+<__main__.Foo object at 0x103a37f10>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x10393f150>'
+'<__main__.Foo object at 0x103a37f10>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x10393f150>'
+'<__main__.Foo object at 0x103a37f10>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -2904,8 +2904,8 @@ Timespan(start_offset=Offset(1, 4), stop_offset=Offset(3, 4))
 ...     spanner
 ...
 Beam("c'8, d'8, e'8, f'8")
-Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
 Beam("g'8, a'8, b'8, c''8")
+Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
 \end{lstlisting}
 \begin{lstlisting}
 >>> attach(Glissando(), selection)
@@ -3114,7 +3114,7 @@ iterator = iteration_agent.by_class(Rest)
 for count, rest in enumerate(iterator, start=1):
     string = 'R:{}'.format(count)
     markup = Markup(string, direction=Up)
-    markup = markup.pad_around(0.5).box().pad_around(0.5)
+    markup = markup.pad_around(0.5).box().pad_around(0.25)
     attach(markup, rest)
 
 show(score)
@@ -3129,19 +3129,23 @@ show(score)
 >>> for count, rest in enumerate(iterator, start=1):
 ...     string = 'R:{}'.format(count)
 ...     markup = Markup(string, direction=Up)
-...     markup = markup.pad_around(0.5).box().pad_around(0.5)
+...     markup = markup.pad_around(0.5).box().pad_around(0.25)
 ...     attach(markup, rest)
 ...
 >>> show(score)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a84f2da91e622c60e9cd3b05b7b6b56e.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-266c9ef72b67988b99a49392f1c189b7.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
 \begin{comment}
 <abjad>
 for component in iteration_agent.depth_first():
-    component
+    parentage = inspect_(component).get_parentage()
+    component_depth = parentage.depth
+    indent = '    ' * component_depth
+    string = '{}{}'.format(indent, repr(component))
+    print(string)
 
 </abjad>
 \end{comment}
@@ -3151,52 +3155,60 @@ for component in iteration_agent.depth_first():
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> for component in iteration_agent.depth_first():
-...     component
+...     parentage = inspect_(component).get_parentage()
+...     component_depth = parentage.depth
+...     indent = '    ' * component_depth
+...     string = '{}{}'.format(indent, repr(component))
+...     print(string)
 ...
 <Score<<1>>>
-<PianoStaff-"Both Staves"<<2>>>
-<Staff-"Upper Staff"{1}>
-<Voice-"Voice 1"{2}>
-Measure((3, 4), "d'4.. b'16 af'4 ~")
-Note("d'4..")
-Note("b'16")
-Note("af'4")
-Measure((5, 4), "af'4. g'8 c''8 b'4. ~ b'8 r16 d''16")
-Note("af'4.")
-Note("g'8")
-Note("c''8")
-Note("b'4.")
-Note("b'8")
-Rest('r16')
-Note("d''16")
-<Staff-"Lower Staff"{1}>
-<Voice-"Voice 2"{2}>
-Measure((3, 4), "r8 c'8 r8 d8 r8 e8")
-Rest('r8')
-Note("c'8")
-Rest('r8')
-Note('d8')
-Rest('r8')
-Note('e8')
-Measure((5, 4), 'r4 { 2/3 g4 fs4 e8 cs8 } r4. fs8')
-Rest('r4')
-Tuplet(Multiplier(2, 3), 'g4 fs4 e8 cs8')
-Note('g4')
-Note('fs4')
-Note('e8')
-Note('cs8')
-Rest('r4.')
-Note('fs8')
+    <PianoStaff-"Both Staves"<<2>>>
+        <Staff-"Upper Staff"{1}>
+            <Voice-"Voice 1"{2}>
+                Measure((3, 4), "d'4.. b'16 af'4 ~")
+                    Note("d'4..")
+                    Note("b'16")
+                    Note("af'4")
+                Measure((5, 4), "af'4. g'8 c''8 b'4. ~ b'8 r16 d''16")
+                    Note("af'4.")
+                    Note("g'8")
+                    Note("c''8")
+                    Note("b'4.")
+                    Note("b'8")
+                    Rest('r16')
+                    Note("d''16")
+        <Staff-"Lower Staff"{1}>
+            <Voice-"Voice 2"{2}>
+                Measure((3, 4), "r8 c'8 r8 d8 r8 e8")
+                    Rest('r8')
+                    Note("c'8")
+                    Rest('r8')
+                    Note('d8')
+                    Rest('r8')
+                    Note('e8')
+                Measure((5, 4), 'r4 { 2/3 g4 fs4 e8 cs8 } r4. fs8')
+                    Rest('r4')
+                    Tuplet(Multiplier(2, 3), 'g4 fs4 e8 cs8')
+                        Note('g4')
+                        Note('fs4')
+                        Note('e8')
+                        Note('cs8')
+                    Rest('r4.')
+                    Note('fs8')
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
 
 \begin{comment}
 <abjad>
-for component in iteration_agent.by_timeline():
-    timespan = inspect_(component).get_timespan()
-    print(component, timespan)
+iterator = iteration_agent.by_timeline()
+for count, leaf in enumerate(iterator, 1):
+    string = 'T:{}'.format(count)
+    markup = Markup(string, direction=Up)
+    markup = markup.pad_around(0.5).box().pad_around(0.25)
+    attach(markup, leaf)
 
+show(score)
 </abjad>
 \end{comment}
 
@@ -3204,34 +3216,16 @@ for component in iteration_agent.by_timeline():
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> for component in iteration_agent.by_timeline():
-...     timespan = inspect_(component).get_timespan()
-...     print(component, timespan)
+>>> iterator = iteration_agent.by_timeline()
+>>> for count, leaf in enumerate(iterator, 1):
+...     string = 'T:{}'.format(count)
+...     markup = Markup(string, direction=Up)
+...     markup = markup.pad_around(0.5).box().pad_around(0.25)
+...     attach(markup, leaf)
 ...
-(Note("d'4.."), Timespan(start_offset=Offset(0, 1), stop_offset=Offset(7, 16)))
-(Rest('r8'), Timespan(start_offset=Offset(0, 1), stop_offset=Offset(1, 8)))
-(Note("c'8"), Timespan(start_offset=Offset(1, 8), stop_offset=Offset(1, 4)))
-(Rest('r8'), Timespan(start_offset=Offset(1, 4), stop_offset=Offset(3, 8)))
-(Note('d8'), Timespan(start_offset=Offset(3, 8), stop_offset=Offset(1, 2)))
-(Note("b'16"), Timespan(start_offset=Offset(7, 16), stop_offset=Offset(1, 2)))
-(Note("af'4"), Timespan(start_offset=Offset(1, 2), stop_offset=Offset(3, 4)))
-(Rest('r8'), Timespan(start_offset=Offset(1, 2), stop_offset=Offset(5, 8)))
-(Note('e8'), Timespan(start_offset=Offset(5, 8), stop_offset=Offset(3, 4)))
-(Note("af'4."), Timespan(start_offset=Offset(3, 4), stop_offset=Offset(9, 8)))
-(Rest('r4'), Timespan(start_offset=Offset(3, 4), stop_offset=Offset(1, 1)))
-(Note('g4'), Timespan(start_offset=Offset(1, 1), stop_offset=Offset(7, 6)))
-(Note("g'8"), Timespan(start_offset=Offset(9, 8), stop_offset=Offset(5, 4)))
-(Note('fs4'), Timespan(start_offset=Offset(7, 6), stop_offset=Offset(4, 3)))
-(Note("c''8"), Timespan(start_offset=Offset(5, 4), stop_offset=Offset(11, 8)))
-(Note('e8'), Timespan(start_offset=Offset(4, 3), stop_offset=Offset(17, 12)))
-(Note("b'4."), Timespan(start_offset=Offset(11, 8), stop_offset=Offset(7, 4)))
-(Note('cs8'), Timespan(start_offset=Offset(17, 12), stop_offset=Offset(3, 2)))
-(Rest('r4.'), Timespan(start_offset=Offset(3, 2), stop_offset=Offset(15, 8)))
-(Note("b'8"), Timespan(start_offset=Offset(7, 4), stop_offset=Offset(15, 8)))
-(Rest('r16'), Timespan(start_offset=Offset(15, 8), stop_offset=Offset(31, 16)))
-(Note('fs8'), Timespan(start_offset=Offset(15, 8), stop_offset=Offset(2, 1)))
-(Note("d''16"), Timespan(start_offset=Offset(31, 16), stop_offset=Offset(2, 1)))
+>>> show(score)
 \end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-6864abc11ba029a66187ba3bf7b4d680.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3265,8 +3259,11 @@ for run in iterate(lower_leaves).by_run(Note):
 <abjad>
 upper_leaves = score['Voice 1'].select_leaves()
 for logical_tie in iterate(upper_leaves).by_logical_tie(pitched=True):
-    logical_tie
+    markup = Markup('H', direction=Up)
+    markup = markup.pad_around(0.5).box()
+    attach(markup, logical_tie.head)
 
+show(score)
 </abjad>
 \end{comment}
 
@@ -3276,16 +3273,13 @@ for logical_tie in iterate(upper_leaves).by_logical_tie(pitched=True):
 \begin{lstlisting}
 >>> upper_leaves = score['Voice 1'].select_leaves()
 >>> for logical_tie in iterate(upper_leaves).by_logical_tie(pitched=True):
-...     logical_tie
+...     markup = Markup('H', direction=Up)
+...     markup = markup.pad_around(0.5).box()
+...     attach(markup, logical_tie.head)
 ...
-LogicalTie(Note("d'4.."),)
-LogicalTie(Note("b'16"),)
-LogicalTie(Note("af'4"), Note("af'4."))
-LogicalTie(Note("g'8"),)
-LogicalTie(Note("c''8"),)
-LogicalTie(Note("b'4."), Note("b'8"))
-LogicalTie(Note("d''16"),)
+>>> show(score)
 \end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f1c13efda433ced0d22d51ab58030282.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
