@@ -247,15 +247,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x103a37f10>
+<__main__.Foo object at 0x103a37fd0>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x103a37f10>'
+'<__main__.Foo object at 0x103a37fd0>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x103a37f10>'
+'<__main__.Foo object at 0x103a37fd0>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -3201,6 +3201,9 @@ for component in iteration_agent.depth_first():
 
 \begin{comment}
 <abjad>
+for component in iterate(score).depth_first():
+    detached = detach(Markup, component)
+
 iterator = iteration_agent.by_timeline()
 for count, leaf in enumerate(iterator, 1):
     string = 'T:{}'.format(count)
@@ -3216,6 +3219,9 @@ show(score)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
+>>> for component in iterate(score).depth_first():
+...     detached = detach(Markup, component)
+...
 >>> iterator = iteration_agent.by_timeline()
 >>> for count, leaf in enumerate(iterator, 1):
 ...     string = 'T:{}'.format(count)
@@ -3225,7 +3231,7 @@ show(score)
 ...
 >>> show(score)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-6864abc11ba029a66187ba3bf7b4d680.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1e712e48fed75449934558a26961651e.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3257,6 +3263,9 @@ for run in iterate(lower_leaves).by_run(Note):
 
 \begin{comment}
 <abjad>
+for component in iterate(score).depth_first():
+    detached = detach(Markup, component)
+
 upper_leaves = score['Voice 1'].select_leaves()
 for logical_tie in iterate(upper_leaves).by_logical_tie(pitched=True):
     markup = Markup('H', direction=Up)
@@ -3271,6 +3280,9 @@ show(score)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
+>>> for component in iterate(score).depth_first():
+...     detached = detach(Markup, component)
+...
 >>> upper_leaves = score['Voice 1'].select_leaves()
 >>> for logical_tie in iterate(upper_leaves).by_logical_tie(pitched=True):
 ...     markup = Markup('H', direction=Up)
@@ -3279,7 +3291,7 @@ show(score)
 ...
 >>> show(score)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f1c13efda433ced0d22d51ab58030282.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-61545fb4a90c75570950211838af52d0.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3299,11 +3311,26 @@ show(score)
 
 \subsection{Selectors}
 
+\begin{comment}
+<abjad>
+selector = selectortools.Selector()
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> selector = selectortools.Selector()
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
 -   Demonstrate a gallery of selectors.
 
-    -   by duration
-
     -   by leaves
+
+    -   by duration
 
     -   by length
 
