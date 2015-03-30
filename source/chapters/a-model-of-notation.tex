@@ -73,8 +73,8 @@ print(abjad_names)
 'agenttools', 'attach', 'datastructuretools', 'detach', 'developerscripttools', 'documentationtools',
 'durationtools', 'exceptiontools', 'f', 'graph', 'handlertools', 'indicatortools', 'inspect_',
 'instrumenttools', 'ipythontools', 'iterate', 'labeltools', 'layouttools', 'lilypondfiletools',
-'lilypondnametools', 'lilypondparsertools', 'ly', 'markuptools', 'mathtools', 'metertools', 'mutate',
-'new', 'override', 'parse', 'persist', 'pitchtools', 'play', 'quantizationtools', 'rhythmmakertools',
+'lilypondnametools', 'lilypondparsertools', 'markuptools', 'mathtools', 'metertools', 'mutate', 'new',
+'override', 'parse', 'persist', 'pitchtools', 'play', 'quantizationtools', 'rhythmmakertools',
 'rhythmtreetools', 'schemetools', 'scoretools', 'select', 'selectiontools', 'selectortools',
 'sequencetools', 'set_', 'show', 'sievetools', 'spannertools', 'stringtools', 'systemtools',
 'templatetools', 'timespantools', 'tonalanalysistools', 'topleveltools']
@@ -247,15 +247,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x1046c0290>
+<__main__.Foo object at 0x103932cd0>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x1046c0290>'
+'<__main__.Foo object at 0x103932cd0>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x1046c0290>'
+'<__main__.Foo object at 0x103932cd0>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -1106,11 +1106,11 @@ container_one.append(container_two)
 >>> container_one.append(container_two)
 Traceback (most recent call last):
   File "<abjadbook>", line 1, in <module>
-  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 902, in append
+  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 927, in append
     self.__setitem__(slice(len(self), len(self)), [component])
   File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 130, in __setitem__
     return self._set_item(i, expr)
-  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 421, in _set_item
+  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 442, in _set_item
     raise ParentageError('Attempted to induce cycles.')
 ParentageError: Attempted to induce cycles.
 \end{lstlisting}
@@ -2538,6 +2538,136 @@ levels of hierarchy.
 
 \begin{comment}
 <abjad>
+staff = Staff(r"c'8 { d' ef' } f'")
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff = Staff(r"c'8 { d' ef' } f'")
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f2013d13a6d3ccee6cd663766ed29334.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+beam = Beam()
+slur = Slur(direction=Down)
+hairpin = Hairpin('p < f')
+pedal = spannertools.PianoPedalSpanner()
+attach(beam, staff[:])
+attach(slur, staff[1])
+attach(hairpin, staff)
+attach(pedal, staff.select_leaves())
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> beam = Beam()
+>>> slur = Slur(direction=Down)
+>>> hairpin = Hairpin('p < f')
+>>> pedal = spannertools.PianoPedalSpanner()
+>>> attach(beam, staff[:])
+>>> attach(slur, staff[1])
+>>> attach(hairpin, staff)
+>>> attach(pedal, staff.select_leaves())
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-532e181dda2f750a2224d008539c767f.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+beam.components
+slur.components
+hairpin.components
+pedal.components
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> beam.components
+Selection(Note("c'8"), Container("d'8 ef'8"), Note("f'8"))
+\end{lstlisting}
+\begin{lstlisting}
+>>> slur.components
+Selection(Container("d'8 ef'8"),)
+\end{lstlisting}
+\begin{lstlisting}
+>>> hairpin.components
+Selection(<Staff{3}>,)
+\end{lstlisting}
+\begin{lstlisting}
+>>> pedal.components
+Selection(Note("c'8"), Note("d'8"), Note("ef'8"), Note("f'8"))
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+staff[1].extend("f'8 g' a' bf'")
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff[1].extend("f'8 g' a' bf'")
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-16b6d94ab0e6aae2330a17a1aabbedfa.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+beam.components
+slur.components
+hairpin.components
+pedal.components
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> beam.components
+Selection(Note("c'8"), Container("d'8 ef'8 f'8 g'8 a'8 bf'8"), Note("f'8"))
+\end{lstlisting}
+\begin{lstlisting}
+>>> slur.components
+Selection(Container("d'8 ef'8 f'8 g'8 a'8 bf'8"),)
+\end{lstlisting}
+\begin{lstlisting}
+>>> hairpin.components
+Selection(<Staff{3}>,)
+\end{lstlisting}
+\begin{lstlisting}
+>>> pedal.components
+Selection(Note("c'8"), Note("d'8"), Note("ef'8"), Note("f'8"), Note("g'8"), Note("a'8"), Note("bf'8"), Note("f'8"))
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
 show(score)
 upper_leaves = score['Voice 1'].select_leaves()
 attach(Crescendo(), upper_leaves[0:4])
@@ -2570,33 +2700,6 @@ show(score)
 >>> show(score)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f830a40d3d0e2008877bfc6c5086bee8.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-staff = Staff(r"c'4 { d' ef' } f'")
-attach(Slur(direction=Down), staff[1])
-show(staff)
-staff[1].extend("f' g' a' bf'")
-show(staff)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> staff = Staff(r"c'4 { d' ef' } f'")
->>> attach(Slur(direction=Down), staff[1])
->>> show(staff)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-69ba73d74e052ed1543cb0c38ee00f60.pdf}
-\begin{lstlisting}
->>> staff[1].extend("f' g' a' bf'")
->>> show(staff)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f42fdd2d988c4478791864ed13ab68f7.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2725,27 +2828,38 @@ show(staff)
 
 \section{Selecting components}
 
--   Selections
-
-\subsection{Indexing}
-
--   By name
-
--   By index
-
--   By slice
-
-\subsection{Selections}
-
--   select()
+-   Back-port discussion about selecting by index, slice and name to container
+    section
 
 -   Selection class
+
+-   select()
 
 -   Container.select\_leaves()
 
     -   allow\_discontiguous\_leaves=True
 
 -   inspect\_(...).get\_logical\_tie()
+
+\begin{comment}
+<abjad>
+staff = Staff(context_name='RhythmicStaff')
+staff.extend(r"c'4 r4 c'4 ~ c'4 ~ \times 2/3 { c'8 r4 c'8 ~ } c'4 r4 c'4")
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff = Staff(context_name='RhythmicStaff')
+>>> staff.extend(r"c'4 r4 c'4 ~ c'4 ~ \times 2/3 { c'8 r4 c'8 ~ } c'4 r4 c'4")
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-b4b0ff9ba945dc2a66384ba4499735a2.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
 
 -   LogicalTie
 
