@@ -13,36 +13,10 @@ fast:
 collect:
 	scripts/collect-modules
 	scripts/collect-scores
+	say "collected assets"
 
 examples:
 	$(MAKE) -C assets examples
-
-abjad/clean:
-	abjad-book \
-		--clean \
-		-a ./assets \
-		-g ./abjadbook.cfg \
-		-l . \
-		-y ./stylesheet.ily \
-		source/chapters/*.tex
-
-abjad/clean/composition:
-	abjad-book \
-		--clean \
-		-a ./assets \
-		-g ./abjadbook.cfg \
-		-l . \
-		-y ./stylesheet.ily \
-		source/chapters/a-model-of-composition.tex
-
-abjad/clean/time-tools:
-	abjad-book \
-		--clean \
-		-a ./assets \
-		-g ./abjadbook.cfg \
-		-l . \
-		-y ./stylesheet.ily \
-		source/chapters/time-tools.tex
 
 abjad/book:
 	abjad-book \
@@ -51,6 +25,7 @@ abjad/book:
 		-l . \
 		-y ./stylesheet.ily \
 		source/chapters/*.tex
+	say "rerendered all chapters"
 
 abjad/book/composition:
 	abjad-book \
@@ -59,6 +34,7 @@ abjad/book/composition:
 		-l . \
 		-y ./stylesheet.ily \
 		source/chapters/a-model-of-composition.tex
+	say "rerendered chapter 4"
 
 abjad/book/notation:
 	abjad-book \
@@ -67,6 +43,7 @@ abjad/book/notation:
 		-l . \
 		-y ./stylesheet.ily \
 		source/chapters/a-model-of-notation.tex
+	say "rerendered chapter 2"
 
 abjad/book/time-tools:
 	abjad-book \
@@ -75,6 +52,7 @@ abjad/book/time-tools:
 		-l . \
 		-y ./stylesheet.ily \
 		source/chapters/time-tools.tex
+	say "rerendered chapter 3"
 
 compile:
 	xelatex \
@@ -93,6 +71,7 @@ compile:
 	#xelatex dissertation.tex
 	#makeindex dissertation.tex
 	#xelatex dissertation.tex
+	say "recompiled document"
 
 clean:
 	rm -Rif assets/graphviz-*.pdf
@@ -109,6 +88,7 @@ clean:
 	find . -name "*.out" -exec rm -rf {} \;
 	find . -name "*.pyc" -exec rm -rf {} \;
 	find . -name "*.toc" -exec rm -rf {} \;
+	say "cleaned assets"
 
 open:
 	open dissertation.pdf
