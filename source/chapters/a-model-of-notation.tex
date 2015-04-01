@@ -247,15 +247,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x103a37fd0>
+<__main__.Foo object at 0x103948390>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x103a37fd0>'
+'<__main__.Foo object at 0x103948390>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x103a37fd0>'
+'<__main__.Foo object at 0x103948390>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -1106,11 +1106,11 @@ container_one.append(container_two)
 >>> container_one.append(container_two)
 Traceback (most recent call last):
   File "<abjadbook>", line 1, in <module>
-  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 927, in append
+  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 1045, in append
     self.__setitem__(slice(len(self), len(self)), [component])
-  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 130, in __setitem__
+  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 217, in __setitem__
     return self._set_item(i, expr)
-  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 442, in _set_item
+  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 560, in _set_item
     raise ParentageError('Attempted to induce cycles.')
 ParentageError: Attempted to induce cycles.
 \end{lstlisting}
@@ -2531,6 +2531,30 @@ levels of hierarchy.
 
 -   Demonstrate spanners attaching to leaves and to containers
 
+\begin{comment}
+<abjad>
+staff = Staff(r"c'4 \times 2/3 { d'4 e'4 f'4 } g'4")
+leaves = staff.select_leaves()
+attach(Slur(), leaves)
+attach(Crescendo(), staff)
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff = Staff(r"c'4 \times 2/3 { d'4 e'4 f'4 } g'4")
+>>> leaves = staff.select_leaves()
+>>> attach(Slur(), leaves)
+>>> attach(Crescendo(), staff)
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-92f892c73b19aa4062f33a23da587b0b.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
 -   Discuss cyclic spanner graph, logical voices
 
 -   Important subclasses: Beam, Slur, Hairpin, Glissando, Tie
@@ -2547,7 +2571,10 @@ levels of hierarchy.
 
 \begin{comment}
 <abjad>
-staff = Staff(r"c'8 { d' ef' } f'")
+staff = Staff()
+measure_one = Measure((3, 4), r"c'4 \times 2/3 { d'4 e'4 f'4 }")
+measure_two = Measure((4, 4), r"\times 3/4 { { g'4 a'4 } { b'4 c''4 } } c'4")
+staff.extend([measure_one, measure_two])
 show(staff)
 </abjad>
 \end{comment}
@@ -2556,24 +2583,19 @@ show(staff)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> staff = Staff(r"c'8 { d' ef' } f'")
+>>> staff = Staff()
+>>> measure_one = Measure((3, 4), r"c'4 \times 2/3 { d'4 e'4 f'4 }")
+>>> measure_two = Measure((4, 4), r"\times 3/4 { { g'4 a'4 } { b'4 c''4 } } c'4")
+>>> staff.extend([measure_one, measure_two])
 >>> show(staff)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f2013d13a6d3ccee6cd663766ed29334.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1396462d8b9df3f509b6050313eda7f6.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
 \begin{comment}
 <abjad>
-beam = Beam()
-slur = Slur(direction=Down)
-hairpin = Hairpin('p < f')
-pedal = spannertools.PianoPedalSpanner()
-attach(beam, staff[:])
-attach(slur, staff[1])
-attach(hairpin, staff)
-attach(pedal, staff.select_leaves())
-show(staff)
+graph(staff)
 </abjad>
 \end{comment}
 
@@ -2581,26 +2603,17 @@ show(staff)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> beam = Beam()
->>> slur = Slur(direction=Down)
->>> hairpin = Hairpin('p < f')
->>> pedal = spannertools.PianoPedalSpanner()
->>> attach(beam, staff[:])
->>> attach(slur, staff[1])
->>> attach(hairpin, staff)
->>> attach(pedal, staff.select_leaves())
->>> show(staff)
+>>> graph(staff)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-532e181dda2f750a2224d008539c767f.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-7fa23c38398cf047780c7b5eda3baae0.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
 \begin{comment}
 <abjad>
-beam.components
-slur.components
-hairpin.components
-pedal.components
+spanner_one = spannertools.Spanner()
+attach(spanner_one, staff.select_leaves())
+graph(staff, spanner=spanner_one)
 </abjad>
 \end{comment}
 
@@ -2608,28 +2621,19 @@ pedal.components
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> beam.components
-Selection(Note("c'8"), Container("d'8 ef'8"), Note("f'8"))
+>>> spanner_one = spannertools.Spanner()
+>>> attach(spanner_one, staff.select_leaves())
+>>> graph(staff, spanner=spanner_one)
 \end{lstlisting}
-\begin{lstlisting}
->>> slur.components
-Selection(Container("d'8 ef'8"),)
-\end{lstlisting}
-\begin{lstlisting}
->>> hairpin.components
-Selection(<Staff{3}>,)
-\end{lstlisting}
-\begin{lstlisting}
->>> pedal.components
-Selection(Note("c'8"), Note("d'8"), Note("ef'8"), Note("f'8"))
-\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-ae3202ced0aa2cdc539e5b421d52a347.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
 \begin{comment}
 <abjad>
-staff[1].extend("f'8 g' a' bf'")
-show(staff)
+spanner_two = spannertools.Spanner()
+attach(spanner_two, staff[:])
+graph(staff, spanner=spanner_two)
 </abjad>
 \end{comment}
 
@@ -2637,19 +2641,19 @@ show(staff)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> staff[1].extend("f'8 g' a' bf'")
->>> show(staff)
+>>> spanner_two = spannertools.Spanner()
+>>> attach(spanner_two, staff[:])
+>>> graph(staff, spanner=spanner_two)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-16b6d94ab0e6aae2330a17a1aabbedfa.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-e58c75c72e6fdd3f9756f33564e2ac6d.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
 \begin{comment}
 <abjad>
-beam.components
-slur.components
-hairpin.components
-pedal.components
+spanner_three = spannertools.Spanner()
+attach(spanner_three, measure_one[:] + measure_two[:])
+graph(staff, spanner=spanner_three)
 </abjad>
 \end{comment}
 
@@ -2657,36 +2661,19 @@ pedal.components
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> beam.components
-Selection(Note("c'8"), Container("d'8 ef'8 f'8 g'8 a'8 bf'8"), Note("f'8"))
+>>> spanner_three = spannertools.Spanner()
+>>> attach(spanner_three, measure_one[:] + measure_two[:])
+>>> graph(staff, spanner=spanner_three)
 \end{lstlisting}
-\begin{lstlisting}
->>> slur.components
-Selection(Container("d'8 ef'8 f'8 g'8 a'8 bf'8"),)
-\end{lstlisting}
-\begin{lstlisting}
->>> hairpin.components
-Selection(<Staff{3}>,)
-\end{lstlisting}
-\begin{lstlisting}
->>> pedal.components
-Selection(Note("c'8"), Note("d'8"), Note("ef'8"), Note("f'8"), Note("g'8"), Note("a'8"), Note("bf'8"), Note("f'8"))
-\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-67052171bbb4199bfd96eff88ae1ff5b.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
 \begin{comment}
 <abjad>
-show(score)
-upper_leaves = score['Voice 1'].select_leaves()
-attach(Crescendo(), upper_leaves[0:4])
-attach(Decrescendo(), upper_leaves[3:])
-attach(Tie(), upper_leaves[2:4])
-attach(Tie(), upper_leaves[6:8])
-attach(indicatortools.LilyPondCommand('slurDotted'), score['Voice 2'])
-attach(Slur(direction=Down), score['Voice 2'][0][1:])
-attach(Glissando(), score['Voice 2'][1])
-show(score)
+spanner_four = spannertools.Spanner()
+attach(spanner_four, measure_one[1][:] + measure_two[0][:])
+graph(staff, spanner=spanner_four)
 </abjad>
 \end{comment}
 
@@ -2694,21 +2681,11 @@ show(score)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> show(score)
+>>> spanner_four = spannertools.Spanner()
+>>> attach(spanner_four, measure_one[1][:] + measure_two[0][:])
+>>> graph(staff, spanner=spanner_four)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c5f77f1a94704e8f098e761bd215d443.pdf}
-\begin{lstlisting}
->>> upper_leaves = score['Voice 1'].select_leaves()
->>> attach(Crescendo(), upper_leaves[0:4])
->>> attach(Decrescendo(), upper_leaves[3:])
->>> attach(Tie(), upper_leaves[2:4])
->>> attach(Tie(), upper_leaves[6:8])
->>> attach(indicatortools.LilyPondCommand('slurDotted'), score['Voice 2'])
->>> attach(Slur(direction=Down), score['Voice 2'][0][1:])
->>> attach(Glissando(), score['Voice 2'][1])
->>> show(score)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-24ab3daf3afa1d520cb45154b854055a.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-01a535f6ca05ef6d449b197c1298ef13.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3069,7 +3046,7 @@ show(score)
 \begin{lstlisting}
 >>> show(score)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-24ab3daf3afa1d520cb45154b854055a.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c5f77f1a94704e8f098e761bd215d443.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3134,7 +3111,7 @@ show(score)
 ...
 >>> show(score)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-266c9ef72b67988b99a49392f1c189b7.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-da3c33d6146317b6564053525185a185.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3165,11 +3142,11 @@ for component in iteration_agent.depth_first():
     <PianoStaff-"Both Staves"<<2>>>
         <Staff-"Upper Staff"{1}>
             <Voice-"Voice 1"{2}>
-                Measure((3, 4), "d'4.. b'16 af'4 ~")
+                Measure((3, 4), "d'4.. b'16 af'4")
                     Note("d'4..")
                     Note("b'16")
                     Note("af'4")
-                Measure((5, 4), "af'4. g'8 c''8 b'4. ~ b'8 r16 d''16")
+                Measure((5, 4), "af'4. g'8 c''8 b'4. b'8 r16 d''16")
                     Note("af'4.")
                     Note("g'8")
                     Note("c''8")
@@ -3231,7 +3208,7 @@ show(score)
 ...
 >>> show(score)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1e712e48fed75449934558a26961651e.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-db611b2a9376ffa7996eb179aa7fe64b.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3291,7 +3268,7 @@ show(score)
 ...
 >>> show(score)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-61545fb4a90c75570950211838af52d0.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5d0303cac254f7cfbb691261413646c8.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
