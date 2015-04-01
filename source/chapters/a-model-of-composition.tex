@@ -2562,7 +2562,7 @@ segment_maker = consort.SegmentMaker(
     settings=[music_setting],
     tempo=indicatortools.Tempo((1, 4), 72),
     )
-illustration = segment_maker(annotate=True, verbose=False)
+illustration, metadata = segment_maker(annotate=True, verbose=False)
 show(illustration)
 </abjad>
 \end{comment}
@@ -2600,7 +2600,7 @@ show(illustration)
 ...     settings=[music_setting],
 ...     tempo=indicatortools.Tempo((1, 4), 72),
 ...     )
->>> illustration = segment_maker(annotate=True, verbose=False)
+>>> illustration, metadata = segment_maker(annotate=True, verbose=False)
 >>> show(illustration)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5977fbd9a5cf76403e1a83bc38492c5d.pdf}
@@ -3606,7 +3606,7 @@ music_setting = consort.MusicSetting(
     v2=music_specifier,
     )
 segment_maker = new(segment_maker, settings=[music_setting])
-lilypond_file = segment_maker(verbose=False)
+lilypond_file, metadata = segment_maker(verbose=False)
 consort.annotate(lilypond_file.score)
 show(lilypond_file)
 </abjad>
@@ -3629,7 +3629,7 @@ show(lilypond_file)
 ...     v2=music_specifier,
 ...     )
 >>> segment_maker = new(segment_maker, settings=[music_setting])
->>> lilypond_file = segment_maker(verbose=False)
+>>> lilypond_file, metadata = segment_maker(verbose=False)
 >>> consort.annotate(lilypond_file.score)
 >>> show(lilypond_file)
 \end{lstlisting}
@@ -3658,8 +3658,7 @@ music_setting = consort.MusicSetting(
     v2=music_specifier,
     )
 segment_maker = new(segment_maker, settings=[music_setting])
-lilypond_file = segment_maker(verbose=False)
-consort.annotate(lilypond_file.score)
+lilypond_file, metadata = segment_maker(annotate=True, verbose=False)
 show(lilypond_file)
 </abjad>
 \end{comment}
@@ -3678,8 +3677,7 @@ show(lilypond_file)
 ...     v2=music_specifier,
 ...     )
 >>> segment_maker = new(segment_maker, settings=[music_setting])
->>> lilypond_file = segment_maker(verbose=False)
->>> consort.annotate(lilypond_file.score)
+>>> lilypond_file, metadata = segment_maker(annotate=True, verbose=False)
 >>> show(lilypond_file)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-89244abdb768aa23fa5a7425fab9e539.pdf}
@@ -3703,8 +3701,7 @@ music_setting = consort.MusicSetting(
     v2=music_specifier,
     )
 segment_maker = new(segment_maker, settings=[music_setting])
-lilypond_file = segment_maker(verbose=False)
-consort.annotate(lilypond_file.score)
+lilypond_file, metadata = segment_maker(annotate=True, verbose=False)
 show(lilypond_file)
 </abjad>
 \end{comment}
@@ -3723,8 +3720,7 @@ show(lilypond_file)
 ...     v2=music_specifier,
 ...     )
 >>> segment_maker = new(segment_maker, settings=[music_setting])
->>> lilypond_file = segment_maker(verbose=False)
->>> consort.annotate(lilypond_file.score)
+>>> lilypond_file, metadata = segment_maker(annotate=True, verbose=False)
 >>> show(lilypond_file)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ff0b1c46ddbd29c5a690fe7c182da0aa.pdf}
@@ -4023,8 +4019,7 @@ music_setting = new(
     v2=music_specifier,
     )
 segment_maker = new(segment_maker, settings=[music_setting])
-lilypond_file = segment_maker(verbose=False)
-consort.annotate(lilypond_file.score)
+lilypond_file, metadata = segment_maker(annotate=True, verbose=False)
 show(lilypond_file)
 </abjad>
 \end{comment}
@@ -4043,8 +4038,7 @@ show(lilypond_file)
 ...     v2=music_specifier,
 ...     )
 >>> segment_maker = new(segment_maker, settings=[music_setting])
->>> lilypond_file = segment_maker(verbose=False)
->>> consort.annotate(lilypond_file.score)
+>>> lilypond_file, metadata = segment_maker(annotate=True, verbose=False)
 >>> show(lilypond_file)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f6ef78067ceff32a177d4f562e2153e5.pdf}

@@ -73,8 +73,8 @@ print(abjad_names)
 'agenttools', 'attach', 'datastructuretools', 'detach', 'developerscripttools', 'documentationtools',
 'durationtools', 'exceptiontools', 'f', 'graph', 'handlertools', 'indicatortools', 'inspect_',
 'instrumenttools', 'ipythontools', 'iterate', 'labeltools', 'layouttools', 'lilypondfiletools',
-'lilypondnametools', 'lilypondparsertools', 'markuptools', 'mathtools', 'metertools', 'mutate', 'new',
-'override', 'parse', 'persist', 'pitchtools', 'play', 'quantizationtools', 'rhythmmakertools',
+'lilypondnametools', 'lilypondparsertools', 'ly', 'markuptools', 'mathtools', 'metertools', 'mutate',
+'new', 'override', 'parse', 'persist', 'pitchtools', 'play', 'quantizationtools', 'rhythmmakertools',
 'rhythmtreetools', 'schemetools', 'scoretools', 'select', 'selectiontools', 'selectortools',
 'sequencetools', 'set_', 'show', 'sievetools', 'spannertools', 'stringtools', 'systemtools',
 'templatetools', 'timespantools', 'tonalanalysistools', 'topleveltools']
@@ -247,15 +247,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x103948390>
+<__main__.Foo object at 0x107226dd0>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x103948390>'
+'<__main__.Foo object at 0x107226dd0>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x103948390>'
+'<__main__.Foo object at 0x107226dd0>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -1106,11 +1106,11 @@ container_one.append(container_two)
 >>> container_one.append(container_two)
 Traceback (most recent call last):
   File "<abjadbook>", line 1, in <module>
-  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 1045, in append
+  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 1047, in append
     self.__setitem__(slice(len(self), len(self)), [component])
-  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 217, in __setitem__
+  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 219, in __setitem__
     return self._set_item(i, expr)
-  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 560, in _set_item
+  File "/Users/josiah/Documents/Development/abjad/abjad/tools/scoretools/Container.py", line 562, in _set_item
     raise ParentageError('Attempted to induce cycles.')
 ParentageError: Attempted to induce cycles.
 \end{lstlisting}
@@ -2605,7 +2605,7 @@ graph(staff)
 \begin{lstlisting}
 >>> graph(staff)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-7fa23c38398cf047780c7b5eda3baae0.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-9dcf1f7f32dcf3f7c356825ed86cdb3a.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2625,7 +2625,7 @@ graph(staff, spanner=spanner_one)
 >>> attach(spanner_one, staff.select_leaves())
 >>> graph(staff, spanner=spanner_one)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-ae3202ced0aa2cdc539e5b421d52a347.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-d051ed2319a09789025d34c098f10724.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2645,7 +2645,7 @@ graph(staff, spanner=spanner_two)
 >>> attach(spanner_two, staff[:])
 >>> graph(staff, spanner=spanner_two)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-e58c75c72e6fdd3f9756f33564e2ac6d.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-145928dc76cbac819d962e7dca54e95f.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2665,7 +2665,7 @@ graph(staff, spanner=spanner_three)
 >>> attach(spanner_three, measure_one[:] + measure_two[:])
 >>> graph(staff, spanner=spanner_three)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-67052171bbb4199bfd96eff88ae1ff5b.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-128d6bb41295ccd3c0fa73737de67f68.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2685,7 +2685,7 @@ graph(staff, spanner=spanner_four)
 >>> attach(spanner_four, measure_one[1][:] + measure_two[0][:])
 >>> graph(staff, spanner=spanner_four)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.4]{assets/graphviz-01a535f6ca05ef6d449b197c1298ef13.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-d66575f5214655347456300f5b02fdb8.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2880,8 +2880,8 @@ Timespan(start_offset=Offset(1, 4), stop_offset=Offset(3, 4))
 >>> for spanner in selection.get_spanners():
 ...     spanner
 ...
-Beam("c'8, d'8, e'8, f'8")
 Beam("g'8, a'8, b'8, c''8")
+Beam("c'8, d'8, e'8, f'8")
 Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
 \end{lstlisting}
 \begin{lstlisting}
