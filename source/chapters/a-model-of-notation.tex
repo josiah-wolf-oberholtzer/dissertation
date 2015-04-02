@@ -73,8 +73,8 @@ print(abjad_names)
 'agenttools', 'attach', 'datastructuretools', 'detach', 'developerscripttools', 'documentationtools',
 'durationtools', 'exceptiontools', 'f', 'graph', 'handlertools', 'indicatortools', 'inspect_',
 'instrumenttools', 'ipythontools', 'iterate', 'labeltools', 'layouttools', 'lilypondfiletools',
-'lilypondnametools', 'lilypondparsertools', 'ly', 'markuptools', 'mathtools', 'metertools', 'mutate',
-'new', 'override', 'parse', 'persist', 'pitchtools', 'play', 'quantizationtools', 'rhythmmakertools',
+'lilypondnametools', 'lilypondparsertools', 'markuptools', 'mathtools', 'metertools', 'mutate', 'new',
+'override', 'parse', 'persist', 'pitchtools', 'play', 'quantizationtools', 'rhythmmakertools',
 'rhythmtreetools', 'schemetools', 'scoretools', 'select', 'selectiontools', 'selectortools',
 'sequencetools', 'set_', 'show', 'sievetools', 'spannertools', 'stringtools', 'systemtools',
 'templatetools', 'timespantools', 'tonalanalysistools', 'topleveltools']
@@ -247,15 +247,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x107226dd0>
+<__main__.Foo object at 0x103148650>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x107226dd0>'
+'<__main__.Foo object at 0x103148650>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x107226dd0>'
+'<__main__.Foo object at 0x103148650>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -2569,6 +2569,13 @@ show(staff)
 
 -   Demonstrate spanner.components
 
+Consider the following staff. It contains two measures of differing durations,
+each containing a mixture of tuplets and notes. The second measure's tuplet
+contains two bare containers, each containing two notes in turn. The leaves of
+the staff then vary in depth from 2 -- contained by a measure, then by the
+staff -- to 4 -- contained by a bare container, then a tuplet, measure and
+finally staff:
+
 \begin{comment}
 <abjad>
 staff = Staff()
@@ -2593,6 +2600,9 @@ show(staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+The staff's score hierarchy can be visualized as a graph with the leaves
+arranged at the bottom and grouped together according to their depth:
+
 \begin{comment}
 <abjad>
 graph(staff)
@@ -2609,11 +2619,30 @@ graph(staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+A \texttt{Spanner} can be attached to the leaves of the staff. Note that while
+all spanners' structural behavior is identical to that of their parent
+\texttt{Spanner} class, \texttt{Spanner} itself provides no formatting beyond
+the optional typographic overrides discussed in
+\autoref{ssec:typographic-overrides}, so there is no need to illustrate the
+newly-altered staff as notation. However, the staff can be graphed again, this
+time highlighting and connecting together the nodes in the graph representing
+the components to which the spanner attaches by passing that spanner as a
+keyword to \texttt{graph()}:\footnote{Abjad relies on the open-source Graphviz
+toolkit to visualize graph structures. Abjad also provides an object-oriented
+model of Graphviz's input file format as part of its
+\texttt{documentationtools} subpackage. There are many layout options available
+when working with Graphviz, and they can be passed as keywords to Abjad's
+toplevel \texttt{graph()} function, hence the appearance of the
+\texttt{graph\_attributes} keyword.}
+
 \begin{comment}
 <abjad>
-spanner_one = spannertools.Spanner()
-attach(spanner_one, staff.select_leaves())
-graph(staff, spanner=spanner_one)
+spanner = spannertools.Spanner()
+attach(spanner, staff.select_leaves())
+graph(staff, spanner=spanner, graph_attributes={
+    'splines': 'curved',
+    'concentrate': True,
+    })
 </abjad>
 \end{comment}
 
@@ -2621,19 +2650,31 @@ graph(staff, spanner=spanner_one)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> spanner_one = spannertools.Spanner()
->>> attach(spanner_one, staff.select_leaves())
->>> graph(staff, spanner=spanner_one)
+>>> spanner = spannertools.Spanner()
+>>> attach(spanner, staff.select_leaves())
+>>> graph(staff, spanner=spanner, graph_attributes={
+...     'splines': 'curved',
+...     'concentrate': True,
+...     })
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-d051ed2319a09789025d34c098f10724.pdf}
+\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-5ab2e467e47fcf944bc4a42613ee38c2.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
+The spanner can be detached from the staff's leaves and reattached to the staff
+itself. Recall that spanners can attach to one or more of any combination of
+containers and leaves, provided all are contiguous in time and occupy the same
+logical voice. Note in the following graph that the node representing the staff
+is both outlined in bold and shaded grey while all of the components underneath
+it in the score hierarchy are simply shaded grey. In these score hierarchy
+graphs, only those nodes to which the spanner directly attaches are outlined in
+bold, while all components that the spanner \emph{covers} are shaded:
+
 \begin{comment}
 <abjad>
-spanner_two = spannertools.Spanner()
-attach(spanner_two, staff[:])
-graph(staff, spanner=spanner_two)
+detach(spanner)
+attach(spanner, staff)
+graph(staff, spanner=spanner)
 </abjad>
 \end{comment}
 
@@ -2641,19 +2682,48 @@ graph(staff, spanner=spanner_two)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> spanner_two = spannertools.Spanner()
->>> attach(spanner_two, staff[:])
->>> graph(staff, spanner=spanner_two)
+>>> detach(spanner)
+>>> attach(spanner, staff)
+>>> graph(staff, spanner=spanner)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-a5232415348a30adb6c49f9fa588192b.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+The spanner can then be detached from the staff and attached to the two
+measures it contains:
+
+\begin{comment}
+<abjad>
+detach(spanner)
+attach(spanner, staff[:])
+graph(staff, spanner=spanner)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> detach(spanner)
+>>> attach(spanner, staff[:])
+>>> graph(staff, spanner=spanner)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-145928dc76cbac819d962e7dca54e95f.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
+The spanner can be detached again and reattached to a selection created by
+selecting the contents of both measures and concatenating those selections
+together. Note that the spanner's components -- those nodes outlined in bold
+and connected by bold arrows -- here comprise both leaves and containers, but
+outline the same collection of leaves as the previous graphs:
+
 \begin{comment}
 <abjad>
-spanner_three = spannertools.Spanner()
-attach(spanner_three, measure_one[:] + measure_two[:])
-graph(staff, spanner=spanner_three)
+detach(spanner)
+attach(spanner, measure_one[:] + measure_two[:])
+graph(staff, spanner=spanner)
 </abjad>
 \end{comment}
 
@@ -2661,19 +2731,23 @@ graph(staff, spanner=spanner_three)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> spanner_three = spannertools.Spanner()
->>> attach(spanner_three, measure_one[:] + measure_two[:])
->>> graph(staff, spanner=spanner_three)
+>>> detach(spanner)
+>>> attach(spanner, measure_one[:] + measure_two[:])
+>>> graph(staff, spanner=spanner)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-128d6bb41295ccd3c0fa73737de67f68.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
+Finally, the spanner can be detached from the previous selection and reattached
+to a new selection comprising the concatenated contents of each measures'
+tuplet child:
+
 \begin{comment}
 <abjad>
-spanner_four = spannertools.Spanner()
-attach(spanner_four, measure_one[1][:] + measure_two[0][:])
-graph(staff, spanner=spanner_four)
+detach(spanner)
+attach(spanner, measure_one[1][:] + measure_two[0][:])
+graph(staff, spanner=spanner)
 </abjad>
 \end{comment}
 
@@ -2681,15 +2755,19 @@ graph(staff, spanner=spanner_four)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> spanner_four = spannertools.Spanner()
->>> attach(spanner_four, measure_one[1][:] + measure_two[0][:])
->>> graph(staff, spanner=spanner_four)
+>>> detach(spanner)
+>>> attach(spanner, measure_one[1][:] + measure_two[0][:])
+>>> graph(staff, spanner=spanner)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-d66575f5214655347456300f5b02fdb8.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
+Spanners only contribute formatting to the leaves they cover, but not to any
+container.
+
 \subsection{Typographic overrides}
+\label{ssec:typographic-overrides}
 
 -   Demonstrate on components, and on components
 
@@ -2881,8 +2959,8 @@ Timespan(start_offset=Offset(1, 4), stop_offset=Offset(3, 4))
 ...     spanner
 ...
 Beam("g'8, a'8, b'8, c''8")
-Beam("c'8, d'8, e'8, f'8")
 Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
+Beam("c'8, d'8, e'8, f'8")
 \end{lstlisting}
 \begin{lstlisting}
 >>> attach(Glissando(), selection)
