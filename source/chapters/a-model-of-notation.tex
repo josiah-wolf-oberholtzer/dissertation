@@ -247,15 +247,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x103148650>
+<__main__.Foo object at 0x10394a810>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x103148650>'
+'<__main__.Foo object at 0x10394a810>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x103148650>'
+'<__main__.Foo object at 0x10394a810>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -719,6 +719,24 @@ show(measure)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+The measure can also be represented as a graph, clarifying the containment:
+
+\begin{comment}
+<abjad>
+graph(measure)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> graph(measure)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-f7665c2f5353983ed9713715cfe4c3aa.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
 \noindent Containers can also be indexed into, measured for length and iterated
 over. For example, the second component contained by the measure can be
 retrieved by subscripting the measure with the index 1:
@@ -762,6 +780,22 @@ show(measure)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\begin{comment}
+<abjad>
+graph(measure)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> graph(measure)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-ef4980108f4d4d2b6a033286844a469e.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
 \noindent Furthermore, the last two leaves in the triplet can be replaced by a
 quintuplet using Python's \emph{slice assignment} syntax. In the following
 code, the text \texttt{outer\_tuplet[1:]} references the selection of
@@ -788,6 +822,22 @@ show(measure)
 >>> show(measure)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-b783a8dad0c3003152ef1b148bc60ca8.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+graph(measure)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> graph(measure)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-c1957e438c0db26d032c5b430f0ccba6.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2713,7 +2763,7 @@ graph(staff, spanner=spanner)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-The spanner can be detached again and reattached to a selection created by
+The spanner can also be detached again and reattached to a selection created by
 selecting the contents of both measures and concatenating those selections
 together. Note that the spanner's components -- those nodes outlined in bold
 and connected by bold arrows -- here comprise both leaves and containers, but
@@ -2764,7 +2814,7 @@ graph(staff, spanner=spanner)
 \end{abjadbookoutput}
 
 Spanners only contribute formatting to the leaves they cover, but not to any
-container.
+container. Why attach spanners to containers at all?
 
 \subsection{Typographic overrides}
 \label{ssec:typographic-overrides}
@@ -2959,8 +3009,8 @@ Timespan(start_offset=Offset(1, 4), stop_offset=Offset(3, 4))
 ...     spanner
 ...
 Beam("g'8, a'8, b'8, c''8")
-Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
 Beam("c'8, d'8, e'8, f'8")
+Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
 \end{lstlisting}
 \begin{lstlisting}
 >>> attach(Glissando(), selection)
