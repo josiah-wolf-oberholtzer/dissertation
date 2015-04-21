@@ -99,7 +99,7 @@ def get_meters_and_meter_boundaries(timespan_inventory, permitted_meters):
 
 
 def make_music(rhythm_maker, durations, seed=0):
-    music = rhythm_maker(durations, seeds=seed)
+    music = rhythm_maker(durations, rotation=seed)
     for i, division in enumerate(music):
         if len(division) == 1 and isinstance(division[0], scoretools.Tuplet):
             music[i] = division[0]

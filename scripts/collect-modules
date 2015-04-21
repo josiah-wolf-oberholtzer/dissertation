@@ -63,7 +63,7 @@ def collect_consort_paths():
 
 def source_path_to_title(module_name, source_path):
     path = source_path.partition(module_name)[-1]
-    path = path.rstrip('/')
+    path = path.strip('/')
     if path.endswith('.py'):
         path = path[:-3]
     elif path.endswith('.ily'):
@@ -71,6 +71,7 @@ def source_path_to_title(module_name, source_path):
     path = path.replace(os.path.sep, '.')
     if path.endswith('.definition'):
         path = path.replace('.definition', '')
+    print('PATH', module_name, source_path, path)
     return path
 
 

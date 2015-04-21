@@ -5,7 +5,7 @@
 
 \todo[inline]{\textbf{TODO:} Explain motivation for Consort.}
 
-\todo[inline]{\textbf{TODO:} Explain music specifier seeds.}
+\todo[inline]{\textbf{TODO:} Explain music specifier rotation.}
 
 \begin{comment}
 <abjad>[hide=true]
@@ -142,7 +142,7 @@ show(segment_maker, verbose=False)
 \begin{lstlisting}
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5551103a6156a0c950aaf871d1206d96.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ef0ad575af796cf07129840810211361.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -171,7 +171,7 @@ show(slower_segment_maker, verbose=False)
 ...     )
 >>> show(slower_segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-dac8ffa35eb4dae93ba418fbf1eaf390.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-eede26df3c473b2a0d8f83eb654f95fb.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -352,7 +352,7 @@ show(timespan_inventory, key='voice_name')
 ...     ])
 >>> show(timespan_inventory, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8ff4b7fe83d5db8fb0d01627be42da4b.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-177313aafb9a4cd392086510293c2852.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -390,7 +390,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-cacf84e69a9aeb754e2908597bc776a2.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-dce556f66c58bd3b9555e0a51ddc7c46.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -429,7 +429,7 @@ show(result, key='voice_name')
 ...     )
 >>> show(result, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-9382d23b443fa753fb33e78d0e7a805f.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8fb7990b5534e2df13d3e47c0116cebe.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -669,7 +669,7 @@ show(timespan_inventory, key='voice_name')
 ...     )
 >>> show(timespan_inventory, key='voice_name')
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8366833a47e42f51e9db864d5c6ad709.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-25496686c3edafb998822e08ed8256cd.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -844,7 +844,7 @@ print(format(score))
 >>> print(format(score))
 \context Score = "String Quartet Score" <<
     \tag #'time
-    \context TimeSignatureContext = "TimeSignatureContext" {
+    \context TimeSignatureContext = "Time Signature Context" {
     }
     \tag #'violin-1
     \context StringPerformerGroup = "Violin 1 Performer Group" \with {
@@ -971,27 +971,27 @@ for parent, child_pair in score_template.composite_context_pairs.items():
 >>> for abbr, context_name in score_template.context_name_abbreviations.items():
 ...     print(abbr, context_name)
 ...
-('violin_1', 'Violin 1 Performer Group')
-('violin_1_rh', 'Violin 1 Bowing Voice')
-('violin_1_lh', 'Violin 1 Fingering Voice')
-('violin_2', 'Violin 2 Performer Group')
-('violin_2_rh', 'Violin 2 Bowing Voice')
-('violin_2_lh', 'Violin 2 Fingering Voice')
-('viola', 'Viola Performer Group')
 ('viola_rh', 'Viola Bowing Voice')
-('viola_lh', 'Viola Fingering Voice')
-('cello', 'Cello Performer Group')
 ('cello_rh', 'Cello Bowing Voice')
+('violin_1_lh', 'Violin 1 Fingering Voice')
+('violin_2_lh', 'Violin 2 Fingering Voice')
+('violin_2_rh', 'Violin 2 Bowing Voice')
+('cello', 'Cello Performer Group')
+('viola', 'Viola Performer Group')
+('violin_1_rh', 'Violin 1 Bowing Voice')
+('viola_lh', 'Viola Fingering Voice')
+('violin_2', 'Violin 2 Performer Group')
 ('cello_lh', 'Cello Fingering Voice')
+('violin_1', 'Violin 1 Performer Group')
 \end{lstlisting}
 \begin{lstlisting}
 >>> for parent, child_pair in score_template.composite_context_pairs.items():
 ...     print(parent, child_pair)
 ...
-('violin_1', ('violin_1_rh', 'violin_1_lh'))
 ('violin_2', ('violin_2_rh', 'violin_2_lh'))
-('viola', ('viola_rh', 'viola_lh'))
 ('cello', ('cello_rh', 'cello_lh'))
+('viola', ('viola_rh', 'viola_lh'))
+('violin_1', ('violin_1_rh', 'violin_1_lh'))
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -1075,12 +1075,12 @@ show(target_timespans, range_=(0, 8))
 >>> segment_timespan = timespantools.Timespan(0, 8)
 >>> show(segment_timespan)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a34adb1cfbda637e38739ddd84494442.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f567667689eba1c58718b27387ee7b57.pdf}
 \begin{lstlisting}
 >>> target_timespans = music_setting.resolve_target_timespans(segment_timespan)
 >>> show(target_timespans, range_=(0, 8))
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-102acd696ed0eb0ce3e2668275527bd3.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fd71268494b3181b364d1e4e6d5b52be.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -1109,7 +1109,7 @@ show(target_timespans, range_=(0, 8))
 ...     )
 >>> show(target_timespans, range_=(0, 8))
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fdd1e78affa1ee5ba3e3e9b80feee1b2.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7625e15798fd87d742c55f71daf54d9e.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -1143,7 +1143,7 @@ show(target_timespans, range_=(0, 8))
 >>> target_timespans = music_setting.resolve_target_timespans(segment_timespan)
 >>> show(target_timespans, range_=(0, 8))
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-435c344c6fe3e22cf86e856a0fe98c16.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-674222238f6b84fa7202973d82608446.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -1207,7 +1207,7 @@ show(layer_1, key='voice_name', range_=(0, (21, 4)))
 ...     )
 >>> show(layer_1, key='voice_name', range_=(0, (21, 4)))
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f86c3ef83d7c5ffbef9e47999bb478a9.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-322c856aa51c35e7aafdebb5dc058ae6.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -1285,7 +1285,7 @@ show(layer_2, key='voice_name', range_=(0, (21, 4)))
 ...     )
 >>> show(layer_2, key='voice_name', range_=(0, (21, 4)))
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-e49b088ae657fd66299d7b78da251b1a.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-3132ad5d7223e913e051d873ea7285bc.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -1368,7 +1368,7 @@ show(layer_3, key='voice_name', range_=(0, (21, 4)))
 ...     )
 >>> show(layer_3, key='voice_name', range_=(0, (21, 4)))
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-941b5746ac1f0adcadef1f907d8ffb78.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0dc91606e5d0e6c0290a7dc1bcc7c6e0.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -1471,7 +1471,7 @@ show(timespan_inventory, range_=(0, (21, 4)))
 \begin{lstlisting}
 >>> show(timespan_inventory, range_=(0, (21, 4)))
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-39bc7fc954dbcc692b2517c8195b821e.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fa8175e727ce4cd94ecb592ff91d7d4e.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -1494,7 +1494,7 @@ show(timespan_inventory, key='voice_name', sortkey='layer', range_=(0, (21, 4)))
 \begin{lstlisting}
 >>> show(timespan_inventory, key='voice_name', sortkey='layer', range_=(0, (21, 4)))
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7b84f6ec88dc9ff87fba45eab8bd201b.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0a31ea9155083df2944d88bc0521f271.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -1560,7 +1560,7 @@ show(demultiplexed_maquette, range_=(0, (21, 4)))
 \begin{lstlisting}
 >>> show(demultiplexed_maquette, range_=(0, (21, 4)))
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8d7921006d6bce021d9a284d12ed2e90.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-75b379c362e5b09668022c8e199ec995.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -1748,12 +1748,12 @@ show(consolidated_timespans)
 ...     ])
 >>> show(timespans)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5f102816b004f8607b165bde7a9a4eb6.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-e9f9b90eee8e879ce05e7cfe8a6db3b2.pdf}
 \begin{lstlisting}
 >>> consolidated_timespans = consort.SegmentMaker.consolidate_timespans(timespans)
 >>> show(consolidated_timespans)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-dabc429bbedead286bda82e3603f4457.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-4f768546958fc8de26bdd7d00c6c24db.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -1909,7 +1909,7 @@ show(unconsolidated_staff)
 >>> consort.annotate(unconsolidated_staff)
 >>> show(unconsolidated_staff)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8a213398dc0a03a0c9fcf4af26637767.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-10dd7b5abcf5b9106449153c363d2c73.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -1944,7 +1944,7 @@ show(staff_group)
 >>> staff_group = StaffGroup([unconsolidated_staff, consolidated_staff])
 >>> show(staff_group)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1ef1a4031465a364425aef4e059efda0.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1cd22521bb9d39ce643e21e7ec4ec133.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2023,7 +2023,7 @@ show(timespan)
 ...     )
 >>> show(timespan)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-afc1398492f58ffad86eeaffa0b1a3a3.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fa2ebfe2eb2a91eda1421b40f500fd17.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2045,7 +2045,7 @@ print(format(inscribed_timespans))
 >>> inscribed_timespans = consort.SegmentMaker.inscribe_timespan(timespan)
 >>> show(inscribed_timespans, range_=(0, (7, 4)))
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-4626b71066d8fb3d04f25bd125810768.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a012c16826845bc8a93abb1c2067aaa2.pdf}
 \begin{lstlisting}
 >>> print(format(inscribed_timespans))
 timespantools.TimespanInventory(
@@ -2230,7 +2230,7 @@ show(demultiplexed_maquette, range_=(0, 6))
 \begin{lstlisting}
 >>> show(demultiplexed_maquette, range_=(0, 6))
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-e3cd38c9cc43be27a4d132c287a15a2a.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-6e89efc4773fd3a66f8cd42c73ea42f9.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2279,7 +2279,7 @@ show(demultiplexed_maquette, range_=(0, 6))
 ...
 >>> show(demultiplexed_maquette, range_=(0, 6))
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c49d2c79b38a6d5fdf78db3846702135.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-781fb30a48c7242b74a4e14dee19f5d6.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2603,7 +2603,7 @@ show(illustration)
 >>> illustration, metadata = segment_maker(annotate=True, verbose=False)
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5977fbd9a5cf76403e1a83bc38492c5d.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-28f4db0823ef009a64bfe3e6f3916390.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2688,7 +2688,7 @@ show(illustration)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5aa3c541a761ba1c0f9f1feddebdd9f9.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-72a0622e14b082f2188fcc2c80187e50.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2734,7 +2734,7 @@ show(illustration)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-e202bb70e6acf3fb131f4d6996af1a22.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5048cc902d0aef79e502179a93f969d0.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2773,7 +2773,7 @@ show(illustration)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-36f80ece70e9ad65e04f71a792bee18a.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c70c0411da81cbcb66ede4abb54d0f06.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2810,7 +2810,7 @@ show(illustration)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-991c98229802276bba5390adb317a0a6.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1fac8cdbf07f60d92bbfadaf293f540e.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2907,7 +2907,7 @@ show(illustration)
 ...
 >>> show(illustration)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0db60a53c114bc74fa74183c0505f245.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a7b8a136d11a9c41272d15952443df11.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3013,7 +3013,7 @@ show(segment_maker, verbose=False)
 ...     )
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-b2976da53f8317d0562bc3b6eda4b302.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-553966712d3aa62c499f520eaa4a5563.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3105,7 +3105,7 @@ show(segment_maker, verbose=False)
 ...     )
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-394f358f60132ecf989d89a8a9e62012.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-372d0f60eecee0de8f544036ad39ecc6.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3154,7 +3154,7 @@ show(segment_maker, verbose=False)
 >>> segment_maker = new(segment_maker, settings=[music_setting])
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-104b2b0b061ac0a12d87191eadfae379.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c570a9b3c5d85d971bf303beed5617aa.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3193,7 +3193,7 @@ show(segment_maker, verbose=False)
 >>> segment_maker = new(segment_maker, settings=[music_setting])
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1548051ace14e831b1685f04ffc9bf04.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ccbe9e860cfc06edead55896037cf3b8.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3261,7 +3261,7 @@ show(segment_maker, verbose=False)
 ...     )
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-e6f73fdc68fe0c974a8ca8492d683bdb.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5a376cd1f357a0e9ef8eb4249c7d7202.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3383,7 +3383,7 @@ show(segment_maker, verbose=False)
 >>> segment_maker = new(segment_maker, settings=[music_setting])
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f863612768a505f3f1a27901d8908c01.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0b4a0879dbc007ad5e37ac5646035688.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3453,7 +3453,7 @@ show(segment_maker, verbose=False)
 >>> segment_maker = new(segment_maker, settings=[music_setting])
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8353cb721ae26e66270945a62cbb8a67.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-9d1a2c24c6d23a7bd4a03fa2da94aceb.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3494,7 +3494,7 @@ show(segment_maker, verbose=False)
 >>> segment_maker = new(segment_maker, settings=[music_setting])
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-e8337085639c633444a1e65214aa5493.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-40eaaf033fcb777f4bc947de685e6b66.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3550,7 +3550,7 @@ show(segment_maker, verbose=False)
 >>> segment_maker = new(segment_maker, settings=[music_setting])
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1faec952a7b45f54cee2ed62c44d50bc.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-d21d64c8a4e64b73600f29d0c449684d.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3578,7 +3578,7 @@ show(segment_maker, verbose=False)
 ...     )
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-9b48c7c7d8ec2ca4e86b9da611fdef17.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fabe3646c407056d87302d6a3bde4d13.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3633,7 +3633,7 @@ show(lilypond_file)
 >>> consort.annotate(lilypond_file.score)
 >>> show(lilypond_file)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-76acdc0bda9feecdd70997204aa7c9c8.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-75ae40b688dbbb0e395f4b7b98ba2a3a.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3680,7 +3680,7 @@ show(lilypond_file)
 >>> lilypond_file, metadata = segment_maker(annotate=True, verbose=False)
 >>> show(lilypond_file)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-89244abdb768aa23fa5a7425fab9e539.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-2959a3202775a0e57bab96e699cd1cc5.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3723,7 +3723,7 @@ show(lilypond_file)
 >>> lilypond_file, metadata = segment_maker(annotate=True, verbose=False)
 >>> show(lilypond_file)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ff0b1c46ddbd29c5a690fe7c182da0aa.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-9d3197dc736fd721d5a2be80a32e42ff.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3836,7 +3836,7 @@ show(segment_maker, verbose=False)
 ...     )
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-d4233d5b2dceee742a44a85fa1176f10.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-30855269f56a6a2b6a6df5919bfc2241.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3887,7 +3887,7 @@ show(segment_maker,verbose=False)
 >>> segment_maker = new(segment_maker, settings=[music_setting])
 >>> show(segment_maker,verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-4eb7230b77b49af4a565abba501d23d8.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f163a397fd3e3471fda3242a77e720e9.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3945,7 +3945,7 @@ show(segment_maker, verbose=False)
 >>> segment_maker = new(segment_maker, settings=[music_setting])
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-20ba333bde40a352fb860e21e6844761.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c94c5d0f32fca62f4d9a6086d1b16693.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3991,7 +3991,7 @@ show(segment_maker, verbose=False)
 >>> segment_maker = new(segment_maker, settings=[music_setting])
 >>> show(segment_maker, verbose=False)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-e30a91503544c1b679275cf4c86294a1.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1056babf35e0b7a5b225838b55ca2c92.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -4041,7 +4041,7 @@ show(lilypond_file)
 >>> lilypond_file, metadata = segment_maker(annotate=True, verbose=False)
 >>> show(lilypond_file)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f6ef78067ceff32a177d4f562e2153e5.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-4c362c8f06bb4e92aa7f95251c8f79fb.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 

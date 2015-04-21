@@ -32,6 +32,13 @@ if __name__ == '__main__':
             'dissertation-score.pdf',
             )
         if not os.path.exists(source_path):
+            source_path = os.path.join(
+                score_package.__path__[0],
+                'build',
+                'dissertation',
+                'dissertation-score.pdf',
+                )
+        if not os.path.exists(source_path):
             continue
         target_path = os.path.join(
             target_directory,
