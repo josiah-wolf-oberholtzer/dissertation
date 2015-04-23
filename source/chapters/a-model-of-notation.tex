@@ -247,15 +247,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x103a82e50>
+<__main__.Foo object at 0x103a8e690>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x103a82e50>'
+'<__main__.Foo object at 0x103a8e690>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x103a82e50>'
+'<__main__.Foo object at 0x103a8e690>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -3420,8 +3420,8 @@ Timespan(start_offset=Offset(1, 4), stop_offset=Offset(3, 4))
 ...     spanner
 ...
 Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
-Beam("c'8, d'8, e'8, f'8")
 Beam("g'8, a'8, b'8, c''8")
+Beam("c'8, d'8, e'8, f'8")
 \end{lstlisting}
 \begin{lstlisting}
 >>> attach(Glissando(), selection)
@@ -3576,6 +3576,7 @@ show(staff)
     allowing them to reference each other fluidly.
 
 \subsection{Iteration}
+\label{ssec:iteration}
 
 -   By \_\_iter\_\_()
 
@@ -3723,9 +3724,23 @@ for component in iteration_agent.depth_first():
 
 \begin{comment}
 <abjad>
-for component in iterate(score).depth_first():
+for component in iteration_agent.depth_first():
     detached = detach(Markup, component)
+</abjad>
+\end{comment}
 
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for component in iteration_agent.depth_first():
+...     detached = detach(Markup, component)
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
 iterator = iteration_agent.by_timeline()
 for count, leaf in enumerate(iterator, 1):
     string = 'T:{}'.format(count)
@@ -3741,9 +3756,6 @@ show(score)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> for component in iterate(score).depth_first():
-...     detached = detach(Markup, component)
-...
 >>> iterator = iteration_agent.by_timeline()
 >>> for count, leaf in enumerate(iterator, 1):
 ...     string = 'T:{}'.format(count)
@@ -3785,6 +3797,23 @@ for run in iterate(lower_leaves).by_run(Note):
 
 \begin{comment}
 <abjad>
+attach(Tie(), score['Upper Staff'].select_leaves()[2:4])
+attach(Tie(), score['Upper Staff'].select_leaves()[6:8])
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> attach(Tie(), score['Upper Staff'].select_leaves()[2:4])
+>>> attach(Tie(), score['Upper Staff'].select_leaves()[6:8])
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
 for component in iterate(score).depth_first():
     detached = detach(Markup, component)
 
@@ -3813,29 +3842,37 @@ show(score)
 ...
 >>> show(score)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5d0303cac254f7cfbb691261413646c8.pdf}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-599627976e242fc860162eeef10e6e8c.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
--   By iterate(...)by\_...()
-
-    -   by\_class()
-
-    -   by\_logical\_tie()
-
-    -   by\_run()
-
-    -   by\_timeline()
-
-    -   by\_vertical\_moment()
-
-    -   depth\_first()
-
 \subsection{Selectors}
+\label{ssec:selectors}
+
+Component selectors are highly-configuration objects which object-model the act
+of selecting components -- as demonstrated above -- by aggregating together a
+series of small \emph{callback} classes into a \emph{pipeline}. Each callback
+describes one step in the act of performing a complex selection, such as
+selecting leaves, selecting logical ties, selecting the first item from a
+selection, or selecting items whose length is longer than some count.
+
+Selectors allow composers to model the procedure by which they, for example,
+select rest-delimited runs of notes and chords, then select all logical ties
+within those runs and finally select the last leaf of each logical tie, even if
+that logical tie contains only a single leaf. Such a procedure, once codified
+in a fully-configured selector, can be applied against any leaf, container or
+selection of components.
+
+An unconfigured selector simply, when called against a component, simply
+selects that component, returning the selection wrapped within a sequence so
+that the result can be iterated over.
 
 \begin{comment}
 <abjad>
 selector = selectortools.Selector()
+for x in selector(score['Upper Staff']):
+    x
+
 </abjad>
 \end{comment}
 
@@ -3844,25 +3881,342 @@ selector = selectortools.Selector()
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> selector = selectortools.Selector()
+>>> for x in selector(score['Upper Staff']):
+...     x
+...
+<Staff-"Upper Staff"{1}>
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
 
--   Demonstrate a gallery of selectors.
+\begin{comment}
+<abjad>
+print(format(selector))
+</abjad>
+\end{comment}
 
-    -   by leaves
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> print(format(selector))
+selectortools.Selector()
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
 
-    -   by duration
+The selector can be configured by calling one of its various generating
+methods, which duplicate the selectors current sequence of callbacks and append
+a new one, returning a new selector with the modified callback sequence.
 
-    -   by length
+\begin{comment}
+<abjad>
+selector = selector.by_leaves(flatten=True)
+for x in selector(score['Upper Staff']):
+    x
 
-    -   by logical tie
+</abjad>
+\end{comment}
 
-    -   by counts (with negative counts too)
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> selector = selector.by_leaves(flatten=True)
+>>> for x in selector(score['Upper Staff']):
+...     x
+...
+Note("d'4..")
+Note("b'16")
+Note("af'4")
+Note("af'4.")
+Note("g'8")
+Note("c''8")
+Note("b'4.")
+Note("b'8")
+Rest('r16')
+Note("d''16")
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
 
-\section{Conclusion}
+\begin{comment}
+<abjad>
+print(format(selector))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> print(format(selector))
+selectortools.Selector(
+    callbacks=(
+        selectortools.PrototypeSelectorCallback(
+            prototype=scoretools.Leaf,
+            flatten=True,
+            ),
+        ),
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+The selector can be configured to select all pitched logical-ties from with the
+previous selections.
+
+\begin{comment}
+<abjad>
+selector = selector.by_logical_tie(pitched=True)
+for x in selector(score['Upper Staff']):
+    x
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> selector = selector.by_logical_tie(pitched=True)
+>>> for x in selector(score['Upper Staff']):
+...     x
+...
+LogicalTie(Note("d'4.."),)
+LogicalTie(Note("b'16"),)
+LogicalTie(Note("af'4"), Note("af'4."))
+LogicalTie(Note("g'8"),)
+LogicalTie(Note("c''8"),)
+LogicalTie(Note("b'4."), Note("b'8"))
+LogicalTie(Note("d''16"),)
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+print(format(selector))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> print(format(selector))
+selectortools.Selector(
+    callbacks=(
+        selectortools.PrototypeSelectorCallback(
+            prototype=scoretools.Leaf,
+            flatten=True,
+            ),
+        selectortools.LogicalTieSelectorCallback(
+            flatten=True,
+            pitched=True,
+            trivial=True,
+            only_with_head=False,
+            only_with_tail=False,
+            ),
+        ),
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+The selector can be configured to filter out logical ties shorter than a
+duration of \sfrac{1}{4}:
+
+\begin{comment}
+<abjad>
+selector = selector.by_duration('>', Duration(1, 4))
+for x in selector(score['Upper Staff']):
+    x
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> selector = selector.by_duration('>', Duration(1, 4))
+>>> for x in selector(score['Upper Staff']):
+...     x
+...
+LogicalTie(Note("d'4.."),)
+LogicalTie(Note("af'4"), Note("af'4."))
+LogicalTie(Note("b'4."), Note("b'8"))
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+The first item from each selected logical-tie can then be selected by using
+Python's index subscripting syntax.
+
+\begin{comment}
+<abjad>
+selector = selector[0]
+for x in selector(score['Upper Staff']):
+    print(repr(x))
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> selector = selector[0]
+>>> for x in selector(score['Upper Staff']):
+...     print(repr(x))
+...
+ContiguousSelection(Note("d'4.."),)
+ContiguousSelection(Note("af'4"),)
+ContiguousSelection(Note("b'4."),)
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+Note that the returned selections each contain a single note. This is not
+necessarily useful yet. By appending a single additional flattening callback to
+the selector's callback stack, the selector can be configured to return a flat
+selection of components which can be iterated over:
+
+\begin{comment}
+<abjad>
+selector = selector.flatten()
+for x in selector(score['Upper Staff']):
+    print(repr(x))
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> selector = selector.flatten()
+>>> for x in selector(score['Upper Staff']):
+...     print(repr(x))
+...
+Note("d'4..")
+Note("af'4")
+Note("b'4.")
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+Unlike component iterators, selectors can be re-used. The same selector which
+was called against the upper staff in the above example can be called again,
+returning the same result. As with the examples in \autoref{ssec:iteration}, we
+can label each component returned by the selector with some markup. Because the
+score was already labeled -- marking the head of each logical tie in the upper
+staff -- we first remove all markup by iterating depth-first:
+
+\begin{comment}
+<abjad>
+for component in iterate(score).depth_first():
+    detached = detach(Markup, component)
+
+markup = Markup('!!!', Up).pad_around(0.5).circle()
+for x in selector(score['Upper Staff']):
+    attach(markup, x)
+
+show(score)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for component in iterate(score).depth_first():
+...     detached = detach(Markup, component)
+...
+>>> markup = Markup('!!!', Up).pad_around(0.5).circle()
+>>> for x in selector(score['Upper Staff']):
+...     attach(markup, x)
+...
+>>> show(score)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-8723021f627e4bd622582e3ceb453b8a.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+Printing the storage format of the selector shows its deeply-nested
+configuration.
+
+\begin{comment}
+<abjad>
+print(format(selector))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> print(format(selector))
+selectortools.Selector(
+    callbacks=(
+        selectortools.PrototypeSelectorCallback(
+            prototype=scoretools.Leaf,
+            flatten=True,
+            ),
+        selectortools.LogicalTieSelectorCallback(
+            flatten=True,
+            pitched=True,
+            trivial=True,
+            only_with_head=False,
+            only_with_tail=False,
+            ),
+        selectortools.DurationSelectorCallback(
+            duration=selectortools.DurationInequality(
+                operator_string='>',
+                duration=durationtools.Duration(1, 4),
+                ),
+            ),
+        selectortools.ItemSelectorCallback(
+            item=0,
+            apply_to_each=True,
+            ),
+        selectortools.FlattenSelectorCallback(
+            depth=-1,
+            ),
+        ),
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\begin{comment}
+<abjad>
+selector_format = format(selector)
+new_selector = eval(selector_format)
+new_selector == selector
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> selector_format = format(selector)
+>>> new_selector = eval(selector_format)
+>>> new_selector == selector
+True
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\todo[inline]{\textbf{TODO:} Demonstrate storage formatting of selectors.}
+
+\section{Templating}
 
 \todo[inline]{\textbf{TODO:} Explain templating and new().}
+
+\section{Conclusion}
 
 Abjad is a toolkit.
 
@@ -3898,6 +4252,11 @@ score in the abstract.
 
 Storage formatting lets us persist complexly configured object to disk for
 later use.
+
+Next we discuss Abjad's time model in considerably more depth including
+timespans and timespan inventories, as well as factory classes for generating
+complex time and rhythm-structures and other tools for analyzing and
+transforming those time structures.
 
 %\section{Mutating components}
 %
