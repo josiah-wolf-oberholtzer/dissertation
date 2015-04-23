@@ -46,7 +46,7 @@ functions spread across nearly 40 subpackages, totally almost 200,000 lines of
 source code. Many of these classes and functions are available immediately
 within Abjad's root \emph{namespace}. We can enumerate these
 \enquote{top-level} names by calling Python's built-in \texttt{dir()} function
-on the imported \texttt{abjad} module object. After stripping out all
+on the imported \texttt{Abjad} module object. After stripping out all
 \enquote{private} names -- those starting with underscores -- Abjad's top-level
 names can be printed to Python's interactive console:
 
@@ -73,8 +73,8 @@ print(abjad_names)
 'agenttools', 'attach', 'datastructuretools', 'detach', 'developerscripttools', 'documentationtools',
 'durationtools', 'exceptiontools', 'f', 'graph', 'handlertools', 'indicatortools', 'inspect_',
 'instrumenttools', 'ipythontools', 'iterate', 'labeltools', 'layouttools', 'lilypondfiletools',
-'lilypondnametools', 'lilypondparsertools', 'ly', 'markuptools', 'mathtools', 'metertools', 'mutate',
-'new', 'override', 'parse', 'persist', 'pitchtools', 'play', 'quantizationtools', 'rhythmmakertools',
+'lilypondnametools', 'lilypondparsertools', 'markuptools', 'mathtools', 'metertools', 'mutate', 'new',
+'override', 'parse', 'persist', 'pitchtools', 'play', 'quantizationtools', 'rhythmmakertools',
 'rhythmtreetools', 'schemetools', 'scoretools', 'select', 'selectiontools', 'selectortools',
 'sequencetools', 'set_', 'show', 'sievetools', 'spannertools', 'stringtools', 'systemtools',
 'templatetools', 'timespantools', 'tonalanalysistools', 'topleveltools']
@@ -158,7 +158,7 @@ The remaining names in Abjad's namespace represent its \enquote{top-level}
 functions, including \texttt{attach()}, \texttt{detach()},
 \texttt{inspect\_()}, \texttt{iterate()}, \texttt{mutate()}, \texttt{new()},
 \texttt{override()}, \texttt{parse()}, \texttt{persist()}, \texttt{play()},
-\texttt{select()}, \texttt{set\_()}, and -- most importantly --
+\texttt{select()}, and -- most importantly --
 \texttt{show()}. These functions provide a powerful set of tools for
 interacting with Abjad's notational objects and factories, and will be
 explained in detail as we encounter each of them.
@@ -247,15 +247,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x104d096d0>
+<__main__.Foo object at 0x103a82e50>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x104d096d0>'
+'<__main__.Foo object at 0x103a82e50>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x104d096d0>'
+'<__main__.Foo object at 0x103a82e50>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -2577,12 +2577,25 @@ or compositional intent. Some of these annotative indicators include
 \texttt{StringContactPoint} and \texttt{StringTuning}.
 
 \section{Spanners}
+\label{sec:spanners}
 
-The final collection of classes, \emph{spanners}, attach to not just one but
-potentially many components in a score tree, \emph{spanning} across both time
-and different levels of hierarchy.
+A final collection of classes, \emph{spanners}, model musical and typographic
+constructs such as slurs, beams, hairpins, and glissandi which \emph{span}
+across different levels of hierarchy in the score tree. Spanners attach to not
+just one but potentially many components in a score tree, provided those
+components are contiguous in time and occupy the same \emph{logical voice}.
+Like indicators, multiple spanners can attach to the same component. Unlike
+indicators, spanners are aware of the components, including the leaves, they
+\emph{cover} as well as the order in which those components appear. This
+awareness allows spanners to contribute formatting to a score tree's LilyPond
+syntax output conditionally. The first and last leaves covered by a spanner can
+be formatted specially, and the types of leaves covered by a spanner, their
+durations or even any indicators attached to those leaves can be considered
+during formatting allowing spanners to make use of annotative indicators
+attached to components.
 
--   Demonstrate spanners attaching to leaves and to containers
+Consider the following staff which contains leaves as well as a triplet, itself
+containing more leaves:
 
 \begin{comment}
 <abjad>
@@ -2601,6 +2614,13 @@ show(staff)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a604f46da3988b3319380e311f6a5082.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent A variety of spanners can be attached to both the leaves of the staff
+as well as to the staff itself using Abjad's \texttt{attach()} function. For
+example, a slur can be attached to all of the leaves of the staff -- including
+those in the triplet --, a crescendo attached to the staff itself -- but not to
+its leaves --, and two ties attached to the pairs of C- and G-notes which
+border the bounds of the triplet:
 
 \begin{comment}
 <abjad>
@@ -2636,17 +2656,7 @@ show(staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
--   Discuss cyclic spanner graph, logical voices
-
--   Important subclasses: Beam, Slur, Hairpin, Glissando, Tie
-
--   Mention that ties are treated specially in Abjad, and distinctly from many
-    other systems. Other systems might treat "tied-ness" as a flag on a note,
-    indicating that the next leaf will be tied to the "tied-set" leaf. Abjad
-    treats ties as a spanner, spanning over arbitrary numbers of leaves,
-    allowing them to reference each other fluidly.
-
--   Demonstrate inspect\_(...).get\_spanner(), .get\_spanners()
+\noindent Components can be inspected for any spanners attached to them:
 
 \begin{comment}
 <abjad>
@@ -2669,26 +2679,25 @@ set([Crescendo('<Staff{3}>')])
 \end{singlespacing}
 \end{abjadbookoutput}
 
--   Demonstrate spanner.components, len(), indexing
-
--   inspect\_(...).get\_duration()
+\noindent Note above that the results of each inspection for spanner
+attachments returns a set comprising a unique collection of spanners. Analogous
+to component parents and children, each component can appear only once in a
+single spanner's component selection, and a spanner can only be attached once
+to the same component. Spanners can also be inspected -- much like containers
+-- for any components they cover via indexing, as well as for their duration:
 
 \begin{comment}
 <abjad>
-inspect_(slur).get_duration()
 len(slur)
 slur[1]
-slur.components
+slur[:]
+inspect_(slur).get_duration()
 </abjad>
 \end{comment}
 
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> inspect_(slur).get_duration()
-Duration(1, 1)
-\end{lstlisting}
 \begin{lstlisting}
 >>> len(slur)
 5
@@ -2698,18 +2707,28 @@ Duration(1, 1)
 Note("c'8")
 \end{lstlisting}
 \begin{lstlisting}
->>> slur.components
+>>> slur[:]
 Selection(Note("c'4"), Note("c'8"), Note("e'8"), Note("g'8"), Note("g'2"))
+\end{lstlisting}
+\begin{lstlisting}
+>>> inspect_(slur).get_duration()
+Duration(1, 1)
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Consider the following staff. It contains two measures of differing
-durations, each containing a mixture of tuplets and notes. The second measure's
-tuplet contains two bare containers, each containing two notes in turn. The
-leaves of the staff then vary in depth from 2 -- contained by a measure, then
-by the staff -- to 4 -- contained by a bare container, then a tuplet, measure
-and finally staff:
+\noindent Subscripting the spanner with Python's slice notation \texttt{[:]}
+returns a \emph{selection} object containing all of the components to which the
+spanner attaches. Selections are discussed in more detail in
+\autoref{sec:selecting-components}.
+
+Returning to the graph visualizations of score trees demonstrated
+earlier will clarify how spanners attach to components. Consider the following
+new staff, containing two measures of differing durations, each containing a
+mixture of tuplets and notes. The second measure's tuplet contains two bare
+containers, each containing two notes in turn. The leaves of the staff then
+vary in depth from 2 -- contained by a measure, then by the staff -- to 4 --
+contained by a bare container, then a tuplet, a measure and finally the staff:
 
 \begin{comment}
 <abjad>
@@ -2758,7 +2777,7 @@ graph(staff)
 that while all spanners' structural behavior is identical to that of their
 parent \texttt{Spanner} class, \texttt{Spanner} itself provides no formatting
 beyond the optional typographic overrides discussed in
-\autoref{ssec:typographic-overrides}, so there is no need to illustrate the
+\autoref{sec:typographic-overrides}, so there is no need to illustrate the
 newly-altered staff as notation. However, the staff can be graphed again, this
 time highlighting and connecting together the nodes in the graph representing
 the components to which the spanner attaches by passing that spanner as a
@@ -2767,7 +2786,7 @@ toolkit to visualize graph structures. Abjad also provides an object-oriented
 model of Graphviz's input file format as part of its
 \texttt{documentationtools} subpackage. There are many layout options available
 when working with Graphviz, and they can be passed as keywords to Abjad's
-toplevel \texttt{graph()} function, hence the appearance of the
+top-level \texttt{graph()} function, hence the appearance of the
 \texttt{graph\_attributes} keyword.}
 
 \begin{comment}
@@ -2804,7 +2823,7 @@ representing the staff is both outlined in bold and shaded grey while all of
 the components underneath it in the score hierarchy are simply shaded grey. In
 these score hierarchy graphs, only those nodes to which the spanner directly
 attaches are outlined in bold, while all components that the spanner
-\emph{covers} are shaded:
+covers are simply shaded:
 
 \begin{comment}
 <abjad>
@@ -2981,6 +3000,7 @@ container's inventory of spanners shows that the slur is still attached:
 \begin{comment}
 <abjad>
 staff[1][:] = []
+print(format(staff))
 show(staff)
 inspect_(staff[1]).get_spanners()
 </abjad>
@@ -2991,6 +3011,15 @@ inspect_(staff[1]).get_spanners()
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> staff[1][:] = []
+>>> print(format(staff))
+\new Staff {
+    c'4
+    {
+    }
+    f'4
+}
+\end{lstlisting}
+\begin{lstlisting}
 >>> show(staff)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-6b96d2995f7bab01a7332070cee299f3.pdf}
@@ -3022,17 +3051,110 @@ show(staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
--   Explain why we care.
+\noindent Attaching spanners to containers rather than leaves lets spanners act
+as a kind of \emph{decorator} for those containers in the sense of computer
+programming design patterns: an object which wraps another object, extending it
+with new functionality while preserving all of the old. In this case, spanners
+can extend containers with additional typographic logic, but remain entirely
+ignorant of the container's contents.
 
-\subsection{Typographic overrides}
-\label{ssec:typographic-overrides}
+\section{Typographic overrides}
+\label{sec:typographic-overrides}
 
--   Demonstrate on components, and on components
+LilyPond's graphic objects, or \emph{grobs} in LilyPond parlance, represent all
+of the typographic glyphs which may appear on the page as the result of the
+typesetting process. These include note-heads, dots, stems, flags, beams,
+slurs, accidentals, articulations, clefs, bar-numbers and bar-lines, the lines
+of the staff itself, as well as all manner of \emph{invisible} grobs used
+to describe the spacing and positioning of other glyphs on the page. Every such
+grob in LilyPond can be configured extensively. An accidental's color can be
+changed, its size increased or decreased, its position relative to its parent
+grob -- the note-head it modifies -- adjusted, or its symbol replaced entirely.
+LilyPond calls the act of modifying graphic objects \emph{overriding}, and the
+act of returning them to their previous settings \emph{reverting}. Abjad
+provides a top-level \texttt{override()} function for constructing such
+LilyPond \texttt{\textbackslash{}override} and \texttt{\textbackslash{}revert}
+commands, allowing composers to alter the typography of individual leaves or
+the contents of entire containers. For example, the style of a single note's
+note-head can be changed from the default oval shape to a cross:
 
--   Discuss graphic objects ("Grobs") versus context settings
+\begin{comment}
+<abjad>
+note = Note("c'4")
+override(note).note_head.style = 'cross'
+print(format(note))
+show(note)
+</abjad>
+\end{comment}
 
--   These commands differ between Abjad and LilyPond due to Abjad's attachment
-    model and LilyPond's stream event model.
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> note = Note("c'4")
+>>> override(note).note_head.style = 'cross'
+>>> print(format(note))
+\once \override NoteHead #'style = #'cross
+c'4
+\end{lstlisting}
+\begin{lstlisting}
+>>> show(note)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-440c9c49d229a9b665fb9729ca57ce6d.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent In the resulting LilyPond code above, Abjad prepends a
+\texttt{\textbackslash{}once} modifier to the override command, obviating the
+need to explicitly revert the typography override afterward. The same override
+can be applied against an entire container full of notes, modifying each note
+in turn:
+
+\begin{comment}
+<abjad>
+container = Container("c'4 d'4 e'4 f'4")
+override(container).note_head.style = 'cross'
+print(format(container))
+show(container)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> container = Container("c'4 d'4 e'4 f'4")
+>>> override(container).note_head.style = 'cross'
+>>> print(format(container))
+{
+    \override NoteHead #'style = #'cross
+    c'4
+    d'4
+    e'4
+    f'4
+    \revert NoteHead #'style
+}
+\end{lstlisting}
+\begin{lstlisting}
+>>> show(container)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-6241a916ef5cd76a7cf9074e4b011d45.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Note above in the LilyPond syntax output that the override command
+appears just inside the opening brace of the container, and the accompanying
+revert command appears just before the closing brace. Much like the earlier
+spanner examples where a slur was attached directly to a container, overrides
+applied against a container persist regardless of the contents of that
+container.
+
+As with score components, composers can also apply typographic overrides
+against spanners. The initial override commands appears before the first leaf
+of the spanner -- if the spanner covers any leaves at all -- and the
+accompanying revert commands appear following the last leaf of the spanner.
+Consider the following staff example, containing three measures, with staccato
+articulations attached to each leaf:
 
 \begin{comment}
 <abjad>
@@ -3068,6 +3190,10 @@ show(staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent We can override the middle measure to increase the size of the
+staccato articulations -- what LilyPond terms \emph{scripts} -- by increasing
+their font size:
+
 \begin{comment}
 <abjad>
 override(staff[1]).script.font_size = 10
@@ -3085,6 +3211,14 @@ show(staff)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-159a2f0600d4bc7482fa8d8b96f72e41.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Next we attach a slur to all leaves starting from the second and
+going until the next-to-last. We also override that slur to change the style of
+the note head of each note and chord it covers from the default oval to a
+cross. Recall that spanners can cross different levels of hierarchy in the
+score tree. Likewise, typographic overrides applied against spanners also
+cross container boundaries such as the three measures contained within this
+staff:
 
 \begin{comment}
 <abjad>
@@ -3108,9 +3242,66 @@ show(staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Note the locations of the \texttt{\textbackslash{}override} and
+\texttt{\textbackslash{}revert} commands for both the spanner and the middle
+measure in the LilyPond syntax output. While the middle measure's
+\texttt{\textbackslash{}override} and \texttt{\textbackslash{}revert} commands
+appear just within its enclosing braces, the slur's
+\texttt{\textbackslash{}override} command appears just before its first leaf --
+the D quarter-note -- and its \texttt{\textbackslash{}revert} command just
+after its last leaf -- the G eighth-note:
+
 \begin{comment}
 <abjad>
-staff[1][1:2] = "f'8 -. g'8 -. fs'8 -. g'8- ."
+print(format(staff))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> print(format(staff))
+\new Staff {
+    {
+        \time 3/4
+        c'4 -\staccato
+        \override NoteHead #'style = #'cross
+        d'4 -\staccato _ (
+        r4
+    }
+    {
+        \override Script #'font-size = #10
+        \time 5/4
+        e'4 -\staccato
+        \times 2/3 {
+            f'4 -\staccato
+            g'4 -\staccato
+            r4
+        }
+        a'4 -\staccato
+        b4 -\staccato
+        \revert Script #'font-size
+    }
+    {
+        \time 2/4
+        c''8 -\staccato
+        g'8 -\staccato )
+        \revert NoteHead #'style
+        c'4 -\staccato
+    }
+}
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent The typographic overrides of both the slur and the middle measure
+persist even when changing the contents of that middle measure, such as
+replacing the triplet with four eighth-notes:
+
+\begin{comment}
+<abjad>
+staff[1][1:2] = "f'8 -. g'8 -. fs'8 -. g'8 -."
 show(staff)
 </abjad>
 \end{comment}
@@ -3119,12 +3310,21 @@ show(staff)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> staff[1][1:2] = "f'8 -. g'8 -. fs'8 -. g'8- ."
+>>> staff[1][1:2] = "f'8 -. g'8 -. fs'8 -. g'8 -."
 >>> show(staff)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-b9f0b722e88c76a69e3c1f0dd42dfd94.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+\noindent Typographic overrides \emph{cascade}, with local settings taking
+precedence over more global settings. Although the previously attached slur
+overrides the note-head style of all leaves it covers, the note-head styles of
+leaves within that collection can be overridden themselves. For example, the
+first, last and next-to-last leaf of the middle measure can be overridden to
+display a slash symbol rather than cross for their note-heads, effectively
+overruling the more global typographic commands applied against their covering
+spanner:
 
 \begin{comment}
 <abjad>
@@ -3148,7 +3348,10 @@ show(staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\todo[inline]{\textbf{TODO:} Conclusion.}
+
 \section{Selecting components}
+\label{sec:selecting-components}
 
 Abjad provides a variety of methods for selecting components from within a
 score tree. For example, a score can be subscripted with integers or integer
@@ -3216,9 +3419,9 @@ Timespan(start_offset=Offset(1, 4), stop_offset=Offset(3, 4))
 >>> for spanner in selection.get_spanners():
 ...     spanner
 ...
-Beam("g'8, a'8, b'8, c''8")
 Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
 Beam("c'8, d'8, e'8, f'8")
+Beam("g'8, a'8, b'8, c''8")
 \end{lstlisting}
 \begin{lstlisting}
 >>> attach(Glissando(), selection)
@@ -3365,6 +3568,12 @@ show(staff)
     -   timespan
 
     -   trivial logical ties
+
+-   Mention that ties are treated specially in Abjad, and distinctly from many
+    other systems. Other systems might treat "tied-ness" as a flag on a note,
+    indicating that the next leaf will be tied to the "tied-set" leaf. Abjad
+    treats ties as a spanner, spanning over arbitrary numbers of leaves,
+    allowing them to reference each other fluidly.
 
 \subsection{Iteration}
 
@@ -3651,100 +3860,139 @@ selector = selectortools.Selector()
 
     -   by counts (with negative counts too)
 
-\section{Mutating components}
+\section{Conclusion}
 
--   replace()
+\todo[inline]{\textbf{TODO:} Explain templating and new().}
 
--   split()
+Abjad is a toolkit.
 
--   transpose()
+It provides a lot of tools for modeling and working with "low-level" musical
+objects and concepts.
 
-\section{Representing pitches}
+It tries not to suggest a specific way of working, beyond that you will work in
+Python and probably generate notational output via LilyPond.
 
--   The most important distinction is between named and numbered pitch
-    objects.
+Some of the other things you can do:
 
--   All pitched score components (notes and chords) rely on named
-    representations of pitch, not numbered
+-   Mutation and mutate()
+-   play()
+-   Pitch models
+-   Instruments
+-   Parsers
+-   Factories
 
--   Named pitch objects are enharmonically explicit
+I am not going to elaborate on all of these features here. Instead, go read the
+documentation.
 
--   Numbered pitch objects require some interpretation
+I have outlined the core concepts I think are crucial for working with Abjad.
 
--   Abjad has provided one interpretation, but that is for sufficiency
+What are the objects you use to create a score? Containers, leaves, indicators
+and spanners. How do you put them together? Aggregation and attachment. How do
+you inspect and modify the objects in a score? Selection, iteration,
+inspection.
 
--   Abjad does not make smart guesses about converting numbered to named
-    pitches
+Spanners and scoped indicators provide ways of breaking free from the box-like
+structure of working with containers. Selections let us model relationships
+within a score, selectors let us model the act of selecting objects from a
+score in the abstract.
 
-\subsection{Named and numbered pitch objects}
+Storage formatting lets us persist complexly configured object to disk for
+later use.
 
--   Pitches and pitch-classes
-
--   Intervals and interval-classes
-
--   NamedPitch
-    -   NamedPitchClass
-    -   Accidental
-    -   Octave
-    -   StaffPosition
-
--   NamedInterval
-    -   Quality
-
--   NumberedPitch is more equivalent
-
-\subsection{Collections}
-
--   Set, Segment, Vector
-
--   PitchSegment
-
--   PitchClassSegment
-
--   PitchRange
-
-\subsection{Pitch operations}
-
--   PitchOperation
-
--   Transposition
-
--   Inversion
-
--   Retrogression
-
--   Multiplication
-
--   Rotation
-
-\subsection{Inspecting leaf pitches}
-
--   Note("c'4").written\_pitch
-
--   Note("c'4").note\_head.written\_pitch
-
--   Chord("<c' e' g'>4").written\_pitches
-
--   inspect\_(note).get\_sounding\_pitch()
-
--   inspect\_(note).get\_sounding\_pitches()
-
-\section{Notation factories}
-
--   rhythm-makers
-
--   score templates
-
--   parsers
-
-    -   LilyPond parser
-
-    -   PLY
-
-    -   SchemeParser
-
-    -   RhythmTreeParser
-
-    -   ReducedLyParser
-
-- Templating
+%\section{Mutating components}
+%
+%-   replace()
+%
+%-   split()
+%
+%-   transpose()
+%
+%\section{Representing pitches}
+%
+%-   The most important distinction is between named and numbered pitch
+%    objects.
+%
+%-   All pitched score components (notes and chords) rely on named
+%    representations of pitch, not numbered
+%
+%-   Named pitch objects are enharmonically explicit
+%
+%-   Numbered pitch objects require some interpretation
+%
+%-   Abjad has provided one interpretation, but that is for sufficiency
+%
+%-   Abjad does not make smart guesses about converting numbered to named
+%    pitches
+%
+%\subsection{Named and numbered pitch objects}
+%
+%-   Pitches and pitch-classes
+%
+%-   Intervals and interval-classes
+%
+%-   NamedPitch
+%    -   NamedPitchClass
+%    -   Accidental
+%    -   Octave
+%    -   StaffPosition
+%
+%-   NamedInterval
+%    -   Quality
+%
+%-   NumberedPitch is more equivalent
+%
+%\subsection{Collections}
+%
+%-   Set, Segment, Vector
+%
+%-   PitchSegment
+%
+%-   PitchClassSegment
+%
+%-   PitchRange
+%
+%\subsection{Pitch operations}
+%
+%-   PitchOperation
+%
+%-   Transposition
+%
+%-   Inversion
+%
+%-   Retrogression
+%
+%-   Multiplication
+%
+%-   Rotation
+%
+%\subsection{Inspecting leaf pitches}
+%
+%-   Note("c'4").written\_pitch
+%
+%-   Note("c'4").note\_head.written\_pitch
+%
+%-   Chord("<c' e' g'>4").written\_pitches
+%
+%-   inspect\_(note).get\_sounding\_pitch()
+%
+%-   inspect\_(note).get\_sounding\_pitches()
+%
+%\section{Notation factories}
+%
+%-   rhythm-makers
+%
+%-   score templates
+%
+%-   parsers
+%
+%    -   LilyPond parser
+%
+%    -   PLY
+%
+%    -   SchemeParser
+%
+%    -   RhythmTreeParser
+%
+%    -   ReducedLyParser
+%
+%- Templating
