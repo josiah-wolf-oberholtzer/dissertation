@@ -254,15 +254,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x103a9b210>
+<__main__.Foo object at 0x103885890>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x103a9b210>'
+'<__main__.Foo object at 0x103885890>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x103a9b210>'
+'<__main__.Foo object at 0x103885890>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -729,7 +729,8 @@ show(measure)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-The measure can also be represented as a graph, clarifying the containment:
+\noindent The measure can also be represented as a graph, clarifying the
+containment:
 
 \begin{comment}
 <abjad>
@@ -743,7 +744,7 @@ graph(measure)
 \begin{lstlisting}
 >>> graph(measure)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-f7665c2f5353983ed9713715cfe4c3aa.pdf}
+\noindent\includegraphics[scale=0.4,max width=\textwidth,]{assets/graphviz-f7665c2f5353983ed9713715cfe4c3aa.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -802,7 +803,7 @@ graph(measure)
 \begin{lstlisting}
 >>> graph(measure)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-ef4980108f4d4d2b6a033286844a469e.pdf}
+\noindent\includegraphics[scale=0.4,max width=\textwidth,]{assets/graphviz-ef4980108f4d4d2b6a033286844a469e.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -847,7 +848,7 @@ graph(measure)
 \begin{lstlisting}
 >>> graph(measure)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-c1957e438c0db26d032c5b430f0ccba6.pdf}
+\noindent\includegraphics[scale=0.4,max width=\textwidth,]{assets/graphviz-c1957e438c0db26d032c5b430f0ccba6.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2776,7 +2777,7 @@ graph(staff)
 \begin{lstlisting}
 >>> graph(staff)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-9dcf1f7f32dcf3f7c356825ed86cdb3a.pdf}
+\noindent\includegraphics[scale=0.4,max width=\textwidth,]{assets/graphviz-9dcf1f7f32dcf3f7c356825ed86cdb3a.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2818,7 +2819,7 @@ graph(staff, spanner=spanner, graph_attributes={
 ...     'concentrate': True,
 ...     })
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-5ab2e467e47fcf944bc4a42613ee38c2.pdf}
+\noindent\includegraphics[scale=0.4,max width=\textwidth,]{assets/graphviz-5ab2e467e47fcf944bc4a42613ee38c2.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2848,7 +2849,7 @@ graph(staff, spanner=spanner)
 >>> attach(spanner, staff)
 >>> graph(staff, spanner=spanner)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-a5232415348a30adb6c49f9fa588192b.pdf}
+\noindent\includegraphics[scale=0.4,max width=\textwidth,]{assets/graphviz-a5232415348a30adb6c49f9fa588192b.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2871,7 +2872,7 @@ graph(staff, spanner=spanner)
 >>> attach(spanner, staff[:])
 >>> graph(staff, spanner=spanner)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-145928dc76cbac819d962e7dca54e95f.pdf}
+\noindent\includegraphics[scale=0.4,max width=\textwidth,]{assets/graphviz-145928dc76cbac819d962e7dca54e95f.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2897,7 +2898,7 @@ graph(staff, spanner=spanner)
 >>> attach(spanner, measure_one[:] + measure_two[:])
 >>> graph(staff, spanner=spanner)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-128d6bb41295ccd3c0fa73737de67f68.pdf}
+\noindent\includegraphics[scale=0.4,max width=\textwidth,]{assets/graphviz-128d6bb41295ccd3c0fa73737de67f68.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -2921,7 +2922,7 @@ graph(staff, spanner=spanner)
 >>> attach(spanner, measure_one[1][:] + measure_two[0][:])
 >>> graph(staff, spanner=spanner)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-d66575f5214655347456300f5b02fdb8.pdf}
+\noindent\includegraphics[scale=0.4,max width=\textwidth,]{assets/graphviz-d66575f5214655347456300f5b02fdb8.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
@@ -3872,7 +3873,7 @@ graph(score)
 \begin{lstlisting}
 >>> graph(score)
 \end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-cd4e4715fc44715a6b9884dff43b2b03.pdf}
+\noindent\includegraphics[scale=0.4,max width=\textwidth,]{assets/graphviz-cd4e4715fc44715a6b9884dff43b2b03.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
