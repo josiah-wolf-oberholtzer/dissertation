@@ -11,193 +11,152 @@ foo
 \section{Score directory layout}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
-.
-+-- build/
-+-- distribution/
-+-- etc/
-+-- makers/
-+-- materials/
-|   +-- dense_timespan_maker/
-|   +-- intermittent_accents/
-|   +-- intermittent_circular/
-|   +-- intermittent_glissandi/
-|   +-- intermittent_tremoli/
-|   +-- intermittent_trills/
-|   +-- left_hand_diads_music_specifier/
-|   +-- left_hand_dietro_music_specifier/
-|   +-- left_hand_glissandi_music_specifier/
-|   +-- left_hand_pizzicati_music_specifier/
-|   +-- left_hand_stasis_music_specifier/
-|   +-- right_hand_circular_music_specifier/
-|   +-- right_hand_jete_music_specifier/
-|   +-- right_hand_overpressure_music_specifier/
-|   +-- right_hand_pizzicati_music_specifier/
-|   +-- right_hand_stasis_music_specifier/
-|   +-- sparse_timespan_maker/
-|   +-- sustained_timespan_maker/
-|   +-- synchronized_timespan_maker/
-|   +-- time_signatures/
-+-- segments/
-|   +-- segment_a_far_sorr/
-|   +-- segment_b_selidor_a/
-|   +-- segment_c_wellogy/
-|   +-- segment_d_the_long_dune_a/
-|   +-- segment_e_selidor_b/
-|   +-- segment_f_the_isle_of_the_ear/
-|   +-- segment_g_selidor_c/
-|   +-- segment_h_the_long_dune_b/
-+-- stylesheets/
-+-- test/
-\end{lstlisting}
-\end{singlespacing}
-
-\subsection{Python packaging}
-
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
-.
-+-- .git/
-+-- .gitignore
-+-- .travis.yml
-+-- README.md
-+-- armilla/
-|   +-- __init__.py
-|   +-- build/
-|   +-- distribution/
-|   +-- etc/
-|   +-- makers/
-|   +-- materials/
-|   +-- segments/
-|   +-- stylesheets/
-|   +-- test/
-+-- requirements.txt
-+-- setup.cfg
-+-- setup.py
-\end{lstlisting}
-\end{singlespacing}
+\dirtree{%
+.1  ersilia/.
+    .2  build/.
+    .2  distribution/.
+    .2  etc/.
+    .2  makers/.
+    .2  materials/.
+    .2  segments/.
+    .2  stylesheets/.
+    .2  test/.
+}
 
 \subsection{Material packages}
 
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
-# -*- encoding: utf-8 -*-
-from abjad.tools import systemtools
+\dirtree{%
+.1  materials/.
+    .2  abbreviations/.
+    .2  dense\_timespan\_maker/.
+    .2  guitar\_agitato\_music\_specifier/.
+    .2  guitar\_continuo\_music\_specifier/.
+    .2  guitar\_pointillist\_harmonics\_music\_specifier/.
+    .2  guitar\_strummed\_music\_specifier/.
+    .2  guitar\_tremolo\_music\_specifier/.
+    .2  guitar\_undulation\_tremolo\_music\_specifier/.
+    .2  percussion\_bamboo\_windchimes\_music\_specifier/.
+    .2  percussion\_crotales\_flash\_music\_specifier/.
+    .2  percussion\_crotales\_interruption\_music\_specifier/.
+    .2  ....
+    .2  ....
+    .2  ....
+}
 
-systemtools.ImportManager.import_material_packages(
-    __path__[0],
-    globals(),
-    )
-\end{lstlisting}
-\end{singlespacing}
+\par
 
-\begin{comment}
-<abjad>
-import armilla
-for package_name in dir(armilla.materials):
-    if package_name[0].isalpha():
-        package_name
-
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> import armilla
->>> for package_name in dir(armilla.materials):
-...     if package_name[0].isalpha():
-...         package_name
-...
-'dense_timespan_maker'
-'intermittent_accents'
-'intermittent_circular'
-'intermittent_glissandi'
-'intermittent_tremoli'
-'intermittent_trills'
-'left_hand_diads_music_specifier'
-'left_hand_dietro_music_specifier'
-'left_hand_glissandi_music_specifier'
-'left_hand_pizzicati_music_specifier'
-'left_hand_stasis_music_specifier'
-'right_hand_circular_music_specifier'
-'right_hand_jete_music_specifier'
-'right_hand_overpressure_music_specifier'
-'right_hand_pizzicati_music_specifier'
-'right_hand_stasis_music_specifier'
-'sparse_timespan_maker'
-'sustained_timespan_maker'
-'synchronized_timespan_maker'
-'time_signatures'
-\end{lstlisting}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
-__init__.py
-definition.py
-\end{lstlisting}
-\end{singlespacing}
+\dirtree{%
+.1  guitar\_tremolo\_music\_specifier/.
+    .2  \_\_init\_\_.py.
+    .2  definition.py.
+    .2  illustration.ly.
+    .2  illustration.pdf.
+}
 
 \subsection{Segment packages}
 
-The definitions in segment packages do not need to be imported into any other
-module. They are \emph{stand-alone}.
+\dirtree{%
+.1  segments/.
+    .2  \_\_init\_\_.py.
+    .2  chemish/.
+        .3  \_\_init\_\_.py.
+        .3  definition.py.
+        .3  illustration.ly.
+        .3  illustration.pdf.
+    .2  cut\_1/.
+        .3  \_\_init\_\_.py.
+        .3  definition.py.
+        .3  illustration.ly.
+        .3  illustration.pdf.
+    .2  komokome/.
+        .3  \_\_init\_\_.py.
+        .3  definition.py.
+        .3  illustration.ly.
+        .3  illustration.pdf.
+    .2  cut\_2/.
+        .3  \_\_init\_\_.py.
+        .3  definition.py.
+        .3  illustration.ly.
+        .3  illustration.pdf.
+    .2  sort/.
+        .3  \_\_init\_\_.py.
+        .3  definition.py.
+        .3  illustration.ly.
+        .3  illustration.pdf.
+}
 
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
-__init__.py
-definition.py
-illustration.ly
-illustration.pdf
-\end{lstlisting}
-\end{singlespacing}
+\subsection{Stylesheets directory}
 
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
-# -*- encoding: utf-8 -*-
-import os
-import sys
-import traceback
-from abjad import persist
+\dirtree{%
+.1  stylesheets/.
+    .2  nonfirst-segment.ily.
+    .2  parts-landscape.ily.
+    .2  parts-portrait.ily.
+    .2  scheme.ily.
+    .2  stylesheet.ily.
+}
 
+\subsection{Build directory}
 
-if __name__ == '__main__':
-    try:
-        from definition import segment_maker
-    except ImportError:
-        traceback.print_exc()
-        sys.exit(1)
+\dirtree{%
+.1  build/.
+    .2  11x17-landscape/.
+        .3  Makefile.
+        .3  ersilia-11x17-landscape-back-cover.pdf.
+        .3  ersilia-11x17-landscape-back-cover.tex.
+        .3  ersilia-11x17-landscape-front-cover.pdf.
+        .3  ersilia-11x17-landscape-front-cover.tex.
+        .3  ersilia-11x17-landscape-music.ly.
+        .3  ersilia-11x17-landscape-music.pdf.
+        .3  ersilia-11x17-landscape-parts.ly.
+        .3  ersilia-11x17-landscape-preface.pdf.
+        .3  ersilia-11x17-landscape-preface.tex.
+        .3  ersilia-11x17-landscape-score.pdf.
+        .3  ersilia-11x17-landscape-score.tex.
+    .2  11x17-portrait/.
+        .3  ....
+    .2  legal-landscape/.
+        .3  ....
+    .2  legal-portrait/.
+        .3  ....
+    .2  parts.ily.
+    .2  preface/.
+        .3  calvino.tex.
+        .3  instrumentation.tex.
+        .3  leguin.tex.
+        .3  performance-notes.tex.
+    .2  segments/.
+        .3  chemish.ly.
+        .3  cut-1.ly.
+        .3  cut-2.ly.
+        .3  komokome.ly.
+        .3  sort.ly.
+    .2  segments.ily.
+}
 
-    try:
-        lilypond_file = segment_maker()
-    except:
-        traceback.print_exc()
-        sys.exit(1)
+\subsection{Tests directory}
 
-    try:
-        current_directory = os.path.dirname(__file__)
-        candidate_path = os.path.join(
-            current_directory,
-            'illustration.candidate.pdf',
-            )
-        persist(lilypond_file).as_pdf(candidate_path)
-    except:
-        traceback.print_exc()
-        sys.exit(1)
+\dirtree{%
+.1  test/.
+.2  test\_materials.py.
+.2  test\_segments.py.
+}
 
-    sys.exit(0)
-\end{lstlisting}
-\end{singlespacing}
+\subsection{Etcetera and distribution directories}
+
+\subsection{Python packaging}
+
+\dirtree{%
+.1  ersilia/.
+    .2 .git/.
+    .2 .gitignore.
+    .2 .travis.yml.
+    .2 README.md.
+    .2 ersilia/.
+    .2 requirements.txt.
+    .2 setup.cfg.
+    .2 setup.py.
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Document preparation workflow}
