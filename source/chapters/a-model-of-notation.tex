@@ -254,15 +254,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x103885890>
+<__main__.Foo object at 0x103aa1690>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x103885890>'
+'<__main__.Foo object at 0x103aa1690>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x103885890>'
+'<__main__.Foo object at 0x103aa1690>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -750,7 +750,7 @@ graph(measure)
 
 \noindent Containers can also be indexed into, measured for length and iterated
 over. For example, the second component contained by the measure can be
-retrieved by subscripting the measure with the index 1:
+selected by subscripting the measure with the index 1:
 
 \begin{comment}
 <abjad>
@@ -899,7 +899,7 @@ Chord("<d' f' a'>4")
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent To retrieve all of the leaves of a container, recursion must be used,
+\noindent To select all of the leaves of a container, recursion must be used,
 as any container may contain other containers, and those in turn still more
 containers. To mitigate this complexity, every container provides a
 \texttt{select\_leaves()} method, which returns a selection of the bottom-most
@@ -1822,8 +1822,8 @@ print(format(score))
 \end{abjadbookoutput}
 
 \noindent Any of the named components within the score hierarchy can be
-retrieved by subscripting any container in their proper parentage with their
-name. For example, the voice container named \enquote{Voice 1} can be retrieved
+selected by subscripting any container in their proper parentage with their
+name. For example, the voice container named \enquote{Voice 1} can be selected
 by subscripting the score object with its name, even though it is not
 immediately contained by the score but is in fact a \enquote{great-grandchild}
 of the score:
@@ -2678,7 +2678,7 @@ inspect_(staff).get_spanners()
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> inspect_(staff[0]).get_spanners()
-set([Slur("c'4, c'8, e'8, g'8, g'2"), Tie("c'4, c'8")])
+set([Tie("c'4, c'8"), Slur("c'4, c'8, e'8, g'8, g'2")])
 \end{lstlisting}
 \begin{lstlisting}
 >>> inspect_(staff).get_spanners()
@@ -3365,8 +3365,8 @@ Abjad provides a variety of methods for selecting components from within a
 score tree. A number of these techniques have already been demonstrated. For
 example, a score can be subscripted with integers or integer \emph{slices} --
 e.g. \texttt{[1:-1]} -- representing the indices of some component or
-components to retrieve those component, as shown in \autoref{ssec:containers}
-and later. Similarly, named components can be retrieved from a score by
+components to select those component, as shown in \autoref{ssec:containers}
+and later. Similarly, named components can be selected from a score by
 subscripting that score with their names, as shown in
 \autoref{ssec:named-components}. The leaves at the bottom of a score hierarchy
 can also be selected en masse via a component's \texttt{select\_leaves()}
@@ -3511,9 +3511,9 @@ for spanner in selection.get_spanners():
 >>> for spanner in selection.get_spanners():
 ...     spanner
 ...
+Beam("g'8, a'8, b'8, c''8")
 Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
 Glissando("e'8, f'8, g'8, a'8")
-Beam("g'8, a'8, b'8, c''8")
 Beam("c'8, d'8, e'8, f'8")
 \end{lstlisting}
 \end{singlespacing}
@@ -3533,6 +3533,12 @@ duration. Logical ties containing a single note or chord are termed
 \emph{trivial}. Logical ties comprising rests are not well-defined, but can
 certainly be instantiated like any other selection if a composer would find
 them useful.
+
+Consider the following staff, which contains a mixture of notes and rests. The
+\texttt{~} symbol in LilyPond syntax indicates that two notes should be joined
+by a tie. Notably, this staff contains notes which are untied, notes which are
+tied to a single other note, a chain of three notes tied together, and ties
+which cross the bounds of a triplet:
 
 \begin{comment}
 <abjad>
@@ -3554,22 +3560,16 @@ show(staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
--   inspect\_(...).get\_logical\_tie()
+\noindent The most direct way to select a leaf's logical tie is via the
+component inspector's \texttt{.get\_logical\_tie()} method. Once selected, the
+logical tie can be examined or printed much like any other selection:
 
 \begin{comment}
 <abjad>
 logical_tie = inspect_(staff[2]).get_logical_tie()
 print(format(logical_tie))
-logical_tie.head
-logical_tie.tail
 logical_tie.get_duration()
 logical_tie.get_timespan()
-head_markup = Markup('head', direction=Up)
-head_markup = head_markup.pad_around(0.5).box().pad_around(0.5)
-tail_markup = Markup('tail', direction=Up)
-tail_markup = tail_markup.pad_around(0.5).box().pad_around(0.5)
-attach(head_markup, logical_tie.head)
-attach(tail_markup, logical_tie.tail)
 </abjad>
 \end{comment}
 
@@ -3588,6 +3588,40 @@ selectiontools.LogicalTie(
     )
 \end{lstlisting}
 \begin{lstlisting}
+>>> logical_tie.get_duration()
+Duration(19, 48)
+\end{lstlisting}
+\begin{lstlisting}
+>>> logical_tie.get_timespan()
+Timespan(start_offset=Offset(11, 16), stop_offset=Offset(13, 12))
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Like \texttt{Parentage}, logical tie selections expose properties
+which are specific to their domain. Two of the most important such properties
+are a logical tie's \emph{head} and \emph{tail}: the first and last leaves of
+the logical tie respectively. We can label the previously selected logical
+tie's head and tail with markup:
+
+\begin{comment}
+<abjad>
+logical_tie.head
+logical_tie.tail
+head_markup = Markup('head', direction=Up)
+head_markup = head_markup.pad_around(0.5).box().pad_around(0.5)
+tail_markup = Markup('tail', direction=Up)
+tail_markup = tail_markup.pad_around(0.5).box().pad_around(0.5)
+attach(head_markup, logical_tie.head)
+attach(tail_markup, logical_tie.tail)
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
 >>> logical_tie.head
 Note("c'16")
 \end{lstlisting}
@@ -3596,30 +3630,62 @@ Note("c'16")
 Note("c'8")
 \end{lstlisting}
 \begin{lstlisting}
->>> logical_tie.get_duration()
-Duration(19, 48)
-\end{lstlisting}
-\begin{lstlisting}
->>> logical_tie.get_timespan()
-Timespan(start_offset=Offset(11, 16), stop_offset=Offset(13, 12))
-\end{lstlisting}
-\begin{lstlisting}
 >>> head_markup = Markup('head', direction=Up)
 >>> head_markup = head_markup.pad_around(0.5).box().pad_around(0.5)
 >>> tail_markup = Markup('tail', direction=Up)
 >>> tail_markup = tail_markup.pad_around(0.5).box().pad_around(0.5)
 >>> attach(head_markup, logical_tie.head)
 >>> attach(tail_markup, logical_tie.tail)
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ddb6d6aef18eee596f5e7f9198af1bf0.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Logical ties expose other pertinent properties. For example, a
+logical tie can be queried for whether all of its leaves occupy the same
+parent, whether none of its leaves are rests -- therefore the logical tie is
+pitched --, or whether the logical tie is trivial:
+
+\begin{comment}
+<abjad>
+logical_tie.all_leaves_are_in_same_parent
+logical_tie.is_pitched
+logical_tie.is_trivial
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> logical_tie.all_leaves_are_in_same_parent
+False
+\end{lstlisting}
+\begin{lstlisting}
+>>> logical_tie.is_pitched
+True
+\end{lstlisting}
+\begin{lstlisting}
+>>> logical_tie.is_trivial
+False
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Trivial logical ties can also be selected. For example, the first
+leaf in the above staff is covered by no tie spanner at all. Still, that leaf
+can be modeled as a logical tie containing only a single note. A trivial
+logical tie's head and tail are then the same component:
+
 \begin{comment}
 <abjad>
 trivial_logical_tie = inspect_(staff[0]).get_logical_tie()
+trivial_logical_tie.is_trivial
 print(format(trivial_logical_tie))
 attach(head_markup, trivial_logical_tie.head)
 attach(tail_markup, trivial_logical_tie.tail)
+show(staff)
 </abjad>
 \end{comment}
 
@@ -3628,6 +3694,10 @@ attach(tail_markup, trivial_logical_tie.tail)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> trivial_logical_tie = inspect_(staff[0]).get_logical_tie()
+>>> trivial_logical_tie.is_trivial
+True
+\end{lstlisting}
+\begin{lstlisting}
 >>> print(format(trivial_logical_tie))
 selectiontools.LogicalTie(
     (
@@ -3638,41 +3708,13 @@ selectiontools.LogicalTie(
 \begin{lstlisting}
 >>> attach(head_markup, trivial_logical_tie.head)
 >>> attach(tail_markup, trivial_logical_tie.tail)
-\end{lstlisting}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\begin{comment}
-<abjad>
-show(staff)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
 >>> show(staff)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7d4426baa6f644c9ba82357b0f8dcfe1.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
 
--   LogicalTie
-
-    -   head
-
-    -   tail
-
-    -   timespan
-
-    -   trivial logical ties
-
--   Mention that ties are treated specially in Abjad, and distinctly from many
-    other systems. Other systems might treat "tied-ness" as a flag on a note,
-    indicating that the next leaf will be tied to the "tied-set" leaf. Abjad
-    treats ties as a spanner, spanning over arbitrary numbers of leaves,
-    allowing them to reference each other fluidly.
+\noindent
 
 \subsection{Iteration}
 \label{ssec:iteration}
@@ -3696,10 +3738,10 @@ show(score)
 \end{singlespacing}
 \end{abjadbookoutput}
 
--   By \_\_iter\_\_()
-
-The simplest iteration technique makes use of Python's \emph{iteration
-protocol} by treating Abjad's containers as list-like objects.
+\noindent The \enquote{simplest} iteration technique employed in Abjad relies
+on Python's \emph{iteration protocol}, which allows objects to be iterated over
+in \texttt{for} loops -- and many other constructs -- yielding up items from
+their contents one at a time:
 
 \begin{comment}
 <abjad>
@@ -3723,19 +3765,21 @@ for x in ['foo', 10, 3.14159]:
 \end{singlespacing}
 \end{abjadbookoutput}
 
-The component immediately contained by any Abjad container can be iterated over
-as though that container were a list:
+\noindent Using this basic iteration, the components immediately contained by
+any Abjad container can be iterated over as though that container were a list.
+For example, the components immediately contained in the score, the score's
+staff group and the voice contained in the upper staff can be iterated over:
 
 \begin{comment}
 <abjad>
-for x in score:
-    x
+for component in score:
+    component
 
-for y in score['Both Staves']:
-    y
+for component in score['Both Staves']:
+    component
 
-for z in score['Upper Staff']:
-    z
+for component in score['Voice 1']:
+    component
 
 </abjad>
 \end{comment}
@@ -3744,30 +3788,31 @@ for z in score['Upper Staff']:
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> for x in score:
-...     x
+>>> for component in score:
+...     component
 ...
 <PianoStaff-"Both Staves"<<2>>>
 \end{lstlisting}
 \begin{lstlisting}
->>> for y in score['Both Staves']:
-...     y
+>>> for component in score['Both Staves']:
+...     component
 ...
 <Staff-"Upper Staff"{1}>
 <Staff-"Lower Staff"{1}>
 \end{lstlisting}
 \begin{lstlisting}
->>> for z in score['Upper Staff']:
-...     z
+>>> for component in score['Voice 1']:
+...     component
 ...
-<Voice-"Voice 1"{2}>
+Measure((3, 4), "d'4.. b'16 af'4")
+Measure((5, 4), "af'4. g'8 c''8 b'4. b'8 r16 d''16")
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Abjad also provides an \emph{iteration agent} -- much like Abjad's component
-inspector -- which exposes a variety of iteration methods. Calling the
-top-level \texttt{iterate()} function against a score component returns an
+\noindent Abjad also provides an \emph{iteration agent} -- much like Abjad's
+component inspector -- which exposes a variety of iteration methods. Calling
+the top-level \texttt{iterate()} function against a score component returns an
 iteration agent configured to iterate over the contents of that component:
 
 \begin{comment}
@@ -3785,7 +3830,7 @@ iteration_agent = iterate(score)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Perhaps the most fundamental method of score tree traversal is
+\noindent Perhaps the most fundamental method of score tree traversal is
 \emph{depth-first iteration}\cite{cormen2009introduction} whereby not only is a
 given container iterated over but each container it contains as well and each
 container those contain, recursively down to the leaves of the score tree. The
@@ -3877,14 +3922,15 @@ graph(score)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent In fact, Abjad's score tree graph visualizations rely, like many of
-the other more-specialized score tree iteration techniques, on this depth-first
-traversal. One of the most common iteration techniques based closely on
-depth-first traversal is iteration by class, whereby a score tree is iterated
-over recursively and only those items matching a component class prototype --
-e.g. only rests, only tuplets, or only notes and chords -- are yielded. We can
-demonstrate this technique by iterating over the same score by rests and
-attaching some markup to each yielded rest:
+\noindent In fact, Abjad's score tree graph visualizations, like many of the
+other more-specialized score tree iteration techniques including the
+\texttt{select\_leaves()} method shown throughout this document, rely on this
+depth-first traversal. One of the most common iteration techniques based
+closely on depth-first traversal is iteration by class, whereby a score tree is
+iterated over recursively and only those items matching a component class
+prototype -- e.g. only rests, only tuplets, only notes and chords, or any type
+of leaf -- are yielded. We can demonstrate this technique by iterating over the
+same score by rests and attaching some markup to each yielded rest:
 
 \begin{comment}
 <abjad>
@@ -3941,14 +3987,14 @@ for component in iteration_agent.depth_first():
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Iteration by \emph{timeline} is another important score traversal technique,
-yielding each component -- optionally filtered by a class prototype -- in the
-order in which they in time relative to the start of the score. Components with
-identical start times are yielded according to their score index -- a tuple of
-indices describing the index of each of the components in a component's
-parentage in \emph{their} parents. We can demonstrate this iteration technique
-by iterating over all of the leaves in time-wise order, attaching markup to
-display their index in the timeline:
+\noindent Iteration by \emph{timeline} is another important score traversal
+technique, yielding each component -- optionally filtered by a class prototype
+-- in the order in which they in time relative to the start of the score.
+Components with identical start times are yielded according to their score
+index -- a tuple of indices describing the index of each of the components in a
+component's parentage in \emph{their} parents. We can demonstrate this
+iteration technique by iterating over all of the leaves in time-wise order,
+attaching markup to display their index in the timeline:
 
 \begin{comment}
 <abjad>
@@ -3980,9 +4026,9 @@ show(score)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Composers are often concerned with contiguous \emph{runs} of notes and chords
-rather than any other collection of components Components can use the iteration
-agent to iterate over components grouped contiguously by class:
+\noindent Composers are often concerned with contiguous \emph{runs} of notes
+and chords rather than any other collection of components Components can use
+the iteration agent to iterate over components grouped contiguously by class:
 
 \begin{comment}
 <abjad>
@@ -4010,7 +4056,7 @@ for run in iterate(lower_leaves).by_run(Note):
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Finally, score trees can be traversed by logical ties -- selections
+\noindent Finally, score trees can be traversed by logical ties -- selections
 representing one or more component tied together by a tie spanner, as described
 in \autoref{sec:selecting-components}. Before demonstrating this technique we
 must both attach ties to some of the leaves in the upper staff -- the A-flats
@@ -4039,8 +4085,8 @@ for component in iterate(score).depth_first():
 \end{singlespacing}
 \end{abjadbookoutput}
 
-With the score prepared, all pitched logical ties in the upper staff can be
-iterated over and markup attached to the head of each:
+\noindent With the score prepared, all pitched logical ties in the upper staff
+can be iterated over and markup attached to the head of each:
 
 \begin{comment}
 <abjad>
@@ -4078,18 +4124,17 @@ of selecting components -- as demonstrated above -- by aggregating together a
 series of small \emph{callback} classes into a \emph{pipeline}. Each callback
 describes one step in the act of performing a complex selection, such as
 selecting leaves, selecting logical ties, selecting the first item from a
-selection, or selecting items whose length is longer than some count.
-
-Selectors allow composers to model the procedure by which they, for example,
-select rest-delimited runs of notes and chords, then select all logical ties
-within those runs and finally select the last leaf of each logical tie, even if
-that logical tie contains only a single leaf. Such a procedure, once codified
-in a fully-configured selector, can be applied against any leaf, container or
+selection, or selecting items whose length is longer than some count. Selectors
+allow composers to model the procedure by which they, for example, select
+rest-delimited runs of notes and chords, then select all logical ties within
+those runs and finally select the last leaf of each logical tie, even if that
+logical tie contains only a single leaf. Such a procedure, once codified in a
+fully-configured selector, can be applied against any leaf, container or
 selection of components.
 
-An unconfigured selector simply, when called against a component, simply
-selects that component, returning the selection wrapped within a sequence so
-that the result can be iterated over.
+When called against a component, an unconfigured selector simply selects that
+component, returning the selection wrapped within a sequence so that the result
+can be iterated over:
 
 \begin{comment}
 <abjad>
@@ -4113,25 +4158,14 @@ for x in selector(score['Upper Staff']):
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\begin{comment}
-<abjad>
-print(format(selector))
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> print(format(selector))
-selectortools.Selector()
-\end{lstlisting}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-The selector can be configured by calling one of its various generating
-methods, which duplicate the selectors current sequence of callbacks and append
-a new one, returning a new selector with the modified callback sequence.
+\noindent The selector can be further configured by calling one of its various
+generating methods. These methods duplicate the selector's current sequence of
+callbacks and append a new one, returning a new selector containing the
+modified callback sequence.\footnote{Selector configuration is conceptually
+similar to the textual markup configuration used elsewhere in this chapter. In
+both cases, the object can made to produce new, modified versions of itself
+through the use of generative methods.} For example, the previously-created
+selector can be configured to select the leaves in each selection it processes:
 
 \begin{comment}
 <abjad>
@@ -4164,6 +4198,10 @@ Note("d''16")
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent The selector's storage format shows its callback sequence. The leaf
+selection callback appears here as a \texttt{PrototypeSelectorCallback}, itself
+configured to select components of type \texttt{Leaf}:
+
 \begin{comment}
 <abjad>
 print(format(selector))
@@ -4187,8 +4225,8 @@ selectortools.Selector(
 \end{singlespacing}
 \end{abjadbookoutput}
 
-The selector can be configured to select all pitched logical-ties from with the
-previous selections.
+\noindent The selector can be configured to select all pitched logical-ties
+from with the previous selections.
 
 \begin{comment}
 <abjad>
@@ -4220,6 +4258,9 @@ LogicalTie(Note("d''16"),)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Again, note the addition of a new callback to the selector's callback
+pipeline:
+
 \begin{comment}
 <abjad>
 print(format(selector))
@@ -4241,8 +4282,6 @@ selectortools.Selector(
             flatten=True,
             pitched=True,
             trivial=True,
-            only_with_head=False,
-            only_with_tail=False,
             ),
         ),
     )
@@ -4250,8 +4289,8 @@ selectortools.Selector(
 \end{singlespacing}
 \end{abjadbookoutput}
 
-The selector can be configured to filter out logical ties shorter than a
-duration of \sfrac{1}{4}:
+\noindent The selector can be configured to filter out logical ties shorter
+than a duration of \sfrac{1}{4}:
 
 \begin{comment}
 <abjad>
@@ -4279,8 +4318,8 @@ LogicalTie(Note("b'4."), Note("b'8"))
 \end{singlespacing}
 \end{abjadbookoutput}
 
-The first item from each selected logical-tie can then be selected by using
-Python's index subscripting syntax.
+\noindent The first item from each selected logical-tie can then be selected by
+using Python's index subscripting syntax.
 
 \begin{comment}
 <abjad>
@@ -4308,10 +4347,10 @@ ContiguousSelection(Note("b'4."),)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Note that the returned selections each contain a single note. This is not
-necessarily useful yet. By appending a single additional flattening callback to
-the selector's callback stack, the selector can be configured to return a flat
-selection of components which can be iterated over:
+\noindent Note that the returned selections each contain a single note. This is
+not necessarily useful yet. By appending a single additional flattening
+callback to the selector's callback stack, the selector can be configured to
+return a flat selection of components which can be iterated over:
 
 \begin{comment}
 <abjad>
@@ -4339,12 +4378,13 @@ Note("b'4.")
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Unlike component iterators, selectors can be re-used. The same selector which
-was called against the upper staff in the above example can be called again,
-returning the same result. As with the examples in \autoref{ssec:iteration}, we
-can label each component returned by the selector with some markup. Because the
-score was already labeled -- marking the head of each logical tie in the upper
-staff -- we first remove all markup by iterating depth-first:
+\noindent Unlike component iterators, selectors can be re-used. The same
+selector which was called against the upper staff in the above example can be
+called again, returning the same result. As with the examples in
+\autoref{ssec:iteration}, we can label each component returned by the selector
+with some markup. Because the score was already labeled -- marking the head of
+each logical tie in the upper staff -- we first remove all markup by iterating
+depth-first:
 
 \begin{comment}
 <abjad>
@@ -4376,8 +4416,8 @@ show(score)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Printing the storage format of the selector shows its deeply-nested
-configuration.
+\noindent Printing the storage format of the current selector shows its
+deeply-nested configuration:
 
 \begin{comment}
 <abjad>
@@ -4400,8 +4440,6 @@ selectortools.Selector(
             flatten=True,
             pitched=True,
             trivial=True,
-            only_with_head=False,
-            only_with_tail=False,
             ),
         selectortools.DurationSelectorCallback(
             duration=selectortools.DurationInequality(
@@ -4422,27 +4460,13 @@ selectortools.Selector(
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\begin{comment}
-<abjad>
-selector_format = format(selector)
-new_selector = eval(selector_format)
-new_selector == selector
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> selector_format = format(selector)
->>> new_selector = eval(selector_format)
->>> new_selector == selector
-True
-\end{lstlisting}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\todo[inline]{\textbf{TODO:} Demonstrate storage formatting of selectors.}
+\noindent Selectors are incredibly flexible. They allow composers to describe
+in a great degree of detail the process they wish to use to select components
+from a score for further transformation or ornamentation. As will be elaborated
+on in the following chapters, they are also useful because they are fully
+object-modeled as classes. Such object-modeling allows them to not only be used
+to configure still-larger aggregate compositional objects, but also be
+persisted to disk due to their well-formed storage format.
 
 \section{Templating}
 
@@ -4689,6 +4713,29 @@ rhythmmakertools.TaleaRhythmMaker(
 
 This is a very standard idea in computer science, but needs to be introduced
 here due to its pervasive use throughout the rest of this dissertation.
+
+\begin{comment}
+<abjad>
+selector_format = format(selector)
+new_selector = eval(selector_format)
+new_selector == selector
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> selector_format = format(selector)
+>>> new_selector = eval(selector_format)
+>>> new_selector == selector
+True
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\todo[inline]{\textbf{TODO:} Demonstrate storage formatting of selectors.}
+
 
 \section{Conclusion}
 
