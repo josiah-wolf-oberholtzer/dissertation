@@ -24,6 +24,11 @@ interpretation. Those preceded by \texttt{...} indicate the continuation of a
 incomplete language construct. All other lines are necessarily returned as
 output from Python's interpreter.
 
+\todo[inline]{\textbf{TODO:} Namespaces.}
+
+\todo[inline]{\textbf{TODO:} Verify that high-level description of Abjad is
+on-point.}
+
 We can import Abjad into Python with the following incantation:
 
 \begin{comment}
@@ -109,17 +114,18 @@ print(pitchtools_names)
 >>> pitchtools_names = dir(abjad.pitchtools)
 >>> pitchtools_names = [x for x in pitchtools_names if not x.startswith('_')]
 >>> print(pitchtools_names)
-['Accidental', 'Interval', 'IntervalClass', 'IntervalClassSegment', 'IntervalClassSet',
-'IntervalClassVector', 'IntervalSegment', 'IntervalSet', 'IntervalVector', 'Inversion', 'Multiplication',
-'NamedInterval', 'NamedIntervalClass', 'NamedInversionEquivalentIntervalClass', 'NamedPitch',
-'NamedPitchClass', 'NumberedInterval', 'NumberedIntervalClass',
-'NumberedInversionEquivalentIntervalClass', 'NumberedPitch', 'NumberedPitchClass',
-'NumberedPitchClassColorMap', 'Octave', 'Pitch', 'PitchArray', 'PitchArrayCell', 'PitchArrayColumn',
-'PitchArrayInventory', 'PitchArrayRow', 'PitchClass', 'PitchClassSegment', 'PitchClassSet',
-'PitchClassTree', 'PitchClassVector', 'PitchOperation', 'PitchRange', 'PitchRangeInventory',
-'PitchSegment', 'PitchSet', 'PitchVector', 'Registration', 'RegistrationComponent',
-'RegistrationInventory', 'Retrogression', 'Rotation', 'Segment', 'Set', 'StaffPosition', 'Transposition',
-'TwelveToneRow', 'Vector', 'instantiate_pitch_and_interval_test_collection',
+['Accidental', 'EnharmonicInterval', 'Interval', 'IntervalClass', 'IntervalClassSegment',
+'IntervalClassSet', 'IntervalClassVector', 'IntervalSegment', 'IntervalSet', 'IntervalVector',
+'Inversion', 'Multiplication', 'NamedInterval', 'NamedIntervalClass',
+'NamedInversionEquivalentIntervalClass', 'NamedPitch', 'NamedPitchClass', 'NumberedInterval',
+'NumberedIntervalClass', 'NumberedInversionEquivalentIntervalClass', 'NumberedPitch',
+'NumberedPitchClass', 'NumberedPitchClassColorMap', 'Octave', 'Pitch', 'PitchArray', 'PitchArrayCell',
+'PitchArrayColumn', 'PitchArrayInventory', 'PitchArrayRow', 'PitchClass', 'PitchClassSegment',
+'PitchClassSet', 'PitchClassTree', 'PitchClassVector', 'PitchOperation', 'PitchRange',
+'PitchRangeInventory', 'PitchSegment', 'PitchSet', 'PitchVector', 'Registration',
+'RegistrationComponent', 'RegistrationInventory', 'Retrogression', 'Rotation', 'Segment', 'Set',
+'StaffPosition', 'Transposition', 'TwelveToneRow', 'Vector',
+'instantiate_pitch_and_interval_test_collection',
 'inventory_inversion_equivalent_named_interval_classes',
 'inventory_named_inversion_equivalent_interval_classes', 'iterate_named_pitch_pairs_in_expr',
 'list_named_pitches_in_expr', 'list_numbered_interval_numbers_pairwise',
@@ -183,6 +189,7 @@ from abjad import *
 \end{abjadbookoutput}
 
 \section{Representing objects}
+\label{sec:representing-objects}
 
 In Python, everything is an object, even integers, boolean values and
 functions. Because Python is also interpreted and can be used interactively,
@@ -247,15 +254,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x103a8e690>
+<__main__.Foo object at 0x103a9b210>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x103a8e690>'
+'<__main__.Foo object at 0x103a9b210>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x103a8e690>'
+'<__main__.Foo object at 0x103a9b210>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -2708,7 +2715,7 @@ Note("c'8")
 \end{lstlisting}
 \begin{lstlisting}
 >>> slur[:]
-Selection(Note("c'4"), Note("c'8"), Note("e'8"), Note("g'8"), Note("g'2"))
+[Note("c'4"), Note("c'8"), Note("e'8"), Note("g'8"), Note("g'2")]
 \end{lstlisting}
 \begin{lstlisting}
 >>> inspect_(slur).get_duration()
@@ -3354,35 +3361,32 @@ show(staff)
 \label{sec:selecting-components}
 
 Abjad provides a variety of methods for selecting components from within a
-score tree. For example, a score can be subscripted with integers or integer
-\emph{slices} -- e.g. \texttt{[1:-1]} -- representing the indices of some
-component or components to retrieve those component, as demonstrated in
-\autoref{ssec:containers}. Similarly, named components can be retrieved from a
-score by subscripting that score with their names, as demonstrated in
+score tree. A number of these techniques have already been demonstrated. For
+example, a score can be subscripted with integers or integer \emph{slices} --
+e.g. \texttt{[1:-1]} -- representing the indices of some component or
+components to retrieve those component, as shown in \autoref{ssec:containers}
+and later. Similarly, named components can be retrieved from a score by
+subscripting that score with their names, as shown in
 \autoref{ssec:named-components}. The leaves at the bottom of a score hierarchy
 can also be selected en masse via a component's \texttt{select\_leaves()}
-method regardless of their depth within the tree, also demonstrated in
+method regardless of their depth within the tree, also shown in
 \autoref{ssec:containers}. All of these techniques represent \emph{component
 selection}.
 
-Abjad models the concept of selection explicitly with its \texttt{Selection}
-class.
-
-Selections allow arbitrary collection of components to be grouped together and
-inspected without altering the score tree in the act of selecting.
+Abjad object-models the concept of component selection explicitly with its
+\texttt{Selection} class. Selections allow arbitrary collection of components
+to be grouped together and inspected without altering the score tree in the act
+of selecting. Unlike containers or spanner, components grouped by a selection
+have no reference back to that selection. Such unidirectional references
+prevent considerable complexity in the system and allow selections to be made
+and discarded with ease. However, like containers, spanners and the component
+inspector, selections expose a variety of methods for examining the components
+they group. Consider the following staff, which contains a variety of spanners
+attached to its leaves:
 
 \begin{comment}
 <abjad>
 staff = Staff("c'8 ( [ d' e' f '] g' [ a' b' c'' ) ]")
-show(staff)
-selection = staff[2:6]
-print(format(selection))
-selection.get_duration()
-selection.get_timespan()
-for spanner in selection.get_spanners():
-    spanner
-
-attach(Glissando(), selection)
 show(staff)
 </abjad>
 \end{comment}
@@ -3395,6 +3399,22 @@ show(staff)
 >>> show(staff)
 \end{lstlisting}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-dddf9b4ce50a2501abcd845f887a68dc.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent A selection can be made simply by subscripting the staff to select
+from the third leaf until the seventh:
+
+\begin{comment}
+<abjad>
+selection = staff[2:6]
+print(format(selection))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> selection = staff[2:6]
 >>> print(format(selection))
@@ -3407,6 +3427,35 @@ selectiontools.SliceSelection(
         )
     )
 \end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent That selection can be iterated over like a list, and inspected for
+its total duration and timespan -- its start and stop offsets, discussed at
+length in \autoref{chap:time-tools}:
+
+\begin{comment}
+<abjad>
+for component in selection:
+    component
+
+selection.get_duration()
+selection.get_timespan()
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for component in selection:
+...     component
+...
+Note("e'8")
+Note("f'8")
+Note("g'8")
+Note("a'8")
+\end{lstlisting}
 \begin{lstlisting}
 >>> selection.get_duration()
 Duration(1, 2)
@@ -3415,14 +3464,26 @@ Duration(1, 2)
 >>> selection.get_timespan()
 Timespan(start_offset=Offset(1, 4), stop_offset=Offset(3, 4))
 \end{lstlisting}
-\begin{lstlisting}
->>> for spanner in selection.get_spanners():
-...     spanner
-...
-Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
-Beam("g'8, a'8, b'8, c''8")
-Beam("c'8, d'8, e'8, f'8")
-\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Furthermore, the selection can be passed as the target to which a
+spanner attaches. Recall the use of subscripts in calls to \texttt{attach()} in
+\autoref{sec:spanners}. All of those container subscripting expressions
+produced selection objects, although they were not displayed on the console at
+any point. In this case, we can attach a glissando spanner to the leaf
+selection:
+
+\begin{comment}
+<abjad>
+attach(Glissando(), selection)
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> attach(Glissando(), selection)
 >>> show(staff)
@@ -3431,11 +3492,46 @@ Beam("c'8, d'8, e'8, f'8")
 \end{singlespacing}
 \end{abjadbookoutput}
 
--   Selection class
+\noindent Selections can also be queried for the spanners covering the
+components they contain:
 
--   select()
+\begin{comment}
+<abjad>
+for spanner in selection.get_spanners():
+    spanner
 
--   inspect\_(...).get\_logical\_tie()
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for spanner in selection.get_spanners():
+...     spanner
+...
+Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
+Glissando("e'8, f'8, g'8, a'8")
+Beam("g'8, a'8, b'8, c''8")
+Beam("c'8, d'8, e'8, f'8")
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\subsection{Logical ties}
+\label{ssec:logical-ties}
+
+Abjad provides a number of selection subclasses, some of which have already
+been described. For example, the \texttt{Parentage} class, discussed in
+\autoref{ssec:parentage} is actually a type of selection, and affords the same
+methods described above in addition to many others. One of the most fundamental
+selection subclasses in Abjad is the \texttt{LogicalTie}. Logical ties -- which
+are distinct from tie \emph{spanners} -- model the concept of one or more note
+or chord tied together to create a single attack point with an aggregate
+duration. Logical ties containing a single note or chord are termed
+\emph{trivial}. Logical ties comprising rests are not well-defined, but can
+certainly be instantiated like any other selection if a composer would find
+them useful.
 
 \begin{comment}
 <abjad>
@@ -3456,6 +3552,8 @@ show(staff)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ba551cbad06ff7c663324b7234592b52.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+-   inspect\_(...).get\_logical\_tie()
 
 \begin{comment}
 <abjad>
@@ -3578,7 +3676,8 @@ show(staff)
 \subsection{Iteration}
 \label{ssec:iteration}
 
--   By \_\_iter\_\_()
+Abjad provides a variety of techniques for iterating over the components in a
+score tree.
 
 \begin{comment}
 <abjad>
@@ -3596,10 +3695,46 @@ show(score)
 \end{singlespacing}
 \end{abjadbookoutput}
 
+-   By \_\_iter\_\_()
+
+The simplest iteration technique makes use of Python's \emph{iteration
+protocol} by treating Abjad's containers as list-like objects.
+
+\begin{comment}
+<abjad>
+for x in ['foo', 10, 3.14159]:
+    x
+
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> for x in ['foo', 10, 3.14159]:
+...     x
+...
+'foo'
+10
+3.14159
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+The component immediately contained by any Abjad container can be iterated over
+as though that container were a list:
+
 \begin{comment}
 <abjad>
 for x in score:
     x
+
+for y in score['Both Staves']:
+    y
+
+for z in score['Upper Staff']:
+    z
 
 </abjad>
 \end{comment}
@@ -3613,8 +3748,26 @@ for x in score:
 ...
 <PianoStaff-"Both Staves"<<2>>>
 \end{lstlisting}
+\begin{lstlisting}
+>>> for y in score['Both Staves']:
+...     y
+...
+<Staff-"Upper Staff"{1}>
+<Staff-"Lower Staff"{1}>
+\end{lstlisting}
+\begin{lstlisting}
+>>> for z in score['Upper Staff']:
+...     z
+...
+<Voice-"Voice 1"{2}>
+\end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+Abjad also provides an \emph{iteration agent} -- much like Abjad's component
+inspector -- which exposes a variety of iteration methods. Calling the
+top-level \texttt{iterate()} function against a score component returns an
+iteration agent configured to iterate over the contents of that component:
 
 \begin{comment}
 <abjad>
@@ -3631,35 +3784,15 @@ iteration_agent = iterate(score)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\begin{comment}
-<abjad>
-iterator = iteration_agent.by_class(Rest)
-for count, rest in enumerate(iterator, start=1):
-    string = 'R:{}'.format(count)
-    markup = Markup(string, direction=Up)
-    markup = markup.pad_around(0.5).box().pad_around(0.25)
-    attach(markup, rest)
-
-show(score)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{lstlisting}
->>> iterator = iteration_agent.by_class(Rest)
->>> for count, rest in enumerate(iterator, start=1):
-...     string = 'R:{}'.format(count)
-...     markup = Markup(string, direction=Up)
-...     markup = markup.pad_around(0.5).box().pad_around(0.25)
-...     attach(markup, rest)
-...
->>> show(score)
-\end{lstlisting}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-da3c33d6146317b6564053525185a185.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
+Perhaps the most fundamental method of score tree traversal is
+\emph{depth-first iteration}\cite{cormen2009introduction} whereby not only is a
+given container iterated over but each container it contains as well and each
+container those contain, recursively down to the leaves of the score tree. The
+iteration agent exposes depth first traversal via a method call. We can
+demonstrate this traversal algorithm by inspecting the parentage of each score
+component yielded during each step of the traversal process and printing them
+to the terminal indented by their \enquote{depth} relative to the root of the
+score tree:
 
 \begin{comment}
 <abjad>
@@ -3722,6 +3855,74 @@ for component in iteration_agent.depth_first():
 \end{singlespacing}
 \end{abjadbookoutput}
 
+\noindent Note how the above indented output mirrors the graph visualization of
+the same score tree, with the indent of each components representation
+corresponding to the number of edges between that component and the score
+tree's root score container:
+
+\begin{comment}
+<abjad>
+graph(score)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> graph(score)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,scale=0.5]{assets/graphviz-cd4e4715fc44715a6b9884dff43b2b03.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent In fact, Abjad's score tree graph visualizations rely, like many of
+the other more-specialized score tree iteration techniques, on this depth-first
+traversal. One of the most common iteration techniques based closely on
+depth-first traversal is iteration by class, whereby a score tree is iterated
+over recursively and only those items matching a component class prototype --
+e.g. only rests, only tuplets, or only notes and chords -- are yielded. We can
+demonstrate this technique by iterating over the same score by rests and
+attaching some markup to each yielded rest:
+
+\begin{comment}
+<abjad>
+iterator = iteration_agent.by_class(Rest)
+for count, rest in enumerate(iterator, start=1):
+    string = 'R:{}'.format(count)
+    markup = Markup(string, direction=Up)
+    markup = markup.pad_around(0.5).box().pad_around(0.25)
+    attach(markup, rest)
+
+show(score)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> iterator = iteration_agent.by_class(Rest)
+>>> for count, rest in enumerate(iterator, start=1):
+...     string = 'R:{}'.format(count)
+...     markup = Markup(string, direction=Up)
+...     markup = markup.pad_around(0.5).box().pad_around(0.25)
+...     attach(markup, rest)
+...
+>>> show(score)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-da3c33d6146317b6564053525185a185.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Note how the attached markup orders rests from left-to-right,
+starting in the upper staff and then proceeding to the lower staff. Such a
+traversal mirrors the order in which those rests appear during depth-first
+traversal. Now, before proceeding to a demonstration of the next technique, we
+first iterate over all of the components in the score tree depth-first and
+detach any markup previously attached, such as the rest-numbering markup
+attached above:
+
 \begin{comment}
 <abjad>
 for component in iteration_agent.depth_first():
@@ -3739,9 +3940,18 @@ for component in iteration_agent.depth_first():
 \end{singlespacing}
 \end{abjadbookoutput}
 
+Iteration by \emph{timeline} is another important score traversal technique,
+yielding each component -- optionally filtered by a class prototype -- in the
+order in which they in time relative to the start of the score. Components with
+identical start times are yielded according to their score index -- a tuple of
+indices describing the index of each of the components in a component's
+parentage in \emph{their} parents. We can demonstrate this iteration technique
+by iterating over all of the leaves in time-wise order, attaching markup to
+display their index in the timeline:
+
 \begin{comment}
 <abjad>
-iterator = iteration_agent.by_timeline()
+iterator = iteration_agent.by_timeline(scoretools.Leaf)
 for count, leaf in enumerate(iterator, 1):
     string = 'T:{}'.format(count)
     markup = Markup(string, direction=Up)
@@ -3756,7 +3966,7 @@ show(score)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> iterator = iteration_agent.by_timeline()
+>>> iterator = iteration_agent.by_timeline(scoretools.Leaf)
 >>> for count, leaf in enumerate(iterator, 1):
 ...     string = 'T:{}'.format(count)
 ...     markup = Markup(string, direction=Up)
@@ -3768,6 +3978,10 @@ show(score)
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-db611b2a9376ffa7996eb179aa7fe64b.pdf}
 \end{singlespacing}
 \end{abjadbookoutput}
+
+Composers are often concerned with contiguous \emph{runs} of notes and chords
+rather than any other collection of components Components can use the iteration
+agent to iterate over components grouped contiguously by class:
 
 \begin{comment}
 <abjad>
@@ -3795,10 +4009,19 @@ for run in iterate(lower_leaves).by_run(Note):
 \end{singlespacing}
 \end{abjadbookoutput}
 
+Finally, score trees can be traversed by logical ties -- selections
+representing one or more component tied together by a tie spanner, as described
+in \autoref{sec:selecting-components}. Before demonstrating this technique we
+must both attach ties to some of the leaves in the upper staff -- the A-flats
+and the Bs -- and strip out the previously-attached markup:
+
 \begin{comment}
 <abjad>
 attach(Tie(), score['Upper Staff'].select_leaves()[2:4])
 attach(Tie(), score['Upper Staff'].select_leaves()[6:8])
+for component in iterate(score).depth_first():
+    detached = detach(Markup, component)
+
 </abjad>
 \end{comment}
 
@@ -3808,15 +4031,18 @@ attach(Tie(), score['Upper Staff'].select_leaves()[6:8])
 \begin{lstlisting}
 >>> attach(Tie(), score['Upper Staff'].select_leaves()[2:4])
 >>> attach(Tie(), score['Upper Staff'].select_leaves()[6:8])
+>>> for component in iterate(score).depth_first():
+...     detached = detach(Markup, component)
+...
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
 
+With the score prepared, all pitched logical ties in the upper staff can be
+iterated over and markup attached to the head of each:
+
 \begin{comment}
 <abjad>
-for component in iterate(score).depth_first():
-    detached = detach(Markup, component)
-
 upper_leaves = score['Voice 1'].select_leaves()
 for logical_tie in iterate(upper_leaves).by_logical_tie(pitched=True):
     markup = Markup('H', direction=Up)
@@ -3831,9 +4057,6 @@ show(score)
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
->>> for component in iterate(score).depth_first():
-...     detached = detach(Markup, component)
-...
 >>> upper_leaves = score['Voice 1'].select_leaves()
 >>> for logical_tie in iterate(upper_leaves).by_logical_tie(pitched=True):
 ...     markup = Markup('H', direction=Up)
@@ -3986,8 +4209,10 @@ for x in selector(score['Upper Staff']):
 LogicalTie(Note("d'4.."),)
 LogicalTie(Note("b'16"),)
 LogicalTie(Note("af'4"), Note("af'4."))
+LogicalTie(Note("af'4"), Note("af'4."))
 LogicalTie(Note("g'8"),)
 LogicalTie(Note("c''8"),)
+LogicalTie(Note("b'4."), Note("b'8"))
 LogicalTie(Note("b'4."), Note("b'8"))
 LogicalTie(Note("d''16"),)
 \end{lstlisting}
@@ -4046,6 +4271,8 @@ for x in selector(score['Upper Staff']):
 ...
 LogicalTie(Note("d'4.."),)
 LogicalTie(Note("af'4"), Note("af'4."))
+LogicalTie(Note("af'4"), Note("af'4."))
+LogicalTie(Note("b'4."), Note("b'8"))
 LogicalTie(Note("b'4."), Note("b'8"))
 \end{lstlisting}
 \end{singlespacing}
@@ -4073,6 +4300,8 @@ for x in selector(score['Upper Staff']):
 ...
 ContiguousSelection(Note("d'4.."),)
 ContiguousSelection(Note("af'4"),)
+ContiguousSelection(Note("af'4"),)
+ContiguousSelection(Note("b'4."),)
 ContiguousSelection(Note("b'4."),)
 \end{lstlisting}
 \end{singlespacing}
@@ -4102,6 +4331,8 @@ for x in selector(score['Upper Staff']):
 ...
 Note("d'4..")
 Note("af'4")
+Note("af'4")
+Note("b'4.")
 Note("b'4.")
 \end{lstlisting}
 \end{singlespacing}
@@ -4216,6 +4447,248 @@ True
 
 \todo[inline]{\textbf{TODO:} Explain templating and new().}
 
+One of the last, but most important aspects of working with Abjad does not
+concern modeling notation at all.
+
+The act of \emph{templating} takes one object and replaces the values assigned
+to one or more of its properties with new values, returning a new object which
+is based on but differs from the old. The old object remains unchanged.
+
+Recall the earlier \enquote{rhythm-maker} code example from
+\autoref{sec:representing-objects}. Without yet discussing the structure or
+purpose of this particular object -- all of which is covered at length in
+\autoref{chap:time-tools} and \autoref{chap:a-model-of-composition} -- we can
+demonstrate Abjad's templating functionality.
+
+\begin{comment}
+<abjad>
+rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
+    talea=rhythmmakertools.Talea([1, 2, 3], 16),
+    extra_counts_per_division=(1, 0, 2, 1, 0),
+    output_masks=[
+        rhythmmakertools.SustainMask([1], 3),
+        rhythmmakertools.SilenceMask([-1]),
+        rhythmmakertools.NullMask([0]),
+        ],
+    tie_specifier=rhythmmakertools.TieSpecifier(
+        tie_across_divisions=True,
+        ),
+    )
+print(format(rhythm_maker))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
+...     talea=rhythmmakertools.Talea([1, 2, 3], 16),
+...     extra_counts_per_division=(1, 0, 2, 1, 0),
+...     output_masks=[
+...         rhythmmakertools.SustainMask([1], 3),
+...         rhythmmakertools.SilenceMask([-1]),
+...         rhythmmakertools.NullMask([0]),
+...         ],
+...     tie_specifier=rhythmmakertools.TieSpecifier(
+...         tie_across_divisions=True,
+...         ),
+...     )
+>>> print(format(rhythm_maker))
+rhythmmakertools.TaleaRhythmMaker(
+    talea=rhythmmakertools.Talea(
+        counts=(1, 2, 3),
+        denominator=16,
+        ),
+    extra_counts_per_division=(1, 0, 2, 1, 0),
+    output_masks=rhythmmakertools.BooleanPatternInventory(
+        (
+            rhythmmakertools.SustainMask(
+                indices=(1,),
+                invert=True,
+                ),
+            rhythmmakertools.SilenceMask(
+                indices=(-1,),
+                ),
+            rhythmmakertools.NullMask(
+                indices=(0,),
+                ),
+            )
+        ),
+    tie_specifier=rhythmmakertools.TieSpecifier(
+        tie_across_divisions=True,
+        ),
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+Abjad's top-level \texttt{new()} function enacts templating.
+
+For example, a single value can be replaced:
+
+\begin{comment}
+<abjad>
+new_rhythm_maker = new(rhythm_maker,
+    extra_counts_per_division=[1, 2, 3],
+    )
+print(format(new_rhythm_maker))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> new_rhythm_maker = new(rhythm_maker,
+...     extra_counts_per_division=[1, 2, 3],
+...     )
+>>> print(format(new_rhythm_maker))
+rhythmmakertools.TaleaRhythmMaker(
+    talea=rhythmmakertools.Talea(
+        counts=(1, 2, 3),
+        denominator=16,
+        ),
+    extra_counts_per_division=(1, 2, 3),
+    output_masks=rhythmmakertools.BooleanPatternInventory(
+        (
+            rhythmmakertools.SustainMask(
+                indices=(1,),
+                invert=True,
+                ),
+            rhythmmakertools.SilenceMask(
+                indices=(-1,),
+                ),
+            rhythmmakertools.NullMask(
+                indices=(0,),
+                ),
+            )
+        ),
+    tie_specifier=rhythmmakertools.TieSpecifier(
+        tie_across_divisions=True,
+        ),
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+Multiple values can be replaced, and previously unspecified values specified:
+
+\begin{comment}
+<abjad>
+new_rhythm_maker = new(new_rhythm_maker,
+    talea=rhythmmakertools.Talea([2, 1], 8),
+    extra_counts_per_division=[1, 2, 3],
+    beam_specifier=rhythmmakertools.BeamSpecifier(
+        beam_divisions_together=True,
+        ),
+    )
+print(format(new_rhythm_maker))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> new_rhythm_maker = new(new_rhythm_maker,
+...     talea=rhythmmakertools.Talea([2, 1], 8),
+...     extra_counts_per_division=[1, 2, 3],
+...     beam_specifier=rhythmmakertools.BeamSpecifier(
+...         beam_divisions_together=True,
+...         ),
+...     )
+>>> print(format(new_rhythm_maker))
+rhythmmakertools.TaleaRhythmMaker(
+    talea=rhythmmakertools.Talea(
+        counts=(2, 1),
+        denominator=8,
+        ),
+    extra_counts_per_division=(1, 2, 3),
+    beam_specifier=rhythmmakertools.BeamSpecifier(
+        beam_each_division=True,
+        beam_divisions_together=True,
+        use_feather_beams=False,
+        ),
+    output_masks=rhythmmakertools.BooleanPatternInventory(
+        (
+            rhythmmakertools.SustainMask(
+                indices=(1,),
+                invert=True,
+                ),
+            rhythmmakertools.SilenceMask(
+                indices=(-1,),
+                ),
+            rhythmmakertools.NullMask(
+                indices=(0,),
+                ),
+            )
+        ),
+    tie_specifier=rhythmmakertools.TieSpecifier(
+        tie_across_divisions=True,
+        ),
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+Arbitrarily-nested values can also be replaced by specifying names delimited by
+double underscores. Here the denominator of the talea can be reconfigured
+directly, changing it from the previous value of 8 to 4:
+
+\begin{comment}
+<abjad>
+new_rhythm_maker = new(new_rhythm_maker,
+    talea__denominator=4,
+    )
+print(format(new_rhythm_maker))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> new_rhythm_maker = new(new_rhythm_maker,
+...     talea__denominator=4,
+...     )
+>>> print(format(new_rhythm_maker))
+rhythmmakertools.TaleaRhythmMaker(
+    talea=rhythmmakertools.Talea(
+        counts=(2, 1),
+        denominator=4,
+        ),
+    extra_counts_per_division=(1, 2, 3),
+    beam_specifier=rhythmmakertools.BeamSpecifier(
+        beam_each_division=True,
+        beam_divisions_together=True,
+        use_feather_beams=False,
+        ),
+    output_masks=rhythmmakertools.BooleanPatternInventory(
+        (
+            rhythmmakertools.SustainMask(
+                indices=(1,),
+                invert=True,
+                ),
+            rhythmmakertools.SilenceMask(
+                indices=(-1,),
+                ),
+            rhythmmakertools.NullMask(
+                indices=(0,),
+                ),
+            )
+        ),
+    tie_specifier=rhythmmakertools.TieSpecifier(
+        tie_across_divisions=True,
+        ),
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+This is a very standard idea in computer science, but needs to be introduced
+here due to its pervasive use throughout the rest of this dissertation.
+
 \section{Conclusion}
 
 Abjad is a toolkit.
@@ -4230,15 +4703,18 @@ Some of the other things you can do:
 
 -   Mutation and mutate()
 -   play()
--   Pitch models
+-   Pitch models: named and numbered pitches, pitch-classes, interval,
+    pitch-ranges
 -   Instruments
 -   Parsers
 -   Factories
+-   Score templates
 
 I am not going to elaborate on all of these features here. Instead, go read the
 documentation.
 
-I have outlined the core concepts I think are crucial for working with Abjad.
+I have outlined the core concepts I think are crucial for working with Abjad,
+or at least for the type of work described in the rest of this dissertation.
 
 What are the objects you use to create a score? Containers, leaves, indicators
 and spanners. How do you put them together? Aggregation and attachment. How do
