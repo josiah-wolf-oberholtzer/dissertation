@@ -11,27 +11,54 @@ foo
 \section{Score directory layout}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+XXX\\
+
 \dirtree{%
 .1  ersilia/.
-    .2  build/.
-    .2  distribution/.
-    .2  etc/.
-    .2  makers/.
-    .2  materials/.
-    .2  segments/.
-    .2  stylesheets/.
-    .2  test/.
+    .2  build/\DTcomment{
+        LilyPond and LaTeX files for building document targets.
+        }.
+    .2  distribution/\DTcomment{
+        Finished PDFs for performers and conductors.
+        }.
+    .2  etc/\DTcomment{
+        Notes, to-do lists and plans.
+        }.
+    .2  makers/\DTcomment{
+        Customized segment-makers, score templates and other classes.
+        }.
+    .2  materials/\DTcomment{
+        Materials used to configure segment-makers. 
+        }.
+    .2  segments/\DTcomment{
+        Configured segment-makers and their illustrations.
+        }.
+    .2  stylesheets/\DTcomment{
+        LilyPond stylesheets.
+        }.
+    .2  test/\DTcomment{
+        The score package test suite.
+        }.
 }
 
 \subsection{Material packages}
 
+XXX\\
+
 \dirtree{%
 .1  materials/.
-    .2  abbreviations/.
-    .2  dense\_timespan\_maker/.
-    .2  guitar\_agitato\_music\_specifier/.
-    .2  guitar\_continuo\_music\_specifier/.
-    .2  guitar\_pointillist\_harmonics\_music\_specifier/.
+    .2  \_\_init\_\_.py\DTcomment{
+        The subpackage initializer.
+        }.
+    .2  abbreviations/\DTcomment{
+        A material package.
+        }.
+    .2  dense\_timespan\_maker/\DTcomment{
+        Another material package.
+        }.
+    .2  guitar\_agitato\_music\_specifier/\DTcomment{
+        Yet another material package.
+        }.
     .2  guitar\_strummed\_music\_specifier/.
     .2  guitar\_tremolo\_music\_specifier/.
     .2  guitar\_undulation\_tremolo\_music\_specifier/.
@@ -39,128 +66,245 @@ foo
     .2  percussion\_crotales\_flash\_music\_specifier/.
     .2  percussion\_crotales\_interruption\_music\_specifier/.
     .2  ....
-    .2  ....
-    .2  ....
+    .2  ...\DTcomment{
+        Many more material packages.
+        }.
 }
 
-\par
+The anatomy of a material package.\\
 
 \dirtree{%
 .1  guitar\_tremolo\_music\_specifier/.
-    .2  \_\_init\_\_.py.
-    .2  definition.py.
-    .2  illustration.ly.
-    .2  illustration.pdf.
+    .2  \_\_init\_\_.py\DTcomment{
+        The material package's Python initializer.
+        }.
+    .2  definition.py\DTcomment{
+        The material's definition file.
+        }.
+    .2  illustration.ly\DTcomment{
+        The material illustration's LilyPond source.
+        }.
+    .2  illustration.pdf\DTcomment{
+        The material's rendered illustration.
+        }.
 }
 
 \subsection{Segment packages}
 
+XXX\\
+
 \dirtree{%
 .1  segments/.
-    .2  \_\_init\_\_.py.
-    .2  chemish/.
-        .3  \_\_init\_\_.py.
-        .3  definition.py.
-        .3  illustration.ly.
-        .3  illustration.pdf.
-    .2  cut\_1/.
-        .3  \_\_init\_\_.py.
-        .3  definition.py.
-        .3  illustration.ly.
-        .3  illustration.pdf.
-    .2  komokome/.
-        .3  \_\_init\_\_.py.
-        .3  definition.py.
-        .3  illustration.ly.
-        .3  illustration.pdf.
-    .2  cut\_2/.
-        .3  \_\_init\_\_.py.
-        .3  definition.py.
-        .3  illustration.ly.
-        .3  illustration.pdf.
-    .2  sort/.
-        .3  \_\_init\_\_.py.
-        .3  definition.py.
-        .3  illustration.ly.
-        .3  illustration.pdf.
+    .2  \_\_init\_\_.py\DTcomment{
+        The subpackage initializer.        
+        }.
+    .2  \_\_metadata\_\_.py\DTcomment{
+        Metadata about the order of segments in the score.
+        }.
+    .2  chemish/\DTcomment{
+        A segment package.
+        }.
+        .3  \_\_init\_\_.py\DTcomment{
+            The segment package's Python initializer. 
+            }.
+        .3  \_\_metadata\_\_.py\DTcomment{
+            Auto-generated metadata about this score segment.
+            }.
+        .3  definition.py\DTcomment{
+            The segment's definition file, containing a configured
+            segment-maker.
+            }.
+        .3  illustration.ly\DTcomment{
+            The segment illustration's LilyPond source.
+            }.
+        .3  illustration.pdf\DTcomment{
+            The segment's rendered illustration.
+            }.
+    .2  cut\_1/\DTcomment{
+        Another segment package.
+        }.
+        .3  ....
+    .2  komokome/\DTcomment{
+        Another segment package.
+        }.
+        .3  ....
+    .2  cut\_2/\DTcomment{
+        Another segment package.
+        }.
+        .3  ....
+    .2  sort/\DTcomment{
+        Yet another segment package.
+        }.
+        .3  ....
 }
 
 \subsection{Stylesheets directory}
 
+XXX\\
+
 \dirtree{%
 .1  stylesheets/.
-    .2  nonfirst-segment.ily.
-    .2  parts-landscape.ily.
-    .2  parts-portrait.ily.
-    .2  scheme.ily.
-    .2  stylesheet.ily.
+    .2  nonfirst-segment.ily\DTcomment{
+        Style information for segments after the first segment.
+        }.
+    .2  parts-landscape.ily\DTcomment{
+        Style information for landscape-orientation parts.
+        }.
+    .2  parts-portrait.ily\DTcomment{
+        Style information for portrait-orientation parts.
+        }.
+    .2  scheme.ily\DTcomment{
+        LilyPond Scheme commands to be included in the primary stylesheet.
+        }.
+    .2  stylesheet.ily\DTcomment{
+        The primary stylesheet.
+        }.
 }
 
 \subsection{Build directory}
 
+XXX\\
+
 \dirtree{%
 .1  build/.
-    .2  11x17-landscape/.
-        .3  Makefile.
-        .3  ersilia-11x17-landscape-back-cover.pdf.
-        .3  ersilia-11x17-landscape-back-cover.tex.
-        .3  ersilia-11x17-landscape-front-cover.pdf.
-        .3  ersilia-11x17-landscape-front-cover.tex.
-        .3  ersilia-11x17-landscape-music.ly.
-        .3  ersilia-11x17-landscape-music.pdf.
-        .3  ersilia-11x17-landscape-parts.ly.
-        .3  ersilia-11x17-landscape-preface.pdf.
-        .3  ersilia-11x17-landscape-preface.tex.
-        .3  ersilia-11x17-landscape-score.pdf.
-        .3  ersilia-11x17-landscape-score.tex.
-    .2  11x17-portrait/.
+    .2  11x17-landscape/\DTcomment{
+        A document build target directory.
+        }.
         .3  ....
-    .2  legal-landscape/.
+    .2  11x17-portrait/\DTcomment{
+        Another document build target directory.
+        }.
         .3  ....
-    .2  legal-portrait/.
-        .3  ....
-    .2  parts.ily.
-    .2  preface/.
+    .2  assets/\DTcomment{
+        LaTeX files to be included into each preface layout.
+        }.
         .3  calvino.tex.
         .3  instrumentation.tex.
         .3  leguin.tex.
         .3  performance-notes.tex.
-    .2  segments/.
-        .3  chemish.ly.
-        .3  cut-1.ly.
-        .3  cut-2.ly.
-        .3  komokome.ly.
-        .3  sort.ly.
-    .2  segments.ily.
+    .2  legal-landscape/\DTcomment{
+        Another document build target directory.
+        }.
+        .3  ....
+    .2  legal-portrait/\DTcomment{
+        Yet another document build target directory.
+        }.
+        .3  ....
+    .2  parts.ily\DTcomment{
+        A LilyPond include file for generating parts.
+        }.
+    .2  segments/\DTcomment{
+        Segment illustration LilyPond sources.
+        }.
+        .3  chemish.ily.
+        .3  cut-1.ily.
+        .3  cut-2.ily.
+        .3  komokome.ily.
+        .3  sort.ily.
+    .2  segments.ily\DTcomment{
+        A LilyPond include file giving the order of the segments to
+        concatenate.
+        }.
+}
+
+XXX\\
+
+\dirtree{%
+.1  11x17-landscape/\DTcomment{
+    A build target directory.
+    }.
+    .2  Makefile\DTcomment{
+        A Makefile for GNU \texttt{make} affords various build tasks.
+        }.
+    .2  back-cover.pdf\DTcomment{
+        PDF output of the back cover LaTeX source.
+        }.
+    .2  back-cover.tex\DTcomment{
+        LaTeX source for the back cover.
+        }.
+    .2  front-cover.pdf\DTcomment{
+        PDF output of the front cover LaTeX source.
+        }.
+    .2  front-cover.tex\DTcomment{
+        LaTeX source for the back cover.
+        }.
+    .2  music.ly\DTcomment{
+        LilyPond source for the concatenated score segments.
+        }.
+    .2  music.pdf\DTcomment{.
+        PDF output for the concatenated score segments LilyPond source. 
+        }.
+    .2  parts.ly\DTcomment{
+        LilyPond source for generating individual parts PDFs.
+        }.
+    .2  preface.pdf\DTcomment{
+        PDF output for the preface LaTeX source.
+        }.
+    .2  preface.tex\DTcomment{
+        LaTeX source for the preface.
+        }.
+    .2  score.pdf\DTcomment{
+        PDF output of the complete score LaTeX source. 
+        }.
+    .2  score.tex\DTcomment{
+        LaTeX source for the complete score.
+        }.
 }
 
 \subsection{Tests directory}
 
+XXX\\
+
 \dirtree{%
 .1  test/.
-.2  test\_materials.py.
-.2  test\_segments.py.
+.2  test\_materials.py\DTcomment{
+    Parameterized tests for validating integrity of each material package.
+    }.
+.2  test\_segments.py\DTcomment{
+    Parameterized tests for validating integrity of each segment package.
+    }.
 }
 
 \subsection{Etcetera and distribution directories}
 
 \subsection{Python packaging}
 
+XXX\\
+
 \dirtree{%
 .1  ersilia/.
-    .2 .git/.
-    .2 .gitignore.
-    .2 .travis.yml.
-    .2 README.md.
-    .2 ersilia/.
-    .2 requirements.txt.
-    .2 setup.cfg.
-    .2 setup.py.
+    .2 .git/\DTcomment{
+        The Git repository history.
+        }.
+    .2 .gitignore\DTcomment{
+        File patterns to be ignored by the Git version control system.
+        }.
+    .2 .travis.yml\DTcomment{
+        The Travis-CI build configuration script.
+        }.
+    .2 README.md\DTcomment{
+        A MarkDown text file containing introductory information about the
+        score package.
+        }.
+    .2 ersilia/\DTcomment{
+        The score package itself.
+        }.
+    .2 requirements.txt\DTcomment{
+        Dependency information, for use when installing on Travis-CI.
+        }.
+    .2 setup.cfg\DTcomment{
+        Packaging information.
+        }.
+    .2 setup.py\DTcomment{
+        A Python install script.
+        }.
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Document preparation workflow}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Build tools}
+
+foo
+
+\section{Document preparation work-flow}
 
 foo
 
