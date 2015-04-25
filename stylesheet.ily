@@ -3,7 +3,7 @@
 #(set-global-staff-size 12)
 
 \header {
-    tagline = \markup { }
+    tagline = ##f
 }
 
 \layout {
@@ -20,6 +20,7 @@
         \type Engraver_group
         \alias Voice
         \override Accidental.stencil = ##f
+        \override Beam.stencil = ##f
         \override Dots.stencil = ##f
         \override Flag.stencil = ##f
         \override NoteCollision.merge-differently-dotted = ##t
@@ -41,6 +42,7 @@
         \type Engraver_group
         \alias Voice
         \override Accidental.stencil = ##f
+        \override Beam.stencil = ##f
         \override Dots.stencil = ##f
         \override Flag.stencil = ##f
         \override NoteCollision.merge-differently-dotted = ##t
@@ -84,6 +86,12 @@
         \override TupletBracket.springs-and-rods = #ly:spanner::set-spacing-rods
         \override TupletBracket.staff-padding = 2.25
         \override TupletNumber.text = #tuplet-number::calc-fraction-text
+        \override VerticalAxisGroup.staff-staff-spacing = #'(
+            (basic-distance . 8)
+            (minimum-distance . 14)
+            (padding . 4)
+            (stretchability . 0)
+            )
         proportionalNotationDuration = #(ly:make-moment 1 24)
         skipBars = ##t 
         tupletFullLength = ##t
@@ -91,12 +99,12 @@
 }
 
 \paper {
-    evenFooterMarkup = \markup \fill-line { " " }
-    evenHeaderMarkup = \markup \fill-line { " " }
+    evenFooterMarkup = ##f
+    evenHeaderMarkup = ##f
     left-margin = 1\in
     max-systems-per-page = 1
-    oddFooterMarkup = \markup \fill-line { " " }
-    oddHeaderMarkup = \markup \fill-line { " " }
+    oddFooterMarkup = ##f
+    oddHeaderMarkup = ##f
     print-first-page-number = ##f
     print-page-number = ##f
 }

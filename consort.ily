@@ -3,7 +3,7 @@
 #(set-global-staff-size 12)
 
 \header {
-    tagline = \markup { }
+    tagline = ##f
 }
 
 \layout {
@@ -201,12 +201,12 @@
 }
 
 \paper {
-    evenFooterMarkup = \markup \fill-line { " " }
-    evenHeaderMarkup = \markup \fill-line { " " }
+    evenFooterMarkup = ##f
+    evenHeaderMarkup = ##f
     left-margin = 1\in
     max-systems-per-page = 1
-    oddFooterMarkup = \markup \fill-line { " " }
-    oddHeaderMarkup = \markup \fill-line { " " }
+    oddFooterMarkup = ##f
+    oddHeaderMarkup = ##f
     print-first-page-number = ##f
     print-page-number = ##f
 }
