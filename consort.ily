@@ -27,6 +27,7 @@
         \override NoteHead.no-ledgers = ##t
         \override NoteHead.transparent = ##t
         \override Stem.stencil = ##f
+        \override Tie.stencil = ##f
         \override TupletBracket.staff-padding = 3
         \override TupletBracket.outside-staff-padding = 1
         \override TupletBracket.outside-staff-priority = 999
@@ -45,6 +46,7 @@
         \override NoteHead.no-ledgers = ##t
         \override NoteHead.transparent = ##t
         \override Stem.stencil = ##f
+        \override Tie.stencil = ##f
         \override TupletNumber.stencil = ##f
         \override TupletBracket.staff-padding = 3
         \override TupletBracket.outside-staff-padding = 1
@@ -199,5 +201,12 @@
 }
 
 \paper {
+    evenFooterMarkup = \markup \fill-line { " " }
+    evenHeaderMarkup = \markup \fill-line { " " }
     left-margin = 1\in
+    max-systems-per-page = 1
+    oddFooterMarkup = \markup \fill-line { " " }
+    oddHeaderMarkup = \markup \fill-line { " " }
+    print-first-page-number = ##f
+    print-page-number = ##f
 }
