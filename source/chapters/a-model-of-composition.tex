@@ -79,16 +79,16 @@ Composers specify segments by creating and progressively configuring
 \emph{segment-makers}, classes which conceptually mirror the rhythm- and
 timespan-makers described in \autoref{chap:time-tools}, but on a much larger
 scale. Such configuration parameters include tempo, permitted meters, desired
-duration, and score template. Score templates, as outlined in
-\autoref{ssec:score-templates}, are notation factories which build scores
-comprised of staff groups, staves, voices, clefs and instruments, as necessary
-to model the context hierarchy of a score to which no count-time components
-have yet been added. All segment-makers in a score project must use the same
-score template if they are to appear contiguously in the complete typeset
-score. LilyPond will automatically concatenate scores with identical context
-hierarchies. All contexts need to be present in every concatenated segment,
-otherwise LilyPond will concatenate incorrectly. However, various typographic
-overrides can be employed to make it seem that a context has disappeared.
+duration, and score template. Score templates are notation factories which
+build scores comprised of staff groups, staves, voices, clefs and instruments,
+as necessary to model the context hierarchy of a score to which no count-time
+components have yet been added. All segment-makers in a score project must use
+the same score template if they are to appear contiguously in the complete
+typeset score. LilyPond will automatically concatenate scores with identical
+context hierarchies. All contexts need to be present in every concatenated
+segment, otherwise LilyPond will concatenate incorrectly. However, various
+typographic overrides can be employed to make it seem that a context has
+disappeared.
 
 The following defines a segment-maker with desired duration of 9 seconds, only
 3/4 meters permitted, a score-template comprised of two rhythmic staves, and a

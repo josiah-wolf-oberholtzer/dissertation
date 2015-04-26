@@ -25,7 +25,6 @@ incomplete language construct. All other lines are necessarily returned as
 output from Python's interpreter.
 
 \todo[inline]{\textbf{TODO:} Namespaces.}
-
 \todo[inline]{\textbf{TODO:} Verify that high-level description of Abjad is
 on-point.}
 
@@ -78,8 +77,8 @@ print(abjad_names)
 'agenttools', 'attach', 'datastructuretools', 'detach', 'developerscripttools', 'documentationtools',
 'durationtools', 'exceptiontools', 'f', 'graph', 'handlertools', 'indicatortools', 'inspect_',
 'instrumenttools', 'ipythontools', 'iterate', 'labeltools', 'layouttools', 'lilypondfiletools',
-'lilypondnametools', 'lilypondparsertools', 'ly', 'markuptools', 'mathtools', 'metertools', 'mutate',
-'new', 'override', 'parse', 'persist', 'pitchtools', 'play', 'quantizationtools', 'rhythmmakertools',
+'lilypondnametools', 'lilypondparsertools', 'markuptools', 'mathtools', 'metertools', 'mutate', 'new',
+'override', 'parse', 'persist', 'pitchtools', 'play', 'quantizationtools', 'rhythmmakertools',
 'rhythmtreetools', 'schemetools', 'scoretools', 'select', 'selectiontools', 'selectortools',
 'sequencetools', 'set_', 'show', 'sievetools', 'spannertools', 'stringtools', 'systemtools',
 'templatetools', 'timespantools', 'tonalanalysistools', 'topleveltools']
@@ -253,15 +252,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> print(foo)
-<__main__.Foo object at 0x10467cb50>
+<__main__.Foo object at 0x103b84e10>
 \end{lstlisting}
 \begin{lstlisting}
 >>> repr(foo)
-'<__main__.Foo object at 0x10467cb50>'
+'<__main__.Foo object at 0x103b84e10>'
 \end{lstlisting}
 \begin{lstlisting}
 >>> str(foo)
-'<__main__.Foo object at 0x10467cb50>'
+'<__main__.Foo object at 0x103b84e10>'
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -2677,7 +2676,7 @@ inspect_(staff).get_spanners()
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
 >>> inspect_(staff[0]).get_spanners()
-set([Slur("c'4, c'8, e'8, g'8, g'2"), Tie("c'4, c'8")])
+set([Tie("c'4, c'8"), Slur("c'4, c'8, e'8, g'8, g'2")])
 \end{lstlisting}
 \begin{lstlisting}
 >>> inspect_(staff).get_spanners()
@@ -3510,10 +3509,10 @@ for spanner in selection.get_spanners():
 >>> for spanner in selection.get_spanners():
 ...     spanner
 ...
-Glissando("e'8, f'8, g'8, a'8")
-Beam("c'8, d'8, e'8, f'8")
-Beam("g'8, a'8, b'8, c''8")
 Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
+Glissando("e'8, f'8, g'8, a'8")
+Beam("g'8, a'8, b'8, c''8")
+Beam("c'8, d'8, e'8, f'8")
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -4459,22 +4458,18 @@ object-modeled as classes. Such object-modeling allows them to not only be used
 to configure still-larger aggregate compositional objects, but also be
 persisted to disk due to their well-formed storage format.
 
-\section{Templating}
-
-\todo[inline]{\textbf{TODO:} Explain templating and new().}
+\section{Templating and persistence}
 
 One of the last, but most important aspects of working with Abjad does not
-concern modeling notation at all.
-
-The act of \emph{templating} takes one object and replaces the values assigned
-to one or more of its properties with new values, returning a new object which
-is based on but differs from the old. The old object remains unchanged.
+concern modeling notation at all. The act of \emph{templating} takes one object
+and replaces the values assigned to one or more of its properties with new
+values, returning a new object based on -- but differing from -- the old, while
+the old object remains unchanged. Templating's combination of copying and
+re-configuration is a standard concepts in computer science, but needs to be
+introduced here due to its pervasive use throughout the rest of this document.
 
 Recall the earlier \enquote{rhythm-maker} code example from
-\autoref{sec:representing-objects}. Without yet discussing the structure or
-purpose of this particular object -- all of which is covered at length in
-\autoref{chap:time-tools} and \autoref{chap:a-model-of-composition} -- we can
-demonstrate Abjad's templating functionality.
+\autoref{sec:representing-objects}:
 
 \begin{comment}
 <abjad>
@@ -4539,9 +4534,16 @@ rhythmmakertools.TaleaRhythmMaker(
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Abjad's top-level \texttt{new()} function enacts templating.
-
-For example, a single value can be replaced:
+\noindent Without yet discussing the structure or purpose of this particular
+object -- all of which is covered at length in \autoref{chap:time-tools} and
+\autoref{chap:a-model-of-composition}, especially in
+\autoref{sec:rhythm-makers} -- we can demonstrate Abjad's templating
+functionality via its top-level \texttt{new()} function. For example,
+\texttt{new()} can be used to template a new rhythm-maker from the old one shown
+above, replacing the value referenced by one of its properties with a new
+value. Here we replace its \texttt{extra\_counts\_per\_division} with the
+sequence \texttt{[1, 2, 3]}. Note the change in the new rhythm-maker's storage
+format:
 
 \begin{comment}
 <abjad>
@@ -4588,13 +4590,16 @@ rhythmmakertools.TaleaRhythmMaker(
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Multiple values can be replaced, and previously unspecified values specified:
+\noindent Multiple values can be replaced, and previously unspecified values
+specified. Here we replace both the new rhythm-makers's \texttt{talea} and
+\texttt{extra\_counts\_per\_division} values and specify a previously
+unspecified \texttt{beam\_specifier}:
 
 \begin{comment}
 <abjad>
 new_rhythm_maker = new(new_rhythm_maker,
     talea=rhythmmakertools.Talea([2, 1], 8),
-    extra_counts_per_division=[1, 2, 3],
+    extra_counts_per_division=[1, 0, 1, 2, 0, 1],
     beam_specifier=rhythmmakertools.BeamSpecifier(
         beam_divisions_together=True,
         ),
@@ -4609,7 +4614,7 @@ print(format(new_rhythm_maker))
 \begin{lstlisting}
 >>> new_rhythm_maker = new(new_rhythm_maker,
 ...     talea=rhythmmakertools.Talea([2, 1], 8),
-...     extra_counts_per_division=[1, 2, 3],
+...     extra_counts_per_division=[1, 0, 1, 2, 0, 1],
 ...     beam_specifier=rhythmmakertools.BeamSpecifier(
 ...         beam_divisions_together=True,
 ...         ),
@@ -4620,7 +4625,7 @@ rhythmmakertools.TaleaRhythmMaker(
         counts=(2, 1),
         denominator=8,
         ),
-    extra_counts_per_division=(1, 2, 3),
+    extra_counts_per_division=(1, 0, 1, 2, 0, 1),
     beam_specifier=rhythmmakertools.BeamSpecifier(
         beam_each_division=True,
         beam_divisions_together=True,
@@ -4648,9 +4653,9 @@ rhythmmakertools.TaleaRhythmMaker(
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Arbitrarily-nested values can also be replaced by specifying names delimited by
-double underscores. Here the denominator of the talea can be reconfigured
-directly, changing it from the previous value of 8 to 4:
+\noindent Arbitrarily-nested values can also be replaced by specifying names
+delimited by double underscores. Here the denominator of the talea can be
+reconfigured directly, changing it from the previous value of 8 to 4:
 
 \begin{comment}
 <abjad>
@@ -4674,7 +4679,7 @@ rhythmmakertools.TaleaRhythmMaker(
         counts=(2, 1),
         denominator=4,
         ),
-    extra_counts_per_division=(1, 2, 3),
+    extra_counts_per_division=(1, 0, 1, 2, 0, 1),
     beam_specifier=rhythmmakertools.BeamSpecifier(
         beam_each_division=True,
         beam_divisions_together=True,
@@ -4702,14 +4707,28 @@ rhythmmakertools.TaleaRhythmMaker(
 \end{singlespacing}
 \end{abjadbookoutput}
 
-This is a very standard idea in computer science, but needs to be introduced
-here due to its pervasive use throughout the rest of this dissertation.
+\noindent Storage formatting is used throughout Abjad and tools extending Abjad
+for a number of reasons. For one, it provides a full description of a
+potentially complex object's configuration in as human-readable a format as
+possible. Storage formats are deterministic; any storage-formattable object
+with a given configuration is guaranteed to format in one and only one way.
+Non-trivial storage formats also take up multiple lines, making them
+well-suited to line-based version control systems like Subversion, Git and
+Mercurial -- among many others --. Most importantly, the storage format for any
+storage-formattable object is guaranteed to be evaluable as code in Abjad's
+namespace. Any object returned by evaluating another object's storage format as
+a string will be configured identically to the original and compare equally.
+This is a kind of human-readable \emph{serialization}. For example, the
+selector created previously in \autoref{ssec:selectors} can be persisted via
+its storage format and recreated by evaluating that storage format in Abjad's
+namespace. The new selector compares equally to the old:
 
 \begin{comment}
 <abjad>
+print(format(selector))
 selector_format = format(selector)
-new_selector = eval(selector_format)
-new_selector == selector
+evaluated_selector = eval(selector_format)
+evaluated_selector == selector
 </abjad>
 \end{comment}
 
@@ -4717,156 +4736,508 @@ new_selector == selector
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{lstlisting}
+>>> print(format(selector))
+selectortools.Selector(
+    callbacks=(
+        selectortools.PrototypeSelectorCallback(
+            prototype=scoretools.Leaf,
+            flatten=True,
+            ),
+        selectortools.LogicalTieSelectorCallback(
+            flatten=True,
+            pitched=True,
+            trivial=True,
+            ),
+        selectortools.DurationSelectorCallback(
+            duration=selectortools.DurationInequality(
+                operator_string='>',
+                duration=durationtools.Duration(1, 4),
+                ),
+            ),
+        selectortools.ItemSelectorCallback(
+            item=0,
+            apply_to_each=True,
+            ),
+        selectortools.FlattenSelectorCallback(
+            depth=-1,
+            ),
+        ),
+    )
+\end{lstlisting}
+\begin{lstlisting}
 >>> selector_format = format(selector)
->>> new_selector = eval(selector_format)
->>> new_selector == selector
+>>> evaluated_selector = eval(selector_format)
+>>> evaluated_selector == selector
 True
 \end{lstlisting}
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\todo[inline]{\textbf{TODO:} Demonstrate storage formatting of selectors.}
+\noindent Importantly, storage formatting affords persistence to disk. Abjad's
+\emph{persistence agent} -- conceptually similar to the inspection agent,
+iteration agent and others -- can write any storage-formattable object to disk
+as an importable Python module, automatically including the appropriate library
+import statements at the top of the file.
 
+\begin{comment}
+<abjad>
+persistence_agent = persist(selector)
+persistence_agent.as_module(
+    module_file_path='a_selector_module.py',
+    object_name='persisted_selector',
+    )
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> persistence_agent = persist(selector)
+>>> persistence_agent.as_module(
+...     module_file_path='a_selector_module.py',
+...     object_name='persisted_selector',
+...     )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent The persisted module file can then be read. Note the various import
+statements at the top -- \texttt{durationtools}, \texttt{scoretools},
+\texttt{selectortools} -- which have been determined by introspecting the
+selector:
+
+\begin{comment}
+<abjad>
+with open('a_selector_module.py', 'r') as module_file_pointer:
+    module_file_contents = module_file_pointer.read()
+
+print(module_file_contents)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> with open('a_selector_module.py', 'r') as module_file_pointer:
+...     module_file_contents = module_file_pointer.read()
+...
+>>> print(module_file_contents)
+# -*- encoding: utf-8 -*-
+from abjad.tools import durationtools
+from abjad.tools import scoretools
+from abjad.tools import selectortools
+
+
+persisted_selector = selectortools.Selector(
+    callbacks=(
+        selectortools.PrototypeSelectorCallback(
+            prototype=scoretools.Leaf,
+            flatten=True,
+            ),
+        selectortools.LogicalTieSelectorCallback(
+            flatten=True,
+            pitched=True,
+            trivial=True,
+            ),
+        selectortools.DurationSelectorCallback(
+            duration=selectortools.DurationInequality(
+                operator_string='>',
+                duration=durationtools.Duration(1, 4),
+                ),
+            ),
+        selectortools.ItemSelectorCallback(
+            item=0,
+            apply_to_each=True,
+            ),
+        selectortools.FlattenSelectorCallback(
+            depth=-1,
+            ),
+        ),
+    )
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent The persisted selector can also be imported from the persisted
+module, like any other importable Python code. It too compares equally to the
+original selector:
+
+\begin{comment}
+<abjad>
+from a_selector_module import persisted_selector
+persisted_selector == selector
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> from a_selector_module import persisted_selector
+>>> persisted_selector == selector
+True
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Storage-formatting, templating and persistence are crucial for
+working with Abjad at a high-level. Many of the compositionally-interesting
+devices afforded by Abjad -- objects which describe compositional processes,
+transformations, factories and the like -- involve a considerable amount of
+configuration. Templating affords variation in these situations, allowing
+composers to create new objects from old, varying a few or many aspects of the
+object under consideration, but saving them from the work of having to define a
+new object from scratch. Likewise, disk persistence allows composers to easily
+save their work.
+
+\section{Other tools}
+\label{sec:other-tools}
+
+Abjad provides many other tools for working with notation and modeling musical
+concepts, too many to discuss in full here. A wide variety of Abjad's classes
+for modeling time, rhythm and meter are explored in \autoref{chap:time-tools},
+along with various extensions implemented in the Consort composition-modeling
+library, but others bear mentioning now.
+
+\subsection{Mutation}
+\label{ssec:mutation}
+
+Abjad's \emph{mutation agent} -- similar again its inspection, iteration and
+persistence agents -- affords techniques for \emph{destructively} transforming
+already-instantiated score objects. Accessible via the top-level
+\texttt{mutate()} function, the mutation agent can split, transpose and replace
+components within a score. For example, the leaves in a score can be split
+cyclically, every other split shard transposed by a minor-second, and slurs and
+articulations attached to each shard:
+
+\begin{comment}
+<abjad>
+staff = Staff("c'4 d'4 e'4 f'4 g'4 a'4 b'4 c''4")
+agent = mutate(staff[:])
+for i, shard in enumerate(agent.split(durations=[(3, 16)], cyclic=True)):
+    if i % 2:
+        mutate(shard).transpose('m2')
+    if 1 < len(shard):
+        attach(Slur(), shard)
+    attach(Articulation('accent'), shard[0])
+
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> staff = Staff("c'4 d'4 e'4 f'4 g'4 a'4 b'4 c''4")
+>>> agent = mutate(staff[:])
+>>> for i, shard in enumerate(agent.split(durations=[(3, 16)], cyclic=True)):
+...     if i % 2:
+...         mutate(shard).transpose('m2')
+...     if 1 < len(shard):
+...         attach(Slur(), shard)
+...     attach(Articulation('accent'), shard[0])
+...
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-6f46aed686dfd3fb345effde680cb782.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\subsection{Pitch modeling}
+\label{ssec:pitch-modeling}
+
+Abjad provides a rich model of pitch, making explicit distinctions between
+named pitches -- C4, Db5 -- and numbered pitches -- 0, 13 -- as well as
+providing concrete models of named and numbered pitch-classes, intervals,
+interval-classes, pitch-ranges, octaves, accidentals, and all manner of
+specialized collection classes for these pitch objects, including pitch sets
+and interval-class vectors, each with transformation methods pertinent to their
+domain.
+
+\begin{comment}
+<abjad>
+pitch_segment = pitchtools.PitchSegment("c' d' e' fs' gf'")
+pitch_segment
+pitch_segment = pitch_segment.rotate(1, transpose=True)
+pitch_segment
+pitch_segment[2].accidental
+pitch_segment[2].octave
+pitch_segment[2].named_pitch_class
+pitchtools.IntervalSegment(pitch_segment)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> pitch_segment = pitchtools.PitchSegment("c' d' e' fs' gf'")
+>>> pitch_segment
+PitchSegment(["c'", "d'", "e'", "fs'", "gf'"])
+\end{lstlisting}
+\begin{lstlisting}
+>>> pitch_segment = pitch_segment.rotate(1, transpose=True)
+>>> pitch_segment
+PitchSegment(["c'", 'fs', 'gs', 'as', 'bs'])
+\end{lstlisting}
+\begin{lstlisting}
+>>> pitch_segment[2].accidental
+Accidental('s')
+\end{lstlisting}
+\begin{lstlisting}
+>>> pitch_segment[2].octave
+Octave(3)
+\end{lstlisting}
+\begin{lstlisting}
+>>> pitch_segment[2].named_pitch_class
+NamedPitchClass('gs')
+\end{lstlisting}
+\begin{lstlisting}
+>>> pitchtools.IntervalSegment(pitch_segment)
+IntervalSegment(['-dim5', '+M2', '+M2', '+M2'])
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Notably, Abjad's note-head objects -- aggregated into its notes and
+chords -- always store their pitch information as named pitches, guaranteeing
+an internal representation as close to the notational output as possible.
+
+\subsection{Parsers}
+\label{ssec:parsers}
+
+Abjad comes equipped with a number of parsers. Most notably, Abjad implements a
+parser for LilyPond's syntax, and can understand much -- although not all -- of
+LilyPond's grammar. Any time a note, rest, chord, container or even textual
+markup is instantiated with a string the LilyPond parser is at work. The
+top-level \texttt{parse()} function provides access to the this parser:
+
+\begin{comment}
+<abjad>
+string = r"\new Staff { c'4 ( \p \< d'4 e'4 f'4 ) \! }"
+result = parse(string)
+show(result)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> string = r"\new Staff { c'4 ( \p \< d'4 e'4 f'4 ) \! }"
+>>> result = parse(string)
+>>> show(result)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-50e654de74dec238b008efe1199ef153.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent The LilyPond parser can also be instantiated by hand and called:
+
+\begin{comment}
+<abjad>
+string = r'''\new Staff { c' _ \markup { X \bold Y \italic Z "a b c" } }'''
+parser = lilypondparsertools.LilyPondParser()
+result = parser(string)
+show(result)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> string = r'''\new Staff { c' _ \markup { X \bold Y \italic Z "a b c" } }'''
+>>> parser = lilypondparsertools.LilyPondParser()
+>>> result = parser(string)
+>>> show(result)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-44e71792eef3cbc7354f535910ec43f0.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Abjad also implements a simple parser for RTM-like \emph{rhythm-tree}
+syntax which parses strings into rhythm-tree objects which can then be
+converted into proper tuplets:
+
+\begin{comment}
+<abjad>
+rtm_parser = rhythmtreetools.RhythmTreeParser()
+rtm_syntax = '(1 (1 (2 (1 -1 1)) -2))'
+rtm_container = rtm_parser(rtm_syntax)[0]
+abjad_container = rtm_container(Duration(1, 2))[0]
+show(abjad_container)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> rtm_parser = rhythmtreetools.RhythmTreeParser()
+>>> rtm_syntax = '(1 (1 (2 (1 -1 1)) -2))'
+>>> rtm_container = rtm_parser(rtm_syntax)[0]
+>>> abjad_container = rtm_container(Duration(1, 2))[0]
+>>> show(abjad_container)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-900b83c24bcec6f313ced006914edcd7.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\subsection{Notation factories}
+\label{ssec:notation-factories}
+
+While composers can certainly create every object in a score by hand,
+instantiating each note, chord or measure one-at-a-time, with experience, when
+one is already working with notation computationally one tends to want means of
+generating many score objects at once. Abjad provides a number of
+\emph{factory} classes and functions for generating arbitrarily large amounts
+of notation. The simplest such factory is the \texttt{scoretools.make\_notes()}
+function, which combines sequences of pitches and durations in a patterned way
+to create a selection of leaves:
+
+\begin{comment}
+<abjad>
+pitches = ["c'", "ef'", "g'", 'b']
+durations = [(3, 8), (5, 16), (1, 4)] * 3
+notes = scoretools.make_notes(pitches, durations)
+staff = Staff(notes)
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> pitches = ["c'", "ef'", "g'", 'b']
+>>> durations = [(3, 8), (5, 16), (1, 4)] * 3
+>>> notes = scoretools.make_notes(pitches, durations)
+>>> staff = Staff(notes)
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ac6a185fbc7ba752fa335cac4a95d031.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Abjad's \emph{rhythm-maker} family of classes -- discussed in depth
+in \autoref{sec:rhythm-makers} -- provide a collection of highly-customizable
+factories for generating rhythms:
+
+\begin{comment}
+<abjad>
+rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
+    talea=rhythmmakertools.Talea(
+        counts=[1, 2, 3, 4],
+        denominator=16,
+        ),
+    tie_specifier=rhythmmakertools.TieSpecifier(
+        tie_across_divisions=True,
+        ),
+    )
+divisions = [(3, 8), (5, 8), (2, 8), (3, 8), (3, 8)]
+rhythm = rhythm_maker(divisions)
+staff = Staff(rhythm)
+show(staff)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
+...     talea=rhythmmakertools.Talea(
+...         counts=[1, 2, 3, 4],
+...         denominator=16,
+...         ),
+...     tie_specifier=rhythmmakertools.TieSpecifier(
+...         tie_across_divisions=True,
+...         ),
+...     )
+>>> divisions = [(3, 8), (5, 8), (2, 8), (3, 8), (3, 8)]
+>>> rhythm = rhythm_maker(divisions)
+>>> staff = Staff(rhythm)
+>>> show(staff)
+\end{lstlisting}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c8513549850b8c9e39824622dffe7198.pdf}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Abjad's \emph{score template} classes act as factories for scores,
+fully populated with voices, staves, staff groups, and potentially clefs and
+instruments, but devoid of any \enquote{count-time} components -- notes, rests,
+chords, tuplets or measures -- which comprise musical content. Score templates
+play a large role in the work described in later chapters, especially
+\autoref{chap:a-model-of-composition}, as they provide a way for multiple
+score-generating processes to synchronize on a common score structure. For
+example, \texttt{templatetools} provides a score template class for generating
+string quartet scores:
+
+\begin{comment}
+<abjad>
+score_template = templatetools.StringQuartetScoreTemplate()
+score = score_template()
+print(format(score))
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{lstlisting}
+>>> score_template = templatetools.StringQuartetScoreTemplate()
+>>> score = score_template()
+>>> print(format(score))
+\context Score = "String Quartet Score" <<
+    \context StaffGroup = "String Quartet Staff Group" <<
+        \context Staff = "First Violin Staff" {
+            \clef "treble"
+            \set Staff.instrumentName = \markup { Violin }
+            \set Staff.shortInstrumentName = \markup { Vn. }
+            \context Voice = "First Violin Voice" {
+            }
+        }
+        \context Staff = "Second Violin Staff" {
+            \clef "treble"
+            \set Staff.instrumentName = \markup { Violin }
+            \set Staff.shortInstrumentName = \markup { Vn. }
+            \context Voice = "Second Violin Voice" {
+            }
+        }
+        \context Staff = "Viola Staff" {
+            \clef "alto"
+            \set Staff.instrumentName = \markup { Viola }
+            \set Staff.shortInstrumentName = \markup { Va. }
+            \context Voice = "Viola Voice" {
+            }
+        }
+        \context Staff = "Cello Staff" {
+            \clef "bass"
+            \set Staff.instrumentName = \markup { Cello }
+            \set Staff.shortInstrumentName = \markup { Vc. }
+            \context Voice = "Cello Voice" {
+            }
+        }
+    >>
+>>
+\end{lstlisting}
+\end{singlespacing}
+\end{abjadbookoutput}
 
 \section{Conclusion}
+\label{ssec:a-model-of-notation-conclusion}
 
-Abjad is a toolkit.
-
-It provides a lot of tools for modeling and working with "low-level" musical
-objects and concepts.
-
-It tries not to suggest a specific way of working, beyond that you will work in
-Python and probably generate notational output via LilyPond.
-
-Some of the other things you can do:
-
--   Mutation and mutate()
--   play()
--   Pitch models: named and numbered pitches, pitch-classes, interval,
-    pitch-ranges
--   Instruments
--   Parsers
--   Factories
--   Score templates
-
-I am not going to elaborate on all of these features here. Instead, go read the
-documentation.
-
-I have outlined the core concepts I think are crucial for working with Abjad,
-or at least for the type of work described in the rest of this dissertation.
-
-What are the objects you use to create a score? Containers, leaves, indicators
-and spanners. How do you put them together? Aggregation and attachment. How do
-you inspect and modify the objects in a score? Selection, iteration,
-inspection.
-
-Spanners and scoped indicators provide ways of breaking free from the box-like
-structure of working with containers. Selections let us model relationships
-within a score, selectors let us model the act of selecting objects from a
-score in the abstract.
-
-Storage formatting lets us persist complexly configured object to disk for
-later use.
-
-Next we discuss Abjad's time model in considerably more depth including
-timespans and timespan inventories, as well as factory classes for generating
-complex time and rhythm-structures and other tools for analyzing and
-transforming those time structures.
-
-%\section{Mutating components}
-%
-%-   replace()
-%
-%-   split()
-%
-%-   transpose()
-%
-%\section{Representing pitches}
-%
-%-   The most important distinction is between named and numbered pitch
-%    objects.
-%
-%-   All pitched score components (notes and chords) rely on named
-%    representations of pitch, not numbered
-%
-%-   Named pitch objects are enharmonically explicit
-%
-%-   Numbered pitch objects require some interpretation
-%
-%-   Abjad has provided one interpretation, but that is for sufficiency
-%
-%-   Abjad does not make smart guesses about converting numbered to named
-%    pitches
-%
-%\subsection{Named and numbered pitch objects}
-%
-%-   Pitches and pitch-classes
-%
-%-   Intervals and interval-classes
-%
-%-   NamedPitch
-%    -   NamedPitchClass
-%    -   Accidental
-%    -   Octave
-%    -   StaffPosition
-%
-%-   NamedInterval
-%    -   Quality
-%
-%-   NumberedPitch is more equivalent
-%
-%\subsection{Collections}
-%
-%-   Set, Segment, Vector
-%
-%-   PitchSegment
-%
-%-   PitchClassSegment
-%
-%-   PitchRange
-%
-%\subsection{Pitch operations}
-%
-%-   PitchOperation
-%
-%-   Transposition
-%
-%-   Inversion
-%
-%-   Retrogression
-%
-%-   Multiplication
-%
-%-   Rotation
-%
-%\subsection{Inspecting leaf pitches}
-%
-%-   Note("c'4").written\_pitch
-%
-%-   Note("c'4").note\_head.written\_pitch
-%
-%-   Chord("<c' e' g'>4").written\_pitches
-%
-%-   inspect\_(note).get\_sounding\_pitch()
-%
-%-   inspect\_(note).get\_sounding\_pitches()
-%
-%\section{Notation factories}
-%
-%-   rhythm-makers
-%
-%-   score templates
-%
-%-   parsers
-%
-%    -   LilyPond parser
-%
-%    -   PLY
-%
-%    -   SchemeParser
-%
-%    -   RhythmTreeParser
-%
-%    -   ReducedLyParser
-%
-%- Templating
+This chapter discussed the core components and concepts for working with
+notation in Abjad. Composers aggregate score components, consisting of leaves
+and containers, into nested, hierarchical score structures. Indicators and
+spanners attach to the components in the tree, adding additional structuration,
+annotation or typographic embellishment. Iteration and selection then provide
+means for examining the constructed score tree, allowing composers to locate
+components within the growing composition for examination, mutation or
+decoration. The chapters that follow build on these techniques, and describe
+increasingly high-level means of organizing time and generating notation en
+masse with Abjad.
