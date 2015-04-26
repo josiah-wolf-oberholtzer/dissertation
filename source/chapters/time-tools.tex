@@ -12,16 +12,6 @@ import consort
 </abjad>
 \end{comment}
 
-\todo[inline]{\textbf{TODO:} Add section labels.}
-
-\todo[inline]{\textbf{TODO:} Investigate adding indexing commands.}
-
-\todo[inline]{\textbf{TODO:} Investigate additional citations.}
-
-\todo[inline]{\textbf{TODO:} Determine appropriate pronoun usage.}
-
-\todo[inline]{\textbf{TODO:} Verify hyphenated lowercase class names.}
-
 Consort implements a model of composition which relies on a number of
 interrelated but distinct approaches to working with musical time. For example,
 Abjad's \emph{Timespan} suggests a \enquote{coarse} approach to musical
@@ -33,22 +23,21 @@ manipulations. Because they have no notational reality, they can model
 temporal concepts unsuited to notated music -- without introducing additional
 complexity--, such as arbitrarily overlapping events. Timespans may also be
 annotated, allowing composers to position metadata anywhere on a timeline, much
-like arranging audio regions in a DAW.\footnote{Cite the \emph{Computer Music
-Tutorial}.} Moreover, every durated object in a score hierarchy can be
-described as a timespan, allowing score components to engage in abstract time
-relations. In contrast, notated rhythms, composed of note, rest, tie and tuplet
-objects -- among others--, provide the most \enquote{fine-grained} approach to
-musical time. While incredibly expressive, fully notated rhythms are
-potentially complex to create, and must ultimately be anchored in a score
-hierarchy. Highly-configurable rhythm-maker classes ameliorate the complexity
-of creating notated rhythms by providing a high-level interface to the process
-of rhythm generation. Meter coordinates time and rhythm vertically across
-score hierarchy, and bridges Consort's coarse and fine stages of rhythmic
-interpretation. Meter sequences can be generated from timespan-based phrase
-structures, and those meter sequences used to transform notated rhythms in
-turn. A thorough discussion of the implementation of these time models and
-their implications will clarify a later analysis of Consort's score
-interpretation stage.
+like arranging audio regions in a DAW.\cite{curtis1996computer} Moreover, every
+durated object in a score hierarchy can be described as a timespan, allowing
+score components to engage in abstract time relations. In contrast, notated
+rhythms, composed of note, rest, tie and tuplet objects -- among others--,
+provide the most \enquote{fine-grained} approach to musical time. While
+incredibly expressive, fully notated rhythms are potentially complex to create,
+and must ultimately be anchored in a score hierarchy. Highly-configurable
+rhythm-maker classes ameliorate the complexity of creating notated rhythms by
+providing a high-level interface to the process of rhythm generation. Meter
+coordinates time and rhythm vertically across score hierarchy, and bridges
+Consort's coarse and fine stages of rhythmic interpretation. Meter sequences
+can be generated from timespan-based phrase structures, and those meter
+sequences used to transform notated rhythms in turn. A thorough discussion of
+the implementation of these time models and their implications will clarify a
+later analysis of Consort's score interpretation stage.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Timespans}
@@ -1217,32 +1206,29 @@ once, wholesale transformations on massed timespans becomes practical.
 \label{sec:timespan-inventories}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\todo[inline]{\textbf{TODO:} Cite \emph{Introduction to Algorithms} for
-interval trees.}
-
 Abjad provides a \texttt{TimespanInventory} class specifically for aggregating
 together a collection of \texttt{Timespan} objects.\footnote{ Consort provides
 its own timespan collection class -- the \texttt{TimespanCollection}. This
 class stores timespans internally not in a list, but in a balanced
-\emph{interval tree}. An interval tree is an augmented, self-balancing binary
-tree which stores start offsets and stop offsets. Such a data structure
-guarantees its contents are always sorted, and allows for highly optimized
-lookups for timespan matching various search criteria. The
-\texttt{TimespanCollection} class is used at crucial points during Consort's
-interpretation stage simply for purposes of speed, and should be considered an
-implementation detail. It provides only a few methods, specifically for
-affording rapid search and retrieval of timespans intersecting other timespans
-or offsets. With work, its internal data structure may eventually be merged into
-Abjad's own \texttt{TimespanInventory} class.} Timespan inventories implement
-Python's \emph{mutable sequence protocol} which allow them to behave exactly
-like lists, supporting appension, extension, insertion, indexing, sorting,
-iteration and other procedures pertinent to list-like objects. They also
-provide a wide variety of properties and methods for interacting with massed
-groups of timespans such as searching for timespans matching a time relation,
-splitting all timespans which intersect with a given offset, mapping a logical
-operation against all timespans in the inventory, or partitioning an
-inventory containing overlapping timespans into multiple separate inventories
-containing non-overlapping timespans.
+\emph{interval tree}.\cite{cormen2009introduction} An interval tree is an
+augmented, self-balancing binary tree which stores start offsets and stop
+offsets. Such a data structure guarantees its contents are always sorted, and
+allows for highly optimized lookups for timespan matching various search
+criteria. The \texttt{TimespanCollection} class is used at crucial points
+during Consort's interpretation stage simply for purposes of speed, and should
+be considered an implementation detail. It provides only a few methods,
+specifically for affording rapid search and retrieval of timespans intersecting
+other timespans or offsets. With work, its internal data structure may
+eventually be merged into Abjad's own \texttt{TimespanInventory} class.}
+Timespan inventories implement Python's \emph{mutable sequence protocol} which
+allow them to behave exactly like lists, supporting appension, extension,
+insertion, indexing, sorting, iteration and other procedures pertinent to
+list-like objects. They also provide a wide variety of properties and methods
+for interacting with massed groups of timespans such as searching for timespans
+matching a time relation, splitting all timespans which intersect with a given
+offset, mapping a logical operation against all timespans in the inventory, or
+partitioning an inventory containing overlapping timespans into multiple
+separate inventories containing non-overlapping timespans.
 
 Like a Python list, a timespan inventory can be created with an iterable of
 zero or more timespans as an instantiation argument, be appended to, or
