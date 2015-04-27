@@ -5,14 +5,40 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-foo
+Core concepts:
+
+Version control. Always be in control of the changes in your project.
+Text-based development strongly supports this manner of working.
+Tagging allows you to pinpoint versions of the work which correspond to
+premiers or performances. You always know what's different about one version
+versus another version. Branching allows you to try out new pathways without
+worry of clobbering your work. Version control is also concise - no more
+cluttering up your workspace with multiple directories. You can't compare those
+- it's a cognitive burden.
+
+Automated typesetting. Separate content from layout. This extends to both
+textual document components and musical document components. Affords easy part
+extraction. Cascading stylesheets.
+
+Structured code. Make a clear distinction between classes, materials, and
+segments. Segments represent in-time composition. Materials represent
+out-of-time composition. Makers represent abstract processes or utilities which
+afford the creation of materials and segments.
+
+Testing. Automate proofreading. Guarantee computationally-afforded score
+projects continue to function properly over time, ensuring the longevity of the
+code-base.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Score directory layout}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-XXX\\
+A clear way of structuring one's workspace clarifies both the way one thinks
+about the act of composing, as well as the menial work flows of document
+preparation which are inseparable from score-based composition.
 
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \dirtree{%
 .1  ersilia/.
     .2  build/\DTcomment{
@@ -40,11 +66,29 @@ XXX\\
         The score package test suite.
         }.
 }
+\end{singlespacing}
+
+Each directory serves a specific purpose and by-and-large describes a
+particular kind of task during composition and document preparation.
 
 \subsection{Material packages}
 
-XXX\\
+Materials are out-of-time. Pitch collections, rhythm-makers, music specifiers.
+Compositional and musical objects which may appear at some point during a
+piece.
 
+Materials are implemented as Python packages. They have an initializer and a
+definition file. Of course, those could be conflated, but I choose not to out
+of habit.
+
+Materials, depending on the specific kind of material, can be illustrated. If
+the class housed in the material definition file implements \_\_illustrate\_\_,
+it can be illustrated.
+
+Materials can be imported.
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \dirtree{%
 .1  materials/.
     .2  \_\_init\_\_.py\DTcomment{
@@ -70,9 +114,12 @@ XXX\\
         Many more material packages.
         }.
 }
+\end{singlespacing}
 
-The anatomy of a material package.\\
+The anatomy of a material package.
 
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \dirtree{%
 .1  guitar\_tremolo\_music\_specifier/.
     .2  \_\_init\_\_.py\DTcomment{
@@ -88,11 +135,20 @@ The anatomy of a material package.\\
         The material's rendered illustration.
         }.
 }
+\end{singlespacing}
 
 \subsection{Segment packages}
 
-XXX\\
+Segments, like materials, are Python packages.
 
+They can be imported. They have an initializer and a definition module. They
+can optionally have metadata modules.
+
+A metadata module sibling to each segment package provides ordering
+information.
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \dirtree{%
 .1  segments/.
     .2  \_\_init\_\_.py\DTcomment{
@@ -137,11 +193,18 @@ XXX\\
         }.
         .3  ....
 }
+\end{singlespacing}
 
-\subsection{Stylesheets directory}
+\subsection{The \texttt{stylesheets/} directory}
 
-XXX\\
+Stylesheets cascade.
 
+You can use one primary stylesheet and include it into each segment
+illustration, as well as into the concatenated segment LilyPond sources that
+live in each document target directory in build/.
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \dirtree{%
 .1  stylesheets/.
     .2  nonfirst-segment.ily\DTcomment{
@@ -160,11 +223,14 @@ XXX\\
         The primary stylesheet.
         }.
 }
+\end{singlespacing}
 
-\subsection{Build directory}
+\subsection{The \texttt{build/} directory}
 
-XXX\\
+XXX
 
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \dirtree{%
 .1  build/.
     .2  11x17-landscape/\DTcomment{
@@ -206,9 +272,12 @@ XXX\\
         concatenate.
         }.
 }
+\end{singlespacing}
 
-XXX\\
+XXX
 
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \dirtree{%
 .1  11x17-landscape/\DTcomment{
     A build target directory.
@@ -250,11 +319,22 @@ XXX\\
         LaTeX source for the complete score.
         }.
 }
+\end{singlespacing}
 
-\subsection{Tests directory}
+\subsection{The \texttt{etc/} and \texttt{distribution/} directories}
 
-XXX\\
+Put notes, plans and to-dos about the process of composing into etc/.
 
+Collect finished document targets into distribution/. These should be organized
+by gig, and should contain only the files you would need to send to an
+ensemble.
+
+\subsection{The \texttt{test/} directory}
+
+XXX
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \dirtree{%
 .1  test/.
 .2  test\_materials.py\DTcomment{
@@ -264,13 +344,14 @@ XXX\\
     Parameterized tests for validating integrity of each segment package.
     }.
 }
-
-\subsection{Etcetera and distribution directories}
+\end{singlespacing}
 
 \subsection{Python packaging}
 
-XXX\\
+XXX
 
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
 \dirtree{%
 .1  ersilia/.
     .2 .git/\DTcomment{
@@ -299,6 +380,7 @@ XXX\\
         A Python install script.
         }.
 }
+\end{singlespacing}
 
 \section{Document preparation work-flow}
 
@@ -315,29 +397,100 @@ preparation.
 
 \subsection{Editing}
 
-foo
+I do everything in text. vim is my primary tool, but any decent text editor
+will do. Facility in making mass transformations across files is key - you may
+want to rename things that appear in multiple places. searching is important.
+syntax highlighting, and easy access to every file in your project and any
+project you rely on is key.
 
 \subsection{Illustrating}
 
-foo
+how does illustrating work? you can do it at the command-line by importing a
+definition by hand, but this gets tedious.
+
+Write a script that does the illustrating. You can also make each segment
+definition file executable.
+
+Segment metadata. Each segment can return not just an illustration but also a
+dictionary containing information about the segment it created. What was its
+tempo? Did it repeat? How many bars were there? What was the last time
+signature used? This metadata dictionary can be persisted to disk just like the
+segment's illustration.
+
+Choose the order of the segments and write that into its own metadata python
+module. When you illustrate, you can peek at the other segment packages,
+examine their metadata and construct a model of pertinent information about
+what has happened prior to the current segment under consideration.
 
 \subsection{LilyPond stylesheets}
 
-foo
+Stylesheets cascade.
+
+A master stylesheet describes the overall look-and-feel of the score.
+
+A stylesheet for scheme functions (LilyPond is scriptable, remember?)
+
+A stylesheet for parts.
 
 \subsection{Collecting segment files}
 
-foo
-
 LilyPond concatenates contexts.
+
+.ily vs .ly: just a convention. .ly can be compiled by itself, .ily either has
+no music, or requires includes which are not present.
+
+Copy segments illustration files out of each segment package into
+build/segments.
+
+Rename each segment from illustration.ly to segment-package-name.ily
+
+Trim every except the \texttt{\textbackslash{}context} block.
+
+Trimming removes the unnecessary header and styling information from each
+collected segment illustration and allows LilyPond to concatenate the score
+contexts together into a single score structure.
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\lstinputlisting{../../Scores/ersilia/ersilia/build/segments.ily}
+\end{singlespacing}
 
 \subsection{LaTeX assets}
 
-foo
+what latex assets does each document target require?
+
+Front-cover, back-cover, performance-notes, music.
+
+use a master score.tex to include all of the document target assets together.
+Latex can merge pdfs easily, so just do that.
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\lstinputlisting[]{../../Scores/ersilia/ersilia/build/11x17-portrait/ersilia-11x17-portrait-score.tex}
+\end{singlespacing}
 
 \subsection{Part extraction}
 
-foo
+Tags. You can use tags in LilyPond to filter out or keep any musical
+expression, from a single note to an entire score. By tagging every staff or
+staff group with a unique name, you can use LilyPond's tag filtering commands
+to generate PDFs containing only selected musical content.
+
+Bookpart blocks. LilyPond can be instructed to build PDFs consisting of
+multiple separate scores, appearing on separate pages. For example, hymnals, or
+multi-movement works. \enquote{Books} can consist of multiple
+\enquote{bookparts} which can themselves consist of multiple scores. You can
+construct bookparts such that LilyPond outputs each bookpart as a separate PDF.
+This is an ideal way to structure a document to output parts.
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\lstinputlisting[
+    lastline=23,
+]{../../Scores/ersilia/ersilia/build/parts.ily}
+\end{singlespacing}
+
+One bookpart per part PDF, with the appropriate tag.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Project maintenance}
@@ -347,8 +500,22 @@ foo
 
 \subsection{Testing}
 
-foo
+Parameterized tests which run each segment and import each material. Why do
+this? It's a simple entry point to check the stability of your entire score as
+you work. If your score depends on another project -- e.g. Abjad or Consort --
+where that project is also being actively developed testing lets you check that
+your project continues to interoperate.
+
+Continuous integration testing via Travis-CI or similar service. Run your tests
+on a remote server in a virtual machine. This guarantees that your score can be
+installed on a fresh machine which is also probably of a different
+architecture. Also guarantees that any other project your score depends on,
+e.g. Abjad or any of Abjad's dependencies, can also be installed and used in a
+fresh environment. Why do things in a fresh environment? Our local workspace
+can become a blind-spot to us.
 
 \subsection{Version control}
 
-foo
+This is the most important aspect of working computationally. If I can impart
+\emph{any} advice to anyone working with computers, even if they never program
+ever, it would be to learn how to use version control.

@@ -52,8 +52,10 @@ algorithms and subroutines employed during Consort's specification and
 interpretation stages. Visualization, via Abjad's \emph{illustration protocol}
 was already discussed in \autoref{ch:a-model-of-notation}.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Specification}
 \label{sec:specification}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \emph{Specification} describes how \emph{out-of-time materials} -- both
 concrete and programmatic -- should be deployed \emph{in-time} in a
@@ -696,8 +698,10 @@ rhythmic information, and the second stage applying grace notes, pitches,
 indicators, spanners and various typographic overrides to the
 previously-constructed rhythmic skeleton.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Rhythmic interpretation}
 \label{sec:rhythmic-interpretation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Broadly speaking, rhythmic interpretation proceeds from coarse- to
 fine-grained. The segment-maker creates a *maquette* -- a model of the
@@ -2504,8 +2508,10 @@ maquette and inserting those phrases into the score in the appropriate voice.
 With the segment-maker's score populated, rhythmic interpretation ends and
 non-rhythmic interpretation may begin.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Non-rhythmic interpretation}
 \label{sec:non-rhythmic-interpretation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Non-rhythmic interpretation involves the process of progressively embellishing
 the contents of the rhythmically-interpreted score while preserving the score
@@ -4245,7 +4251,10 @@ pitches, overlapping glissandi, or components with null parent references. If
 all tests pass, the segment-maker returns the LilyPond file object.
 Interpretation is complete.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Persistence \& visualization}
+\label{sec:persistence-and-visualization}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Once interpreted, a segment-maker's illustration may be persisted to disk as
 LilyPond syntax for inclusion in other LilyPond files, rendered as a PDF for
