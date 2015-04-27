@@ -12,32 +12,33 @@ import consort
 </abjad>
 \end{comment}
 
-Consort implements a model of composition which relies on a number of
-interrelated but distinct approaches to working with musical time. For example,
-Abjad's \emph{Timespan} suggests a \enquote{coarse} approach to musical
-time. These objects represent arbitrary durated events on a timeline, without
-respect for score hierarchy or meter. They are well-suited for modeling
-large-scale phrasing and gestural density structures and can be transformed
-through splitting, scaling, stretching, and translation among various other
-manipulations. Because they have no notational reality, they can model
-temporal concepts unsuited to notated music -- without introducing additional
-complexity--, such as arbitrarily overlapping events. Timespans may also be
-annotated, allowing composers to position metadata anywhere on a timeline, much
-like arranging audio regions in a DAW.\cite{curtis1996computer} Moreover, every
-durated object in a score hierarchy can be described as a timespan, allowing
-score components to engage in abstract time relations. In contrast, notated
-rhythms, composed of note, rest, tie and tuplet objects -- among others--,
-provide the most \enquote{fine-grained} approach to musical time. While
-incredibly expressive, fully notated rhythms are potentially complex to create,
-and must ultimately be anchored in a score hierarchy. Highly-configurable
-rhythm-maker classes ameliorate the complexity of creating notated rhythms by
-providing a high-level interface to the process of rhythm generation. Meter
-coordinates time and rhythm vertically across score hierarchy, and bridges
-Consort's coarse and fine stages of rhythmic interpretation. Meter sequences
-can be generated from timespan-based phrase structures, and those meter
-sequences used to transform notated rhythms in turn. A thorough discussion of
-the implementation of these time models and their implications will clarify a
-later analysis of Consort's score interpretation stage.
+\eblettrinedbl{T}{he Python package Consort} implements a model of composition
+which relies on a number of interrelated but distinct approaches to working
+with musical time. For example, Abjad's \emph{Timespan} suggests a
+\enquote{coarse} approach to musical time. These objects represent arbitrary
+durated events on a timeline, without respect for score hierarchy or meter.
+They are well-suited for modeling large-scale phrasing and gestural density
+structures and can be transformed through splitting, scaling, stretching, and
+translation among various other manipulations. Because they have no notational
+reality, they can model temporal concepts unsuited to notated music -- without
+introducing additional complexity--, such as arbitrarily overlapping events.
+Timespans may also be annotated, allowing composers to position metadata
+anywhere on a timeline, much like arranging audio regions in a
+DAW.\cite{curtis1996computer} Moreover, every durated object in a score
+hierarchy can be described as a timespan, allowing score components to engage
+in abstract time relations. In contrast, notated rhythms, composed of note,
+rest, tie and tuplet objects -- among others--, provide the most
+\enquote{fine-grained} approach to musical time. While incredibly expressive,
+fully notated rhythms are potentially complex to create, and must ultimately be
+anchored in a score hierarchy. Highly-configurable rhythm-maker classes
+ameliorate the complexity of creating notated rhythms by providing a high-level
+interface to the process of rhythm generation. Meter coordinates time and
+rhythm vertically across score hierarchy, and bridges Consort's coarse and fine
+stages of rhythmic interpretation. Meter sequences can be generated from
+timespan-based phrase structures, and those meter sequences used to transform
+notated rhythms in turn. A thorough discussion of the implementation of these
+time models and their implications will clarify a later analysis of Consort's
+score interpretation stage.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Timespans}
