@@ -78,14 +78,15 @@
     language=[LaTeX]TeX,
 }
 
-%\includeonly{
-%    source/chapters/introduction,
-%    source/chapters/a-model-of-notation,
-%    source/chapters/time-tools,
-%    source/chapters/a-model-of-composition,
-%    source/chapters/practicalities,
-%    source/chapters/conclusion,
-%}
+\includeonly{
+    source/chapters/introduction,
+    source/chapters/a-model-of-notation,
+    source/chapters/time-tools,
+    source/chapters/a-model-of-composition,
+    source/chapters/practicalities,
+    source/chapters/conclusion,
+    source/endmatter/colophon
+}
 
 %\excludeonly{
 %    source/chapters/score-aurora,
@@ -113,7 +114,29 @@ This page intentionally left blank.
 }
 \makeatother
 
+\makeatletter
+\def\cleardoublepageempty{\clearpage\if@twoside%
+\ifodd\c@page\else
+\vspace*{\fill}
+\hfill
+\vspace{\fill}
+\thispagestyle{empty}
+\newpage
+\if@twocolumn\hbox{}\newpage\fi\fi\fi
+}
+\makeatother
+
 \raggedbottom
+
+%\usepackage{ebgaramond}
+%\renewcommand{\LettrineFontHook}{\fontfamily{EBGaramond-Initials}\selectfont}
+
+\usepackage{ebgaramond}
+
+\newcommand{\eblettrine}[3][]{%
+\lettrine[findent=6pt,lines=3,depth=1,lhang=0.,loversize=0.,slope=0pt,nindent=0pt]
+{\textin{\textcolor{SchoolColor}{#2}}}{#3}%
+}
 
 \begin{document}
 
@@ -122,10 +145,12 @@ This page intentionally left blank.
 \input{source/frontmatter/personalize}
 
 \includepdf[
+    trim=0.5in 0.5in 1in 0.5in,
     pages=-,
     pagecommand={\thispagestyle{empty}}
 ]{assets/dac-oberholtzer-2015.pdf}
-\cleardoublepage
+
+\cleardoublepageempty
 
 \maketitle
 \copyrightpage

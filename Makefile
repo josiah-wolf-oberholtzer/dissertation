@@ -73,6 +73,12 @@ compile:
 	#xelatex dissertation.tex
 	say "recompiled document"
 
+compile/fast:
+	xelatex \
+		-shell-escape \
+		-shell-restricted \
+		dissertation.tex
+
 clean:
 	rm -Rif assets/graphviz-*.pdf
 	rm -Rif assets/graphviz-*.dot
