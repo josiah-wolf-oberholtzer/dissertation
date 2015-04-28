@@ -76,7 +76,6 @@ compile:
 compile/fast:
 	xelatex \
 		-shell-escape \
-		-shell-restricted \
 		dissertation.tex
 
 clean:
