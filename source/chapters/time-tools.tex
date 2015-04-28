@@ -273,6 +273,7 @@ numerator/denominator pairs. Timespans always coerce arguments given for their
 similar offset, duration, and even pitch-coercion behavior pervasively.
 
 \subsection{Annotated timespans} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{ssec:annotated-timespans}
 
 While the \texttt{Timespan} class only has two configurable properties -- its
 start offset and stop offset --, subclassing allows for the creation of new
@@ -382,6 +383,7 @@ subclasses discussed later, \texttt{consort.PerformedTimespan} and
 interpretation stage.
 
 \subsection{Time relations} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{ssec:time-relations}
 
 \emph{Time relations} model the disposition of one timespan relative to
 another timespan or offset. These relationships include intersection,
@@ -1536,7 +1538,8 @@ True
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\subsection{Operations on timespan inventories} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Operations on timespan inventories}
+\label{ssec:operations-on-timespan-inventories}
 
 Timespan inventories implement unioning, differencing and splitting methods
 which parallel those implemented on timespans themselves. These methods map the
@@ -2209,7 +2212,8 @@ specific to performed timespans, such as \texttt{minimum\_duration} and
 configuration defined in the timespan specifier to each of the timespans it
 creates.
 
-\subsection{Flooded timespan-makers} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Flooded timespan-makers}
+\label{ssec:flooded-timespan-makers}
 
 \todo[inline]{\textbf{TODO:} Find a citation for flood fill. MacPaint?}
 
@@ -3443,6 +3447,7 @@ show(note_rhythm_maker, divisions=divisions)
 \end{abjadbookoutput}
 
 \subsection{Talea rhythm-makers}
+\label{ssec:talea-rhythm-makers}
 
 \emph{Talea} rhythm-makers, like talea timespan-makers, create rhythmic output through
 the use of a talea -- an infinitely cyclic pattern of durations. Talea
@@ -3680,6 +3685,7 @@ show(talea_rhythm_maker_with_rests, divisions=divisions)
 \end{abjadbookoutput}
 
 \subsection{Incised rhythm-makers}
+\label{ssec:incised-rhythm-makers}
 
 \emph{Incised} rhythm-makers behave similarly to note rhythm-makers, but allow
 for \emph{incising} patterned sequences of notes and rests from the beginnings
@@ -3913,6 +3919,7 @@ show(incised_rhythm_maker, divisions=divisions)
 \end{abjadbookoutput}
 
 \subsection{Even-division rhythm-makers}
+\label{ssec:even-division-rhythm-makers}
 
 \emph{Even-division} rhythm-makers attempt to divide each input division into
 runs of notes with a basic duration \texttt{1/denominator}, where the
@@ -4088,7 +4095,8 @@ show(even_division_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\subsection{Composite rhythm-makers} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Composite rhythm-makers}
+\label{ssec:composite-rhythm-makers}
 
 Consort provides a class for aggregating multiple rhythm-maker instances
 together into a \emph{composite} rhythm-maker, which applies its aggregated
@@ -4565,6 +4573,7 @@ show(staff)
 \end{abjadbookoutput}
 
 \subsection{Dot count} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{ssec:dot-count}
 
 Meter rewriting can control for various qualities of how rhythms are notated.
 For example, the maximum number of dots allowed for any notated rhythmic value
@@ -4689,6 +4698,7 @@ rhythmic spellings by forcing the appearance of offsets in logical ties
 inherent to the rewriting meter.
 
 \subsection{Boundary depth} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{ssec:boundary-depth}
 
 In meter rewriting, \emph{boundary depth} forces emphasis of offsets found at
 different \emph{depths} in a meter's rhythm-tree by marking as invalid logical
@@ -4800,6 +4810,7 @@ the same meter's rhythm tree --, it was marked invalid and therefor split at
 the first available offset: 3/8.
 
 \subsection{Recursive meter rewriting} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{ssec:recursive-meter-rewriting}
 
 Meter rewriting treats the contents of tuplets with non-trivial prolation as
 existing within their own metrical scope, isolated from any other meter. The
@@ -4852,6 +4863,7 @@ at any depth. This recursive descent allows any encountered component to be
 rewritten in a relevant metrical context.
 
 \subsection{Examples}
+\label{ssec:meter-rewriting-examples}
 
 Meter rewriting can clarify structural differences between meters with
 identical durations, such as 3/4 and 6/8, or between various possible
@@ -4958,6 +4970,7 @@ offsets and the meter most closely aligning selected as the winner. This
 process is called \emph{meter fitting}.
 
 \subsection{Offset counters} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{ssec:offset-counters}
 
 Before convolving a meter with a collection of offsets, those offsets need to
 be extracted and counted. Abjad's \texttt{metertools} provides an
@@ -5075,6 +5088,7 @@ show(timespan_counter)
 \end{abjadbookoutput}
 
 \subsection{Metric accent kernels} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{ssec:metric-accent-kernels}
 
 As demonstrated earlier, Abjad's model of meter describes a sequence of offsets
 with varying degrees of weight -- accentedness -- attributed to each offset, as
@@ -5264,6 +5278,7 @@ float(kernel_54(piano_staff_counter))
 higher than any of these three responses.
 
 \subsection{Meter fitting} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{ssec:meter-fitting}
 
 Meter fitting involves the progressive comparison of a collection of permitted
 meters against the offsets and counts in an offset counter. Starting from the
@@ -5415,6 +5430,7 @@ show(fitted_meters, range_=(0, 5))
 \end{abjadbookoutput}
 
 \subsection{Examples}
+\label{ssec:meter-fitting-examples}
 
 The output of timespan-makers motivates meter fitting more forcefully than the
 above trivial examples. Densely layered timespan textures often involve
@@ -5876,6 +5892,7 @@ An analysis of each of the functions called within \texttt{build\_score()}
 follows.
 
 \subsection{Organizing meter}
+\label{ssec:organizing-meter}
 
 Consider the first function called inside \texttt{build\_score()},
 \texttt{get\_meters\_and\_meter\_boundaries()}. A meter sequence of equal or
@@ -5913,6 +5930,7 @@ def get_meters_and_meter_boundaries(timespan_inventory, permitted_meters):
 \end{abjadbookoutput}
 
 \subsection{Organizing timespans}
+\label{ssec:organizing-timespans}
 
 Each of the performed timespans in the input timespan inventory was configured
 with a voice name, allowing that timespan to be associated with a voice context
@@ -6169,6 +6187,7 @@ def add_time_signature_context(score, meters):
 \end{abjadbookoutput}
 
 \subsection{Examples}
+\label{ssec:score-building-examples}
 
 \noindent Calling the \texttt{build\_score()} function generates a score as
 described above. In this example, the function's arguments comprise a talea

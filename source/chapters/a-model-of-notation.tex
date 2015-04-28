@@ -186,8 +186,10 @@ from abjad import *
 \end{singlespacing}
 \end{abjadbookoutput}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Representing objects}
 \label{sec:representing-objects}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 In Python, everything is an object, even integers, boolean values and
 functions. Because Python is also interpreted and can be used interactively,
@@ -534,7 +536,10 @@ WARNING: yacc table file version is out of date
 \end{singlespacing}
 \end{abjadbookoutput}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Components}
+\label{sec:components}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{comment}
 -   Every component may be named.
@@ -1204,6 +1209,7 @@ reference the same integer. Such an arrangement is often referred to as a
 \emph{flyweight}\cite{gamma1994design}.
 
 \subsection{Durations}
+\label{ssec:durations}
 
 Every Abjad score component may be expressed in terms of its duration, as well
 as its start offset relative to the score origin and, by extension, its
@@ -1874,8 +1880,10 @@ LilyPond to stitch together different sections of music into a single
 continuous score, allowing different segments of a work to be defined in
 different files and then concatenated together.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Indicators}
 \label{sec:indicators}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Abjad's indicators include any object attached to a single score component,
 such as articulations, textual markup, clefs, tempo or time signature
@@ -2070,7 +2078,8 @@ show(score)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\subsection{Scope}
+\subsection{Indicator scope}
+\label{ssec:indicator-scope}
 
 Abjad models how the influence of certain types of indicators persists across
 components subsequent to the component they attach to via the concept of
@@ -2394,7 +2403,8 @@ TimeSignature((5, 4))
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\subsection{Annotation}
+\subsection{Annotations}
+\label{ssec:annotations}
 
 Indicators may be attached to score components as \emph{annotations},
 \enquote{visible} to inspection and potentially scoped, but contributing no
@@ -2583,8 +2593,10 @@ or compositional intent. Some of these annotative indicators include
 \texttt{BowContactPoint}, \texttt{IsAtSoundingPitch}, \texttt{IsUnpitched},
 \texttt{StringContactPoint} and \texttt{StringTuning}.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Spanners}
 \label{sec:spanners}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 A final collection of classes, \emph{spanners}, model musical and typographic
 constructs such as slurs, beams, hairpins, and glissandi which \emph{span}
@@ -3065,8 +3077,10 @@ with new functionality while preserving all of the old. In this case, spanners
 can extend containers with additional typographic logic, but remain entirely
 ignorant of the container's contents.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Typographic overrides}
 \label{sec:typographic-overrides}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 LilyPond's graphic objects, or \emph{grobs} in LilyPond parlance, represent all
 of the typographic glyphs which may appear on the page as the result of the
@@ -3357,8 +3371,10 @@ show(staff)
 
 \todo[inline]{\textbf{TODO:} Conclusion.}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Selecting components}
 \label{sec:selecting-components}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Abjad provides a variety of methods for selecting components from within a
 score tree. A number of these techniques have already been demonstrated. For
@@ -4459,7 +4475,10 @@ object-modeled as classes. Such object-modeling allows them to not only be used
 to configure still-larger aggregate compositional objects, but also be
 persisted to disk due to their well-formed storage format.
 
-\section{Templating and persistence}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Templating \& persistence}
+\label{sec:templating-and-persistence}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 One of the last, but most important aspects of working with Abjad does not
 concern modeling notation at all. The act of \emph{templating} takes one object
@@ -4893,8 +4912,10 @@ object under consideration, but saving them from the work of having to define a
 new object from scratch. Likewise, disk persistence allows composers to easily
 save their work.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Other tools}
 \label{sec:other-tools}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Abjad provides many other tools for working with notation and modeling musical
 concepts, too many to discuss in full here. A wide variety of Abjad's classes
@@ -5232,8 +5253,10 @@ print(format(score))
 \end{singlespacing}
 \end{abjadbookoutput}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
 \label{ssec:a-model-of-notation-conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 This chapter discussed the core components and concepts for working with
 notation in Abjad. Composers aggregate score components, consisting of leaves

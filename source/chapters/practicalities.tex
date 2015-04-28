@@ -72,6 +72,7 @@ Each directory serves a specific purpose and by-and-large describes a
 particular kind of task during composition and document preparation.
 
 \subsection{Material packages}
+\label{ssec:material-packages}
 
 Materials are out-of-time. Pitch collections, rhythm-makers, music specifiers.
 Compositional and musical objects which may appear at some point during a
@@ -138,6 +139,7 @@ The anatomy of a material package.
 \end{singlespacing}
 
 \subsection{Segment packages}
+\label{ssec:segment-packages}
 
 Segments, like materials, are Python packages.
 
@@ -196,6 +198,7 @@ information.
 \end{singlespacing}
 
 \subsection{The \texttt{stylesheets/} directory}
+\label{ssec:the-stylesheets-directory}
 
 Stylesheets cascade.
 
@@ -226,6 +229,7 @@ live in each document target directory in build/.
 \end{singlespacing}
 
 \subsection{The \texttt{build/} directory}
+\label{ssec:the-build-directory}
 
 XXX
 
@@ -322,6 +326,7 @@ XXX
 \end{singlespacing}
 
 \subsection{The \texttt{etc/} and \texttt{distribution/} directories}
+\label{ssec:the-etc-and-distribution-directories}
 
 Put notes, plans and to-dos about the process of composing into etc/.
 
@@ -330,6 +335,7 @@ by gig, and should contain only the files you would need to send to an
 ensemble.
 
 \subsection{The \texttt{test/} directory}
+\label{ssec:the-test-directory}
 
 XXX
 
@@ -347,6 +353,7 @@ XXX
 \end{singlespacing}
 
 \subsection{Python packaging}
+\label{ssec:python-packaging}
 
 XXX
 
@@ -382,9 +389,13 @@ XXX
 }
 \end{singlespacing}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Document preparation work-flow}
+\label{sec:document-preparation-work-flow}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Build tools}
+\label{ssec:build-tools}
 
 I make use of a variety of custom build tools for managing assets within a
 score package which will not be discussed here in any detail. These tools
@@ -396,6 +407,7 @@ sources from each segment package into the build directory for document
 preparation.
 
 \subsection{Editing}
+\label{ssec:editing}
 
 I do everything in text. vim is my primary tool, but any decent text editor
 will do. Facility in making mass transformations across files is key - you may
@@ -404,6 +416,7 @@ syntax highlighting, and easy access to every file in your project and any
 project you rely on is key.
 
 \subsection{Illustrating}
+\label{ssec:illustrating}
 
 how does illustrating work? you can do it at the command-line by importing a
 definition by hand, but this gets tedious.
@@ -423,6 +436,7 @@ examine their metadata and construct a model of pertinent information about
 what has happened prior to the current segment under consideration.
 
 \subsection{LilyPond stylesheets}
+\label{ssec:lilypond-stylesheets}
 
 Stylesheets cascade.
 
@@ -433,6 +447,7 @@ A stylesheet for scheme functions (LilyPond is scriptable, remember?)
 A stylesheet for parts.
 
 \subsection{Collecting segment files}
+\label{ssec:collecting-segment-files}
 
 LilyPond concatenates contexts.
 
@@ -456,6 +471,7 @@ contexts together into a single score structure.
 \end{singlespacing}
 
 \subsection{LaTeX assets}
+\label{ssec:latex-assets}
 
 what latex assets does each document target require?
 
@@ -470,6 +486,7 @@ Latex can merge pdfs easily, so just do that.
 \end{singlespacing}
 
 \subsection{Part extraction}
+\label{ssec:part-extraction}
 
 Tags. You can use tags in LilyPond to filter out or keep any musical
 expression, from a single note to an entire score. By tagging every staff or
@@ -494,11 +511,13 @@ One bookpart per part PDF, with the appropriate tag.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Project maintenance}
+\label{sec:project-maintenance}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 foo
 
 \subsection{Testing}
+\label{ssec:testing}
 
 Parameterized tests which run each segment and import each material. Why do
 this? It's a simple entry point to check the stability of your entire score as
@@ -515,6 +534,7 @@ fresh environment. Why do things in a fresh environment? Our local workspace
 can become a blind-spot to us.
 
 \subsection{Version control}
+\label{ssec:version-control}
 
 This is the most important aspect of working computationally. If I can impart
 \emph{any} advice to anyone working with computers, even if they never program
