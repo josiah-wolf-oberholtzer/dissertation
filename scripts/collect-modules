@@ -106,7 +106,7 @@ def source_path_to_latex(module_name, source_path):
         result.append(r'\subsection{{{}}}'.format(title))
     result.append('')
     result.append(r'\begin{singlespacing}')
-    result.append(r'\vspace{-1.5\baselineskip}')
+    result.append(r'\vspace{-0.5\baselineskip}')
     result.append(r'\begin{minted}{python}')
     result.extend(lines)
     result.append(r'\end{minted}')
