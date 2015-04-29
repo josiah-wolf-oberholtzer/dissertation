@@ -65,15 +65,15 @@
     xleftmargin=-6pt,
 }
 
-\includeonly{
-    source/chapters/introduction,
-    source/chapters/a-model-of-notation,
-    source/chapters/time-tools,
-    source/chapters/a-model-of-composition,
-    source/chapters/practicalities,
-    source/chapters/conclusion,
-    source/endmatter/colophon
-}
+%\includeonly{
+%    source/chapters/introduction,
+%    source/chapters/a-model-of-notation,
+%    source/chapters/time-tools,
+%    source/chapters/a-model-of-composition,
+%    source/chapters/practicalities,
+%    source/chapters/conclusion,
+%    source/endmatter/colophon
+%}
 
 %\excludeonly{
 %    source/chapters/score-aurora,
@@ -114,9 +114,6 @@ This page intentionally left blank.
 \makeatother
 
 \raggedbottom
-
-%\usepackage{ebgaramond}
-%\renewcommand{\LettrineFontHook}{\fontfamily{EBGaramond-Initials}\selectfont}
 
 \usepackage{ebgaramond}
 
@@ -177,23 +174,16 @@ This page intentionally left blank.
 
 \part{Appendices}
 
-\lstset{
-    basicstyle=\scriptsize\ttfamily,
-    breakatwhitespace=false,
-    breaklines=false,
-    commentstyle=\color{greencomments},
-    escapeinside={(*@}{@*)},
-    keywordstyle=\color{bluekeywords}\bfseries,
-    language=Python,
+\renewcommand{\theFancyVerbLine}{%
+\ttfamily \textcolor[rgb]{0.5,0.5,0.5}{%
+\scriptsize \oldstylenums{\arabic{FancyVerbLine}}}}
+
+\setminted{
     frame=none,
+    framerule=0pt,
+    framesep=0pt,
     numbers=left,
     numbersep=5pt,
-    numberstyle=\tiny\color{grey},
-    showspaces=false,
-    showstringspaces=false,
-    showtabs=false,
-    stringstyle=\color{redstrings},
-    upquote=true,
 }
 
 \singlespacing
