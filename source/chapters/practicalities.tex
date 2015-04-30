@@ -33,14 +33,24 @@ code-base.
 \section{Score directory layout}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-A clear way of structuring one's workspace clarifies both the way one thinks
-about the act of composing, as well as the menial work flows of document
-preparation which are inseparable from score-based composition.
+A structured approach to arranging one's compositional workspace clarifies both
+the way one thinks about the act of composing, as well as the more menial
+workflows of document preparation which are inseparable from score-based
+composition. Each of the \emph{Invisible Cities} scores included in part II of
+this dissertation are implemented as Python packages extending Abjad model of
+notation and Consort's model of composition. Likewise, each \emph{Invisible
+Cities} score package is structured into a nearly identical arrange of eight
+top-level directories, each with a clearly delineated purpose and substructure.
 
+\begin{figure}[h!]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
+\noindent%
 \dirtree{%
 .1  ersilia/.
+    .2  \_\_init\_\_.py\DTcomment{
+        The score package Python initializer.
+        }.
     .2  build/\DTcomment{
         LilyPond and LaTeX files for building document targets.
         }.
@@ -67,20 +77,76 @@ preparation which are inseparable from score-based composition.
         }.
 }
 \end{singlespacing}
+\caption{\emph{Ersilia}'s top-level directory layout.}
+\end{figure}
 
-Each directory serves a specific purpose and by-and-large describes a
-particular kind of task during composition and document preparation.
+\noindent The top-level directories named above house specific collections of
+assets used during composition or document preparation.
+
+Consort very broadly groups the objects used during composition into
+\emph{makers}, \emph{materials} and \emph{segments}. Makers comprise any
+classes used during composition, such as segment-maker, pitch-handler or music
+specifier classes. but not their instances. Materials comprise instances of
+classes representing \emph{out-of-time} musical constructs, such as pitch
+segments or music specifiers. Segments comprise configured instances of a
+segment-maker class, and maquette together previously-defined materials
+\emph{in-time} into a musical chronology. Each of these three categories of
+objects has its own directory in the directory structure outlined here:
+\texttt{makers/}, \texttt{materials/} and \texttt{segments/}.
+
+Likewise, the document preparation process involves a number of different types
+of assets and tasks. Any LilyPond-typeset PDF created during the composition of
+a score, such as a material or segment illustration or the final score itself,
+likely requires a corresponding score-specific stylesheet containing the
+typographic overrides and LilyPond context definitions pertinent to that score.
+These stylesheets reside in the top-level \texttt{stylesheets/} directory.
+Scores composed with Abjad and Consort and typeset with LilyPond and LaTeX
+involve potentially many source files: LilyPond sources for the musical
+content, yet more LilyPond sources for concatenating and styling that content,
+LaTeX sources for cover pages, prefaces and performance notes, and still more
+LaTeX sources for concatenating the PDFs created while typesetting various
+other sources. These source files, in their various stages of typesetting,
+occupy the \texttt{build/} directory. Finally, the finished documents, ready to
+be delivered to ensembles, occupy the \texttt{distribution/} directory.
+
+\subsection{Makers}
+\label{ssec:makers}
+
+Each score's \texttt{makers/} directory houses classes specific to that score.
+In the case of my three \emph{Invisible Cities} scores, this always comprises a
+subclass of Consort's \texttt{SegmentMaker} and \texttt{ScoreTemplate} classes.
+The segment-maker subclasses effectively pre-load common information about the
+score, such as what time signatures to permit or what the end-of-score markup
+should look like. They may also define a considerable amount of additional
+score post-processing, such as in the case of \emph{Armilla}, where many passes
+of voice copying were required to create the typography for the bowing staves.
+The score templates necessarily define the instrumentation and structure of the
+score layout itself. As none of the scores in this dissertation make use of
+common instrumentations, each required that a completely new score template be
+defined.
+
+Any other class definitions required by the score package should also be placed
+into the \texttt{makers/} directory. For example, \emph{Plague Water}, whose
+directory structure is effectively identical to the \emph{Invisible Cities}
+series but whose composition model predates and heavily informed the
+development of Consort , houses nearly thirty separate class definitions in its
+\texttt{makers/} directory.
 
 \subsection{Material packages}
 \label{ssec:material-packages}
 
+Materials are implemented as Python packages.
+
+They have an initializer and a
+definition file.
+
+Of course, those could be conflated, but I choose not to out
+of habit.
+
+
 Materials are out-of-time. Pitch collections, rhythm-makers, music specifiers.
 Compositional and musical objects which may appear at some point during a
 piece.
-
-Materials are implemented as Python packages. They have an initializer and a
-definition file. Of course, those could be conflated, but I choose not to out
-of habit.
 
 Materials, depending on the specific kind of material, can be illustrated. If
 the class housed in the material definition file implements \_\_illustrate\_\_,
@@ -88,6 +154,7 @@ it can be illustrated.
 
 Materials can be imported.
 
+\begin{figure}[h!]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%
@@ -116,9 +183,12 @@ Materials can be imported.
         }.
 }
 \end{singlespacing}
+\caption{Overview of \emph{Ersilia}'s \texttt{materials/} directory.}
+\end{figure}
 
 The anatomy of a material package.
 
+\begin{figure}[h!]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%
@@ -137,6 +207,9 @@ The anatomy of a material package.
         }.
 }
 \end{singlespacing}
+\caption{Directory listing of \emph{Ersilia}'s
+\texttt{guitar\_tremolo\_music\_specifier} material package.}
+\end{figure}
 
 \subsection{Segment packages}
 \label{ssec:segment-packages}
@@ -149,6 +222,7 @@ can optionally have metadata modules.
 A metadata module sibling to each segment package provides ordering
 information.
 
+\begin{figure}[h!]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%
@@ -196,6 +270,8 @@ information.
         .3  ....
 }
 \end{singlespacing}
+\caption{Overview of \emph{Ersilia}'s \texttt{segments/} directory.}
+\end{figure}
 
 \subsection{The \texttt{stylesheets/} directory}
 \label{ssec:the-stylesheets-directory}
@@ -206,6 +282,7 @@ You can use one primary stylesheet and include it into each segment
 illustration, as well as into the concatenated segment LilyPond sources that
 live in each document target directory in build/.
 
+\begin{figure}[h!]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%
@@ -227,12 +304,17 @@ live in each document target directory in build/.
         }.
 }
 \end{singlespacing}
+\caption{
+Directory listing of \emph{Ersilia}'s \texttt{stylesheets/} directory.
+}
+\end{figure}
 
 \subsection{The \texttt{build/} directory}
 \label{ssec:the-build-directory}
 
 XXX
 
+\begin{figure}[h!]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%
@@ -277,9 +359,12 @@ XXX
         }.
 }
 \end{singlespacing}
+\caption{Overview of \emph{Ersilia}'s \texttt{build/} directory.}
+\end{figure}
 
 XXX
 
+\begin{figure}[h!]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%
@@ -324,6 +409,8 @@ XXX
         }.
 }
 \end{singlespacing}
+\caption{Directory listing of a document build target in \emph{Ersilia}.}
+\end{figure}
 
 \subsection{The \texttt{etc/} and \texttt{distribution/} directories}
 \label{ssec:the-etc-and-distribution-directories}
@@ -339,6 +426,7 @@ ensemble.
 
 XXX
 
+\begin{figure}[h!]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%
@@ -351,12 +439,15 @@ XXX
     }.
 }
 \end{singlespacing}
+\caption{Parameterized tests.}
+\end{figure}
 
 \subsection{Python packaging}
 \label{ssec:python-packaging}
 
 XXX
 
+\begin{figure}[h!]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%
@@ -388,6 +479,8 @@ XXX
         }.
 }
 \end{singlespacing}
+\caption{Overview of \emph{Ersilia}'s Python packaging assets.}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Document preparation work-flow}
@@ -480,10 +573,14 @@ Front-cover, back-cover, performance-notes, music.
 use a master score.tex to include all of the document target assets together.
 Latex can merge pdfs easily, so just do that.
 
+\begin{figure}[h!]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \inputminted{tex}{../../Documents/Scores/ersilia/ersilia/build/11x17-portrait/ersilia-11x17-portrait-score.tex}
 \end{singlespacing}
+\vspace{-0.5\baselineskip}
+\caption{A score LaTeX source in \emph{Ersilia}.}
+\end{figure}
 
 \subsection{Part extraction}
 \label{ssec:part-extraction}
@@ -500,12 +597,17 @@ multi-movement works. \enquote{Books} can consist of multiple
 construct bookparts such that LilyPond outputs each bookpart as a separate PDF.
 This is an ideal way to structure a document to output parts.
 
+\begin{figure}[h!]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \inputminted[
     lastline=23,
 ]{tex}{../../Documents/Scores/ersilia/ersilia/build/parts.ily}
 \end{singlespacing}
+\vspace{-0.5\baselineskip}
+\caption{Excerpt from \emph{Ersilia}'s \texttt{parts.ily} parts definition
+LilyPond include file.}
+\end{figure}
 
 One bookpart per part PDF, with the appropriate tag.
 

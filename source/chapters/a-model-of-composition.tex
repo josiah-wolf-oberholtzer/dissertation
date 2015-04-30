@@ -1571,7 +1571,7 @@ show(demultiplexed_maquette, range_=(0, (21, 4)))
 \end{abjadbookoutput}
 
 \noindent Unlike many of the timespan-handling functions demonstrated in this
-chapter as well as in \autoref{ch:time-tools}, \texttt{resolve\_maquette()}
+chapter as well as in \autoref{chap:time-tools}, \texttt{resolve\_maquette()}
 returns a \texttt{TimespanInventoryMapping} rather than a
 \texttt{TimespanInventory}. The timespan inventory mapping already
 explicitly uses voice-names as keys, obviating the need for a
@@ -3403,13 +3403,13 @@ show(segment_maker, verbose=False)
 
 \noindent Likewise, a pitch-handler may define a pitch-operation specifier,
 which behaves similarly to pitch specifiers. Pitch-operation specifiers combine
-a sequence of pitch-operations -- described in \autoref{ssec:pitch-operators}
--- with a ratio defining where those operations should appear during the course
-of a segment. Pitch-operation specifiers may be used alongside pitch
-specifiers, and with differing ratios. The following pitch-operation specifier
-partitions the segment into three unequal parts, applying an operation to the
-first 1/4, no operation to the middle 1/2, and another operation to the final
-1/4 of the segment:
+a sequence of pitch-operations -- transposition, inversion, retrogression,
+rotation, etc. -- with a ratio defining where those operations should appear
+during the course of a segment. Pitch-operation specifiers may be used
+alongside pitch specifiers, and with differing ratios. The following
+pitch-operation specifier partitions the segment into three unequal parts,
+applying an operation to the first 1/4, no operation to the middle 1/2, and
+another operation to the final 1/4 of the segment:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
