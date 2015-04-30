@@ -65,15 +65,15 @@
     xleftmargin=-6pt,
 }
 
-%\includeonly{
+\includeonly{
 %    source/chapters/introduction,
 %    source/chapters/a-model-of-notation,
 %    source/chapters/time-tools,
 %    source/chapters/a-model-of-composition,
-%    source/chapters/practicalities,
+    source/chapters/practicalities,
 %    source/chapters/conclusion,
-%    source/endmatter/colophon
-%}
+    source/endmatter/colophon
+}
 
 %\excludeonly{
 %    source/chapters/score-aurora,
@@ -85,6 +85,8 @@
 %}
 
 \makeindex[columns=3, title=Index, intoc]
+
+\renewcommand*{\figureautorefname}{figure}
 
 \makeatletter
 \def\cleardoublepage{\clearpage\if@twoside%

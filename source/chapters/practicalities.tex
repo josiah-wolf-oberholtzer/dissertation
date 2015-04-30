@@ -383,8 +383,8 @@ document target subdirectory consists of source files for producing scores and
 parts in a particular format, such as tabloid or A4 paper, or for a particular
 performance or language translation. Sources consist of any LilyPond and LaTeX
 files containing content to be included into document targets, such as segment
-illustration LilyPond sources, LilyPond stylesheets or LaTeX includes
-containing blocks of prose to be flowed into a preface.
+illustration LilyPond sources, LilyPond stylesheets or LaTeX includes -- housed
+in \texttt{assets/} -- containing blocks of prose to be flowed into a preface.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -537,7 +537,15 @@ to typeset the resulting source without error.
 \subsection{Python packaging}
 \label{ssec:python-packaging}
 
-XXX
+Each score package should also be properly \emph{packaged} according to Python
+standards so that it can be installed on other systems. This might strike
+composers as an unmotivated suggestion. Why should one structure their private
+score such that it can be used by others? Making a score installable in this
+way affords a number of conveniences related to testing. Installable scores can
+be tested in \emph{virtual environments} -- a common Python practice -- by
+automated test runners like \texttt{tox} or run on remote
+continuous-integration testing services such as Travis-CI. Both of these tools
+are addressed in \autoref{ssec:testing}.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -564,15 +572,22 @@ XXX
         Dependency information, for use when installing on Travis-CI.
         }.
     .2 setup.cfg\DTcomment{
-        Packaging information.
+        Python packaging configuration.
         }.
     .2 setup.py\DTcomment{
-        A Python install script.
+        The Python package installation script.
+        }.
+    .2 tox.ini\DTcomment{
+        Configuration for the \texttt{tox} automated testing tool.
         }.
 }
 \end{singlespacing}
 \caption{Overview of \emph{Ersilia}'s Python packaging assets.}
 \end{figure}
+
+For those who wish to make both their scores and code completely public -- as I
+have -- installation affordances are simply necessary for letting others
+explore the code as quickly and easily as possible.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Document preparation work-flow}
@@ -677,31 +692,134 @@ Latex can merge pdfs easily, so just do that.
 \subsection{Part extraction}
 \label{ssec:part-extraction}
 
-Tags. You can use tags in LilyPond to filter out or keep any musical
-expression, from a single note to an entire score. By tagging every staff or
-staff group with a unique name, you can use LilyPond's tag filtering commands
-to generate PDFs containing only selected musical content.
+%Tags. You can use tags in LilyPond to filter out or keep any musical
+%expression, from a single note to an entire score. By tagging every staff or
+%staff group with a unique name, you can use LilyPond's tag filtering commands
+%to generate PDFs containing only selected musical content.
+%
+%Bookpart blocks. LilyPond can be instructed to build PDFs consisting of
+%multiple separate scores, appearing on separate pages. For example, hymnals, or
+%multi-movement works. \enquote{Books} can consist of multiple
+%\enquote{bookparts} which can themselves consist of multiple scores. You can
+%construct bookparts such that LilyPond outputs each bookpart as a separate PDF.
+%This is an ideal way to structure a document to output parts.
+%
+%One bookpart per part PDF, with the appropriate tag.
 
-Bookpart blocks. LilyPond can be instructed to build PDFs consisting of
-multiple separate scores, appearing on separate pages. For example, hymnals, or
-multi-movement works. \enquote{Books} can consist of multiple
-\enquote{bookparts} which can themselves consist of multiple scores. You can
-construct bookparts such that LilyPond outputs each bookpart as a separate PDF.
-This is an ideal way to structure a document to output parts.
+When working with LilyPond and Abjad, part extraction relies on two fairly
+simple LilyPond mechanisms: \emph{tags} and \emph{book blocks}. In LilyPond,
+any music expression can be labeled with a tag, a string or symbol which
+identifies that music expression. Later, music expressions can be filtered to
+either remove or solely preserve any expression with a given tag. Consider the
+following pseudo-score, consisting of a score containing three staves and a
+time signature context:
 
-\begin{figure}[h!]
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{minted}{tex}
+\keepWithTag #'(time B)
+\new Score <<
+    \tag #'time \new TimeSignatureContext = "Time Signature Context" { ... }
+    \tag #'A \new Staff = "Staff A" { ... }
+    \tag #'B \new Staff = "Staff B" { ... }
+    \tag #'C \new Staff = "Staff C" { ... }
+>>
+\end{minted}
+\end{singlespacing}
+
+\noindent Each context contained by the \texttt{Score} context -- the three
+staves and the time signature context -- is tagged via a LilyPond
+\texttt{\textbackslash{}tag} command, associating that context's music
+expression with the tag's symbol. The command preceding the score itself --
+\texttt{\textbackslash{}keepWithTag \#\'(time B)} -- indicates that the score
+should filter out any tagged music expression which do not belong to the list
+of expressions \texttt{\#\'(time B)}. That is, the score should omit the two
+staves tagged \texttt{A} and \texttt{C}, effectively producing a score
+structured like so:
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{minted}{tex}
+\new Score <<
+    \new TimeSignatureContext = "Time Signature Context" { ... }
+    \new Staff = "Staff B" { ... }
+>>
+\end{minted}
+\end{singlespacing}
+
+\noindent This tagging technique is used in every score developed with Consort.
+Each score's score template includes tag commands labeling both the time
+signature context -- which must appear both in the full score and all parts as
+it contains time signature, tempo and rehearsal mark information -- as well as
+all inner contexts necessary for individual performers. By constructing the
+appropriate \texttt{\textbackslash{}keepWithTag} commands, music expressions
+representing each performer's part can be constructed easily.
+Note the use of \texttt{\textbackslash{}tag} commands throughout the structure
+of \emph{Armilla}'s score:
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\inputminted[
+    gobble=8,
+    firstline=19,
+    lastline=71,
+]{tex}{../../Documents/Scores/armilla/armilla/makers/ArmillaScoreTemplate.py}
+\end{singlespacing}
+
+\noindent The time signature context receives its own tag, and the staff groups
+wrapping each performer's bowing and fingering staves are also tagged
+appropriately.
+
+While tagging allows for extracting parts as music expressions, it does not yet
+result in actual documents for each part. LilyPond's book block structure,
+combined with the \texttt{\textbackslash{}bookOutputSuffix} command, provide a
+concise mechanism for generating multiple output PDFs from a single LilyPond
+input file. As demonstrated throughout this document, LilyPond files are
+structured into blocks -- context blocks, score blocks, header and paper
+blocks, and so forth. The highest level block is a
+\texttt{\textbackslash{}book} block. Somewhat like parts in LaTeX, book blocks
+separate content from one another by page breaks. Score blocks contained in
+separate book blocks are guaranteed to never appear on the same page together.
+Furthermore, by specifying a book output suffix within each book block,
+LilyPond will not simply separate that book blocks's content by page breaks but
+will actually output a wholly separate PDF, whose filename is suffixed with
+that book output suffix.
+
+Consider the excerpt from \emph{Ersilia}'s \texttt{parts.ily} file in
+\autoref{fig:ersilia-parts-ily}.
+
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \inputminted[
     lastline=23,
 ]{tex}{../../Documents/Scores/ersilia/ersilia/build/parts.ily}
 \end{singlespacing}
-\vspace{-0.5\baselineskip}
-\caption{Excerpt from \emph{Ersilia}'s \texttt{parts.ily} parts definition
-LilyPond include file.}
-\end{figure}
 
-One bookpart per part PDF, with the appropriate tag.
+\noindent This file contains one book block per instrument. Each book block
+specifies an output suffix pertinent to a specific performer in the ensemble.
+Each book block also contains a score block whose contents consist entirely of
+an include statement -- pointing at \texttt{segments.ily}, which concatenates
+all score segments into a single music expression -- wrapped in a
+\texttt{\textbackslash{}keepWithTag} command which filters out everything
+except that performer's musical content and the global time signature context.
+
+
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\inputminted[
+    firstline=3,
+]{tex}{../../Documents/Scores/ersilia/ersilia/build/11x17-portrait/ersilia-11x17-portrait-parts.ly}
+\end{singlespacing}
+
+\noindent Note that there are methods by which composers can generate parts in
+LilyPond. Most LilyPond users who work strictly with LilyPond, writing
+\enquote{by hand}, would likely places each of the instrumental parts in the
+score into a separate file or variable. Those parts would then be combined into
+either the full score or a part for a single player as necessary. Because
+Consort produces a single score, complete with all parts joined into a single
+expression, filtering must be used to \enquote{strip} the score down to the
+desired musical elements.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Project maintenance}
