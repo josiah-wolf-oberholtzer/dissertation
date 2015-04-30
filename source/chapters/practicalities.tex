@@ -64,7 +64,7 @@ top-level directories, each with a clearly delineated purpose and substructure.
         Customized segment-makers, score templates and other classes.
         }.
     .2  materials/\DTcomment{
-        Materials used to configure segment-makers. 
+        Materials used to configure segment-makers.
         }.
     .2  segments/\DTcomment{
         Configured segment-makers and their illustrations.
@@ -81,15 +81,35 @@ top-level directories, each with a clearly delineated purpose and substructure.
 \end{figure}
 
 \noindent The top-level directories named above house specific collections of
-assets used during composition or document preparation.
+assets used during composition or document preparation. Note too the presence
+of an \texttt{\_\_init\_\_.py} file. This signals to Python that this directory
+represents an importable Python package. Assuming Python is aware of the
+location of the score, it and any further subpackages within it can be
+imported:
 
-Consort very broadly groups the objects used during composition into
+\begin{comment}
+<abjad>
+import ersilia
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{minted}{python}
+>>> import ersilia
+\end{minted}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Consort very broadly groups the objects used during composition into
 \emph{makers}, \emph{materials} and \emph{segments}. Makers comprise any
 classes used during composition, such as segment-maker, pitch-handler or music
-specifier classes. but not their instances. Materials comprise instances of
+specifier classes, but not their instances. Materials comprise instances of
 classes representing \emph{out-of-time} musical constructs, such as pitch
-segments or music specifiers. Segments comprise configured instances of a
-segment-maker class, and maquette together previously-defined materials
+segments or music specifiers which have not yet been deployed along the
+timeline of the score. Segments comprise configured instances of a
+segment-maker class and maquette together previously-defined materials
 \emph{in-time} into a musical chronology. Each of these three categories of
 objects has its own directory in the directory structure outlined here:
 \texttt{makers/}, \texttt{materials/} and \texttt{segments/}.
@@ -116,43 +136,30 @@ Each score's \texttt{makers/} directory houses classes specific to that score.
 In the case of my three \emph{Invisible Cities} scores, this always comprises a
 subclass of Consort's \texttt{SegmentMaker} and \texttt{ScoreTemplate} classes.
 The segment-maker subclasses effectively pre-load common information about the
-score, such as what time signatures to permit or what the end-of-score markup
-should look like. They may also define a considerable amount of additional
-score post-processing, such as in the case of \emph{Armilla}, where many passes
-of voice copying were required to create the typography for the bowing staves.
-The score templates necessarily define the instrumentation and structure of the
-score layout itself. As none of the scores in this dissertation make use of
-common instrumentations, each required that a completely new score template be
-defined.
+score, such as what time signatures to permit by default or what the
+end-of-score markup should look like. They may also define a considerable
+amount of additional score post-processing, as in the case of
+\emph{Armilla}, where many passes of voice copying were required to create the
+typography for the bowing staves. A score's score template necessarily defines
+the instrumentation and structure of the score layout itself. As none of the
+scores in this dissertation make use of common instrumentations, each required
+that a completely new score template be defined.
 
 Any other class definitions required by the score package should also be placed
 into the \texttt{makers/} directory. For example, \emph{Plague Water}, whose
 directory structure is effectively identical to the \emph{Invisible Cities}
-series but whose composition model predates and heavily informed the
-development of Consort , houses nearly thirty separate class definitions in its
+series but whose composition model both predated and heavily informed the
+development of Consort, houses nearly thirty separate class definitions in its
 \texttt{makers/} directory.
 
 \subsection{Material packages}
 \label{ssec:material-packages}
 
-Materials are implemented as Python packages.
-
-They have an initializer and a
-definition file.
-
-Of course, those could be conflated, but I choose not to out
-of habit.
-
-
-Materials are out-of-time. Pitch collections, rhythm-makers, music specifiers.
-Compositional and musical objects which may appear at some point during a
-piece.
-
-Materials, depending on the specific kind of material, can be illustrated. If
-the class housed in the material definition file implements \_\_illustrate\_\_,
-it can be illustrated.
-
-Materials can be imported.
+Materials represent \emph{out-of-time} musical objects, such as pitch
+collections, rhythm-makers, and even fully-configured music specifiers, which
+may appear at some point in the time-line of a piece. They are implemented as
+importable Python packages, grouped flatly into the \texttt{materials/}
+directory, itself a Python package due to the presence of an initializer file.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -186,7 +193,14 @@ Materials can be imported.
 \caption{Overview of \emph{Ersilia}'s \texttt{materials/} directory.}
 \end{figure}
 
-The anatomy of a material package.
+Each material package contains at the least its own initializer as well as
+\texttt{definition.py} file containing Python code which defines or configures
+that material. Crucially, the actual code object expressed in that
+definition.py should be named after the material package itself. This
+simplifies the Python import process as simple importing utilities can be
+written to iterate over every directory within the \texttt{materials/}
+directory and produce corresponding Python import statements of the form
+\mintinline{python}{from my_material.definition import my_material}.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -211,16 +225,23 @@ The anatomy of a material package.
 \texttt{guitar\_tremolo\_music\_specifier} material package.}
 \end{figure}
 
+Materials, depending on the specific \emph{type} of material, can be
+illustrated. That is to say, if the class housed in the material definition
+file implements an \texttt{\_\_illustrate\_\_()} method -- described in
+\autoref{sec:representing-objects} --, it can be illustrated. Any generated
+LilyPond illustration source and PDF output is stored in the material package
+alongside the definition module. The means by which those illustration files
+come to reside there is elaborated on in \autoref{ssec:illustrating}.
+
 \subsection{Segment packages}
 \label{ssec:segment-packages}
 
-Segments, like materials, are Python packages.
-
-They can be imported. They have an initializer and a definition module. They
-can optionally have metadata modules.
-
-A metadata module sibling to each segment package provides ordering
-information.
+Segments, like materials, are implemented as Python packages, grouped together
+into the top-level \texttt{segments/} directory. They can be imported, they
+each have an initializer, and they each have a definition module containing the
+definition of that segment's segment-maker. As Consort's segment-maker class is
+illustrable, each segment package eventually houses that segment's illustration
+LilyPond sources and output PDFs.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -228,7 +249,7 @@ information.
 \dirtree{%
 .1  segments/.
     .2  \_\_init\_\_.py\DTcomment{
-        The subpackage initializer.        
+        The subpackage initializer.
         }.
     .2  \_\_metadata\_\_.py\DTcomment{
         Metadata about the order of segments in the score.
@@ -237,7 +258,7 @@ information.
         A segment package.
         }.
         .3  \_\_init\_\_.py\DTcomment{
-            The segment package's Python initializer. 
+            The segment package's Python initializer.
             }.
         .3  \_\_metadata\_\_.py\DTcomment{
             Auto-generated metadata about this score segment.
@@ -273,14 +294,43 @@ information.
 \caption{Overview of \emph{Ersilia}'s \texttt{segments/} directory.}
 \end{figure}
 
+Each segment subpackage may also house a \texttt{\_\_metadata\_\_.py}
+module, which stores information about that segment such as the number of
+measures it contains, the final time signature and tempo, and so forth. This
+information is generated automatically during the segment-maker's
+interpretation, and allows other segment-makers in other segment packages to
+draw conclusions about their own segment's context in the full score without
+requiring the re-interpretation of any other segments. Like the illustration
+sources, these are discussed in more depth in \autoref{ssec:illustrating}.
+
+A \texttt{\_\_metadata\_\_.py} module sibling to each segment package simply
+defines the order of segments. For example, the order of segments in
+\emph{Ersilia} is \texttt{komokome}, \texttt{cut\_1}, \texttt{sort},
+\texttt{cut\_2}, then \texttt{chemish}. Such an order must be declared
+explicitly as it cannot be ascertained from the lexical ordering of the names
+of the segment packages. The \texttt{segments/}-local metadata module allows
+for such an explicit ordering.
+
 \subsection{The \texttt{stylesheets/} directory}
 \label{ssec:the-stylesheets-directory}
 
-Stylesheets cascade.
+The \texttt{stylesheets/} directory consists of LilyPond files containing
+typographic overrides, context definitions, document header markup, page layout
+configuration and Scheme function definitions. The file \texttt{stylesheet.ily}
+represents the primary stylesheet for the entire score, and contains most of
+the typographic customization. However, LilyPond stylesheets can
+\emph{cascade}: multiple stylesheets can be included into the same master score
+file with definitions in subsequently included stylesheets overriding those in
+the earlier. Likewise, stylesheets -- because they are simply LilyPond files --
+can be included directly into one another.
 
-You can use one primary stylesheet and include it into each segment
-illustration, as well as into the concatenated segment LilyPond sources that
-live in each document target directory in build/.
+For example, in \emph{Ersilia}, the master stylesheet file
+\texttt{stylesheet.ily} directly includes Scheme definitions from the
+file \texttt{scheme.ily}. That master stylesheet is included into the
+interpreted LilyPond source of every segment. However, segments beyond the
+first also include the stylesheet file \texttt{nonfirst-segment.ily} which
+suppresses the appearance of titles and other headers at the top of those
+segment illustrations.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -309,10 +359,32 @@ Directory listing of \emph{Ersilia}'s \texttt{stylesheets/} directory.
 }
 \end{figure}
 
+Because LilyPond supports the inclusion of one LilyPond source file into
+another, it is possible to define the musical contents of a work in one source
+file and collect global typographic overrides into another. This is the
+approach I have taken, out of necessity, when building scores with Abjad and
+Consort. It is certainly possible to define every one of the typographic
+overrides found in \texttt{stylesheet.ily} in Abjad via its top-level
+\texttt{override()} and \texttt{set\_()} functions. However, typesetting the
+illustration source of a segment in LilyPond generally takes less time than for
+that segment to be interpreted in Python. By separating out typographic
+overwrites from the musical \enquote{content} it becomes easier to iterate over
+refining those overrides by simply adjusting the stylesheet by hand and
+recompiling the already-interpreted segment illustration sources.
+
 \subsection{The \texttt{build/} directory}
 \label{ssec:the-build-directory}
 
-XXX
+The \texttt{build/} directory holds source files pertinent to building scores
+and parts, along within any component documents, including front and back
+covers, prefaces or performance notes. The contents of the \texttt{build/}
+directory are organized into \emph{document targets} and \emph{sources}. Each
+document target subdirectory consists of source files for producing scores and
+parts in a particular format, such as tabloid or A4 paper, or for a particular
+performance or language translation. Sources consist of any LilyPond and LaTeX
+files containing content to be included into document targets, such as segment
+illustration LilyPond sources, LilyPond stylesheets or LaTeX includes
+containing blocks of prose to be flowed into a preface.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -362,7 +434,11 @@ XXX
 \caption{Overview of \emph{Ersilia}'s \texttt{build/} directory.}
 \end{figure}
 
-XXX
+The file \texttt{parts.ily}, discussed in \autoref{ssec:part-extraction},
+defines LilyPond commands for outputting parts. The file \texttt{segments.ily}
+defines -- in LilyPond syntax -- the order in which the segment illustration
+sources, collected in the \texttt{segments/} subdirectory of the
+\texttt{build/} directory, are to be concatenated.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -390,7 +466,7 @@ XXX
         LilyPond source for the concatenated score segments.
         }.
     .2  music.pdf\DTcomment{.
-        PDF output for the concatenated score segments LilyPond source. 
+        PDF output for the concatenated score segments LilyPond source.
         }.
     .2  parts.ly\DTcomment{
         LilyPond source for generating individual parts PDFs.
@@ -402,7 +478,7 @@ XXX
         LaTeX source for the preface.
         }.
     .2  score.pdf\DTcomment{
-        PDF output of the complete score LaTeX source. 
+        PDF output of the complete score LaTeX source.
         }.
     .2  score.tex\DTcomment{
         LaTeX source for the complete score.
@@ -412,19 +488,30 @@ XXX
 \caption{Directory listing of a document build target in \emph{Ersilia}.}
 \end{figure}
 
+Each document target directory consists of a similar collection of files: LaTeX
+sources for the front cover, back cover, and preface, LilyPond sources for the
+musical content of the score itself and parts, and a master LaTeX source which
+combines covers, the preface and the music into a single score PDF. The
+LilyPond \texttt{music.ily} contains \texttt{\textbackslash{}include}
+statements which pull in the \texttt{segments.ily} file from the
+\texttt{build/} directory as well as the score's main LilyPond stylesheet from
+the top-level \texttt{stylesheets} directory.
+
 \subsection{The \texttt{etc/} and \texttt{distribution/} directories}
 \label{ssec:the-etc-and-distribution-directories}
 
-Put notes, plans and to-dos about the process of composing into etc/.
-
-Collect finished document targets into distribution/. These should be organized
-by gig, and should contain only the files you would need to send to an
-ensemble.
+The \texttt{etc/} and \texttt{distribution/} directories are perhaps the
+simplest. The former holds any notes, plans or to-do lists pertinent to the
+compositional process of the score while the latter collects completed scores
+and parts for each document target from the \texttt{build/} directory.
 
 \subsection{The \texttt{test/} directory}
 \label{ssec:the-test-directory}
 
-XXX
+Finally, the \texttt{test/} directory contains Python modules defining
+parameterized tests which attempt to import each material package and then
+import and illustrate each segment in the entire score. The test modules are
+run by the \texttt{pytest} testing tool.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -441,6 +528,11 @@ XXX
 \end{singlespacing}
 \caption{Parameterized tests.}
 \end{figure}
+
+Note that these tests do not attempt to guarantee that a particular segment
+produces some score exactly matching a target, but simply that the
+segment-maker manages to interpret without failure, and that LilyPond manages
+to typeset the resulting source without error.
 
 \subsection{Python packaging}
 \label{ssec:python-packaging}
