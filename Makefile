@@ -27,15 +27,6 @@ abjad/book:
 		source/chapters/*.tex
 	say "rerendered all chapters"
 
-abjad/book/composition:
-	abjad-book \
-		-a ./assets \
-		-g ./abjadbook.cfg \
-		-l . \
-		-y ./stylesheet.ily \
-		source/chapters/a-model-of-composition.tex
-	say "rerendered chapter 4"
-
 abjad/book/notation:
 	abjad-book \
 		-a ./assets \
@@ -53,6 +44,24 @@ abjad/book/time-tools:
 		-y ./stylesheet.ily \
 		source/chapters/time-tools.tex
 	say "rerendered chapter 3"
+
+abjad/book/composition:
+	abjad-book \
+		-a ./assets \
+		-g ./abjadbook.cfg \
+		-l . \
+		-y ./stylesheet.ily \
+		source/chapters/a-model-of-composition.tex
+	say "rerendered chapter 4"
+
+abjad/book/practicalities:
+	abjad-book \
+		-a ./assets \
+		-g ./abjadbook.cfg \
+		-l . \
+		-y ./stylesheet.ily \
+		source/chapters/practicalities.tex
+	say "rerendered chapter 5"
 
 compile:
 	xelatex \
