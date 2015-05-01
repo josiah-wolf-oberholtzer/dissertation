@@ -231,7 +231,8 @@ file implements an \texttt{\_\_illustrate\_\_()} method -- described in
 \autoref{sec:representing-objects} --, it can be illustrated. Any generated
 LilyPond illustration source and PDF output is stored in the material package
 alongside the definition module. The means by which those illustration files
-come to reside there is elaborated on in \autoref{ssec:illustrating}.
+come to reside there is elaborated on in
+\autoref{ssec:illustrating-and-persisting-segments}.
 
 \subsection{Segment packages}
 \label{ssec:segment-packages}
@@ -301,7 +302,8 @@ information is generated automatically during the segment-maker's
 interpretation, and allows other segment-makers in other segment packages to
 draw conclusions about their own segment's context in the full score without
 requiring the re-interpretation of any other segments. Like the illustration
-sources, these are discussed in more depth in \autoref{ssec:illustrating}.
+sources, these are discussed in more depth in
+\autoref{ssec:illustrating-and-persisting-segments}.
 
 A \texttt{\_\_metadata\_\_.py} module sibling to each segment package simply
 defines the order of segments. For example, the order of segments in
@@ -594,60 +596,195 @@ explore the code as quickly and easily as possible.
 \label{sec:document-preparation-work-flow}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+As with working with Abjad in the simplest case, the workflow of composing and
+preparing scores with Consort continues to revolve around the cycle of defining
+musical structures in text, illustrating that music visually, then refining the
+textual definitions. The following discussion explains some of the additional
+complexities involved.
+
 \subsection{Build tools}
 \label{ssec:build-tools}
 
-I make use of a variety of custom build tools for managing assets within a
-score package which will not be discussed here in any detail. These tools
-simplify various tasks such as creating new segment and material packages,
-executing segment definition modules in order to illustrate the contained
-segment-makers, comparing new illustration LilyPond sources and PDF outputs
-against previously rendered ones, and collecting and massaging segment LilyPond
-sources from each segment package into the build directory for document
-preparation.
+Unlike creating simple musical examples at the command-line, as demonstrated
+throughout this dissertation -- especially in
+\autoref{chap:a-model-of-notation} --, managing a full-blown score requires
+considerably more tools and many more file-system assets. I make use of a
+variety of custom build tools for managing assets within a score package which
+will not be discussed here in any detail as they are still rather provisional.
+These tools simplify various tasks such as creating new segment and material
+packages, executing segment definition modules in order to illustrate the
+contained segment-makers, comparing new illustration LilyPond sources and PDF
+outputs against previously rendered ones, and collecting and massaging segment
+LilyPond sources from each segment package into the build directory for
+document preparation. Simply put, build tools for score packages streamline the
+problems of moving files and folders into their appropriate locations,
+executing Python modules, persisting code objects to disk and cleaning up after
+any transient files.
 
-\subsection{Editing}
-\label{ssec:editing}
+\subsection{Illustrating \& persisting segments}
+\label{ssec:illustrating-and-persisting-segments}
 
-I do everything in text. vim is my primary tool, but any decent text editor
-will do. Facility in making mass transformations across files is key - you may
-want to rename things that appear in multiple places. searching is important.
-syntax highlighting, and easy access to every file in your project and any
-project you rely on is key.
+All of the examples of object illustration demonstrated throughout this
+dissertation involve illustrating objects in a live Python interpreter session.
+However, in order to construct a score made of potentially many concatenated
+segment illustrations, those illustrations must be persisted to disk. While
+persistence can certainly also be handled in a live interpreter session,
+by-hand illustration and persistence are both error-prone and tedious. One way
+to simplify the task of illustrating segments and persisting their
+illustrations to disk is by adding executable code to the end of each segment
+definition module. When run by Python as a script, those segment definition
+modules can be instructed to illustrate  their segment makers and persist the
+resulting illustration and segment metadata to disk in the same directory as
+the segment definition module. Consider the following code:
 
-\subsection{Illustrating}
-\label{ssec:illustrating}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{minted}{python}
+import os
+import consort
+from abjad import persist
 
-how does illustrating work? you can do it at the command-line by importing a
-definition by hand, but this gets tedious.
 
-Write a script that does the illustrating. You can also make each segment
-definition file executable.
+segment_maker = consort.SegmentMaker(
+    desired_duration_in_seconds=4,
+    )
 
-Segment metadata. Each segment can return not just an illustration but also a
-dictionary containing information about the segment it created. What was its
-tempo? Did it repeat? How many bars were there? What was the last time
-signature used? This metadata dictionary can be persisted to disk just like the
-segment's illustration.
 
-Choose the order of the segments and write that into its own metadata python
-module. When you illustrate, you can peek at the other segment packages,
-examine their metadata and construct a model of pertinent information about
-what has happened prior to the current segment under consideration.
+if __name__ == '__main__':
+    illustration, metadata = segment_maker()
+    directory_path = os.path.dirname(os.path.abspath(__file__))
+    illustration_pdf_file_path = os.path.join(directory_path, 'illustration.pdf')
+    metadata_file_path = os.path.join(directory_path, '__metadata__.py')
+    persist(illustration).as_pdf(
+        pdf_file_path=illustration_pdf_file_path,
+        candidacy=True,
+        )
+    persist(metadata).as_module(
+        module_file_path=metadata_file_path,
+        object_name='metadata',
+        )
+\end{minted}
+\end{singlespacing}
 
-\subsection{LilyPond stylesheets}
-\label{ssec:lilypond-stylesheets}
+\noindent When run by Python as a script -- via a command like
+\mintinline{bash}{python my_segment_definition.py} -- rather than imported, the
+code in the segment definition module executes in the module namespace
+\texttt{\_\_main\_\_}. The conditional \mintinline{python}{if __name__ ==
+'__main__':} guarantees then that the suite beneath that conditional executes
+if and only if the current module name is \texttt{\_\_main\_\_}, again because
+the segment definition module was run as a script. This crucially prevents
+illustration code from running when the definition module is simply imported
+rather than executed. However, if the suite underneath the conditional
+\emph{does} execute, it first calls the previously defined segment-maker. That
+segment-maker then returns both the illustration and a segment metadata
+dictionary. Next, file paths relative to the segment module's file path are
+determined in order to persist the just-created illustration and metadata. The
+global variable \texttt{\_\_file\_\_} in any Python code module gives the
+location of that module on the file system, from which that module's directory
+can be determined. Finally, calls to Abjad's top-level \texttt{persist()}
+function against the illustration and metadata expose persistence agent
+instances which afford persisting each object to disk as a
+LilyPond file and Python module respectively. The \texttt{candidacy=True}
+keyword argument to \mintinline{python}{persist{illustration}.as_pdf(...)}
+checks whether a PDF already exists and only overwrites if the new would
+differ.
 
-Stylesheets cascade.
+As mentioned in \autoref{ssec:build-tools}, I make use of custom build tools
+for my scores which afford a more elaborate version of the illustration and
+persistence task outlined above. One such elaboration passes the metadata for
+the previous segment -- if such metadata exists -- to the current
+segment-maker's \texttt{\_\_call\_\_()} method. Recall that the previous
+segment can be determined by consulting the \texttt{\_\_metadata\_\_.py} module
+sibling to the segment packages, as outlined in
+\autoref{ssec:segment-packages}. A modified version of the current
+segment-maker's metadata is also passed as an argument at call-time, and
+includes both a count of the total number of segments and the current segment's
+index within those segments. Such metadata allows a segment-maker to
+automatically determine if it is the first or last of all segments, as well as
+to take into account any pertinent settings effective at the end of the
+previous segment, such as the previous segment's ending tempo or time
+signature.
 
-A master stylesheet describes the overall look-and-feel of the score.
+Note too that persisting material illustrations can be handled in a nearly
+identical fashion. And unlike segments, they do not need to even optionally
+consult or persist metadata.
 
-A stylesheet for scheme functions (LilyPond is scriptable, remember?)
+\subsection{Collecting and concatenating segment files}
+\label{ssec:collecting-and-concatenating-segment-files}
 
-A stylesheet for parts.
+The model of composition afforded by Consort assumes scores consist of multiple
+segments, each of which is persisted as a LilyPond score context based on an
+identical score template. This assumption relies on LilyPond's ability to
+concatenate like-named contexts. Consider the following LilyPond expression:
 
-\subsection{Collecting segment files}
-\label{ssec:collecting-segment-files}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{minted}{tex}
+{
+    \context Score = "The Score" <<
+        \context Staff = "Staff A" { c'1 d'1 }
+        \context Staff = "Staff B" { c'1 b1 }
+    >>
+    \context Score = "The Score" <<
+        \context Staff = "Staff A" { e'1 f'1 }
+        \context Staff = "Staff B" { a1 g1 }
+    >>
+    \context Score = "The Score" <<
+        \context Staff = "Staff A" { g'1 a'1 }
+        \context Staff = "Staff B" { f1 e1 }
+    >>
+}
+\end{minted}
+\end{singlespacing}
+
+\noindent The above example contains three like-named scores grouped by braces
+into a single music expression. Because the scores have identical names and the
+staff contexts within them are also identically named, LilyPond concatenates
+each like-named context in each score together. The resulting music expression
+is equivalent to the following:
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{minted}{tex}
+\context Score = "The Score" <<
+    \context Staff = "Staff A" { c'1 d'1 e'1 f'1 g'1 a'1 }
+    \context Staff = "Staff B" { c'1 b1 a1 g1 f1 e1 }
+>>
+\end{minted}
+\end{singlespacing}
+
+\noindent An identical context concatenation process is used to fuse the scores
+defined in each segment's illustration file into a single music expression.
+First however, those segment illustrations must be collected into the
+\texttt{segments/} directory within the \texttt{build/} directory and their
+sources massaged to permit concatenation.
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{minted}{tex}
+\version "2.19.17"
+\language "english"
+
+#(ly:set-option 'relative-includes #t)
+
+\include "../../stylesheets/stylesheet.ily"
+
+\score {
+    \context Score = "The Score" <<
+        ...
+    >>
+}
+\end{minted}
+\end{singlespacing}
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{minted}{tex}
+\context Score = "The Score" <<
+    ...
+>>
+\end{minted}
+\end{singlespacing}
 
 LilyPond concatenates contexts.
 
@@ -691,20 +828,6 @@ Latex can merge pdfs easily, so just do that.
 
 \subsection{Part extraction}
 \label{ssec:part-extraction}
-
-%Tags. You can use tags in LilyPond to filter out or keep any musical
-%expression, from a single note to an entire score. By tagging every staff or
-%staff group with a unique name, you can use LilyPond's tag filtering commands
-%to generate PDFs containing only selected musical content.
-%
-%Bookpart blocks. LilyPond can be instructed to build PDFs consisting of
-%multiple separate scores, appearing on separate pages. For example, hymnals, or
-%multi-movement works. \enquote{Books} can consist of multiple
-%\enquote{bookparts} which can themselves consist of multiple scores. You can
-%construct bookparts such that LilyPond outputs each bookpart as a separate PDF.
-%This is an ideal way to structure a document to output parts.
-%
-%One bookpart per part PDF, with the appropriate tag.
 
 When working with LilyPond and Abjad, part extraction relies on two fairly
 simple LilyPond mechanisms: \emph{tags} and \emph{book blocks}. In LilyPond,
@@ -803,16 +926,24 @@ all score segments into a single music expression -- wrapped in a
 \texttt{\textbackslash{}keepWithTag} command which filters out everything
 except that performer's musical content and the global time signature context.
 
-
+With these techniques in mind, a complete parts-extraction file would likely
+look the following, from \emph{Ersilia}:
 
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \inputminted[
     firstline=3,
-]{tex}{../../Documents/Scores/ersilia/ersilia/build/11x17-portrait/ersilia-11x17-portrait-parts.ly}
+]{tex}{../../Documents/Scores/ersilia/ersilia/build/11x17-landscape/ersilia-11x17-landscape-parts.ly}
 \end{singlespacing}
 
-\noindent Note that there are methods by which composers can generate parts in
+\noindent Beyond the initial LilyPond boilerplate of specifying a LilyPond
+version and pitch-name input language, basically consists of an include for the
+global stylesheet, a page-layout command, an include for a stylesheet for
+landscape parts and finally an include for the global parts definition file,
+\texttt{parts.ily}. When interpreted by LilyPond, the above will generate one
+11x17 landscape PDF per book block defined in \texttt{parts.ily}.
+
+Note that there are methods by which composers can generate parts in
 LilyPond. Most LilyPond users who work strictly with LilyPond, writing
 \enquote{by hand}, would likely places each of the instrumental parts in the
 score into a separate file or variable. Those parts would then be combined into
