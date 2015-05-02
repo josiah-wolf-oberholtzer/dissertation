@@ -1,3 +1,5 @@
+*.mintedcmd
+*.mintedmd5
 _minted-dissertation
 dissertation.pdf
 .dissertation.log
