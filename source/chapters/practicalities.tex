@@ -1098,9 +1098,16 @@ expression, filtering must be used to \enquote{strip} the score down to the
 desired musical elements.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Automated regression testing}
-\label{sec:testing}
+\section{Project maintenance}
+\label{sec:project-maintenance}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+testing and version control represent a kind of \enquote{daily practice}
+
+\subsection{Automated regression testing}
+\label{ssec:testing}
+
+\todo[inline]{\textbf{TODO:} Find citations for testing.}
 
 Regression testing examines the stability and correctness of a software system
 during the course of development, allowing the software's authors to verify
@@ -1179,41 +1186,73 @@ LilyPond.
 %verify that it continues to function as expected although the code it depends
 %on and the tools it uses for typesetting may change.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Version control}
-\label{sec:version-control}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Version control}
+\label{ssec:version-control}
 
-This is the most important aspect of working computationally. If I can impart
-\emph{any} advice to anyone working with computers, even if they never program
-ever, it would be to learn how to use version control.
+\todo[inline]{\textbf{TODO:} Find citations for version control.}
 
-What is version control?
+Version control systems -- or \emph{VCS} -- record changes to sets of files,
+tracking additions, deletions, name changes and content modifications,
+generally on a line-by-line basis. Changes are grouped together into bundles
+called \emph{commits}, labeled with a timestamp and \emph{commit message}
+elaborating on the purpose or contents of the changes. The graph of commits
+made against a project as recorded by the project's VCS, where each commit is
+connected to some previous parent commit, constitute the \emph{history} of that
+project. While anecdotally uncommon amongst composers, virtually all software
+developers make use of version control to greater or lesser degrees, for a wide
+variety of reasons.
 
-Why use version control?
+Version control provides the most compact and legible way of archiving multiple
+versions of a project. When making changes, instead of duplicating the
+directory containing one's work, giving the copied directory a name like
+\enquote{MyProject-year-month-day} or \enquote{MyProject-version-3} and then
+editing the contents of that copy, one simply works in the same directory as
+always, committing each change to the version control system's history. At any
+point and for any reason, any previously committed version of the project can
+be recalled. Reverting to an earlier version of the project does not destroy
+later changes. Those too, because they have also been recorded in the project's
+history, can also be recalled. Most version control systems store their history
+in hidden files or directories within the project. For example, every project I
+work uses the VCS \texttt{git}, originally authored by Linus Torvalds, the
+chief architect of the Linux kernel. Git stores its history in a hidden
+directory named \texttt{.git} in the root of the versioned project, as
+indicated in \autoref{ssec:python-packaging}.
 
--   Backup.
+Many version control systems support \emph{tagging}, the labeling of a commit
+in the version history as particularly important. Software projects often tag
+commits intended for release to the public with version numbers like
+\texttt{1.0}, \texttt{2.5} or even \texttt{v1.8.5-rc3}. Likewise, important
+commits in the history of a score's development might be tagged similarly. For
+example, the version of the project when the score was first sent to an
+ensemble might be tagged \texttt{world-premier}. Tagging allows the composer to
+continue revising the score while still always being able to refer back to
+milestones in the score's history.
 
--   Version history. It lets you store different versions in a sane way.
-    No more crazy directory names. Version control is concise - no more
-    cluttering up your workspace with multiple directories. You can't compare
-    those - it's a cognitive burden.
+Version control systems make it easier to understand how and why a project was
+changed. Not only does each commit have a commit message, allowing the author
+to provide some explanation of their actions, but any two commits can be
+compared against one another as a \enquote{\emph{diff}}, a description of the
+line-by-line differences between each differing file. Reading the diff between
+two commits is often more illuminating than reading the descriptions and
+intentions in the commits' commit messages. Diffs provide a clear
+description of how textual content in a project has changed, making them
+especially useful when working in code or when composing textual input to
+automated typesetting programs like LilyPond and LaTeX. Consider how difficult
+such a version comparison task would be when comparing the contents of two
+project directories by hand -- probably impossible, but certainly very
+time-consuming and error-prone.
 
--   Tagging allows you to pinpoint versions of the work which correspond to
-    premiers or performances.
+Finally, version control affords collaboration and experimentation.
+Collaboration here crucially also includes collaboration with oneself. Many
+version control systems, including \texttt{git}, support \emph{branches} which
+allow the revision history of the project to split into parallel time-lines
+rather than follow a single linear path. One can create branches whenever one
+desires, for example when attempting to solve a problem in more than one way
+where each attempt is isolated from one another but still maintained by the
+project's version history. Branches can also be merged into one another,
+converging parallel version histories to back into a linear history. Such
+flexibility gives authors the freedom to embark on radical or incremental
+revisions and reorganizations of their projects without fear of confusion or
+lost work.
 
--   Reverting. It lets you revert to older versions easily in the face of error
-    or confusion.
-
--   Branches. It gives you the freedom to try to solve a problem in multiple
-    different ways at the same time. Branching allows you to try out new
-    pathways without worry of clobbering your work.
-
--   Commit messages and diffs. Make it easier to understand what you did across
-    different changes and maybe even *why* you did it. You always know what's
-    different about one version versus another version. Text-based development
-    strongly supports this manner of working. When making line-by-line changes,
-    diffs can be very easy to read.
-
--   Collaboration. Provides a mechanism to coordinate work amongst many
-    developers, without fear of overwriting one another's files.
+\todo[inline]{\textbf{TODO:} Does this require a conclusion?}
