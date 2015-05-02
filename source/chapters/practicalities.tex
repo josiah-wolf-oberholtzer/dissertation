@@ -1,33 +1,39 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Practicalities: project management}
+\chapter{Practicalities: composition as software development}
 \label{chap:practicalities}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Core concepts:
+\eblettrinedbl{T}{hroughout the previous chapters,} I have presented concepts,
+techniques, classes and functions for modeling notation and composition in
+code, accompanied by numerous visualizations, all executed in the context of an
+interactive Python interpreter session. In light of that, it's important to
+understand that when composing computationally, I rarely work with the
+interactive console. Interactive sessions demonstrate simple techniques well,
+and allow for inspection of live code objects, but are prone to typing errors
+-- consider the difficulty of typing dozens of lines perfectly -- and
+ultimately discourage an iterative workflow.
 
-Version control. Always be in control of the changes in your project.
-Text-based development strongly supports this manner of working.
-Tagging allows you to pinpoint versions of the work which correspond to
-premiers or performances. You always know what's different about one version
-versus another version. Branching allows you to try out new pathways without
-worry of clobbering your work. Version control is also concise - no more
-cluttering up your workspace with multiple directories. You can't compare those
-- it's a cognitive burden.
+Iteration is crucial for composing large-scale works, and requires that code
+and other assets be preserved throughout each cycle of definition and
+visualization so that they can be progressively revised, amended and otherwise
+reconfigured. Code must be saved to disk as modules in order to be executed or
+imported into other code. Likewise, code should be encapsulated for both
+manageability and legibility, preferably organized into multiple files
+articulating their structure or purpose. Of course, once code is arranged as
+files on disk, a whole variety of additional questions emerge: How should that
+code be organized? In how many files? How much and which code in each each
+file? Where should the files be kept? Does the code create other assets? Where
+are these stored? How are they named? How is the code executed? How is the
+project structure maintained? How are changes to the project saved, and how
+does one compare one version to another? And how is the code in the project
+tested?
 
-Automated typesetting. Separate content from layout. This extends to both
-textual document components and musical document components. Affords easy part
-extraction. Cascading stylesheets.
-
-Structured code. Make a clear distinction between classes, materials, and
-segments. Segments represent in-time composition. Materials represent
-out-of-time composition. Makers represent abstract processes or utilities which
-afford the creation of materials and segments.
-
-Testing. Automate proofreading. Guarantee computationally-afforded score
-projects continue to function properly over time, ensuring the longevity of the
-code-base.
+The answers to such questions -- and there often are clear answers -- revolve
+the practicalities of managing not simply a musical endeavor, but a software
+project: code and directory structuring, development tools and workflows,
+version control and testing.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Score directory layout}
@@ -36,11 +42,13 @@ code-base.
 A structured approach to arranging one's compositional workspace clarifies both
 the way one thinks about the act of composing, as well as the more menial
 workflows of document preparation which are inseparable from score-based
-composition. Each of the \emph{Invisible Cities} scores included in part II of
-this dissertation are implemented as Python packages extending Abjad model of
-notation and Consort's model of composition. Likewise, each \emph{Invisible
-Cities} score package is structured into a nearly identical arrange of eight
-top-level directories, each with a clearly delineated purpose and substructure.
+composition. Standardization also allows one to reuse tools designed to manage
+one score package on another. Each of the \emph{Invisible Cities} scores
+included in part II of this dissertation are implemented as Python packages
+extending Abjad model of notation and Consort's model of composition. Likewise,
+each \emph{Invisible Cities} score package is structured into a nearly
+identical arrange of eight top-level directories, each with a clearly
+delineated purpose and substructure.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -132,18 +140,19 @@ be delivered to ensembles, occupy the \texttt{distribution/} directory.
 \subsection{Makers}
 \label{ssec:makers}
 
-Each score's \texttt{makers/} directory houses classes specific to that score.
-In the case of my three \emph{Invisible Cities} scores, this always comprises a
+Each score's \texttt{makers/} directory houses classes specific to that score,
+with each class stored on disk in its own Python module of the same name. In
+the case of my three \emph{Invisible Cities} scores, this always comprises a
 subclass of Consort's \texttt{SegmentMaker} and \texttt{ScoreTemplate} classes.
 The segment-maker subclasses effectively pre-load common information about the
 score, such as what time signatures to permit by default or what the
 end-of-score markup should look like. They may also define a considerable
-amount of additional score post-processing, as in the case of
-\emph{Armilla}, where many passes of voice copying were required to create the
-typography for the bowing staves. A score's score template necessarily defines
-the instrumentation and structure of the score layout itself. As none of the
-scores in this dissertation make use of common instrumentations, each required
-that a completely new score template be defined.
+amount of additional score post-processing, as in the case of \emph{Armilla},
+where many passes of voice copying were required to create the typography for
+the bowing staves. A score's score template necessarily defines the
+instrumentation and structure of the score layout itself. As none of the scores
+in this dissertation make use of common instrumentations, each required that a
+completely new score template be defined.
 
 Any other class definitions required by the score package should also be placed
 into the \texttt{makers/} directory. For example, \emph{Plague Water}, whose
@@ -160,6 +169,8 @@ collections, rhythm-makers, and even fully-configured music specifiers, which
 may appear at some point in the time-line of a piece. They are implemented as
 importable Python packages, grouped flatly into the \texttt{materials/}
 directory, itself a Python package due to the presence of an initializer file.
+Like the makers modules, each material definition module defines only a single
+object.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -497,7 +508,10 @@ combines covers, the preface and the music into a single score PDF. The
 LilyPond \texttt{music.ily} contains \texttt{\textbackslash{}include}
 statements which pull in the \texttt{segments.ily} file from the
 \texttt{build/} directory as well as the score's main LilyPond stylesheet from
-the top-level \texttt{stylesheets} directory.
+the top-level \texttt{stylesheets} directory. A Makefile, which defines build
+commands for the GNU \texttt{make} command-line utility, can also help automate
+various document target tasks, such as recompiling all LaTeX documents in the
+correct order to produce a finished score.
 
 \subsection{The \texttt{etc/} and \texttt{distribution/} directories}
 \label{ssec:the-etc-and-distribution-directories}
@@ -592,12 +606,12 @@ have -- installation affordances are simply necessary for letting others
 explore the code as quickly and easily as possible.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Document preparation work-flow}
-\label{sec:document-preparation-work-flow}
+\section{Document preparation in detail}
+\label{sec:document-preparation-in-detail}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 As with working with Abjad in the simplest case, the work flow of composing and
-preparing scores with Consort continues to revolve around the cycle of defining
+preparing scores with Consort continues to revolve around a cycle of defining
 musical structures in text, illustrating that music visually, then refining the
 textual definitions. Unlike creating simple musical examples at the
 command-line, as demonstrated throughout this dissertation -- especially in
@@ -635,7 +649,8 @@ illustrations to disk is by adding executable code to the end of each segment
 definition module. When run by Python as a script, those segment definition
 modules can be instructed to illustrate  their segment makers and persist the
 resulting illustration and segment metadata to disk in the same directory as
-the segment definition module. Consider the following code:
+the segment definition module. Consider the following trivial segment
+definition file, complete with an executable suite at its end:
 
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
@@ -759,6 +774,12 @@ First however, those segment illustrations must be collected into the
 \texttt{segments/} directory within the \texttt{build/} directory and their
 sources massaged to permit concatenation.
 
+Each segment illustration, as it exists in its segment package, represents a
+complete, fully-typesettable LilyPond file, consisting of a LilyPond version
+statement, pitch-name language command, various stylesheet include commands,
+and that segment's score's context block wrapped within a
+\texttt{\textbackslash{}score} block:
+
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{minted}{tex}
@@ -777,6 +798,41 @@ sources massaged to permit concatenation.
 \end{minted}
 \end{singlespacing}
 
+\noindent Such an input cannot simply be included along with the other segment
+illustration files to create a concatenated score. In fact, a construction like
+the following, with \texttt{\textbackslash{}score} blocks nested within other
+\texttt{\textbackslash{}score} blocks, is considered a syntax error by
+LilyPond:
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{minted}{tex}
+\version "2.19.17"
+
+\score {
+    {
+        \version "2.19.17"
+        \score {
+            \context Score = "The Score" << c'1 >>
+        }
+        \version "2.19.17"
+        \score {
+            \context Score = "The Score" << c'1 >>
+        }
+        \version "2.19.17"
+        \score {
+            \context Score = "The Score" << c'1 >>
+        }
+    }
+}
+\end{minted}
+\end{singlespacing}
+
+\noindent Instead, some simple string processing must be applied against the
+illustration file to trim out all content besides the inner score
+\texttt{\textbackslash{}context} block, resulting in a much thinner but
+includable construction.
+
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \begin{minted}{tex}
@@ -786,53 +842,99 @@ sources massaged to permit concatenation.
 \end{minted}
 \end{singlespacing}
 
-LilyPond concatenates contexts.
+\noindent This trimming removes unnecessary header and styling information from
+each collected segment illustration and allows LilyPond to concatenate the
+score contexts together into a single score structure.
 
-.ily vs .ly: just a convention. .ly can be compiled by itself, .ily either has
-no music, or requires includes which are not present.
-
-Copy segments illustration files out of each segment package into
-build/segments.
-
-Rename each segment from illustration.ly to segment-package-name.ily
-
-Trim every except the \texttt{\textbackslash{}context} block.
-
-Trimming removes the unnecessary header and styling information from each
-collected segment illustration and allows LilyPond to concatenate the score
-contexts together into a single score structure.
+Segment collection then involves copying each segment illustration LilyPond
+source from its segment package into the \texttt{segments/} subdirectory of the
+score package's \texttt{build/} directory, naming that copied illustration
+source after its originating segment package, and finally trimming that source
+as shown above. As with segment illustration automation, I make use of some
+provisional build tools which simplify this process. However, a naive approach
+to the task of collecting and trimming segment illustration could also be
+implemented in a few dozen lines of Python code. With the segment illustrations
+collected into the \texttt{build/} directory, the \texttt{build/} directory's
+\texttt{segments.ily} LilyPond include file can be updated based on the segment
+order encoded in the \texttt{segments/} directory's
+\texttt{\_\_metadata\_\_.py} module. For example, \emph{Ersilia}'s
+\texttt{segments.ily} include file ultimately looks like this:
 
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \inputminted{tex}{../../Documents/Scores/ersilia/ersilia/build/segments.ily}
 \end{singlespacing}
 
+\noindent Finally, the updated \texttt{segments.ily} file can be included
+directly into a document target's \texttt{music.ly} LilyPond source file, to
+create the complete musical contents in the appropriate layout for that
+document target's paper output format. The LilyPond source for a document
+target's musical content might then simply look like the following:
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{minted}{tex}
+\version "2.19.17"
+\language "english"
+
+#(ly:set-option 'relative-includes #t)
+\include "../../stylesheets/stylesheet.ily"
+#(set-default-paper-size "legal" 'portrait)
+#(set-global-staff-size 11)
+
+\score {
+    \include "../segments.ily"
+}
+\end{minted}
+\end{singlespacing}
+
 \subsection{Organizing and typesetting LaTeX assets}
 \label{ssec:organizing-and-typesetting-latex-assets}
 
-what latex assets does each document target require?
+In the spirit of LilyPond's automated musical typesetting, I have chosen to
+rely on LilyPond's spiritual predecessor, LaTeX, for handling all
+purely-textual or otherwise utilitarian typesetting in the documents I produce.
+LaTeX, like LilyPond, takes a textual source file as input, consisting of a
+variety of commands which describe the structure and content of a document, and
+produces a typeset target, generally as a PDF. Each document target of course
+requires more content than simply the musical meat of the score. Title pages,
+covers, prefaces and performance notes also require typesetting and should be
+handled as simply as possible while maintaining identical content, output
+formats, fonts and spacing.
 
-Front-cover, back-cover, performance-notes, music.
+The most complex LaTeX task in my document preparation process involves
+formatting identical textual content for different paper sizes and
+orientations, as with each document target's preface information. A preface
+containing multiple sections, each potentially containing nested lists of
+instruments or diagrams, may not format equally well on different paper sizes
+and orientations. For example, the preface to \emph{Armilla} contains six
+different sections of widely divergent lengths, but fits well in portrait
+orientations of tabloid and legal paper when split into two columns. However,
+when formatted on letter paper, or in landscape orientation, sections of prose
+no longer work in the two column layout cleanly and need to be individually
+resized or flowed into more than two columns. Formatting such a preface
+properly in both landscape and portrait orientations, in tabloid, letter and
+legal paper sizes requires non-trivial rearrangement and must be adjusted by
+hand. However, care must be taken not to duplicate content across different
+LaTeX source files. Duplicated prose inevitably goes out of sync, creating a
+tremendous cognitive burden on the composer as they prepare their documents.
 
-use a master score.tex to include all of the document target assets together.
-Latex can merge pdfs easily, so just do that.
+This problem -- needing to provide manually-tweaked alternate layouts for prose
+while discouraging by-hand copying -- can be solved by separating out each
+section of text in the preface into separate includable LaTeX files, stored in
+the \texttt{assets/} subdirectory of the \texttt{build/} directory, and then
+including those files back into each alternative preface layout file. Such a
+workflow enacts the age-old adage counsel to separate content from layout.
 
-\begin{figure}[h!]
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\inputminted{tex}{../../Documents/Scores/ersilia/ersilia/build/11x17-portrait/ersilia-11x17-portrait-score.tex}
-\end{singlespacing}
-\vspace{-0.5\baselineskip}
-\caption{A score LaTeX source in \emph{Ersilia}.}
-\end{figure}
-
-Also, collect all preface and performance note prose into build/assets/ as
-include-able TeX files. Use TPGrid and input to flow those assets into
-different layouts.
-
-Undoubtedly more seasoned LaTeX users have more sophisticated ways of dealing
-with these situations, but this works perfectly well, is easy to understand and
-also pithy.
+Consider the preface to \emph{Ersilia}, which contains four separate sections:
+two quotes, from Italo Calvino and Ursula K. Le Guin, and two passages on
+instrumentation and performance. Each of these sections is stored as a separate
+LaTeX file in the \texttt{assets/} subdirectory of \emph{Ersilia}'s
+\texttt{build/} directory. When preparing prefaces for the tabloid landscape
+edition and the legal portrait edition, each collection of prose assets is
+flowed into different text grids via the \texttt{textpos} LaTeX package. For
+example, the tabloid landscape uses four separate columns, each of varying
+widths:
 
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
@@ -841,11 +943,30 @@ also pithy.
 ]{tex}{../../Documents/Scores/ersilia/ersilia/build/11x17-landscape/ersilia-11x17-landscape-preface.tex}
 \end{singlespacing}
 
+\noindent The legal portrait version uses two columns, with the quotes on the
+left side and the performance instructions on the right:
+
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \inputminted[
     firstline=18,
 ]{tex}{../../Documents/Scores/ersilia/ersilia/build/legal-portrait/ersilia-legal-portrait-preface.tex}
+\end{singlespacing}
+
+\noindent In both cases, none of the actual content of the prose appears in the
+LaTeX files defining the layout of the prose. This guarantees that any edits or
+corrections to the prose will be reflected equally in all layouts of the
+preface.
+
+LaTeX can also be used to join documents together. Each document target
+contains a master \texttt{score.tex} which combines all other PDF components of
+the score together into a single PDF via LaTeX, obviating the need to use any
+other PDF-merging tool. For example, the 11x17 portrait \texttt{score.tex} for
+\emph{Ersilia} looks like this:
+
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\inputminted{tex}{../../Documents/Scores/ersilia/ersilia/build/11x17-portrait/ersilia-11x17-portrait-score.tex}
 \end{singlespacing}
 
 \subsection{Part extraction}
@@ -947,8 +1068,8 @@ all score segments into a single music expression -- wrapped in a
 \texttt{\textbackslash{}keepWithTag} command which filters out everything
 except that performer's musical content and the global time signature context.
 
-With these techniques in mind, a complete parts-extraction file would likely
-look the following, from \emph{Ersilia}:
+With these techniques in mind, a complete parts-extraction file would
+look like the following, from \emph{Ersilia}:
 
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
@@ -978,10 +1099,10 @@ desired musical elements.
 \label{sec:project-maintenance}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-foo
-
 \subsection{Testing}
 \label{ssec:testing}
+
+Tox, Travis-CI, pytest, doctest.
 
 Parameterized tests which run each segment and import each material. Why do
 this? It's a simple entry point to check the stability of your entire score as
@@ -997,9 +1118,25 @@ e.g. Abjad or any of Abjad's dependencies, can also be installed and used in a
 fresh environment. Why do things in a fresh environment? Our local workspace
 can become a blind-spot to us.
 
+Testing.
+Automate proofreading: score validation in Abjad.
+Test for the stability and correctness of code objects.
+Guarantee computationally-afforded score
+projects continue to function properly over time, ensuring the longevity of the
+code-base.
+
 \subsection{Version control}
 \label{ssec:version-control}
 
 This is the most important aspect of working computationally. If I can impart
 \emph{any} advice to anyone working with computers, even if they never program
 ever, it would be to learn how to use version control.
+
+Version control. Always be in control of the changes in your project.
+Text-based development strongly supports this manner of working.
+Tagging allows you to pinpoint versions of the work which correspond to
+premiers or performances. You always know what's different about one version
+versus another version. Branching allows you to try out new pathways without
+worry of clobbering your work. Version control is also concise - no more
+cluttering up your workspace with multiple directories. You can't compare those
+- it's a cognitive burden.
