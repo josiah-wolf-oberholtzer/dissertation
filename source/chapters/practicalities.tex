@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Practicalities: composition as software development}
+\chapter{Composition as software development}
 \label{chap:practicalities}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -208,10 +208,13 @@ Each material package contains at the least its own initializer as well as
 \texttt{definition.py} file containing Python code which defines or configures
 that material. Crucially, the actual code object expressed in that
 definition.py should be named after the material package itself. This
-simplifies the Python import process as simple importing utilities can be
-written to iterate over every directory within the \texttt{materials/}
-directory and produce corresponding Python import statements of the form
-\mintinline{python}{from my_material.definition import my_material}.
+simplifies the Python import process a great deal. Simple importing utilities
+can then be written to iterate over every directory within the
+\texttt{materials/} directory and produce corresponding Python import commands
+of the form \mintinline[breaklines=true]{python}{from my_material.definition
+import my_material}. Automatically importing the objects defined in each
+material package into the \texttt{materials} namespace allows those objects to
+be easily referenced from within each segment definition.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -561,7 +564,7 @@ way affords a number of conveniences related to testing. Installable scores can
 be tested in \emph{virtual environments} -- a common Python practice -- by
 automated test runners like \texttt{tox} or run on remote
 continuous-integration testing services such as Travis-CI. Both of these tools
-are addressed in \autoref{ssec:testing}.
+are addressed in \autoref{sec:testing}.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -1095,48 +1098,122 @@ expression, filtering must be used to \enquote{strip} the score down to the
 desired musical elements.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Project maintenance}
-\label{sec:project-maintenance}
+\section{Automated regression testing}
+\label{sec:testing}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Testing}
-\label{ssec:testing}
+Regression testing examines the stability and correctness of a software system
+during the course of development, allowing the software's authors to verify
+that changes and revisions to that system have not introduced errors or
+unexpected behavior. Rather than testing the system manually, software authors
+typically write \emph{automated regression testing batteries}: collections of
+tests implemented as functions or classes which can be run automatically by a
+testing tool -- a \emph{test runner} --, returning the results to the authors
+as a report. Testing philosophies and practices in the open source community
+are now very diverse and sophisticated, therefore a full discussion of software
+testing is beyond the scope of this document. Nevertheless, I believe that
+testing is crucial to the development of any software system and therefore to
+any score or composition model implemented in code.
 
-Tox, Travis-CI, pytest, doctest.
+Both Consort and the various scores implemented with it make extensive use of
+tests. These tests take a variety of forms: \emph{documentation tests},
+\emph{unit tests}, \emph{system tests} and \emph{parameterized tests}.
+Documentation testing, or \enquote{doctesting} in Python parlance, verifies
+that the code examples in the documentation strings accompanying classes,
+methods and functions are correct. Unit testing examines small fragments of
+code, such as individual functions, class initializers or methods, passing in a
+variety of input and examining the output for correctness. System testing
+verifies that an entire software system functions as expected. In the context
+of Consort, auditing the illustration produced by a fully-configured
+segment-maker would constitute a system test as such an operation touches upon
+nearly every class defined in Consort's library. Additionally, parameterized
+tests provide a means of applying a single test against a variety of input.
+This is used extensively in Abjad and Consort to guarantee that every class in
+each system can be instantiated, is fully documented, can be represented as a
+string, can be hashed and so forth. Rather than write over 900 hundred separate
+tests -- one for each class in Abjad -- all classes can be collected in a list
+and passed to a single parameterized test function, which then runs itself
+against each class as though that were separate test.
 
-Parameterized tests which run each segment and import each material. Why do
-this? It's a simple entry point to check the stability of your entire score as
-you work. If your score depends on another project -- e.g. Abjad or Consort --
-where that project is also being actively developed testing lets you check that
-your project continues to interoperate.
+The three scores I implemented with Consort each contain two parameterized
+tests in their top-level \texttt{test/} directory. One test verifies that the
+objects defined in each material definitions are valid and contain no errors.
+The second parameterized test illustrates each segment definition, failing not
+only if the segment-maker is unable to interpret itself but also if LilyPond
+fails to typeset the resulting illustration source. These per-score tests serve
+a number of functions. They allow me to ascertain that the logic implemented in
+the score itself, in Consort, in Abjad and in any dependency of these projects
+continues to interoperate -- at least non-catastrophically. They also allow me
+verify that the LilyPond output produced by the score's segment-makers -- along
+with any stylesheet information defined in the score package -- is still valid
+LilyPond source code, and has not been deprecated by newer versions of
+LilyPond.
 
-Continuous integration testing via Travis-CI or similar service. Run your tests
-on a remote server in a virtual machine. This guarantees that your score can be
-installed on a fresh machine which is also probably of a different
-architecture. Also guarantees that any other project your score depends on,
-e.g. Abjad or any of Abjad's dependencies, can also be installed and used in a
-fresh environment. Why do things in a fresh environment? Our local workspace
-can become a blind-spot to us.
+%Abjad, Consort and the scores implemented with Consort also make use of
+%continuous integration testing services -- specifically with Travis-CI,
+%although other services can certainly be used.
+%
+%Continuous integration testing via Travis-CI or similar service.
+%Run your tests on a remote server in a virtual machine.
+%This guarantees that
+%
+%While continuous integration is perhaps overkill when only a single person is
+%working on a score, the act of packaging and deploying the score on a remote,
+%clean virtual machine still has benefits.
+%
+%your score can be installed on a fresh machine which is also probably of a
+%different architecture.
+%
+%Also guarantees that any other project your score depends on, e.g. Abjad or any
+%of Abjad's dependencies, can also be installed and used in a fresh environment.
+%
+%Why do things in a fresh environment? Our local workspace can become a
+%blind-spot to us.
+%
+%Tox can also help with this. Gradually though, Python 3 is becoming the
+%dominant version of Python, and will eventually obviate the need to perform
+%multi-version testing.
+%
+%So, why test? It prevents you from losing ground as you work, and acts as a
+%bulwark against the obsolescence of the code you write by allowing you to
+%verify that it continues to function as expected although the code it depends
+%on and the tools it uses for typesetting may change.
 
-Testing.
-Automate proofreading: score validation in Abjad.
-Test for the stability and correctness of code objects.
-Guarantee computationally-afforded score
-projects continue to function properly over time, ensuring the longevity of the
-code-base.
-
-\subsection{Version control}
-\label{ssec:version-control}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Version control}
+\label{sec:version-control}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 This is the most important aspect of working computationally. If I can impart
 \emph{any} advice to anyone working with computers, even if they never program
 ever, it would be to learn how to use version control.
 
-Version control. Always be in control of the changes in your project.
-Text-based development strongly supports this manner of working.
-Tagging allows you to pinpoint versions of the work which correspond to
-premiers or performances. You always know what's different about one version
-versus another version. Branching allows you to try out new pathways without
-worry of clobbering your work. Version control is also concise - no more
-cluttering up your workspace with multiple directories. You can't compare those
-- it's a cognitive burden.
+What is version control?
+
+Why use version control?
+
+-   Backup.
+
+-   Version history. It lets you store different versions in a sane way.
+    No more crazy directory names. Version control is concise - no more
+    cluttering up your workspace with multiple directories. You can't compare
+    those - it's a cognitive burden.
+
+-   Tagging allows you to pinpoint versions of the work which correspond to
+    premiers or performances.
+
+-   Reverting. It lets you revert to older versions easily in the face of error
+    or confusion.
+
+-   Branches. It gives you the freedom to try to solve a problem in multiple
+    different ways at the same time. Branching allows you to try out new
+    pathways without worry of clobbering your work.
+
+-   Commit messages and diffs. Make it easier to understand what you did across
+    different changes and maybe even *why* you did it. You always know what's
+    different about one version versus another version. Text-based development
+    strongly supports this manner of working. When making line-by-line changes,
+    diffs can be very easy to read.
+
+-   Collaboration. Provides a mechanism to coordinate work amongst many
+    developers, without fear of overwriting one another's files.
