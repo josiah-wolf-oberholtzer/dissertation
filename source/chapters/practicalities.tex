@@ -426,8 +426,8 @@ Directory listing of \emph{Ersilia}'s \texttt{stylesheets/} directory.
 \end{figure}
 
 Because LilyPond supports the inclusion of one LilyPond source file into
-another, it is possible to define the musical contents of a work in one source
-file and collect global typographic overrides into another. This is the
+another, it is possible to separate the musical content of a work from the
+settings defining its typographic presentation or page layout. This is the
 approach I have taken, out of necessity, when building scores with Abjad and
 Consort. It is certainly possible to define every one of the typographic
 overrides found in \texttt{stylesheet.ily} in Abjad via its top-level
@@ -441,16 +441,23 @@ recompiling the already-interpreted segment illustration sources.
 \subsection{The \texttt{build/} directory}
 \label{ssec:the-build-directory}
 
-The \texttt{build/} directory holds source files pertinent to building scores
+The \texttt{build/} directory, outlined in
+\autoref{fig:ersilia-build-directory}, holds files pertinent to building scores
 and parts, along within any component documents, including front and back
 covers, prefaces or performance notes. The contents of the \texttt{build/}
-directory are organized into \emph{document targets} and \emph{sources}. Each
+directory are organized into \emph{document targets} and \emph{assets}. Each
 document target subdirectory consists of source files for producing scores and
 parts in a particular format, such as tabloid or A4 paper, or for a particular
-performance or language translation. Sources consist of any LilyPond and LaTeX
-files containing content to be included into document targets, such as segment
-illustration LilyPond sources, LilyPond stylesheets or LaTeX includes -- housed
-in \texttt{assets/} -- containing blocks of prose to be flowed into a preface.
+performance or language translation. Assets include any LilyPond and LaTeX file
+consisting of textual or musical content to be included into a document target.
+For example, segment illustration LilyPond sources are housed in
+\texttt{build/segments/} while LaTeX includes -- containing blocks of prose to
+be flowed into a preface  -- are housed in \texttt{build/assets/}. Source files
+withing document target subdirectories can generally be typeset successfully to
+produce a finished document, or a component of a finished document such as a
+cover page. Asset source files, in contrast, must almost always be included or
+otherwise combined with other source files in order to produce valid
+typesettable input.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -498,6 +505,7 @@ in \texttt{assets/} -- containing blocks of prose to be flowed into a preface.
 }
 \end{singlespacing}
 \caption{Overview of \emph{Ersilia}'s \texttt{build/} directory.}
+\label{fig:ersilia-build-directory}
 \end{figure}
 
 The file \texttt{parts.ily}, discussed in \autoref{ssec:part-extraction},
