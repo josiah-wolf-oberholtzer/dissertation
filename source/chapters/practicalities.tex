@@ -592,9 +592,11 @@ system}, discussed in \autoref{ssec:version-control}.
 \label{ssec:the-test-directory}
 
 Finally, the \texttt{test/} directory contains Python modules defining
-parameterized tests which attempt to import each material package and then
-import and illustrate each segment in the entire score. The test modules are
-run by the \texttt{pytest} testing tool.
+parameterized tests which verify the stability of each material and segment
+package. The material tests simply attempt to import and evaluate the storage
+format of each object defined in a material package. The classes of these
+objects generally have much more extensive test suites already defined either
+in Abjad or Consort, so simply instantiating and formatting them here suffices.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -612,10 +614,11 @@ run by the \texttt{pytest} testing tool.
 \caption{Parameterized tests.}
 \end{figure}
 
-Note that these tests do not attempt to guarantee that a particular segment
-produces some score exactly matching a target, but simply that the
-segment-maker manages to interpret without failure, and that LilyPond manages
-to typeset the resulting source without error.
+Segment tests attempt to both interpret each segment's segment-maker, and also
+typeset the resulting LilyPond input file. Note that these tests do not attempt
+to guarantee that a particular segment produces some score exactly matching a
+target, but simply that the segment-maker manages to interpret without failure,
+and that LilyPond manages to typeset the resulting source without error.
 
 \subsection{Python packaging}
 \label{ssec:python-packaging}
