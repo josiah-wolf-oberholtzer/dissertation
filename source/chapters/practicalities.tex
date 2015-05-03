@@ -453,11 +453,11 @@ consisting of textual or musical content to be included into a document target.
 For example, segment illustration LilyPond sources are housed in
 \texttt{build/segments/} while LaTeX includes -- containing blocks of prose to
 be flowed into a preface  -- are housed in \texttt{build/assets/}. Source files
-withing document target subdirectories can generally be typeset successfully to
-produce a finished document, or a component of a finished document such as a
-cover page. Asset source files, in contrast, must almost always be included or
-otherwise combined with other source files in order to produce valid
-typesettable input.
+contained within document target subdirectories can generally be typeset
+successfully in order to produce either a finished document or a component of a
+finished document, such as a cover page. Asset source files, in contrast, must
+always be included or otherwise combined with other source files in order to
+produce valid typesettable input.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -508,11 +508,13 @@ typesettable input.
 \label{fig:ersilia-build-directory}
 \end{figure}
 
-The file \texttt{parts.ily}, discussed in \autoref{ssec:part-extraction},
-defines LilyPond commands for outputting parts. The file \texttt{segments.ily}
-defines -- in LilyPond syntax -- the order in which the segment illustration
-sources, collected in the \texttt{segments/} subdirectory of the
-\texttt{build/} directory, are to be concatenated.
+The \texttt{build/} directory also contains two includable files sibling to the
+document target, \texttt{assets/} and \texttt{segments/} subdirectories.
+The first file, \texttt{parts.ily}, defines LilyPond commands for outputting
+parts. This file is discussed further in \autoref{ssec:part-extraction}. The
+second file, \texttt{segments.ily}, defines in LilyPond syntax the order in
+which the segment illustration sources, collected in the \texttt{segments/}
+subdirectory of the \texttt{build/} directory, are to be concatenated.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -569,7 +571,7 @@ combines covers, the preface and the music into a single score PDF. The
 LilyPond \texttt{music.ily} contains \texttt{\textbackslash{}include}
 statements which pull in the \texttt{segments.ily} file from the
 \texttt{build/} directory as well as the score's main LilyPond stylesheet from
-the top-level \texttt{stylesheets} directory. A Makefile, which defines build
+the top-level \texttt{stylesheets/} directory. A Makefile, which defines build
 commands for the GNU \texttt{make} command-line utility, can also help automate
 various document target tasks, such as recompiling all LaTeX documents in the
 correct order to produce a finished score.
@@ -580,7 +582,11 @@ correct order to produce a finished score.
 The \texttt{etc/} and \texttt{distribution/} directories are perhaps the
 simplest. The former holds any notes, plans or to-do lists pertinent to the
 compositional process of the score while the latter collects completed scores
-and parts for each document target from the \texttt{build/} directory.
+and parts for each document target from the \texttt{build/} directory. While
+note-keeping can and does happen on paper, away from the keyboard, designating
+a space within the score package for such miscellaneous documents allows those
+notes and plans to be tracked by the score package's \emph{version control
+system}, discussed in \autoref{ssec:version-control}.
 
 \subsection{The \texttt{test/} directory}
 \label{ssec:the-test-directory}
