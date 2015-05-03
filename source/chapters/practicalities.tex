@@ -1182,12 +1182,12 @@ desired musical elements.
 \label{sec:project-maintenance}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Because composing in code is essentially software development, and score
-undertaken in this fashion benefits not only from the techniques laid out
-earlier in this chapter, but also from those practiced daily by developers
-working in disciplines beyond music. Such techniques include version control
-and testing, both means of managing the stability and complexity of projects
-are they grow and change.
+When one composes with code, one necessarily acts as a software developer.
+Therefore, scores undertaken in this fashion benefit not only from the
+techniques laid out earlier in this chapter, but also from those practiced
+daily by developers working in disciplines beyond music. Such universal
+techniques include version control and testing, both means of managing the
+stability and complexity of projects are they grow and change.
 
 \subsection{Automated regression testing}
 \label{ssec:testing}
@@ -1208,25 +1208,26 @@ Nevertheless, I believe that testing is crucial to the development of any
 software system and therefore to any score or composition model implemented in
 code.
 
-Both Consort and the various scores implemented with it make extensive use of
-tests. These tests take a variety of forms: \emph{documentation tests},
-\emph{unit tests}, \emph{system tests} and \emph{parameterized tests}.
-Documentation testing, or \enquote{doctesting} in Python parlance, verifies
-that the code examples in the documentation strings accompanying classes,
-methods and functions are correct. Unit testing examines small fragments of
-code, such as individual functions, class initializers or methods, passing in a
-variety of input and examining the output for correctness. System testing
-verifies that an entire software system functions as expected. In the context
-of Consort, auditing the illustration produced by a fully configured
-segment-maker would constitute a system test as such an operation touches upon
-nearly every class defined in Consort's library. Additionally, parameterized
-tests provide a means of applying a single test against a variety of input.
-This is used extensively in Abjad and Consort to guarantee that every class in
-each system can be instantiated, is fully documented, can be represented as a
-string, can be hashed and so forth. Rather than write over 900 hundred separate
-tests -- one for each class in Abjad -- all classes can be collected in a list
-and passed to a single parameterized test function, which then runs itself
-against each class as though that were separate test.
+Both Abjad, Consort and the various scores implemented with these packages make
+extensive use of tests. Such tests take a variety of forms:
+\emph{documentation tests}, \emph{unit tests}, \emph{system tests} and
+\emph{parameterized tests}. Documentation testing, or \enquote{doctesting} in
+Python parlance, verifies that the code examples in the documentation strings
+accompanying classes, methods and functions are correct. Unit testing examines
+small fragments of code, such as individual functions, class initializers or
+methods, passing in a variety of input and examining the output for
+correctness. System testing verifies that an entire software system functions
+as expected. In the context of Consort, auditing the illustration produced by a
+fully configured segment-maker would constitute a system test as such an
+operation touches upon nearly every class defined in Consort's library.
+Additionally, parameterized tests provide a means of applying a single test
+against a variety of input. This is used extensively in Abjad and Consort to
+guarantee that every class in each system can be instantiated, is fully
+documented, can be represented as a string, can be hashed and so forth. Rather
+than write over 900 hundred separate tests -- one for each class in Abjad --
+all classes can be collected in a list and passed to a single parameterized
+test function, which then runs itself against each class as though that were
+separate test.
 
 The three scores I implemented with Consort each contain two parameterized
 tests in their top-level \texttt{test/} directory. One test verifies that the
