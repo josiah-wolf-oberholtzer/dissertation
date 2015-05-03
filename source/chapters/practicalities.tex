@@ -1306,13 +1306,13 @@ editing the contents of that copy, one simply works in the same directory as
 always, committing each change to the version control system's history. At any
 point and for any reason, any previously committed version of the project can
 be recalled. Reverting to an earlier version of the project does not destroy
-later changes. Those too, because they have also been recorded in the project's
-history, can also be recalled. Most version control systems store their history
-in hidden files or directories within the project. For example, every project I
-work uses the VCS \texttt{git}\footnote{http://git-scm.com/}, originally
-authored by Linus Torvalds, the chief architect of the Linux kernel. Git stores
-its history in a hidden directory named \texttt{.git} in the root of the
-versioned project, as indicated in \autoref{ssec:python-packaging}.
+later versions which, because they have also been recorded in the project's
+history, can be returned to any point. Most version control systems store their
+history in hidden files or directories within the project. For example, every
+project I work uses the VCS \texttt{git}\footnote{http://git-scm.com/},
+originally authored by Linus Torvalds, the chief architect of the Linux kernel.
+Git stores its history in a hidden directory named \texttt{.git} in the root of
+the versioned project, as indicated in \autoref{ssec:python-packaging}.
 
 Many version control systems support \emph{tagging}, the labeling of a commit
 in the version history as particularly important. Software projects often tag
@@ -1351,4 +1351,4 @@ flexibility gives authors the freedom to embark on radical or incremental
 revisions and reorganizations of their projects without fear of confusion or
 lost work.
 
-\todo[inline]{\textbf{TODO:} Does this require a conclusion?}
+\todo[inline]{\textbf{TODO:} Does this chapter require additional conclusion?}
