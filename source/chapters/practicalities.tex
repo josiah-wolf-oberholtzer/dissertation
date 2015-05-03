@@ -301,11 +301,11 @@ which these illustration files come to reside there is elaborated on in
 \label{ssec:segment-packages}
 
 Segments, like materials, are implemented as Python packages, grouped together
-into the top-level \texttt{segments/} directory. They can be imported, they
-each have an initializer, and they each have a definition module containing the
-definition of that segment's segment-maker. As Consort's segment-maker class is
-illustrable, each segment package eventually houses that segment's illustration
-LilyPond sources and output PDFs.
+into the top-level \texttt{segments/} directory. Each segment package can be
+imported, has an obligatory Python initializer, as well as a definition module
+containing the definition of that segment's segment-maker. Because Consort's
+segment-maker class is illustrable, each segment package eventually houses that
+segment's illustration LilyPond source and output PDF.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -358,7 +358,7 @@ LilyPond sources and output PDFs.
 \caption{Overview of \emph{Ersilia}'s \texttt{segments/} directory.}
 \end{figure}
 
-Each segment subpackage may also house a \texttt{\_\_metadata\_\_.py}
+Each segment package may also house a \texttt{\_\_metadata\_\_.py}
 module, which stores information about that segment such as the number of
 measures it contains, the final time signature and tempo, and so forth. This
 information is generated automatically during the segment-maker's
@@ -384,9 +384,9 @@ typographic overrides, context definitions, document header markup, page layout
 configuration and Scheme function definitions. The file \texttt{stylesheet.ily}
 represents the primary stylesheet for the entire score, and contains most of
 the typographic customization. However, LilyPond stylesheets can
-\emph{cascade}: multiple stylesheets can be included into the same master score
+\emph{cascade}. Multiple stylesheets can be included into the same master score
 file with definitions in subsequently included stylesheets overriding those in
-the earlier. Likewise, stylesheets -- because they are simply LilyPond files --
+earlier ones. Likewise, stylesheets -- because they are simply LilyPond files --
 can be included directly into one another.
 
 For example, in \emph{Ersilia}, the master stylesheet file
@@ -395,7 +395,8 @@ file \texttt{scheme.ily}. That master stylesheet is included into the
 interpreted LilyPond source of every segment. However, segments beyond the
 first also include the stylesheet file \texttt{nonfirst-segment.ily} which
 suppresses the appearance of titles and other headers at the top of those
-segment illustrations.
+segment illustrations, giving the impression when viewing those segments'
+illustrations alone that one has jumped into the middle of the full score.
 
 \begin{figure}[h!]
 \begin{singlespacing}
