@@ -28,27 +28,29 @@ file? Where should the files be kept? Does the code create other assets? Where
 are these stored? How are they named? How is the code executed? How is the
 project structure maintained? How are changes to the project saved, and how
 does one compare one version to another? And how is the code in the project
-tested?
+tested to guarantee that it works at all, let alone creates the musical result
+one expects and desires?
 
 The answers to such questions -- and there often are clear answers -- revolve
 the practicalities of managing not simply a musical endeavor, but a software
 project: code and directory structuring, development tools and workflows,
-version control and testing.
+version control and testing. All of these are discussed, in greater or lesser
+detail, in the following sections.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Score directory layout}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-A structured approach to arranging one's compositional workspace clarifies both
-the way one thinks about the act of composing, as well as the more menial
-workflows of document preparation which are inseparable from score-based
-composition. Standardization also allows one to reuse tools designed to manage
-one score package on another. Each of the \emph{Invisible Cities} scores
-included in part II of this dissertation are implemented as Python packages
-extending Abjad model of notation and Consort's model of composition. Likewise,
-each \emph{Invisible Cities} score package is structured into a nearly
-identical arrange of eight top-level directories, each with a clearly
-delineated purpose and substructure.
+When working computationally, a structured, standardized approach to arranging
+one's compositional workspace clarifies both the way one thinks about the act
+of composing, as well as the more menial workflows of document preparation
+which are inseparable from score-based composition. Standardization also allows
+one to reuse tools designed to manage one score package on another. Each of the
+\emph{Invisible Cities} scores included in part II of this dissertation are
+implemented as Python packages extending both Abjad's model of notation and
+Consort's model of composition. Likewise, each \emph{Invisible Cities} score
+package is structured into a nearly identical arrangement of eight top-level
+directories, each with a clearly delineated purpose and substructure.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -86,11 +88,13 @@ delineated purpose and substructure.
 }
 \end{singlespacing}
 \caption{\emph{Ersilia}'s top-level directory layout.}
+\label{fig:ersilias-top-level-directory-layout}
 \end{figure}
 
-\noindent The top-level directories named above house specific collections of
-assets used during composition or document preparation. Note too the presence
-of an \texttt{\_\_init\_\_.py} file. This signals to Python that this directory
+\noindent The top-level directories named in
+\autoref{fig:ersilias-top-level-directory-layout} house specific collections
+of assets used during composition or document preparation. Note the presence of
+an \texttt{\_\_init\_\_.py} file. This signals to Python that this directory
 represents an importable Python package. Assuming Python is aware of the
 location of the score, it and any further subpackages within it can be
 imported:
@@ -110,17 +114,21 @@ import ersilia
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Consort very broadly groups the objects used during composition into
-\emph{makers}, \emph{materials} and \emph{segments}. Makers comprise any
-classes used during composition, such as segment-maker, pitch-handler or music
-specifier classes, but not their instances. Materials comprise instances of
-classes representing \emph{out-of-time} musical constructs, such as pitch
-segments or music specifiers which have not yet been deployed along the
-timeline of the score. Segments comprise configured instances of a
-segment-maker class and maquette together previously-defined materials
-\emph{in-time} into a musical chronology. Each of these three categories of
-objects has its own directory in the directory structure outlined here:
-\texttt{makers/}, \texttt{materials/} and \texttt{segments/}.
+\noindent Any subdirectories of \texttt{ersilia} also containing
+\texttt{\_\_init\_\_.py} files can be imported into the namespace of
+\texttt{ersilia}, allowing for the structured organization of any code assets
+employed by the score. Consider the various kinds of objects discussed in
+earlier chapters. Consort very broadly groups the objects used during
+composition into \emph{makers}, \emph{materials} and \emph{segments}. Makers
+comprise any classes used during composition, such as segment-maker,
+pitch-handler or music specifier classes, but not their instances. Materials
+comprise instances of classes representing \emph{out-of-time} musical
+constructs, such as pitch segments or music specifiers which have not yet been
+deployed along the timeline of the score. Segments comprise configured
+instances of a segment-maker class and maquette together previously-defined
+materials \emph{in-time} into a musical chronology. Each of these three
+categories of objects has its own directory in the directory structure outlined
+here: \texttt{makers/}, \texttt{materials/} and \texttt{segments/}.
 
 Likewise, the document preparation process involves a number of different types
 of assets and tasks. Any LilyPond-typeset PDF created during the composition of
@@ -562,9 +570,10 @@ composers as an unmotivated suggestion. Why should one structure their private
 score such that it can be used by others? Making a score installable in this
 way affords a number of conveniences related to testing. Installable scores can
 be tested in \emph{virtual environments} -- a common Python practice -- by
-automated test runners like \texttt{tox} or run on remote
-continuous-integration testing services such as Travis-CI. Both of these tools
-are addressed in \autoref{sec:testing}.
+automated test runners like
+\texttt{tox}\footnote{https://pypi.python.org/pypi/tox} or run on remote
+continuous-integration testing services such as
+Travis-CI.\footnote{https://travis-ci.org/}
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -1102,25 +1111,31 @@ desired musical elements.
 \label{sec:project-maintenance}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-testing and version control represent a kind of \enquote{daily practice}
+Because composing in code is essentially software development, and score
+undertaken in this fashion benefits not only from the techniques laid out
+earlier in this chapter, but also from those practiced daily by developers
+working in disciplines beyond music. Such techniques include version control
+and testing, both means of managing the stability and complexity of projects
+are they grow and change.
 
 \subsection{Automated regression testing}
 \label{ssec:testing}
 
 \todo[inline]{\textbf{TODO:} Find citations for testing.}
 
-Regression testing examines the stability and correctness of a software system
-during the course of development, allowing the software's authors to verify
-that changes and revisions to that system have not introduced errors or
-unexpected behavior. Rather than testing the system manually, software authors
-typically write \emph{automated regression testing batteries}: collections of
-tests implemented as functions or classes which can be run automatically by a
-testing tool -- a \emph{test runner} --, returning the results to the authors
-as a report. Testing philosophies and practices in the open source community
-are now very diverse and sophisticated, therefore a full discussion of software
-testing is beyond the scope of this document. Nevertheless, I believe that
-testing is crucial to the development of any software system and therefore to
-any score or composition model implemented in code.
+Regression testing\cite{beazley2013python} examines the stability and
+correctness of a software system during the course of development, allowing the
+software's authors to verify that changes and revisions to that system have not
+introduced errors or unexpected behavior. Rather than testing the system
+manually, software authors typically write \emph{automated regression testing
+batteries}: collections of tests implemented as functions or classes which can
+be run automatically by a testing tool -- a \emph{test runner} --, returning
+the results to the authors as a report. Testing philosophies and practices in
+the open source community are now very diverse and sophisticated, therefore a
+full discussion of software testing is beyond the scope of this document.
+Nevertheless, I believe that testing is crucial to the development of any
+software system and therefore to any score or composition model implemented in
+code.
 
 Both Consort and the various scores implemented with it make extensive use of
 tests. These tests take a variety of forms: \emph{documentation tests},
@@ -1155,6 +1170,15 @@ verify that the LilyPond output produced by the score's segment-makers -- along
 with any stylesheet information defined in the score package -- is still valid
 LilyPond source code, and has not been deprecated by newer versions of
 LilyPond.
+
+All of these types of testing combined act as a kind bulwark against
+backsliding both during the development of a project, in the moment, and
+afterward when maintaining the longevity of prior work against obsolescence.
+
+%So, why test? It prevents you from losing ground as you work, and acts as a
+%bulwark against the obsolescence of the code you write by allowing you to
+%verify that it continues to function as expected although the code it depends
+%on and the tools it uses for typesetting may change.
 
 %Abjad, Consort and the scores implemented with Consort also make use of
 %continuous integration testing services -- specifically with Travis-CI,
@@ -1191,16 +1215,16 @@ LilyPond.
 
 \todo[inline]{\textbf{TODO:} Find citations for version control.}
 
-Version control systems -- or \emph{VCS} -- record changes to sets of files,
-tracking additions, deletions, name changes and content modifications,
-generally on a line-by-line basis. Changes are grouped together into bundles
-called \emph{commits}, labeled with a timestamp and \emph{commit message}
-elaborating on the purpose or contents of the changes. The graph of commits
-made against a project as recorded by the project's VCS, where each commit is
-connected to some previous parent commit, constitute the \emph{history} of that
-project. While anecdotally uncommon amongst composers, virtually all software
-developers make use of version control to greater or lesser degrees, for a wide
-variety of reasons.
+Version control systems\cite{loeliger2009git} -- or \emph{VCS} -- record
+changes to sets of files, tracking additions, deletions, name changes and
+content modifications, generally on a line-by-line basis. Changes are grouped
+together into bundles called \emph{commits}, labeled with a timestamp and
+\emph{commit message} elaborating on the purpose or contents of the changes.
+The graph of commits made against a project as recorded by the project's VCS,
+where each commit is connected to some previous parent commit, constitute the
+\emph{history} of that project. While anecdotally uncommon amongst composers,
+virtually all software developers make use of version control to greater or
+lesser degrees, for a wide variety of reasons.
 
 Version control provides the most compact and legible way of archiving multiple
 versions of a project. When making changes, instead of duplicating the
@@ -1213,10 +1237,10 @@ be recalled. Reverting to an earlier version of the project does not destroy
 later changes. Those too, because they have also been recorded in the project's
 history, can also be recalled. Most version control systems store their history
 in hidden files or directories within the project. For example, every project I
-work uses the VCS \texttt{git}, originally authored by Linus Torvalds, the
-chief architect of the Linux kernel. Git stores its history in a hidden
-directory named \texttt{.git} in the root of the versioned project, as
-indicated in \autoref{ssec:python-packaging}.
+work uses the VCS \texttt{git}\footnote{http://git-scm.com/}, originally
+authored by Linus Torvalds, the chief architect of the Linux kernel. Git stores
+its history in a hidden directory named \texttt{.git} in the root of the
+versioned project, as indicated in \autoref{ssec:python-packaging}.
 
 Many version control systems support \emph{tagging}, the labeling of a commit
 in the version history as particularly important. Software projects often tag
