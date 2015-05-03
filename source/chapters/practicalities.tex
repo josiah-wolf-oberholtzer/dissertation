@@ -125,19 +125,22 @@ pitch-handler or music specifier classes, but not their instances. Materials
 comprise instances of classes representing \emph{out-of-time} musical
 constructs, such as pitch segments or music specifiers which have not yet been
 deployed along the timeline of the score. Segments comprise configured
-instances of a segment-maker class and maquette together previously-defined
-materials \emph{in-time} into a musical chronology. Each of these three
-categories of objects has its own directory in the directory structure outlined
-here: \texttt{makers/}, \texttt{materials/} and \texttt{segments/}.
+instances of the score's segment-maker class which maquette together
+previously-defined materials \emph{in-time} into a musical chronology. Each of
+these three categories of objects has its own directory in the directory
+structure outlined here: \texttt{makers/}, \texttt{materials/} and
+\texttt{segments/}. Additionally, materials and segments may be illustrable.
+Any associated illustration assets for those code objects is necessarily
+grouped together with its originating Python modules.
 
-Likewise, the document preparation process involves a number of different types
+The document preparation process also involves a number of different types
 of assets and tasks. Any LilyPond-typeset PDF created during the composition of
-a score, such as a material or segment illustration or the final score itself,
-likely requires a corresponding score-specific stylesheet containing the
-typographic overrides and LilyPond context definitions pertinent to that score.
-These stylesheets reside in the top-level \texttt{stylesheets/} directory.
-Scores composed with Abjad and Consort and typeset with LilyPond and LaTeX
-involve potentially many source files: LilyPond sources for the musical
+a score, such as a material or segment illustration, or even the final score
+itself likely requires a corresponding score-specific stylesheet containing
+the typographic overrides and LilyPond context definitions pertinent to that
+score. These stylesheets reside in the top-level \texttt{stylesheets/}
+directory. Scores composed with Abjad and Consort and typeset with LilyPond and
+LaTeX involve potentially many source files: LilyPond sources for the musical
 content, yet more LilyPond sources for concatenating and styling that content,
 LaTeX sources for cover pages, prefaces and performance notes, and still more
 LaTeX sources for concatenating the PDFs created while typesetting various
@@ -150,16 +153,17 @@ be delivered to ensembles, occupy the \texttt{distribution/} directory.
 
 Each score's \texttt{makers/} directory houses classes specific to that score,
 with each class stored on disk in its own Python module of the same name. In
-the case of my three \emph{Invisible Cities} scores, this always comprises a
-subclass of Consort's \texttt{SegmentMaker} and \texttt{ScoreTemplate} classes.
-The segment-maker subclasses effectively pre-load common information about the
-score, such as what time signatures to permit by default or what the
-end-of-score markup should look like. They may also define a considerable
-amount of additional score post-processing, as in the case of \emph{Armilla},
-where many passes of voice copying were required to create the typography for
-the bowing staves. A score's score template necessarily defines the
-instrumentation and structure of the score layout itself. As none of the scores
-in this dissertation make use of common instrumentations, each required that a
+the case of my three \emph{Invisible Cities} scores, these makers always
+comprise subclasses of Consort's \texttt{SegmentMaker} and
+\texttt{ScoreTemplate} classes. The segment-maker subclasses effectively
+pre-load common information about the score, such as what time signatures to
+permit by default or what the end-of-score markup should look like. They may
+also define a considerable amount of additional score post-processing, as in
+the case of \emph{Armilla}, where many passes of voice copying were required to
+create the typography for the bowing staves. A score's score template class
+necessarily defines the score's instrumentation and context hierarchy, giving
+the order and grouping of each performer's staff. As none of the scores in this
+dissertation make use of common instrumentations, each requires that a
 completely new score template be defined.
 
 Any other class definitions required by the score package should also be placed
@@ -173,12 +177,12 @@ development of Consort, houses nearly thirty separate class definitions in its
 \label{ssec:material-packages}
 
 Materials represent \emph{out-of-time} musical objects, such as pitch
-collections, rhythm-makers, and even fully-configured music specifiers, which
+collections, rhythm-makers, and even fully configured music specifiers, which
 may appear at some point in the time-line of a piece. They are implemented as
-importable Python packages, grouped flatly into the \texttt{materials/}
-directory, itself a Python package due to the presence of an initializer file.
-Like the makers modules, each material definition module defines only a single
-object.
+importable Python packages, grouped flatly into the score package's top-level
+\texttt{materials/} directory, itself a Python package due to the presence of
+an initializer file. Like the makers modules, material definition module
+define only a single object.
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -212,17 +216,56 @@ object.
 \caption{Overview of \emph{Ersilia}'s \texttt{materials/} directory.}
 \end{figure}
 
-Each material package contains at the least its own initializer as well as
-\texttt{definition.py} file containing Python code which defines or configures
-that material. Crucially, the actual code object expressed in that
+Each material package contains at the least its own initializer as well as a
+\texttt{definition.py} file consisting of Python code which defines or
+configures that material. Crucially, the actual code object expressed in that
 definition.py should be named after the material package itself. This
 simplifies the Python import process a great deal. Simple importing utilities
 can then be written to iterate over every directory within the
-\texttt{materials/} directory and produce corresponding Python import commands
+\texttt{materials/} directory, producing corresponding Python import commands
 of the form \mintinline[breaklines=true]{python}{from my_material.definition
 import my_material}. Automatically importing the objects defined in each
 material package into the \texttt{materials} namespace allows those objects to
-be easily referenced from within each segment definition.
+be easily referenced from within each segment definition:
+
+\begin{comment}
+<abjad>[text_width=105]
+materials_names = dir(ersilia.materials)
+materials_names = [x for x in materials_names if not x.startswith('_')]
+print(materials_names)
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{minted}{python}
+>>> materials_names = dir(ersilia.materials)
+>>> materials_names = [x for x in materials_names if not x.startswith('_')]
+>>> print(materials_names)
+['abbreviations', 'dense_timespan_maker', 'guitar_agitato_music_specifier',
+'guitar_continuo_music_specifier', 'guitar_pointillist_harmonics_music_specifier',
+'guitar_strummed_music_specifier', 'guitar_tremolo_music_specifier',
+'guitar_undulation_tremolo_music_specifier', 'percussion_bamboo_windchimes_music_specifier',
+'percussion_crotales_flash_music_specifier', 'percussion_crotales_interruption_music_specifier',
+'percussion_low_pedal_music_specifier', 'percussion_marimba_agitato_music_specifier',
+'percussion_marimba_ostinato_music_specifier', 'percussion_marimba_tremolo_music_specifier',
+'percussion_snare_interruption_music_specifier', 'percussion_temple_block_fanfare_music_specifier',
+'percussion_tom_fanfare_music_specifier', 'permitted_time_signatures', 'piano_agitato_music_specifier',
+'piano_arm_cluster_music_specifier', 'piano_glissando_music_specifier',
+'piano_palm_cluster_music_specifier', 'piano_pedals_music_setting', 'piano_pointillist_music_specifier',
+'piano_string_glissando_music_specifier', 'piano_tremolo_music_specifier', 'pitch_pipe_music_specifier',
+'saxophone_agitato_music_specifier', 'shaker_decelerando_music_specifier',
+'shaker_sporadic_music_specifier', 'shaker_tremolo_music_specifier', 'sparse_timespan_maker',
+'string_agitato_music_specifier', 'string_legato_music_specifier', 'string_low_pedal_music_specifier',
+'string_ostinato_music_specifier', 'string_overpressure_music_specifier',
+'string_pointillist_music_specifier', 'string_tremolo_music_specifier', 'sustained_timespan_maker',
+'tutti_timespan_maker', 'wind_agitato_music_specifier', 'wind_continuo_music_specifier',
+'wind_low_pedal_music_specifier', 'wind_ostinato_music_specifier', 'wind_pointillist_music_specifier',
+'wind_tremolo_music_specifier']
+\end{minted}
+\end{singlespacing}
+\end{abjadbookoutput}
 
 \begin{figure}[h!]
 \begin{singlespacing}
@@ -247,13 +290,11 @@ be easily referenced from within each segment definition.
 \texttt{guitar\_tremolo\_music\_specifier} material package.}
 \end{figure}
 
-Materials, depending on the specific \emph{type} of material, can be
-illustrated. That is to say, if the class housed in the material definition
-file implements an \texttt{\_\_illustrate\_\_()} method -- described in
-\autoref{sec:representing-objects} --, it can be illustrated. Any generated
-LilyPond illustration source and PDF output is stored in the material package
-alongside the definition module. The means by which those illustration files
-come to reside there is elaborated on in
+Materials -- depending on their type -- may be illustrable, as described in
+\autoref{sec:representing-objects}. Any generated illustration assets --
+comprising a LilyPond input file and its resulting PDF -- are stored in the
+material package alongside their originating definition module. The means by
+which these illustration files come to reside there is elaborated on in
 \autoref{ssec:illustrating-and-persisting-segments}.
 
 \subsection{Segment packages}
@@ -1146,7 +1187,7 @@ methods and functions are correct. Unit testing examines small fragments of
 code, such as individual functions, class initializers or methods, passing in a
 variety of input and examining the output for correctness. System testing
 verifies that an entire software system functions as expected. In the context
-of Consort, auditing the illustration produced by a fully-configured
+of Consort, auditing the illustration produced by a fully configured
 segment-maker would constitute a system test as such an operation touches upon
 nearly every class defined in Consort's library. Additionally, parameterized
 tests provide a means of applying a single test against a variety of input.
