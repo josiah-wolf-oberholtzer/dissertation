@@ -620,6 +620,8 @@ to guarantee that a particular segment produces some score exactly matching a
 target, but simply that the segment-maker manages to interpret without failure,
 and that LilyPond manages to typeset the resulting source without error.
 
+\todo[inline]{\textbf{TODO:} Discuss segment tests as system tests.}
+
 \subsection{Python packaging}
 \label{ssec:python-packaging}
 
@@ -694,17 +696,19 @@ typesetting a large-scale score computationally.
 \subsection{Build tools}
 \label{ssec:build-tools}
 
+\todo[inline]{\textbf{TODO:} What is the point of this? Warning: magic ahead.}
+
 I make use of a variety of custom build tools for managing assets within a
 score package which will not be discussed here in any detail as they are still
 rather provisional. These tools simplify various tasks such as creating new
 segment and material packages, executing segment definition modules in order to
 illustrate the contained segment-makers, comparing new illustration LilyPond
-sources and PDF outputs against previously rendered ones, and collecting and
-massaging segment LilyPond sources from each segment package into the build
-directory for document preparation. Simply put, build tools for score packages
-streamline the problems of moving files and folders into their appropriate
-locations, executing Python modules, persisting code objects to disk and
-cleaning up after any transient files.
+sources and PDF outputs against previously rendered ones, and collecting
+segment LilyPond sources from each segment package into the build directory for
+document preparation. Simply put, build tools for score packages streamline the
+problems of moving files and folders into their appropriate locations,
+executing Python modules, persisting code objects to disk and cleaning up after
+any transient files.
 
 \subsection{Illustrating \& persisting segments}
 \label{ssec:illustrating-and-persisting-segments}
@@ -721,7 +725,7 @@ definition module. When run by Python as a script, those segment definition
 modules can be instructed to illustrate  their segment makers and persist the
 resulting illustration and segment metadata to disk in the same directory as
 the segment definition module. Consider the following trivial segment
-definition file, complete with an executable suite at its end:
+definition module, complete with an executable suite at its end:
 
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
@@ -761,15 +765,15 @@ if and only if the current module name is \texttt{\_\_main\_\_}, again because
 the segment definition module was run as a script. This crucially prevents
 illustration code from running when the definition module is simply imported
 rather than executed. However, if the suite underneath the conditional
-\emph{does} execute, it first calls the previously defined segment-maker. That
-segment-maker then returns both the illustration and a segment metadata
-dictionary. Next, file paths relative to the segment module's file path are
-determined in order to persist the just-created illustration and metadata. The
-global variable \texttt{\_\_file\_\_} in any Python code module gives the
-location of that module on the file system, from which that module's directory
-can be determined. Finally, calls to Abjad's top-level \texttt{persist()}
-function against the illustration and metadata expose persistence agent
-instances which afford persisting each object to disk as a
+\emph{does} execute, it first calls the segment-maker defined earlier in that
+module. That segment-maker then returns both an illustration and a segment
+metadata dictionary. Next, file paths relative to the segment module's file
+path are determined in order to persist the just-created illustration and
+metadata. The global variable \texttt{\_\_file\_\_} in any Python code module
+gives the location of that module on the file system, from which that module's
+directory can be determined. Finally, calls to Abjad's top-level
+\texttt{persist()} function against the illustration and metadata expose
+persistence agent instances which afford persisting each object to disk as a
 LilyPond file and Python module respectively. The \texttt{candidacy=True}
 keyword argument to \mintinline{python}{persist{illustration}.as_pdf(...)}
 checks whether a PDF already exists and only overwrites if the new would
@@ -823,11 +827,13 @@ concatenate like-named contexts. Consider the following LilyPond expression:
 \end{minted}
 \end{singlespacing}
 
-\noindent The above example contains three like-named scores grouped by braces
-into a single music expression. Because the scores have identical names and the
-staff contexts within them are also identically named, LilyPond concatenates
-each like-named context in each score together. The resulting music expression
-is equivalent to the following:
+\noindent The above example contains three like-named scores -- each named
+\enquote{The Score} -- grouped by a pair of outer braces into a single music
+expression. Because the scores have identical names and the staff contexts
+within them are also identically named -- \enquote{Staff A} and \enquote{Staff
+B} --, LilyPond concatenates each like-named
+context in each score together. The resulting music expression is equivalent to
+the following:
 
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
@@ -920,12 +926,13 @@ score contexts together into a single score structure.
 Segment collection then involves copying each segment illustration LilyPond
 source from its segment package into the \texttt{segments/} subdirectory of the
 score package's \texttt{build/} directory, naming that copied illustration
-source after its originating segment package, and finally trimming that source
-as shown above. As with segment illustration automation, I make use of some
-provisional build tools which simplify this process. However, a naive approach
-to the task of collecting and trimming segment illustration could also be
-implemented in a few dozen lines of Python code. With the segment illustrations
-collected into the \texttt{build/} directory, the \texttt{build/} directory's
+source after its originating segment package to differentiate it from the other
+collected segment sources, and finally trimming that source as shown above. As
+with segment illustration automation, I make use of some provisional build
+tools which simplify this process. However, a naive approach to the task of
+collecting and trimming segment illustration could also be implemented in a few
+dozen lines of Python code. With the segment illustrations collected into the
+\texttt{build/} directory, the \texttt{build/} directory's
 \texttt{segments.ily} LilyPond include file can be updated based on the segment
 order encoded in the \texttt{segments/} directory's
 \texttt{\_\_metadata\_\_.py} module. For example, \emph{Ersilia}'s
@@ -940,7 +947,8 @@ order encoded in the \texttt{segments/} directory's
 directly into a document target's \texttt{music.ly} LilyPond source file, to
 create the complete musical contents in the appropriate layout for that
 document target's paper output format. The LilyPond source for a document
-target's musical content might then simply look like the following:
+target's musical content, formatted for legal-size paper in portrait
+orientation, might then simply look like the following:
 
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
