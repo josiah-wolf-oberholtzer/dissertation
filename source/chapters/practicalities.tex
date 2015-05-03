@@ -970,6 +970,8 @@ orientation, might then simply look like the following:
 \subsection{Organizing and typesetting LaTeX assets}
 \label{ssec:organizing-and-typesetting-latex-assets}
 
+\todo[inline]{\textbf{TODO:} Improve motivation in opening paragraph.}
+
 In the spirit of LilyPond's automated musical typesetting, I have chosen to
 rely on LilyPond's spiritual predecessor, LaTeX, for handling all
 purely-textual or otherwise utilitarian typesetting in the documents I produce.
@@ -985,13 +987,13 @@ The most complex LaTeX task in my document preparation process involves
 formatting identical textual content for different paper sizes and
 orientations, as with each document target's preface information. A preface
 containing multiple sections, each potentially containing nested lists of
-instruments or diagrams, may not format equally well on different paper sizes
-and orientations. For example, the preface to \emph{Armilla} contains six
+instruments or diagrams, may not format equally well in all desired paper
+dimensions. For example, the preface to \emph{Armilla} contains six
 different sections of widely divergent lengths, but fits well in portrait
 orientations of tabloid and legal paper when split into two columns. However,
 when formatted on letter paper, or in landscape orientation, sections of prose
 no longer work in the two column layout cleanly and need to be individually
-resized or flowed into more than two columns. Formatting such a preface
+resized or flowed into additional columns. Formatting such a preface
 properly in both landscape and portrait orientations, in tabloid, letter and
 legal paper sizes requires non-trivial rearrangement and must be adjusted by
 hand. However, care must be taken not to duplicate content across different
@@ -1002,13 +1004,14 @@ This problem -- needing to provide manually-tweaked alternate layouts for prose
 while discouraging by-hand copying -- can be solved by separating out each
 section of text in the preface into separate includable LaTeX files, stored in
 the \texttt{assets/} subdirectory of the \texttt{build/} directory, and then
-including those files back into each alternative preface layout file. Such a
-workflow enacts the age-old adage counsel to separate content from layout.
+including those files back into each alternative preface layout file.
+Such a workflow, like the use of distinct stylesheet and score files in
+LilyPond, separates content from layout.
 
 Consider the preface to \emph{Ersilia}, which contains four separate sections:
 two quotes, from Italo Calvino and Ursula K. Le Guin, and two passages on
-instrumentation and performance. Each of these sections is stored as a separate
-LaTeX file in the \texttt{assets/} subdirectory of \emph{Ersilia}'s
+instrumentation and performance practice. Each of these sections is stored as a
+separate LaTeX file in the \texttt{assets/} subdirectory of \emph{Ersilia}'s
 \texttt{build/} directory. When preparing prefaces for the tabloid landscape
 edition and the legal portrait edition, each collection of prose assets is
 flowed into different text grids via the \texttt{textpos} LaTeX package. For
@@ -1038,10 +1041,10 @@ corrections to the prose will be reflected equally in all layouts of the
 preface.
 
 LaTeX can also be used to join documents together. Each document target
-contains a master \texttt{score.tex} which combines all other PDF components of
-the score together into a single PDF via LaTeX, obviating the need to use any
-other PDF-merging tool. For example, the 11x17 portrait \texttt{score.tex} for
-\emph{Ersilia} looks like this:
+contains a master \texttt{score.tex} source file which contains commands for
+combining all other PDF components of the score together into a single PDF via
+LaTeX, obviating the need to use any other PDF-merging tool. For example, the
+11x17 portrait \texttt{score.tex} for \emph{Ersilia} looks like this:
 
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
@@ -1056,8 +1059,8 @@ simple LilyPond mechanisms: \emph{tags} and \emph{book blocks}. In LilyPond,
 any music expression can be labeled with a tag, a string or symbol which
 identifies that music expression. Later, music expressions can be filtered to
 either remove or solely preserve any expression with a given tag. Consider the
-following pseudo-score, consisting of a score containing three staves and a
-time signature context:
+following LilyPond pseudo-code, consisting of a score containing three staves
+and a time signature context:
 
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
@@ -1076,9 +1079,9 @@ time signature context:
 staves and the time signature context -- is tagged via a LilyPond
 \texttt{\textbackslash{}tag} command, associating that context's music
 expression with the tag's symbol. The command preceding the score itself --
-\texttt{\textbackslash{}keepWithTag \#\'(time B)} -- indicates that the score
+\texttt{\textbackslash{}keepWithTag \#'(time B)} -- indicates that the score
 should filter out any tagged music expression which do not belong to the list
-of expressions \texttt{\#\'(time B)}. That is, the score should omit the two
+of expressions \texttt{\#'(time B)}. That is, the score should omit the two
 staves tagged \texttt{A} and \texttt{C}, effectively producing a score
 structured like so:
 
@@ -1116,19 +1119,19 @@ wrapping each performer's bowing and fingering staves are also tagged
 appropriately.
 
 While tagging allows for extracting parts as music expressions, it does not yet
-result in actual documents for each part. LilyPond's book block structure,
-combined with the \texttt{\textbackslash{}bookOutputSuffix} command, provide a
-concise mechanism for generating multiple output PDFs from a single LilyPond
-input file. As demonstrated throughout this document, LilyPond files are
-structured into blocks -- context blocks, score blocks, header and paper
-blocks, and so forth. The highest level block is a
-\texttt{\textbackslash{}book} block. Somewhat like parts in LaTeX, book blocks
-separate content from one another by page breaks. Score blocks contained in
-separate book blocks are guaranteed to never appear on the same page together.
-Furthermore, by specifying a book output suffix within each book block,
-LilyPond will not simply separate that book blocks's content by page breaks but
-will actually output a wholly separate PDF, whose filename is suffixed with
-that book output suffix.
+result in actual documents for each part. LilyPond's
+\texttt{\textbackslash{}book} block structure, combined with the
+\texttt{\textbackslash{}bookOutputSuffix} command, provide a concise mechanism
+for generating multiple output PDFs from a single LilyPond input file. As
+demonstrated throughout this document, LilyPond files are structured into
+blocks: context blocks, score blocks, header and paper blocks, and so forth.
+The highest level block is a \texttt{\textbackslash{}book} block. Somewhat like
+parts in LaTeX, book blocks separate content from one another by page breaks.
+Score blocks contained in separate book blocks are guaranteed to never appear
+on the same page together. Furthermore, by specifying a book output suffix
+within each book block, LilyPond will not simply separate that book blocks's
+content by page breaks but will actually output a wholly separate PDF, whose
+filename is suffixed with that book's output suffix.
 
 Consider this excerpt from \emph{Ersilia}'s \texttt{parts.ily} file:
 
@@ -1158,11 +1161,12 @@ look like the following, from \emph{Ersilia}:
 \end{singlespacing}
 
 \noindent Beyond the initial LilyPond boilerplate of specifying a LilyPond
-version and pitch-name input language, basically consists of an include for the
-global stylesheet, a page-layout command, an include for a stylesheet for
-landscape parts and finally an include for the global parts definition file,
-\texttt{parts.ily}. When interpreted by LilyPond, the above will generate one
-11x17 landscape PDF per book block defined in \texttt{parts.ily}.
+version and pitch-name input language, this part extraction file simply
+consists of an include for the global stylesheet, a page-layout command, an
+include for a stylesheet for landscape parts and finally an include for the
+global parts definition file, \texttt{parts.ily}. When interpreted by LilyPond,
+the above will generate one 11x17 landscape PDF per book block defined in
+\texttt{parts.ily}.
 
 Note that there are methods by which composers can generate parts in
 LilyPond. Most LilyPond users who work strictly with LilyPond, writing
