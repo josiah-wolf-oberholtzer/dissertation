@@ -4,18 +4,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \eblettrinedbl{A}{bjad\cite{baca2011xi, trevino2013compositional} is an
-open-source Python\cite{vanrossum2003ys} package} which extends the Python
+open-source Python\cite{vanrossum2003ys} package} extending the Python
 programming language with a computational model of music notation. Abjad allows
-its users to construct scores in an object-oriented fashion and visualize their
-work as publication-quality notation at any point in the composition process.
-Additionally, Abjad can be installed and imported into a Python interpreter
-session just like any other Python package. Importantly, Abjad is not a
-stand-alone application and has no GUI -- no graphic user interface -- unlike
-many other related projects such as PWGL\cite{laurson2009qf,
+its users to construct scores in an object-oriented fashion and to visualize
+their work as publication-quality notation at any point during the composition
+process. Importantly, Abjad is not a stand-alone application and has no GUI --
+no graphic user interface -- unlike many other notation- or
+composition-modeling projects such as PWGL\cite{laurson2009qf,
 kuuskankare2004recent}, OpenMusic\cite{assayag1999sw},
-BACH\cite{agostini2013real} and many others. All work is done in the
-command-line, either directly in an interactive Python console session, or by
-writing modules of code to be imported into one another and executed by
+BACH\cite{agostini2013real}, and so forth. Instead, all work with Abjad is done
+in the command-line, either directly in an interactive Python console session,
+or by writing modules of code to be imported into one another and executed by
 Python's interpreter. Nearly all of the code examples in the body of this
 document are presented as part of a single interactive Python console session
 simply because Python's interactive console clearly distinguishes input from
@@ -49,11 +48,26 @@ import abjad
 \noindent Abjad is implemented as a collection of over 900 public classes and
 functions spread across nearly 40 subpackages, totally almost 200,000 lines of
 source code. Many of these classes and functions are available immediately
-within Abjad's root \emph{namespace}. We can enumerate these
-\enquote{top-level} names by calling Python's built-in \texttt{dir()} function
-on the imported \texttt{Abjad} module object. After stripping out all
-\enquote{private} names -- those starting with underscores -- Abjad's top-level
-names can be printed to Python's interactive console:
+within Abjad's root \emph{namespace}.\footnote{In programming, \emph{namespaces}
+represents contexts in which a particular collection of \emph{names}, or
+identifiers, are grouped together, with each name referencing some code object,
+such as a class, function or number. Python makes extensive use of namespaces,
+treating every module -- any file containing code -- as a namespace, as well as
+any class, the bodies of functions and so forth. Python's namespaces are
+implemented as dictionaries, a type of data structure which maps a unique set
+of keys to values. Each name in a Python namespace therefore appears only,
+although multiple names may be bound to the same value.}
+
+We can enumerate these \enquote{top-level} names by calling Python's built-in
+\texttt{dir()} function on the imported \texttt{Abjad} module object. After
+stripping out all \enquote{private}\footnote{ Unlike many other languages, such
+as C++ or Java, Python does not enforce the concept of \enquote{public} versus
+\enquote{private} objects at the language level. Any object in any namespace
+can be accessed by any actor at any time. Instead, Python programmers use
+naming conventions to indicate which objects represent components of public
+interfaces, and which objects should be considered private, although still
+accessible, implementation details.} names -- those starting with underscores
+-- Abjad's top-level names can be printed to Python's interactive console:
 
 \begin{comment}
 <abjad>[text_width=105]
@@ -168,9 +182,9 @@ functions, including \texttt{attach()}, \texttt{detach()},
 interacting with Abjad's notational objects and factories, and will be
 explained in detail as we encounter each of them.
 
-For the sake of brevity, this document -- across each chapter -- will behave as
-though the contents of Abjad's namespace has been imported into Python's global
-namespace:
+Finally, simply for the sake of brevity, this chapter -- and each subsequent
+chapter -- will behave as though the contents of Abjad's namespace has been
+imported into Python's global namespace:
 
 \begin{comment}
 <abjad>
@@ -195,21 +209,24 @@ from abjad import *
 In Python, everything is an object, even integers, boolean values and
 functions. Because Python is also interpreted and can be used interactively,
 those objects must be representable in an interpreter session, which is
-necessarily textual. Objects' text, or \emph{string}, representations can take
-a variety of forms, and those same objects may specify explicitly how they
-should be represented textually, just as they may specify how they should
-behave in relation to operations such as addition, multiplication, or
+necessarily textual. An object's textual, or \emph{string}, representation can
+take a variety of forms, and that same object may even specify explicitly how
+it should be represented textually, just as it might specify how it should
+behave in relation to such operations as addition, multiplication, or
 iteration.
 
-Python classes often specify their behavior in terms of \emph{protocols}.
-Protocols are established by convention rather than enforced at the system
-level. This explanation takes place via \enquote{dunder} methods --
-double-underscore methods -- such as \texttt{\_\_repr\_\_()} which provides an
-object's \emph{interpreter representation} in cooperation with Python's
-\texttt{repr()} function and \texttt{\_\_str\_\_()} which provides an object's
-string representation in cooperation with Python's \texttt{str()}
-function. By overriding these dunder methods, a class may specify its own
-version of string or interpreter representation behavior.
+Python classes often specify their behavior in terms of \emph{protocols}, sets
+of methods which explain the kinds of behaviors a class is able to engage in.
+This explanation takes place when a class implements or overrides
+\enquote{dunder} methods -- double-underscore methods -- such as
+\texttt{\_\_repr\_\_()} which provides an object's \emph{interpreter
+representation} in cooperation with Python's built-in \texttt{repr()} function,
+and \texttt{\_\_str\_\_()} which provides an object's string representation in
+cooperation with Python's built-in \texttt{str()} function. By overriding these
+dunder methods, a class may specify its own version of string or interpreter
+representation behavior. Like public and private names, Python protocols are
+also established by convention rather than enforced at the language level, in
+contrast to similar mechanisms in other languages such as Java's interfaces.
 
 For example, a simple \texttt{Foo} class, which overrides neither
 \texttt{\_\_str\_\_()} nor \texttt{\_\_repr\_\_()} may be defined and
@@ -255,15 +272,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{minted}{python}
 >>> print(foo)
-<__main__.Foo object at 0x1039dcfd0>
+<__main__.Foo object at 0x103ae51d0>
 \end{minted}
 \begin{minted}{python}
 >>> repr(foo)
-'<__main__.Foo object at 0x1039dcfd0>'
+'<__main__.Foo object at 0x103ae51d0>'
 \end{minted}
 \begin{minted}{python}
 >>> str(foo)
-'<__main__.Foo object at 0x1039dcfd0>'
+'<__main__.Foo object at 0x103ae51d0>'
 \end{minted}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -447,7 +464,10 @@ scoretools.Note("g'2.")
 music notation -- their default string format is their LilyPond string
 representation. Other classes -- especially Abjad's various highly-configurable
 notation factory classes -- default their string format to their storage
-format, allowing for complex but still human-readable interpreter output:
+format, allowing for complex but still human-readable interpreter output. The
+idiom \mintinline{python}{print(format(...))} is used extensively throughout
+this document -- especially in later chapters -- to quickly display these
+multi-line storage formats:
 
 \begin{comment}
 <abjad>
@@ -513,12 +533,14 @@ rhythmmakertools.TaleaRhythmMaker(
 \end{abjadbookoutput}
 
 \noindent Finally, in the spirit of Python's protocols and dunder conventions,
-Abjad provides its own \emph{illustration protocol} and
+Abjad provides its own \emph{illustration protocol} and corresponding
 \texttt{\_\_illustrate\_\_()} dunder method. This method works with Abjad's
 top-level \texttt{show()} function to generate graphic realizations of
-illustratable Python objects via LilyPond. Abjad's \texttt{show()} function
-will be used throughout this document to create and display notation and
-otherwise graphic representations:
+illustrable Python objects by automatically formatting those objects into
+LilyPond syntax and passing the resulting input to LilyPond for typesetting.
+Abjad's \texttt{show()} function will be used throughout this document to
+create and display music notation and other graphic representations of the
+objects discussed here:
 
 \begin{comment}
 <abjad>
@@ -531,7 +553,6 @@ show(note)
 \vspace{-0.5\baselineskip}
 \begin{minted}{python}
 >>> show(note)
-WARNING: yacc table file version is out of date
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5cfff2844553f774341de4a66c379061.pdf}
 \end{singlespacing}
@@ -705,16 +726,16 @@ show(fancy_chord)
 
 Abjad's container classes -- measures, tuplets, voice, staves, staff groups,
 scores and so forth -- implement Python's \emph{mutable sequence protocol},
-allowing them to be used transparently as though they were lists.
-
-Components can be appended, extended, or inserted into a container, and
-container can be instantiated with lists of components to be contained as one
-of their arguments. Note above that the LilyPond output shows a \sfrac{4}{4}
-time signature even though none of the created leaves takes up an whole note's
-duration. LilyPond simply treats all music as \sfrac{4}{4} unless explicitly
-instructed otherwise. We can make the \sfrac{4}{4} time signature explicit by
-instantiating a \sfrac{4}{4} measure to contain the previously-created three
-leaf instances:
+allowing them to be used transparently as though they were lists. Components
+can be appended, extended, or inserted into containers. Containers can also be
+instantiated with lists of components to be inserted as one of their
+instantiation arguments. Note in the previous notation examples that the
+LilyPond output always shows a \sfrac{4}{4} time signature even though none of
+the created leaves takes up a whole note's duration. LilyPond simply treats all
+music as \sfrac{4}{4} unless explicitly instructed otherwise. We can make the
+\sfrac{4}{4} time signature explicit by instantiating a \sfrac{4}{4} measure
+object to contain the three previously-created leaf instances, with the three
+leaves passed in a list as an instantiation argument to the new measure:
 
 \begin{comment}
 <abjad>
@@ -753,9 +774,11 @@ graph(measure)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Containers can also be indexed into, measured for length and iterated
-over. For example, the second component contained by the measure can be
-selected by subscripting the measure with the index 1:
+\noindent Like lists, containers can be indexed into, measured for length and
+iterated over. For example, the second component contained by the measure can
+be selected by subscripting the measure with the index 1:\footnote{Like most
+programming languages, Python counts from zero. Therefore the \enquote{first}
+item in an ordered collection is indexed by the number zero, not one.}
 
 \begin{comment}
 <abjad>
@@ -812,8 +835,8 @@ graph(measure)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Furthermore, the last two leaves in the triplet can be replaced by a
-quintuplet using Python's \emph{slice assignment} syntax. In the following
+\noindent Furthermore, the last two leaves in the new triplet can be replaced
+by a quintuplet using Python's \emph{slice assignment} syntax. In the following
 code, the text \texttt{outer\_tuplet[1:]} references the selection of
 components in the original triplet starting from the second component and going
 \enquote{to the end} -- effectively the second and third item, as there are
@@ -989,8 +1012,7 @@ component whose parent is null is necessarily the root of its own score tree.
 Furthermore, no component may appear in its own \emph{proper parentage} -- the
 sequence of components comprising the unique path from a given component to the
 root of its tree, excepting the component itself -- as this would induce
-reference cycles within the score tree.\footnote{Disambiguate proper and
-improper parentage in terms of set-theory.}
+reference cycles within the score tree.
 
 Abjad object-models the concept of parentage explicitly as a \texttt{Parentage}
 \emph{selection} class, accessible via the \emph{inspector} which exposes a
@@ -1008,7 +1030,7 @@ to use.} Consider the parentage for the first eighth note of the inner tuplet.
 Its parentage -- \emph{improper} by default -- includes itself, its immediate
 quintuplet parent, its triplet grandparent and the \sfrac{4}{4} measure as its
 great-grandparent:\footnote{The component summary strings in the interpreter
-representations of the components in the parentage are \emph{note} valid
+representations of the components in the parentage are \emph{not} valid
 LilyPond syntax, but simply a concise LilyPond-like syntax.}
 
 \begin{comment}
@@ -3528,8 +3550,8 @@ for spanner in selection.get_spanners():
 ...     spanner
 ...
 Beam("g'8, a'8, b'8, c''8")
-Beam("c'8, d'8, e'8, f'8")
 Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
+Beam("c'8, d'8, e'8, f'8")
 Glissando("e'8, f'8, g'8, a'8")
 \end{minted}
 \end{singlespacing}
@@ -5101,9 +5123,6 @@ show(abjad_container)
 \vspace{-0.5\baselineskip}
 \begin{minted}{python}
 >>> rtm_parser = rhythmtreetools.RhythmTreeParser()
-WARNING: yacc table file version is out of date
-\end{minted}
-\begin{minted}{python}
 >>> rtm_syntax = '(1 (1 (2 (1 -1 1)) -2))'
 >>> rtm_container = rtm_parser(rtm_syntax)[0]
 >>> abjad_container = rtm_container(Duration(1, 2))[0]
