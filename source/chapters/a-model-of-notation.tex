@@ -267,15 +267,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{minted}{python}
 >>> print(foo)
-<__main__.Foo object at 0x103ae6190>
+<__main__.Foo object at 0x1039e0fd0>
 \end{minted}
 \begin{minted}{python}
 >>> repr(foo)
-'<__main__.Foo object at 0x103ae6190>'
+'<__main__.Foo object at 0x1039e0fd0>'
 \end{minted}
 \begin{minted}{python}
 >>> str(foo)
-'<__main__.Foo object at 0x103ae6190>'
+'<__main__.Foo object at 0x1039e0fd0>'
 \end{minted}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -2722,7 +2722,7 @@ inspect_(staff).get_spanners()
 \vspace{-0.5\baselineskip}
 \begin{minted}{python}
 >>> inspect_(staff[0]).get_spanners()
-set([Tie("c'4, c'8"), Slur("c'4, c'8, e'8, g'8, g'2")])
+set([Slur("c'4, c'8, e'8, g'8, g'2"), Tie("c'4, c'8")])
 \end{minted}
 \begin{minted}{python}
 >>> inspect_(staff).get_spanners()
@@ -3422,9 +3422,9 @@ Abjad provides a variety of methods for selecting components from within a
 score tree. A number of these techniques have already been demonstrated. For
 example, a score can be subscripted with integers or integer \emph{slices} --
 e.g. \texttt{[1:-1]} -- representing the indices of some component or
-components to select those component, as shown in \autoref{ssec:containers}
-and later. Similarly, named components can be selected from a score by
-subscripting that score with their names, as shown in
+components in order to select those component, as shown in
+\autoref{ssec:containers} and later. Similarly, named components can be
+selected from a score by subscripting that score with their names, as shown in
 \autoref{ssec:named-components}. The leaves at the bottom of a score hierarchy
 can also be selected en masse via a component's \texttt{select\_leaves()}
 method regardless of their depth within the tree, also shown in
@@ -3461,7 +3461,7 @@ show(staff)
 \end{abjadbookoutput}
 
 \noindent A selection can be made simply by subscripting the staff to select
-from the third leaf until the seventh:
+from the third leaf up to, but not including, the seventh:
 
 \begin{comment}
 <abjad>
@@ -3568,10 +3568,10 @@ for spanner in selection.get_spanners():
 >>> for spanner in selection.get_spanners():
 ...     spanner
 ...
-Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
-Beam("g'8, a'8, b'8, c''8")
 Beam("c'8, d'8, e'8, f'8")
 Glissando("e'8, f'8, g'8, a'8")
+Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
+Beam("g'8, a'8, b'8, c''8")
 \end{minted}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -3584,18 +3584,18 @@ been described. For example, the \texttt{Parentage} class, discussed in
 \autoref{ssec:parentage} is actually a type of selection, and affords the same
 methods described above in addition to many others. One of the most fundamental
 selection subclasses in Abjad is the \texttt{LogicalTie}. Logical ties -- which
-are distinct from tie \emph{spanners} -- model the concept of one or more note
-or chord tied together to create a single attack point with an aggregate
+are distinct from tie \emph{spanners} -- model the concept of one or more
+leaves tied together to create a single attack point with an aggregate
 duration. Logical ties containing a single note or chord are termed
 \emph{trivial}. Logical ties comprising rests are not well-defined, but can
 certainly be instantiated like any other selection if a composer would find
 them useful.
 
 Consider the following staff, which contains a mixture of notes and rests. The
-\texttt{~} symbol in LilyPond syntax indicates that two notes should be joined
-by a tie. Notably, this staff contains notes which are untied, notes which are
-tied to a single other note, a chain of three notes tied together, and ties
-which cross the bounds of a triplet:
+\enquote{\textasciitilde{}} symbol in LilyPond syntax indicates that two notes
+should be joined by a tie. Notably, this staff contains notes which are untied,
+notes which are tied to a single other note, a chain of three notes tied
+together, and ties which cross the bounds of a triplet:
 
 \begin{comment}
 <abjad>
@@ -3618,7 +3618,7 @@ show(staff)
 \end{abjadbookoutput}
 
 \noindent The most direct way to select a leaf's logical tie is via the
-component inspector's \texttt{.get\_logical\_tie()} method. Once selected, the
+component inspector's \texttt{get\_logical\_tie()} method. Once selected, the
 logical tie can be examined or printed much like any other selection:
 
 \begin{comment}
@@ -3659,7 +3659,13 @@ Timespan(start_offset=Offset(11, 16), stop_offset=Offset(13, 12))
 which are specific to their domain. Two of the most important such properties
 are a logical tie's \emph{head} and \emph{tail}: the first and last leaves of
 the logical tie respectively. We can label the previously selected logical
-tie's head and tail with markup:
+tie's head and tail with textual \emph{markup}:\footnote{LilyPond provides a
+\emph{markup} environment for formatting text and graphics, which can then be
+attached to leaves in the score, used as titles, headers, footers and so forth,
+or set as the \emph{stencil} for various grobs, overriding that grob's original
+appearance entirely. Abjad models LilyPond's markup environment with its
+\texttt{Markup} class, which exposes many dot-chainable methods for configuring
+markup objects, mirroring the markup functions available in LilyPond.}
 
 \begin{comment}
 <abjad>
@@ -3733,7 +3739,7 @@ False
 \noindent Trivial logical ties can also be selected. For example, the first
 leaf in the above staff is covered by no tie spanner at all. Still, that leaf
 can be modeled as a logical tie containing only a single note. A trivial
-logical tie's head and tail are then the same component:
+logical tie's head and tail are then necessarily the same component:
 
 \begin{comment}
 <abjad>
@@ -3776,29 +3782,11 @@ selectiontools.LogicalTie(
 \subsection{Iteration}
 \label{ssec:iteration}
 
-Abjad provides a variety of techniques for iterating over the components in a
-score tree.
-
-\begin{comment}
-<abjad>
-show(score)
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{minted}{python}
->>> show(score)
-\end{minted}
-\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c5f77f1a94704e8f098e761bd215d443.pdf}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\noindent The \enquote{simplest} iteration technique employed in Abjad relies
-on Python's \emph{iteration protocol}, which allows objects to be iterated over
-in \texttt{for} loops -- and many other constructs -- yielding up items from
-their contents one at a time:
+Abjad provides a variety of techniques for \emph{iterating} over the components
+in a score tree. The \enquote{simplest} iteration technique employed in Abjad
+relies on Python's \emph{iteration protocol}, which allows objects to be
+iterated over in \enquote{\texttt{for}} loops -- as well as many other
+constructs -- yielding up items from their contents one at a time:
 
 \begin{comment}
 <abjad>
@@ -3822,13 +3810,16 @@ for x in ['foo', 10, 3.14159]:
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Using this basic iteration, the components immediately contained by
-any Abjad container can be iterated over as though that container were a list.
-For example, the components immediately contained in the score, the score's
-staff group and the voice contained in the upper staff can be iterated over:
+\noindent Recall the two-staff score created earlier. Using this basic
+iteration technique -- already demonstrated in \autoref{ssec:containers} --,
+the components immediately contained by any Abjad container can be iterated
+over as though that container were a list. For example, the components
+immediately contained in the score, the score's staff group and the voice
+contained in the upper staff can be iterated over:
 
 \begin{comment}
 <abjad>
+show(score)
 for component in score:
     component
 
@@ -3844,6 +3835,10 @@ for component in score['Voice 1']:
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
+\begin{minted}{python}
+>>> show(score)
+\end{minted}
+\noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c5f77f1a94704e8f098e761bd215d443.pdf}
 \begin{minted}{python}
 >>> for component in score:
 ...     component
@@ -3980,14 +3975,21 @@ graph(score)
 \end{abjadbookoutput}
 
 \noindent In fact, Abjad's score tree graph visualizations, like many of the
-other more-specialized score tree iteration techniques including the
-\texttt{select\_leaves()} method shown throughout this document, rely on this
-depth-first traversal. One of the most common iteration techniques based
+other more-specialized score tree iteration techniques -- including the
+\texttt{select\_leaves()} method shown throughout this document --, rely on
+this depth-first traversal. One of the most common iteration techniques based
 closely on depth-first traversal is iteration by class, whereby a score tree is
 iterated over recursively and only those items matching a component class
 prototype -- e.g. only rests, only tuplets, only notes and chords, or any type
 of leaf -- are yielded. We can demonstrate this technique by iterating over the
-same score by rests and attaching some markup to each yielded rest:
+same score by rests and attaching some markup to each yielded rest:\footnote{
+The built-in Python \texttt{enumerate} function returns an iterator which
+yields pairs of indices and items from its iterable argument, effectively
+giving the index of each item in that original iterable. In the case of the
+following code example, the original iterable may itself be in iterator object
+rather than a list or tuple. This is an example of Python's iterator protocol
+in action, as \texttt{enumerate} accepts any argument as long as it can be
+iterated over.}
 
 \begin{comment}
 <abjad>
@@ -4084,8 +4086,9 @@ show(score)
 \end{abjadbookoutput}
 
 \noindent Composers are often concerned with contiguous \emph{runs} of notes
-and chords rather than any other collection of components Components can use
-the iteration agent to iterate over components grouped contiguously by class:
+and chords rather than any other collection of components. The iteration
+agent's \texttt{by\_run()} method iterates over such contiguous groups by
+class:
 
 \begin{comment}
 <abjad>
@@ -4283,7 +4286,7 @@ selectortools.Selector(
 \end{abjadbookoutput}
 
 \noindent The selector can be configured to select all pitched logical-ties
-from with the previous selections.
+from within the previous selections.
 
 \begin{comment}
 <abjad>
@@ -4401,7 +4404,8 @@ ContiguousSelection(Note("b'4."),)
 \noindent Note that the returned selections each contain a single note. This is
 not necessarily useful yet. By appending a single additional flattening
 callback to the selector's callback stack, the selector can be configured to
-return a flat selection of components which can be iterated over:
+return a flat selection of components which can be iterated over, yielding only
+a single note on each iteration:
 
 \begin{comment}
 <abjad>
@@ -4427,13 +4431,13 @@ Note("b'4.")
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Unlike component iterators, selectors can be re-used. The same
-selector which was called against the upper staff in the above example can be
-called again, returning the same result. As with the examples in
-\autoref{ssec:iteration}, we can label each component returned by the selector
-with some markup. Because the score was already labeled -- marking the head of
-each logical tie in the upper staff -- we first remove all markup by iterating
-depth-first:
+\noindent Unlike component iterators -- which eventually terminate --,
+selectors can be re-used. The same selector which was called against the upper
+staff in the above example can be called again, returning the same result. As
+with the examples in \autoref{ssec:iteration}, we can label each component
+returned by the selector with some markup. Because the score was already
+labeled -- marking the head of each logical tie in the upper staff -- we first
+remove all markup by iterating depth-first:
 
 \begin{comment}
 <abjad>
@@ -4775,15 +4779,16 @@ potentially complex object's configuration in as human-readable a format as
 possible. Storage formats are deterministic; any storage-formattable object
 with a given configuration is guaranteed to format in one and only one way.
 Non-trivial storage formats also take up multiple lines, making them
-well-suited to line-based version control systems like Subversion, Git and
-Mercurial -- among many others --. Most importantly, the storage format for any
-storage-formattable object is guaranteed to be evaluable as code in Abjad's
-namespace. Any object returned by evaluating another object's storage format as
-a string will be configured identically to the original and compare equally.
-This is a kind of human-readable \emph{serialization}. For example, the
-selector created previously in \autoref{ssec:selectors} can be persisted via
-its storage format and recreated by evaluating that storage format in Abjad's
-namespace. The new selector compares equally to the old:
+well-suited to line-based version control systems, such as Subversion, Git and
+Mercurial -- among many others --, discussed in \autoref{ssec:version-control}.
+Most importantly, the storage format for any storage-formattable object is
+guaranteed to be evaluable as code in Abjad's namespace. Any object returned by
+evaluating another object's storage format as a string will be configured
+identically to the original and compare equally. This is a kind of
+human-readable \emph{serialization}. For example, the selector created
+previously in \autoref{ssec:selectors} can be persisted via its storage format
+and recreated by evaluating that storage format in Abjad's namespace. The new
+selector compares equally to the old:
 
 \begin{comment}
 <abjad>
@@ -4949,10 +4954,10 @@ working with Abjad at a high-level. Many of the compositionally-interesting
 devices afforded by Abjad -- objects which describe compositional processes,
 transformations, factories and the like -- involve a considerable amount of
 configuration. Templating affords variation in these situations, allowing
-composers to create new objects from old, varying a few or many aspects of the
-object under consideration, but saving them from the work of having to define a
-new object from scratch. Likewise, disk persistence allows composers to easily
-save their work.
+composers to create new objects from old, varying as few or as many aspects of
+the object under consideration as they wish, but saving them from the work of
+having to define a new object from scratch. Likewise, disk persistence allows
+composers to easily save their work.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Other tools}
@@ -5076,7 +5081,7 @@ an internal representation as close to the notational output as possible.
 Abjad comes equipped with a number of parsers. Most notably, Abjad implements a
 parser for LilyPond's syntax, and can understand much -- although not all -- of
 LilyPond's grammar. Any time a note, rest, chord, container or even textual
-markup is instantiated with a string the LilyPond parser is at work. The
+markup is instantiated with a string, the LilyPond parser is at work. The
 top-level \texttt{parse()} function provides access to the this parser:
 
 \begin{comment}
@@ -5154,14 +5159,14 @@ show(abjad_container)
 \subsection{Notation factories}
 \label{ssec:notation-factories}
 
-While composers can certainly create every object in a score by hand,
-instantiating each note, chord or measure one-at-a-time, with experience, when
-one is already working with notation computationally one tends to want means of
-generating many score objects at once. Abjad provides a number of
-\emph{factory} classes and functions for generating arbitrarily large amounts
-of notation. The simplest such factory is the \texttt{scoretools.make\_notes()}
-function, which combines sequences of pitches and durations in a patterned way
-to create a selection of leaves:
+Composers can certainly create every object in a score by hand,
+instantiating each note, chord or measure one-at-a-time. However, with
+experience, when one is already working with notation computationally one tends
+to want means of generating many score objects at once. Abjad provides a number
+of \emph{factory} classes and functions for generating arbitrarily large
+amounts of notation. The simplest such factory is the
+\texttt{scoretools.make\_notes()} function, which combines sequences of pitches
+and durations in a patterned way to create a selection of leaves:
 
 \begin{comment}
 <abjad>
