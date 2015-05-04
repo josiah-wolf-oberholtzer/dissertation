@@ -92,8 +92,8 @@ typographic overrides can be employed to make it seem that a context has
 disappeared.
 
 The following defines a segment-maker with desired duration of 9 seconds, only
-3/4 meters permitted, a score-template comprised of two rhythmic staves, and a
-tempo or quarter-equals-60:
+\sfrac{3}{4} meters permitted, a score-template comprised of two rhythmic
+staves, and a tempo or quarter-equals-60:
 
 \begin{comment}
 <abjad>
@@ -397,8 +397,9 @@ show(result, key='voice_name')
 
 \noindent Reconfiguring the above dependent timespan-maker to additionally
 filter timespans whose music specifier is labeled \enquote{labeled} produces a
-more restricted output. Note that the unlabeled 6/1-8/1 timespan in
-\enquote{Voice 1} and the 10/1-25/2 timespan in \enquote{Voice 2} are ignored:
+more restricted output. Note that the unlabeled \sfrac{6}{1}-\sfrac{8}{1}
+timespan in \enquote{Voice 1} and the \sfrac{10}{1}-\sfrac{25}{2} timespan in
+\enquote{Voice 2} are ignored:
 
 \begin{comment}
 <abjad>
@@ -743,10 +744,11 @@ the music setting must resolve its timespan identifier against the segment's
 desired duration. Target timespan resolution must also take into account offset
 quantization, as the target timespans resulting from the evaluation of a
 ratio-parts expression may not align against a power-of-two-denominator offset
-grid such as 1/8, 1/16 or 1/32. Because timespan-makers produce their output
-relative to the start-offset of their target timespan, a misaligned target
-timespan -- starting at an offset like 1/3 or 15/7 rather than 1/4 or 0 -- will
-cause all generated timespans to be misaligned.
+grid such as \sfrac{1}{8}, \sfrac{1}{16} or \sfrac{1}{32}. Because
+timespan-makers produce their output relative to the start-offset of their
+target timespan, a misaligned target timespan -- starting at an offset like
+\sfrac{1}{3} or \sfrac{15}{7} rather than \sfrac{1}{4} or 0 -- will cause all
+generated timespans to be misaligned.
 
 Music setting's associate their music specifiers with strings containing
 voice-name abbreviations. These abbreviations are always underscore-delimited
@@ -1090,9 +1092,10 @@ show(target_timespans, range_=(0, 8))
 \end{abjadbookoutput}
 
 \noindent Note that the start and stop offsets of the target timespans resolved
-above do not all align at offsets with power-of-two denominators, such as 1/2,
-1/4 or 1/8. By specifying a timespan quantization, the target timespans
-generated during resolution can be quantized to a grid:
+above do not all align at offsets with power-of-two denominators, such as
+\sfrac{1}{2}, \sfrac{1}{4} or \sfrac{1}{8}. By specifying a timespan
+quantization, the target timespans generated during resolution can be quantized
+to a grid:
 
 \begin{comment}
 <abjad>
@@ -1174,9 +1177,10 @@ a collection of overlapping candidates.
 
 Consider the following three timespan inventories, created with three different
 timespan-makers and music-specifier mappings. The first inventory is created
-via a flooded timespan-maker, filling the entirety of a target timespan of 0/1
-to 19/4 in voices \enquote{Voice 2} and \enquote{Voice 3}. This inventory
-behaves like a constant \enquote{background layer} for those two voices:
+via a flooded timespan-maker, filling the entirety of a target timespan of
+\sfrac{0}{1} to \sfrac{19}{4} in voices \enquote{Voice 2} and \enquote{Voice
+3}. This inventory behaves like a constant \enquote{background layer} for those
+two voices:
 
 \begin{comment}
 <abjad>
@@ -1220,9 +1224,9 @@ show(layer_1, key='voice_name', range_=(0, (21, 4)))
 This inventory covers all four voices -- \enquote{Voice 1}, \enquote{Voice 2},
 \enquote{Voice 3} and \enquote{Voice 4} -- with a texture of evenly distributed
 phrases and silences. However, unlike the first timespan inventory, this
-texture only spans the target timespan of 3/4 to 19/4, guaranteeing that the
-background layer for \enquote{Voice 2} and \enquote{Voice 3} is untouched in
-the span of 0/1 to 3/4:
+texture only spans the target timespan of \sfrac{3}{4} to \sfrac{19}{4},
+guaranteeing that the background layer for \enquote{Voice 2} and \enquote{Voice
+3} is untouched in the span of \sfrac{0}{1} to \sfrac{3}{4}:
 
 \begin{comment}
 <abjad>
@@ -1297,15 +1301,16 @@ show(layer_2, key='voice_name', range_=(0, (21, 4)))
 \noindent The third timespan inventory consists of groups of near-simultaneous
 attacks in three voices -- \enquote{Voice 1}, \enquote{Voice 3} and
 \enquote{Voice 4}. This inventory's talea timespan-maker has padded
-1/4-duration silences around the beginning and end of each group, guaranteeing
-that any performed timespans with layers lower than 3 will be masked not only
-by this layer's performed timespans, but by its silent timespans as well.
-Additionally, the third timespan inventory was created with a target timespan
-of 6/4 to 21/4. While -- due to the complexities of the talea timespan-maker's
-patterns -- the generated timespan texture may not extend all of the way to its
-target timespan's stop offset at 21/4, it will certainly not contain any
-performed or silent timespans earlier than 6/4, leaving lower layers untouched
-from 0/1 to 6/4:
+\sfrac{1}{4}-duration silences around the beginning and end of each group,
+guaranteeing that any performed timespans with layers lower than 3 will be
+masked not only by this layer's performed timespans, but by its silent
+timespans as well. Additionally, the third timespan inventory was created with
+a target timespan of \sfrac{6}{4} to \sfrac{21}{4}. While -- due to the
+complexities of the talea timespan-maker's patterns -- the generated timespan
+texture may not extend all of the way to its target timespan's stop offset at
+\sfrac{21}{4}, it will certainly not contain any performed or silent timespans
+earlier than \sfrac{6}{4}, leaving lower layers untouched from \sfrac{0}{1} to
+\sfrac{6}{4}:
 
 \begin{comment}
 <abjad>
@@ -1673,11 +1678,11 @@ rendered as notation at all, and may cause other problems when partitioning due
 to ambiguities in their start / stop offset semantics --, the former allows for
 a kind of compositional control over the maquette. When notated with certain
 rhythm-makers, overly short divisions -- especially those shorter than
-1/8-duration -- may give undesirable results. Note that silent timespans have
-no configurable minimum duration. Their \texttt{minimum\_duration} always
-returns 0. They maintain this dummy property so that the segment-maker's
-timespan-pruning algorithms can treat silent and performed timespans
-identically.
+\sfrac{1}{8}-duration -- may give undesirable results. Note that silent
+timespans have no configurable minimum duration. Their
+\texttt{minimum\_duration} always returns 0. They maintain this dummy property
+so that the segment-maker's timespan-pruning algorithms can treat silent and
+performed timespans identically.
 
 Next, Consort's segment-maker \emph{consolidates} contiguous performed
 timespans with identical music specifiers, caching the durations of the
@@ -1959,12 +1964,13 @@ show(staff_group)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Note above how after rest consolidation the rests in the lower staff have been grouped
-together into their own divisions -- annotated with dashed lines -- while all
-other components -- including rests within tuplets -- remain in their original
-divisions. Now consider the following simple rhythm-maker which, when passed a
-division sequence of seven 1/4-durations, generates a rhythm consisting
-of two groups of 1/4 notes delimited by rests:
+\noindent Note above how after rest consolidation the rests in the lower staff
+have been grouped together into their own divisions -- annotated with dashed
+lines -- while all other components -- including rests within tuplets -- remain
+in their original divisions. Now consider the following simple rhythm-maker
+which, when passed a division sequence of seven \sfrac{1}{4}-durations,
+generates a rhythm consisting of two groups of \sfrac{1}{4} notes delimited by
+rests:
 
 \begin{comment}
 <abjad>
@@ -2295,8 +2301,8 @@ show(demultiplexed_maquette, range_=(0, 6))
 \end{abjadbookoutput}
 
 \noindent The above assumes a segment duration of 6 instead of the maquette's
-initial duration of 21/4, and therefore pads out the end of each timespan
-inventory to that stop offset with silence.
+initial duration of \sfrac{21}{4}, and therefore pads out the end of each
+timespan inventory to that stop offset with silence.
 
 \subsection{Rewriting meters, revisited}
 \label{ssec:rewriting-meters-revisited}
@@ -2495,9 +2501,10 @@ instead as a single full-bar rest. The segment-maker also attaches a
 \texttt{StaffLinesSpanner} to the silent division, which collapses the staff
 down to a single line, giving the score a fragmented appearance. Finally,
 Consort's segment-maker performs a logical-tie cleanup pass, fusing all
-2-length logical ties consisting of matched pairs of 1/16 or 1/32 notes. This
-takes care of some possible artifacts of heavily subdivided meter-rewriting,
-and makes the final rhythmic output generally more readable.
+2-length logical ties consisting of matched pairs of \sfrac{1}{16} or
+\sfrac{1}{32} notes. This takes care of some possible artifacts of heavily
+subdivided meter-rewriting, and makes the final rhythmic output generally more
+readable.
 
 \subsection{Populating the score}
 \label{ssec:populating-the-score}
@@ -3031,20 +3038,20 @@ show(segment_maker, verbose=False)
 \end{abjadbookoutput}
 
 \noindent Note above that the first note in the score by time-wise ordering --
-the initial 1/16 note in the upper staff -- does not receive the expected
-single grace note. The grace note pattern starts instead on the 1/8 note that
-follows. For purely practical reasons, Consort's grace-handler will \emph{not}
-put grace notes before the first leaf in any voice in a score. LilyPond's grace
-spacing algorithm does not operate well with its strict proportional spacing
-algorithm. When spaced strictly proportionally, grace notes which are
-positioned before the beat -- via LilyPond's \texttt{\textbackslash{}grace},
-\texttt{\textbackslash{}appoggiatura} or \texttt{\textbackslash{}acciaccatura}
-commands -- may end up colliding with other glyphs in the staff. Consort works
-around this by using LilyPond's \texttt{\textbackslash{}afterGrace} command,
-which places grace notes after the note to which they attach. This positioning
-allows grace notes to avoid most collisions. Unfortunately, this also means
-that grace notes must always appear after a note or rest, making it impossible
-to start a segment with grace notes.
+the initial \sfrac{1}{16} note in the upper staff -- does not receive the
+expected single grace note. The grace note pattern starts instead on the
+\sfrac{1}{8} note that follows. For purely practical reasons, Consort's
+grace-handler will \emph{not} put grace notes before the first leaf in any
+voice in a score. LilyPond's grace spacing algorithm does not operate well with
+its strict proportional spacing algorithm. When spaced strictly proportionally,
+grace notes which are positioned before the beat -- via LilyPond's
+\texttt{\textbackslash{}grace}, \texttt{\textbackslash{}appoggiatura} or
+\texttt{\textbackslash{}acciaccatura} commands -- may end up colliding with
+other glyphs in the staff. Consort works around this by using LilyPond's
+\texttt{\textbackslash{}afterGrace} command, which places grace notes after the
+note to which they attach. This positioning allows grace notes to avoid most
+collisions. Unfortunately, this also means that grace notes must always appear
+after a note or rest, making it impossible to start a segment with grace notes.
 
 \subsection{Pitch-handlers}
 \label{ssec:pitch-handlers}
@@ -3052,7 +3059,7 @@ to start a segment with grace notes.
 Consort's \emph{pitch-handlers} apply pitches to logical ties within a score in
 a patterned way, through the use of various cyclic sequences applied to each
 logical tie in time-wise order, much like grace-handlers. Consider the
-following short segment, containing two voices of 1/16 note rhythms
+following short segment, containing two voices of \sfrac{1}{16} note rhythms
 interspersed with rests. Without any pitch-handler specified, both voices
 default to creating notes pitched at middle-C:
 
@@ -3216,11 +3223,11 @@ are defined, allowing them to maintain their pattern even in fragmentary or
 interrupted musical textures. Note how, when interrupted by phrases defined by
 a different music specifier, the previously defined texture continues its pitch
 application pattern after each interruption or silence exactly where it left
-off. For example, the A4 1/16 note in the lower voice in measure one is
-continued by the B4 1/8 note in the upper voice at the beginning of measure
-two, and followed by the C5 1/8 note directly below in the lower voice. The
-C-major pattern continues despite the intrusion of the triplet texture defined
-by the \texttt{other\_music\_specifier}:
+off. For example, the A4 \sfrac{1}{16} note in the lower voice in measure one
+is continued by the B4 \sfrac{1}{8} note in the upper voice at the beginning of
+measure two, and followed by the C5 \sfrac{1}{8} note directly below in the
+lower voice. The C-major pattern continues despite the intrusion of the triplet
+texture defined by the \texttt{other\_music\_specifier}:
 
 \todo[inline]{\textbf{TODO:} Fix seed-handling at pitch-choice boundaries.}
 
@@ -3407,8 +3414,8 @@ rotation, etc. -- with a ratio defining where those operations should appear
 during the course of a segment. Pitch-operation specifiers may be used
 alongside pitch specifiers, and with differing ratios. The following
 pitch-operation specifier partitions the segment into three unequal parts,
-applying an operation to the first 1/4, no operation to the middle 1/2, and
-another operation to the final 1/4 of the segment:
+applying an operation to the first \sfrac{1}{4}, no operation to the middle
+\sfrac{1}{2}, and another operation to the final \sfrac{1}{4} of the segment:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -3595,8 +3602,8 @@ show(segment_maker, verbose=False)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Now, consider again the 1/16 note music specifier from earlier in
-this section, whose pitch-handler cycled through a C-major scale.
+\noindent Now, consider again the \sfrac{1}{16} note music specifier from
+earlier in this section, whose pitch-handler cycled through a C-major scale.
 Pitch-handlers may be configure to use the same pitch for each division, or
 even phrase, rather than choosing a new pitch for each encountered logical tie.
 This behavior is defined by the pitch-handler's \emph{application rate}. The
