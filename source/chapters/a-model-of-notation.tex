@@ -23,11 +23,6 @@ interpretation. Those preceded by \texttt{...} indicate the continuation of a
 incomplete language construct. All other lines are necessarily returned as
 output from Python's interpreter.
 
-\todo[inline]{\textbf{TODO:} Introduce concept of namespaces.}
-
-\todo[inline]{\textbf{TODO:} Verify that high-level description of Abjad is
-on-point.}
-
 We can import Abjad into Python with the following incantation:
 
 \begin{comment}
@@ -2628,14 +2623,19 @@ or compositional intent. Some of these annotative indicators include
 \label{sec:spanners}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\todo[inline]{\textbf{TODO:} Footnote a definition of logical voices.}
-
 A final collection of classes, \emph{spanners}, model musical and typographic
 constructs such as slurs, beams, hairpins, and glissandi which \emph{span}
 across different levels of hierarchy in the score tree. Spanners attach to not
 just one but potentially many components in a score tree, provided those
-components are contiguous in time and occupy the same \emph{logical voice}.
-Like indicators, multiple spanners can attach to the same component. Unlike
+components are contiguous in time and occupy the same \emph{logical
+voice}.\footnote{A logical voice is a structural relationship between
+components in a score representing a single musical voice. For example, notes
+may be contained directly by a staff, without any explicit voice container
+between those notes and the staff. While those notes do not share an explicit
+voice, they do share an implicit logical voice. Likewise, notes contained by
+two explicit voice contexts where the explicit voices share the same name not
+only inhabit explicit voices but share the same logical voice. } Like
+indicators, multiple spanners can attach to the same component. Unlike
 indicators, spanners are aware of the components, including the leaves, they
 \emph{cover} as well as the order in which those components appear. This
 awareness allows spanners to contribute formatting to a score tree's LilyPond
@@ -3130,8 +3130,13 @@ act of returning them to their previous settings \emph{reverting}. Abjad
 provides a top-level \texttt{override()} function for constructing such
 LilyPond \texttt{\textbackslash{}override} and \texttt{\textbackslash{}revert}
 commands, allowing composers to alter the typography of individual leaves or
-the contents of entire containers. For example, the style of a single note's
-note-head can be changed from the default oval shape to a cross:
+the contents of entire containers. Similarly to \texttt{inspect\_()}, calling
+\texttt{override()} on a score component returns an agentive object with that
+component as its client: a \emph{LilyPond grob name manager}. This manager
+object exposes an interface for constructing override statements in a
+dot-chained syntax which mimics the way one would write LilyPond override
+commands by hand. For example, the style of a single note's note-head can be
+changed from the default oval shape to a cross:
 
 \begin{comment}
 <abjad>
@@ -3199,10 +3204,10 @@ show(container)
 
 \noindent Note above in the LilyPond syntax output that the override command
 appears just inside the opening brace of the container, and the accompanying
-revert command appears just before the closing brace. Much like the earlier
-spanner examples where a slur was attached directly to a container, overrides
-applied against a container persist regardless of the contents of that
-container.
+revert command appears just before the closing brace. Additionally, much like
+the earlier spanner examples where a slur was attached directly to a container,
+overrides applied against a container persist regardless of the contents of
+that container.
 
 As with score components, composers can also apply typographic overrides
 against spanners. The initial override commands appears before the first leaf
@@ -3372,14 +3377,14 @@ show(staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Typographic overrides \emph{cascade}, with local settings taking
-precedence over more global settings. Although the previously attached slur
-overrides the note-head style of all leaves it covers, the note-head styles of
-leaves within that collection can be overridden themselves. For example, the
-first, last and next-to-last leaf of the middle measure can be overridden to
-display a slash symbol rather than cross for their note-heads, effectively
-overruling the more global typographic commands applied against their covering
-spanner:
+\noindent Importantly, typographic overrides \emph{cascade}, with local
+settings taking precedence over more global settings. Although the previously
+attached slur overrides the note-head style of all leaves it covers, the
+note-head styles of leaves within that collection can be overridden themselves.
+For example, the first, last and next-to-last leaf of the middle measure can be
+overridden to display a slash symbol rather than cross for their note-heads,
+effectively overruling the more global typographic commands applied against
+their covering spanner:
 
 \begin{comment}
 <abjad>
@@ -3403,7 +3408,10 @@ show(staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\todo[inline]{\textbf{TODO:} Conclusion of typography discussion.}
+\noindent By providing an object-oriented interface to the low-level
+typographic options of its typesetter, LilyPond, Abjad affords composers
+powerful programmatic control over not only the content but the appearance of
+the scores they create.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Selecting components}
