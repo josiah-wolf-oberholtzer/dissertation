@@ -272,15 +272,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{minted}{python}
 >>> print(foo)
-<__main__.Foo object at 0x103ae51d0>
+<__main__.Foo object at 0x103ae6190>
 \end{minted}
 \begin{minted}{python}
 >>> repr(foo)
-'<__main__.Foo object at 0x103ae51d0>'
+'<__main__.Foo object at 0x103ae6190>'
 \end{minted}
 \begin{minted}{python}
 >>> str(foo)
-'<__main__.Foo object at 0x103ae51d0>'
+'<__main__.Foo object at 0x103ae6190>'
 \end{minted}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -1015,10 +1015,10 @@ root of its tree, excepting the component itself -- as this would induce
 reference cycles within the score tree.
 
 Abjad object-models the concept of parentage explicitly as a \texttt{Parentage}
-\emph{selection} class, accessible via the \emph{inspector} which exposes a
-given component's \emph{inspection interface}: a collection of methods for
-accessing information about that component, many of which depend on that
-component's position within the score hierarchy, including the component's
+\emph{selection} class, accessible via the \emph{component inspector} which
+exposes a given component's \emph{inspection interface}: a collection of
+methods for accessing information about that component, many of which depend on
+that component's position within the score hierarchy, including the component's
 parentage or duration. An inspector can be instantiated by calling Abjad's
 top-level \texttt{inspect\_()} function on a component.\footnote{Abjad uses
 \texttt{inspect\_()} rather than \texttt{inspect()} as Python already provides
@@ -1026,9 +1026,10 @@ an \texttt{inspect} module for object introspection, and it is considered bad
 practice to overwrite names of functions, classes or modules found in the
 standard library such as \texttt{set} or \texttt{object}. When a name conflict
 would occur, projects traditionally append an underscore to the name they wish
-to use.} Consider the parentage for the first eighth note of the inner tuplet.
-Its parentage -- \emph{improper} by default -- includes itself, its immediate
-quintuplet parent, its triplet grandparent and the \sfrac{4}{4} measure as its
+to use.} Consider the parentage for the first eighth note of the inner
+quintuplet in the previously created measure. This eighth-note's parentage --
+\emph{improper} by default -- includes itself, its immediate quintuplet parent,
+its triplet grandparent and the \sfrac{4}{4} measure as its
 great-grandparent:\footnote{The component summary strings in the interpreter
 representations of the components in the parentage are \emph{not} valid
 LilyPond syntax, but simply a concise LilyPond-like syntax.}
@@ -1068,13 +1069,12 @@ Measure((4, 4), "c'4 { 2/3 a'4 { 4/5 b'8 a'8. g'16 f'32 e'8.. } } <d' f' a' c''>
 \end{abjadbookoutput}
 
 \noindent By default, every component's parent is null, represented in Python
-by Python's \texttt{None} object:
+by the \texttt{None} object:
 
 \begin{comment}
 <abjad>
 whole_note = Note("c'1")
-inspector = inspect_(whole_note)
-inspector.get_parentage().parent is None
+inspect_(whole_note).get_parentage().parent is None
 </abjad>
 \end{comment}
 
@@ -1083,8 +1083,7 @@ inspector.get_parentage().parent is None
 \vspace{-0.5\baselineskip}
 \begin{minted}{python}
 >>> whole_note = Note("c'1")
->>> inspector = inspect_(whole_note)
->>> inspector.get_parentage().parent is None
+>>> inspect_(whole_note).get_parentage().parent is None
 True
 \end{minted}
 \end{singlespacing}
@@ -1099,7 +1098,7 @@ to Abjad's score tree model:
 <abjad>
 container_one = Container()
 container_one.append(whole_note)
-inspector.get_parentage().parent is container_one
+inspect_(whole_note).get_parentage().parent is container_one
 whole_note in container_one
 print(format(container_one))
 </abjad>
@@ -1111,7 +1110,7 @@ print(format(container_one))
 \begin{minted}{python}
 >>> container_one = Container()
 >>> container_one.append(whole_note)
->>> inspector.get_parentage().parent is container_one
+>>> inspect_(whole_note).get_parentage().parent is container_one
 True
 \end{minted}
 \begin{minted}{python}
@@ -1135,7 +1134,7 @@ at a time:
 <abjad>
 container_two = Container()
 container_two.append(whole_note)
-inspector.get_parentage().parent is container_two
+inspect_(whole_note).get_parentage().parent is container_two
 whole_note in container_two
 whole_note in container_one
 print(format(container_two))
@@ -1149,7 +1148,7 @@ print(format(container_one))
 \begin{minted}{python}
 >>> container_two = Container()
 >>> container_two.append(whole_note)
->>> inspector.get_parentage().parent is container_two
+>>> inspect_(whole_note).get_parentage().parent is container_two
 True
 \end{minted}
 \begin{minted}{python}
@@ -1193,7 +1192,7 @@ container_one.append(container_two)
 >>> container_two.append(container_one)
 >>> container_one.append(container_two)
 Traceback (most recent call last):
-  File "<abjadbook>", line 1, in <module>
+  File "<stdin>", line 1, in <module>
   File "/Users/josiah/Development/abjad/abjad/tools/scoretools/Container.py", line 1062, in append
     self.__setitem__(slice(len(self), len(self)), [component])
   File "/Users/josiah/Development/abjad/abjad/tools/scoretools/Container.py", line 218, in __setitem__
@@ -1207,9 +1206,9 @@ ParentageError: Attempted to induce cycles.
 
 \noindent Why should we be concerned with reference cycles? When we create
 score by hand, notes -- no matter how we may have arrived at them or conceived
-of them creatively -- are ultimately simply black marks on a page. When working
-with computer, we can choose how to model musical objects. Again, a
-\enquote{note} could simply exist as an amalgam of dots and lines in a
+of them creatively -- are ultimately simply black marks on a page. However,
+when working with computers, we can choose how to model musical objects. Again,
+a \enquote{note} could simply exist as an amalgam of dots and lines in a
 vector-graphics program, in which case it may not be possible to know where or
 even what that note or any other note \emph{is} except in terms of dots and
 lines -- the affordances provided by that vector-graphics editor. In that case,
@@ -1217,8 +1216,8 @@ there is no semantic model of music, only a typographic model devoid of
 explicit musical relationships. Alternatively, we can model explicitly, in
 which case notes exist as "objects" in a rich network of references. In this
 latter case, certain conditions must be maintained to protect the integrity of
-the reference network. Depending on the implementation, a note likely cannot
-be in two places at once. That is the certainly the case in Abjad's model of
+the reference network. Depending on the implementation, a note likely cannot be
+in two places at once. That is the certainly the case in Abjad's model of
 musical notation: notes can only have one parent, and cannot exist in more than
 one parent. Note that these restrictions mainly derive from the fact that
 notes, like other scores components, are both \emph{mutable} -- that is,
@@ -1236,13 +1235,13 @@ reference the same integer. Such an arrangement is often referred to as a
 
 Every Abjad score component may be expressed in terms of its duration, as well
 as its start offset relative to the score origin and, by extension, its
-timespan -- the span of time bounded by their start offset and their stop
-offset. Abjad models all such duration objects as \emph{rationals}: ratios of
-real numbers, e.g. \sfrac{1}{2}, \sfrac{7}{23} or \sfrac{16}{1}. This concern
-arises from the realization that all durations and offsets expressible in
-Western common practice notation are rational, rather than floating-point or
-any other representation. Necessarily, Abjad's \texttt{Duration},
-\texttt{Offset} and \texttt{Multiplier} classes all derive from Python's
+timespan -- the span of time bounded by its start offset and stop offset. Abjad
+models all such duration objects as \emph{rationals}: ratios of real numbers,
+e.g. \sfrac{1}{2}, \sfrac{7}{23} or \sfrac{16}{1}. This concern arises from the
+realization that all durations and offsets expressible in Western common
+practice notation are rational, rather than floating-point or any other
+representation. Necessarily, Abjad's \texttt{Duration}, \texttt{Offset} and
+\texttt{Multiplier} classes all derive from Python's
 \texttt{fractions.Fraction} class. Both \texttt{Offset} and \texttt{Multiplier}
 are little more than aliases to Abjad's \texttt{Duration} class. However, their
 use throughout Abjad's code-base, and those projects heavily dependent upon
@@ -1327,19 +1326,19 @@ Duration(1, 2).nonexistant_property = 'This will never work'
 >>> string = 'abcdefghi'
 >>> string[1:-1] = 'xyz'
 Traceback (most recent call last):
-  File "<abjadbook>", line 1, in <module>
+  File "<stdin>", line 1, in <module>
 TypeError: 'str' object does not support item assignment
 \end{minted}
 \begin{minted}{python}
 >>> Duration(3, 4).numerator = 7
 Traceback (most recent call last):
-  File "<abjadbook>", line 1, in <module>
+  File "<stdin>", line 1, in <module>
 AttributeError: can't set attribute
 \end{minted}
 \begin{minted}{python}
 >>> Duration(1, 2).nonexistant_property = 'This will never work'
 Traceback (most recent call last):
-  File "<abjadbook>", line 1, in <module>
+  File "<stdin>", line 1, in <module>
 AttributeError: 'Duration' object has no attribute 'nonexistant_property'
 \end{minted}
 \end{singlespacing}
@@ -1400,9 +1399,9 @@ show(measure)
 \end{abjadbookoutput}
 
 \noindent The B eighth-note starting the quintuplet is nested within two
-different tuplets with different multipliers. While the note's parentage object
-can calculate its prolation, we can also calculate the prolation by hand in
-order to demonstrate the technique:
+different tuplets with different multipliers. While the eighth-note's parentage
+object can certainly calculate its prolation automatically, we will calculate
+the prolation here \enquote{by hand} in order to demonstrate the technique:
 
 \begin{comment}
 <abjad>
@@ -1438,8 +1437,9 @@ Multiplier(8, 15)
 \end{abjadbookoutput}
 
 \noindent By multiplying each leaf's written duration by its prolation, we can
-determine that leaf's actual, or prolated, duration. Note too that this
-conforms to the results of the inspector's \texttt{get\_duration()} method:
+determine that leaf's actual, or \emph{prolated}, duration. Note too that this
+observation conforms to the results of the inspector's \texttt{get\_duration()}
+method:
 
 \begin{comment}
 <abjad>
@@ -1496,8 +1496,8 @@ always a positive power-of-two integer, such as 1, 2, 4, 8, 16 and so forth,
 and therefore precludes durations such as $\sfrac{1}{3}$ or $\sfrac{2}{5}$.
 Likewise, assignability permits numerators such as 1, 2, 3, 4, 6, 7, 8, 12, 14
 and 15 but forbids 5, 9, 10, 13 and 17, as they imply ties. More elegantly, any
-integer can be considered if its binary representation does not contain the
-substring \enquote{01}:
+integer is considered assignable if its binary representation -- disregarding
+any leading zeros -- does not contain the substring \enquote{01}:
 
 \begin{comment}
 <abjad>
@@ -1542,12 +1542,12 @@ for i in range(17):
 \end{abjadbookoutput}
 
 \noindent The duration of each container then derives from the product of its
-prolation and its *contents duration* -- the sum of the durations of its
+prolation and its \emph{contents duration} -- the sum of the durations of its
 children. Ultimately, all scores derive their durations from the durations of
-their leaves, prolated as necessary by any tuplets. As components enter and
-leave a container, the duration of that container and the offsets of components
-following the inserted or deleted component adjust dynamically to reflect the
-altered structure:
+their leaves, prolated as necessary by any tuplets. Recall that containers are
+mutable. As components are added to and removed from a container, the duration
+of that container and the offsets of components following the inserted or
+deleted component adjust dynamically to reflect the altered structure:
 
 \begin{comment}
 <abjad>
@@ -1892,14 +1892,14 @@ Some Abjad container classes correspond to LilyPond's notion of
 measures, tuplets or \enquote{bare} containers. LilyPond uses contexts during
 typesetting to maintain various kinds of musical information hierarchically.
 For example, LilyPond's \texttt{Staff} context maintains information about the
-accidentals that have appeared so far in any voice contained by that staff and
-the staff's current clef -- which are necessarily local to a single staff --,
-while the \texttt{Score} context maintains more global information, such as the
-current tempo and measure number. LilyPond also allows for the definition of
-new contexts, and provides a number of specially-defined contexts, e.g.
-\texttt{ChoirStaff}, \texttt{TabVoice} and \texttt{FiguredBass}. While
-LilyPond's contexts may be either named or anonymous, named contexts allow
-LilyPond to stitch together different sections of music into a single
+accidentals that have appeared so far in any voice contained by that staff as
+well as the staff's current clef -- all of which is necessarily local to a
+single staff --, while the \texttt{Score} context maintains more global
+information, such as the current tempo and measure number. LilyPond allow
+composers to define new contexts, and provides a number of specially-defined
+contexts, e.g. \texttt{ChoirStaff}, \texttt{TabVoice} and \texttt{FiguredBass}.
+While LilyPond's contexts may be either named or anonymous, named contexts
+allow LilyPond to stitch together different sections of music into a single
 continuous score, allowing different segments of a work to be defined in
 different files and then concatenated together.
 
@@ -2019,7 +2019,8 @@ attached to a single component: \texttt{get\_indicator()} and
 indicators matching any supplied class prototype, while the former returns only
 one and raises an error if more or less than one indicator matching the
 supplied class prototype is attached. In the case of retrieving any attached
-articulations, both methods work perfectly.
+articulations from the staff's first note -- given that there is only one
+articulation attached --, both methods work perfectly.
 
 \begin{comment}
 <abjad>[allow_exceptions]
@@ -2106,22 +2107,24 @@ show(score)
 
 Abjad models how the influence of certain types of indicators persists across
 components subsequent to the component they attach to via the concept of
-\emph{scope}. Indicator scoping describes how, for example, all components in a
-score are governed by one tempo from the moment that tempo appears until the
-moment a different appears. Likewise, scoping describes how all leaves in a
-staff are understood to be governed by the staff's clef up until the point that
-that clef changes. Different indicators govern different scopes by default. As
-just described, tempo indications govern the score context, while clef, key
-signature and dynamics govern the staff context. An indicator governing some
-component is known as that component's \emph{effective} indicator. As with
-non-scoped indicators, the component inspector can be used to examine if and
-what indicator of a given type is effective for a given component.
+\emph{indicator scope}. Indicator scope describes how, for example, all
+components in a score are governed by one tempo from the moment that tempo
+appears until the moment a different appears. Likewise, scoping describes how
+all leaves in a staff are understood to be governed by the staff's clef up
+until the point that that clef changes. Different indicators govern different
+scopes by default. As just described, tempo indications govern the score
+context, while clef, key signature and dynamics govern the staff context. An
+indicator governing some component is known as that component's
+\emph{effective} indicator. As with non-scoped indicators, the component
+inspector can be used to examine if and what indicator of a given type is
+effective for a given component.
 
 Consider the score above, to which a variety of indicators have just been
-attached. By inspecting the leaves in both staves, we can determine what
-indicators are effective for each leaf. For example, all of the leaves in the
-upper staff will report that their clef is a treble clef, while all of the
-leaves in the lower staff will report that theirs is a bass clef:
+attached. By inspecting the leaves in both staves with the component
+inspector's \texttt{get\_effective()} method, we can determine what indicators
+are effective for each leaf. For example, all of the leaves in the upper staff
+will report that their clef is a treble clef, while all of the leaves in the
+lower staff will report that theirs is a bass clef:
 
 \begin{comment}
 <abjad>
@@ -2175,7 +2178,7 @@ for leaf in score['Lower Staff'].select_leaves():
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Despite the tempo indication being attached to the first leaf in the
+\noindent While the tempo indication is only attached to the first leaf in the
 upper staff, all leaves in the entire score report that same tempo as their
 effective tempo:
 
@@ -2295,18 +2298,20 @@ for leaf in score['Lower Staff'].select_leaves():
 \emph{default scope} when being attached, specifying implicitly that they be
 effective at either the staff or score context-level. Indicators can also be
 attached with an explicitly-specified scope, overriding any default the
-indicator class might provide. By detaching the
-implicitly-staff-scoped dynamics, those same dynamic indications can be
-reattached, explicitly scoped for the \enquote{PianoStaff} context, allowing
-all leaves contained by that piano staff to detect their appropriate dynamic
-level:
+indicator's class might provide. By detaching the implicitly-staff-scoped
+dynamics, those same dynamic indications can be reattached, explicitly scoped
+for the \enquote{PianoStaff} context, allowing all leaves contained by that
+piano staff -- which includes both the upper and lower staves -- to detect
+their appropriate dynamic level:
 
 \begin{comment}
 <abjad>
 piano_dynamic = detach(Dynamic, score['Voice 1'][0][0])[0]
 forte_dynamic = detach(Dynamic, score['Voice 1'][1][0])[0]
+pianississimo_dynamic = detach(Dynamic, score['Voice 1'][1][-1])[0]
 attach(piano_dynamic, score['Voice 1'][0][0], scope='PianoStaff')
 attach(forte_dynamic, score['Voice 1'][1][0], scope='PianoStaff')
+attach(pianississimo_dynamic, score['Voice 1'][1][-1], scope='PianoStaff')
 for leaf in score['Upper Staff'].select_leaves():
     dynamic = inspect_(leaf).get_effective(Dynamic)
     print(leaf, dynamic)
@@ -2324,8 +2329,10 @@ for leaf in score['Lower Staff'].select_leaves():
 \begin{minted}{python}
 >>> piano_dynamic = detach(Dynamic, score['Voice 1'][0][0])[0]
 >>> forte_dynamic = detach(Dynamic, score['Voice 1'][1][0])[0]
+>>> pianississimo_dynamic = detach(Dynamic, score['Voice 1'][1][-1])[0]
 >>> attach(piano_dynamic, score['Voice 1'][0][0], scope='PianoStaff')
 >>> attach(forte_dynamic, score['Voice 1'][1][0], scope='PianoStaff')
+>>> attach(pianississimo_dynamic, score['Voice 1'][1][-1], scope='PianoStaff')
 >>> for leaf in score['Upper Staff'].select_leaves():
 ...     dynamic = inspect_(leaf).get_effective(Dynamic)
 ...     print(leaf, dynamic)
@@ -2621,6 +2628,8 @@ or compositional intent. Some of these annotative indicators include
 \label{sec:spanners}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\todo[inline]{\textbf{TODO:} Footnote a definition of logical voices.}
+
 A final collection of classes, \emph{spanners}, model musical and typographic
 constructs such as slurs, beams, hairpins, and glissandi which \emph{span}
 across different levels of hierarchy in the score tree. Spanners attach to not
@@ -2633,11 +2642,11 @@ awareness allows spanners to contribute formatting to a score tree's LilyPond
 syntax output conditionally. The first and last leaves covered by a spanner can
 be formatted specially, and the types of leaves covered by a spanner, their
 durations or even any indicators attached to those leaves can be considered
-during formatting allowing spanners to make use of annotative indicators
+during formatting, allowing spanners to make use of annotative indicators
 attached to components.
 
-Consider the following staff which contains leaves as well as a triplet, itself
-containing more leaves:
+Consider the following staff, which contains leaves as well as a triplet,
+itself containing more leaves:
 
 \begin{comment}
 <abjad>
@@ -2698,7 +2707,8 @@ show(staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Components can be inspected for any spanners attached to them:
+\noindent As with indicators, the component inspector provides methods for
+inspecting any spanners attached to a given component:
 
 \begin{comment}
 <abjad>
@@ -2759,10 +2769,10 @@ Duration(1, 1)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Subscripting the spanner with Python's slice notation \texttt{[:]}
-returns a \emph{selection} object containing all of the components to which the
-spanner attaches. Selections are discussed in more detail in
-\autoref{sec:selecting-components}.
+\noindent Note that subscripting the spanner with Python's slice notation
+\texttt{[:]} returns a \emph{selection} object containing all of the components
+to which the spanner attaches. The role of selections is discussed in more
+detail in \autoref{sec:selecting-components}.
 
 Returning to the graph visualizations of score trees demonstrated
 earlier will clarify how spanners attach to components. Consider the following
@@ -2829,7 +2839,8 @@ model of Graphviz's input file format as part of its
 \texttt{documentationtools} subpackage. There are many layout options available
 when working with Graphviz, and they can be passed as keywords to Abjad's
 top-level \texttt{graph()} function, hence the appearance of the
-\texttt{graph\_attributes} keyword.}
+\texttt{graph\_attributes} keyword. These overrides are necessary to circumvent
+deficiencies in Graphviz's handling of this particular graph's layout.}
 
 \begin{comment}
 <abjad>
@@ -3094,11 +3105,11 @@ show(staff)
 \end{abjadbookoutput}
 
 \noindent Attaching spanners to containers rather than leaves lets spanners act
-as a kind of \emph{decorator} for those containers in the sense of computer
-programming design patterns: an object which wraps another object, extending it
-with new functionality while preserving all of the old. In this case, spanners
-can extend containers with additional typographic logic, but remain entirely
-ignorant of the container's contents.
+as a kind of \emph{decorator}\cite{gamma1994design} for those containers in the
+sense of computer programming design patterns: an object which wraps another
+object, extending it with new functionality while preserving all of the old. In
+this case, spanners can extend containers with additional typographic logic,
+but remain entirely ignorant of the container's contents.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Typographic overrides}
@@ -3392,7 +3403,7 @@ show(staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\todo[inline]{\textbf{TODO:} Conclusion.}
+\todo[inline]{\textbf{TODO:} Conclusion of typography discussion.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Selecting components}
@@ -3549,8 +3560,8 @@ for spanner in selection.get_spanners():
 >>> for spanner in selection.get_spanners():
 ...     spanner
 ...
-Beam("g'8, a'8, b'8, c''8")
 Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
+Beam("g'8, a'8, b'8, c''8")
 Beam("c'8, d'8, e'8, f'8")
 Glissando("e'8, f'8, g'8, a'8")
 \end{minted}
