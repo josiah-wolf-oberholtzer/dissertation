@@ -31,7 +31,7 @@
 \def\pdTwoSchool#1{\gdef\@pdTwoSchool{#1}}
 \def\pdTwoYear#1{\gdef\@pdTwoYear{#1}}
 
-\RequirePackage{color}
+\RequirePackage{xcolor}
 \usepackage{hyperref}
 \RequirePackage[small, md, sc, compact]{titlesec}
 \setlength{\headheight}{15pt}
@@ -96,7 +96,14 @@
 \newfontfamily{\smallcaps}[RawFeature={+c2sc,+scmp}]{EB Garamond}
 %\setromanfont[Numbers=OldStyle, Ligatures={Common}]{EB Garamond}
 %\setsansfont[Scale=MatchLowercase, BoldFont={Lato Bold}]{Lato Regular}
-\setmonofont[Scale=MatchLowercase]{Inconsolata}
+\setmonofont[
+    %BoldFeatures={FakeBold=3},
+    %BoldFont=Inconsolata,
+    %BoldItalicFeatures={FakeBold=3},
+    %BoldItalicFont=Inconsolata,
+    %ItalicFont=Inconsolata,
+    Scale=MatchLowercase
+]{Inconsolata}
 
 \RequirePackage[
     labelfont={bf,sf,footnotesize,singlespacing},

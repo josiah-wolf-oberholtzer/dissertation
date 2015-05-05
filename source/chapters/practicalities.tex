@@ -52,7 +52,7 @@ Consort's model of composition. Likewise, each \emph{Invisible Cities} score
 package is structured into a nearly identical arrangement of eight top-level
 directories, each with a clearly delineated purpose and substructure.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \noindent%
@@ -108,7 +108,7 @@ import ersilia
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> import ersilia
 \end{minted}
 \end{singlespacing}
@@ -184,7 +184,7 @@ importable Python packages, grouped flatly into the score package's top-level
 an initializer file. Like the makers modules, material definition module
 define only a single object.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%
@@ -239,7 +239,7 @@ print(materials_names)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> materials_names = dir(ersilia.materials)
 >>> materials_names = [x for x in materials_names if not x.startswith('_')]
 >>> print(materials_names)
@@ -267,7 +267,7 @@ print(materials_names)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%
@@ -307,7 +307,7 @@ containing the definition of that segment's segment-maker. Because Consort's
 segment-maker class is illustrable, each segment package eventually houses that
 segment's illustration LilyPond source and output PDF.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%
@@ -398,7 +398,7 @@ suppresses the appearance of titles and other headers at the top of those
 segment illustrations, giving the impression when viewing those segments'
 illustrations alone that one has jumped into the middle of the full score.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%
@@ -459,7 +459,7 @@ finished document, such as a cover page. Asset source files, in contrast, must
 always be included or otherwise combined with other source files in order to
 produce valid typesettable input.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%
@@ -516,7 +516,7 @@ second file, \texttt{segments.ily}, defines in LilyPond syntax the order in
 which the segment illustration sources, collected in the \texttt{segments/}
 subdirectory of the \texttt{build/} directory, are to be concatenated.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%
@@ -598,7 +598,7 @@ format of each object defined in a material package. The classes of these
 objects generally have much more extensive test suites already defined either
 in Abjad or Consort, so simply instantiating and formatting them here suffices.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%
@@ -636,7 +636,7 @@ automated test runners like
 continuous-integration testing services such as
 Travis-CI.\footnote{https://travis-ci.org/}
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
 \dirtree{%

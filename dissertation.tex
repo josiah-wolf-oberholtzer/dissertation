@@ -12,7 +12,7 @@
 \usepackage[color=yellow]{todonotes}
 \usepackage[export]{adjustbox}
 \usepackage[htt]{hyphenat}
-\usepackage{color}
+\usepackage{xcolor}
 \usepackage{csquotes}
 \usepackage{dirtree}
 \usepackage{excludeonly}
@@ -20,7 +20,6 @@
 \usepackage{float}
 \usepackage{imakeidx}
 \usepackage{lipsum}
-\usepackage{listings}
 \usepackage{microtype}
 \usepackage{minted}
 \usepackage{multicol}
@@ -43,10 +42,6 @@
     singlelinecheck=off,
 ]{caption}
 
-%\usepackage[margincaption,outercaption,raggedright]{sidecap}
-%\sidecaptionvpos{figure}{t} 
-%\sidecaptionvpos{table}{t}
-
 \usepackage{sidenotes}
 
 \newenvironment{abjadbookoutput}{}{}
@@ -60,8 +55,7 @@
     \input{tmp/tmp.tex}
 }
 
-\setmonofont{Inconsolata}[Scale=MatchLowercase]
-
+%\usemintedstyle{dissertation}
 \setminted{
     autogobble=true,
     fontsize=\footnotesize,

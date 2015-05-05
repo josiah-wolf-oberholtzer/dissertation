@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Tools for modeling time, rhythm and meter}
+\chapter{Modeling time, rhythm and meter}
 \label{chap:time-tools}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,7 +90,7 @@ timespan = timespantools.Timespan(
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan = timespantools.Timespan(
 ...     start_offset=Offset(1, 4),
 ...     stop_offset=Offset(3, 2),
@@ -112,14 +112,14 @@ show(timespan)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(timespan))
 timespantools.Timespan(
     start_offset=durationtools.Offset(1, 4),
     stop_offset=durationtools.Offset(3, 2),
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(timespan)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-de7556a2817f1c5982b6b5e8d10f5be8.pdf}
@@ -144,15 +144,15 @@ timespan.duration
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan.start_offset
 Offset(1, 4)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan.stop_offset
 Offset(3, 2)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan.duration
 Duration(5, 4)
 \end{minted}
@@ -175,12 +175,12 @@ timepoint_timespan.is_well_formed
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timepoint_timespan = timespantools.Timespan(1, 1)
 >>> timepoint_timespan.duration
 Duration(0, 1)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timepoint_timespan.is_well_formed
 False
 \end{minted}
@@ -206,16 +206,16 @@ infinite_timespan.duration
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> infinite_timespan = timespantools.Timespan()
 >>> infinite_timespan.start_offset
 NegativeInfinity
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> infinite_timespan.stop_offset
 Infinity
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> infinite_timespan.duration
 Infinity
 \end{minted}
@@ -236,11 +236,11 @@ timespantools.Timespan(start_offset=0)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespantools.Timespan(stop_offset=0)
 Timespan(start_offset=NegativeInfinity, stop_offset=Offset(0, 1))
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespantools.Timespan(start_offset=0)
 Timespan(start_offset=Offset(0, 1), stop_offset=Infinity)
 \end{minted}
@@ -260,7 +260,7 @@ new(timespan, stop_offset=(5, 16))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> new(timespan, stop_offset=(5, 16))
 Timespan(start_offset=Offset(1, 4), stop_offset=Offset(5, 16))
 \end{minted}
@@ -300,7 +300,7 @@ annotated_timespan.annotation
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> annotated_timespan = timespantools.AnnotatedTimespan(
 ...     start_offset=(1, 8),
 ...     stop_offset=(7, 8),
@@ -339,7 +339,7 @@ print(format(metadata_timespan))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> metadata_timespan = new(annotated_timespan,
 ...     stop_offset=(3, 2),
 ...     annotation={
@@ -441,7 +441,7 @@ print(format(time_relation_1))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> time_relation_1 = timespantools.timespan_2_intersects_timespan_1()
 >>> print(format(time_relation_1))
 timespantools.TimespanTimespanTimeRelation(
@@ -495,14 +495,14 @@ time_relation_2(timespan_2=timespantools.Timespan(30, 45))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> time_relation_2 = timespantools.timespan_2_intersects_timespan_1(
 ...     timespan_1=timespantools.Timespan(0, 10),
 ...     )
 >>> time_relation_2(timespan_2=timespantools.Timespan(5, 15))
 True
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> time_relation_2(timespan_2=timespantools.Timespan(30, 45))
 False
 \end{minted}
@@ -527,7 +527,7 @@ timespantools.timespan_2_intersects_timespan_1(
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespantools.timespan_2_intersects_timespan_1(
 ...     timespan_1=timespantools.Timespan(1, 3),
 ...     timespan_2=timespantools.Timespan(2, 4),
@@ -559,7 +559,7 @@ timespan_3 = timespantools.Timespan(10, 20)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_1 = timespantools.Timespan(0, 10)
 >>> timespan_2 = timespantools.Timespan(5, 15)
 >>> timespan_3 = timespantools.Timespan(10, 20)
@@ -614,27 +614,27 @@ timespan_3.intersects_timespan(timespan_2)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_1.intersects_timespan(timespan_2)
 True
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_1.intersects_timespan(timespan_3)
 False
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_2.intersects_timespan(timespan_1)
 True
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_2.intersects_timespan(timespan_3)
 True
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_3.intersects_timespan(timespan_1)
 False
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_3.intersects_timespan(timespan_2)
 True
 \end{minted}
@@ -654,11 +654,11 @@ timespan_1.is_congruent_to_timespan(timespan_1)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_1.is_congruent_to_timespan(timespan_2)
 False
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_1.is_congruent_to_timespan(timespan_1)
 True
 \end{minted}
@@ -680,11 +680,11 @@ timespan_1.is_tangent_to_timespan(timespan_3)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_1.is_tangent_to_timespan(timespan_2)
 False
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_1.is_tangent_to_timespan(timespan_3)
 True
 \end{minted}
@@ -717,16 +717,16 @@ timespan.round_offsets(2)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan = timespantools.Timespan(0, 15)
 >>> timespan.translate(3)
 Timespan(start_offset=Offset(3, 1), stop_offset=Offset(18, 1))
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan.scale(3)
 Timespan(start_offset=Offset(0, 1), stop_offset=Offset(45, 1))
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan.round_offsets(2)
 Timespan(start_offset=Offset(0, 1), stop_offset=Offset(16, 1))
 \end{minted}
@@ -750,7 +750,7 @@ print(format(scaled_annotated_timespan))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> annotated_timespan = timespantools.AnnotatedTimespan(0, 5, 'an annotation')
 >>> scaled_annotated_timespan = annotated_timespan.translate((-1, 3))
 >>> print(format(scaled_annotated_timespan))
@@ -787,7 +787,7 @@ print(format(one_shard))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> two_shards = timespan.split_at_offset(5)
 >>> print(format(two_shards))
 timespantools.TimespanInventory(
@@ -803,7 +803,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> one_shard = timespan.split_at_offset(10000)
 >>> print(format(one_shard))
 timespantools.TimespanInventory(
@@ -839,19 +839,19 @@ set([1, 2, 3]) ^ set([2, 3, 4])  # symmetric difference
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> set([1, 2, 3]) | set([2, 3, 4])  # union
 set([1, 2, 3, 4])
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> set([1, 2, 3]) - set([2, 3, 4])  # difference
 set([1])
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> set([1, 2, 3]) & set([2, 3, 4])  # intersection
 set([2, 3])
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> set([1, 2, 3]) ^ set([2, 3, 4])  # symmetric difference
 set([1, 4])
 \end{minted}
@@ -892,14 +892,14 @@ print(format(result))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(0, 10) - timespantools.Timespan(0, 10)
 >>> print(format(result))
 timespantools.TimespanInventory(
     []
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(0, 10) - timespantools.Timespan(5, 15)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -911,7 +911,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(0, 10) - timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -923,7 +923,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(5, 15) - timespantools.Timespan(0, 10)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -935,14 +935,14 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(5, 15) - timespantools.Timespan(5, 15)
 >>> print(format(result))
 timespantools.TimespanInventory(
     []
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(5, 15) - timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -954,7 +954,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(10, 20) - timespantools.Timespan(0, 10)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -966,7 +966,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(10, 20) - timespantools.Timespan(5, 15)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -978,7 +978,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(10, 20) - timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1006,7 +1006,7 @@ print(format(result))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(0, 10) | timespantools.Timespan(5, 15)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1018,7 +1018,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(0, 10) | timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1030,7 +1030,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(5, 15) | timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1059,7 +1059,7 @@ print(format(result))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(10, 20) | timespantools.Timespan(25, 50)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1096,7 +1096,7 @@ print(format(result))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(0, 10) & timespantools.Timespan(5, 15)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1108,14 +1108,14 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(0, 10) & timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
     []
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(5, 15) & timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1149,7 +1149,7 @@ print(format(result))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(0, 10) ^ timespantools.Timespan(5, 15)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1165,7 +1165,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(0, 10) ^ timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1181,7 +1181,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespantools.Timespan(5, 15) ^ timespantools.Timespan(10, 20)
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1257,7 +1257,7 @@ show(timespan_inventory)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory = timespantools.TimespanInventory([
 ...     timespantools.Timespan(0, 16),
 ...     ])
@@ -1288,7 +1288,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(timespan_inventory)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-e7a68b07301b5dde7c04a3097b11b500.pdf}
@@ -1311,15 +1311,15 @@ for timespan in timespan_inventory:
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> len(timespan_inventory)
 4
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory[1]
 Timespan(start_offset=Offset(5, 1), stop_offset=Offset(12, 1))
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for timespan in timespan_inventory:
 ...     timespan
 ...
@@ -1352,16 +1352,16 @@ print(format(duplicate))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> duplicate = timespantools.TimespanInventory(timespan_inventory)
 >>> duplicate == timespan_inventory
 True
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> duplicate is timespan_inventory
 False
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(duplicate))
 timespantools.TimespanInventory(
     [
@@ -1408,19 +1408,19 @@ timespan_inventory.timespan
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory.start_offset
 Offset(-2, 1)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory.stop_offset
 Offset(20, 1)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory.duration
 Duration(22, 1)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory.timespan
 Timespan(start_offset=Offset(-2, 1), stop_offset=Offset(20, 1))
 \end{minted}
@@ -1447,15 +1447,15 @@ timespan_inventory.all_are_well_formed
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory.all_are_contiguous
 False
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory.all_are_nonoverlapping
 False
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory.all_are_well_formed
 True
 \end{minted}
@@ -1481,7 +1481,7 @@ timespan_inventory.all_are_nonoverlapping
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory = timespantools.TimespanInventory([
 ...     timespantools.Timespan(0, 10),
 ...     timespantools.Timespan(10, 20),
@@ -1490,11 +1490,11 @@ timespan_inventory.all_are_nonoverlapping
 >>> show(timespan_inventory)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-d9997d65e5d0afdad301e936638868bb.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory.all_are_contiguous
 False
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory.all_are_nonoverlapping
 True
 \end{minted}
@@ -1520,7 +1520,7 @@ timespan_inventory.all_are_nonoverlapping
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory = timespantools.TimespanInventory([
 ...     timespantools.Timespan(0, 10),
 ...     timespantools.Timespan(10, 20),
@@ -1529,11 +1529,11 @@ timespan_inventory.all_are_nonoverlapping
 >>> show(timespan_inventory)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7f455919c0b05a5992d29848880d082d.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory.all_are_contiguous
 True
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory.all_are_nonoverlapping
 True
 \end{minted}
@@ -1581,7 +1581,7 @@ show(result, range_=(-2, 16))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory = timespantools.TimespanInventory([
 ...     timespantools.Timespan(0, 16),
 ...     timespantools.Timespan(5, 12),
@@ -1590,7 +1590,7 @@ show(result, range_=(-2, 16))
 >>> show(timespan_inventory)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-bcf796c336338d7e1ec4cae1ae8f81d0.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_operand = timespantools.Timespan(6, 10)
 >>> result = timespan_inventory & timespan_operand
 >>> show(result, range_=(-2, 16))
@@ -1620,7 +1620,7 @@ show(result)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory = timespantools.TimespanInventory([
 ...     timespantools.Timespan(0, 16),
 ...     timespantools.Timespan(5, 12),
@@ -1629,7 +1629,7 @@ show(result)
 >>> show(timespan_inventory)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-bcf796c336338d7e1ec4cae1ae8f81d0.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_operand = timespantools.Timespan(6, 10)
 >>> result = timespan_inventory - timespan_operand
 >>> show(result)
@@ -1659,7 +1659,7 @@ show(right, range_=(0, 10))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory = timespantools.TimespanInventory([
 ...     timespantools.Timespan(0, 3),
 ...     timespantools.Timespan(3, 6),
@@ -1668,12 +1668,12 @@ show(right, range_=(0, 10))
 >>> show(timespan_inventory)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c6ac00c33bae7c092839e0d9eed14364.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> left, right = timespan_inventory.split_at_offset(4)
 >>> show(left, range_=(0, 10))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-4bbf9f0b62b3d6b64b454b9357f558b1.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(right, range_=(0, 10))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c0711ccb491c38828100bbc6c0c7bb4a.pdf}
@@ -1702,7 +1702,7 @@ for shard in shards:
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory = timespantools.TimespanInventory([
 ...     timespantools.Timespan(0, 3),
 ...     timespantools.Timespan(3, 6),
@@ -1711,7 +1711,7 @@ for shard in shards:
 >>> show(timespan_inventory)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c6ac00c33bae7c092839e0d9eed14364.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> shards = timespan_inventory.split_at_offsets((2, 4, 7))
 >>> for shard in shards:
 ...     show(shard, range_=(0, 10))
@@ -1750,7 +1750,7 @@ show(result)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory = timespantools.TimespanInventory([
 ...     timespantools.Timespan(-2, 2),
 ...     timespantools.Timespan(0, 10),
@@ -1759,7 +1759,7 @@ show(result)
 >>> show(timespan_inventory)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f47513d85ce7bf4288cae06c0b09b27b.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespan_inventory.compute_logical_or()
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1771,7 +1771,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(result)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-aeff7e8a66f50bd1174d694e5d2e765d.pdf}
@@ -1800,7 +1800,7 @@ show(result, range_=(-2, 12))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory = timespantools.TimespanInventory([
 ...     timespantools.Timespan(-2, 8),
 ...     timespantools.Timespan(0, 10),
@@ -1809,7 +1809,7 @@ show(result, range_=(-2, 12))
 >>> show(timespan_inventory)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-1ebe2aa9d873ea15eb614d26e44806f4.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespan_inventory.compute_logical_and()
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1821,7 +1821,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(result, range_=(-2, 12))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fc22fe0268233e8b05264e17f65d30ae.pdf}
@@ -1849,7 +1849,7 @@ show(result, range_=(-2, 12))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory = timespantools.TimespanInventory([
 ...     timespantools.Timespan(-2, 2),
 ...     timespantools.Timespan(0, 10),
@@ -1858,7 +1858,7 @@ show(result, range_=(-2, 12))
 >>> show(timespan_inventory)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f47513d85ce7bf4288cae06c0b09b27b.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = timespan_inventory.compute_logical_xor()
 >>> print(format(result))
 timespantools.TimespanInventory(
@@ -1878,7 +1878,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(result, range_=(-2, 12))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ca294e3ef0d4de3ddfb5aefb754d65cc.pdf}
@@ -1911,7 +1911,7 @@ for shard in timespan_inventory.partition(include_tangent_timespans=True):
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory = timespantools.TimespanInventory([
 ...     timespantools.Timespan(0, 10),
 ...     timespantools.Timespan(5, 15),
@@ -1921,7 +1921,7 @@ for shard in timespan_inventory.partition(include_tangent_timespans=True):
 >>> show(timespan_inventory)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-61fb7454778b585d9f76905bca1160f4.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for shard in timespan_inventory.partition():
 ...     show(shard, range_=(0, 30))
 ...
@@ -1929,7 +1929,7 @@ for shard in timespan_inventory.partition(include_tangent_timespans=True):
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-7e33ff9b4eeaf127851126920ba458b2.pdf}\\
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-45c0b016f184f5dc84905bb8c9399d48.pdf}\\
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-02ef5b67d81d13adcb22081715689189.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for shard in timespan_inventory.partition(include_tangent_timespans=True):
 ...     show(shard, range_=(0, 30))
 ...
@@ -1972,7 +1972,7 @@ for shard in timespan_inventory.explode():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory = timespantools.TimespanInventory([
 ...     timespantools.Timespan(-2, 8),
 ...     timespantools.Timespan(-2, 1),
@@ -1987,7 +1987,7 @@ for shard in timespan_inventory.explode():
 >>> show(timespan_inventory)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-22bfaffe6b95a47e8102d265ddaf3962.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for shard in timespan_inventory.explode():
 ...     show(shard, range_=(-2, 20))
 ...
@@ -2015,7 +2015,7 @@ for shard in timespan_inventory.explode(inventory_count=2):
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for shard in timespan_inventory.explode(inventory_count=2):
 ...     show(shard, range_=(-2, 20))
 ...
@@ -2086,7 +2086,7 @@ performed_timespan = consort.PerformedTimespan(
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> performed_timespan = consort.PerformedTimespan(
 ...     layer=1,
 ...     start_offset=(1, 2),
@@ -2123,7 +2123,7 @@ performed_timespan = consort.PerformedTimespan(
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> performed_timespan = consort.PerformedTimespan(
 ...     layer=1,
 ...     minimum_duration=Duration(1, 8),
@@ -2158,7 +2158,7 @@ silent_timespan = consort.SilentTimespan(
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> silent_timespan = consort.SilentTimespan(
 ...     layer=2,
 ...     start_offset=Offset(0, 1),
@@ -2247,7 +2247,7 @@ print(format(timespan_inventory))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifiers = {'Violin Voice': 'violin music'}
 >>> target_timespan = timespantools.Timespan((1, 4), (11, 8))
 >>> flooded_timespan_maker = consort.FloodedTimespanMaker()
@@ -2295,7 +2295,7 @@ show(timespan_inventory, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifiers = {
 ...     'Violin Voice': 'violin music',
 ...     'Cello Voice': 'cello music',
@@ -2325,7 +2325,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(timespan_inventory, key='voice_name')
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-2ff86337118b328e4c105e83561b98c3.pdf}
@@ -2360,7 +2360,7 @@ show(timespan_inventory, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> flooded_timespan_maker = consort.FloodedTimespanMaker(
 ...     padding=Duration(1, 4),
 ...     timespan_specifier=consort.TimespanSpecifier(
@@ -2418,7 +2418,7 @@ timespantools.TimespanInventory(
         ]
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(timespan_inventory, key='voice_name')
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-17087858a1aa81c89c499e41f283c263.pdf}
@@ -2454,7 +2454,7 @@ talea[99999]
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> talea = rhythmmakertools.Talea(
 ...     counts=[1, 2, 3, 4],
 ...     denominator=16,
@@ -2473,7 +2473,7 @@ NonreducedFraction(4, 16)
 NonreducedFraction(1, 16)
 NonreducedFraction(2, 16)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> talea[99999]
 NonreducedFraction(4, 16)
 \end{minted}
@@ -2503,7 +2503,7 @@ print(format(talea_timespan_maker))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> talea_timespan_maker = consort.TaleaTimespanMaker()
 >>> print(format(talea_timespan_maker))
 consort.tools.TaleaTimespanMaker(
@@ -2558,7 +2558,7 @@ target_timespan = timespantools.Timespan(0, (19, 4))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> import collections
 >>> music_specifiers = collections.OrderedDict([
 ...     ('Voice 1', None),
@@ -2589,7 +2589,7 @@ show(result, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = talea_timespan_maker(
 ...     music_specifiers=music_specifiers,
 ...     target_timespan=target_timespan,
@@ -2630,7 +2630,7 @@ show(result, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> talea_timespan_maker = new(
 ...     talea_timespan_maker,
 ...     playing_talea=rhythmmakertools.Talea(
@@ -2675,7 +2675,7 @@ show(result, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> talea_timespan_maker = new(
 ...     talea_timespan_maker,
 ...     playing_groupings=(1, 2),
@@ -2714,7 +2714,7 @@ show(result, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> talea_timespan_maker = new(
 ...     talea_timespan_maker,
 ...     silence_talea=rhythmmakertools.Talea(
@@ -2755,7 +2755,7 @@ show(result, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> talea_timespan_maker = new(
 ...     talea_timespan_maker,
 ...     initial_silence_talea=rhythmmakertools.Talea(
@@ -2795,7 +2795,7 @@ show(result, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> talea_timespan_maker = new(
 ...     talea_timespan_maker,
 ...     reflect=True,
@@ -2843,7 +2843,7 @@ show(result, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> synchronized_talea_timespan_maker = consort.TaleaTimespanMaker(
 ...     playing_talea=rhythmmakertools.Talea(
 ...         counts=(1, 2, 3, 4, 5),
@@ -2906,7 +2906,7 @@ show(result, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> synchronized_talea_timespan_maker = new(
 ...     synchronized_talea_timespan_maker,
 ...     initial_silence_talea=rhythmmakertools.Talea(
@@ -2946,7 +2946,7 @@ show(result, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> synchronized_talea_timespan_maker = new(
 ...     synchronized_talea_timespan_maker,
 ...     padding=(1, 8),
@@ -2999,7 +2999,7 @@ show(timespan_inventory, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_inventory = timespantools.TimespanInventory([
 ...     consort.PerformedTimespan(0, 10, voice_name='Voice 1'),
 ...     consort.PerformedTimespan(0, 10, voice_name='Voice 2'),
@@ -3048,7 +3048,7 @@ show(result, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifiers = {'Dependent Voice': None}
 >>> dependent_timespan_maker = consort.DependentTimespanMaker(
 ...     voice_names=(
@@ -3102,7 +3102,7 @@ show(result, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> new_dependent_timespan_maker = new(
 ...     dependent_timespan_maker,
 ...     include_inner_starts=True,
@@ -3138,7 +3138,7 @@ show(result, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> new_dependent_timespan_maker = new(
 ...     dependent_timespan_maker,
 ...     include_inner_stops=True,
@@ -3175,7 +3175,7 @@ show(result, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> new_dependent_timespan_maker = new(
 ...     dependent_timespan_maker,
 ...     include_inner_starts=True,
@@ -3217,7 +3217,7 @@ show(result, key='voice_name', range_=(0, 75))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> rotated_dependent_timespan_maker = new(
 ...     new_dependent_timespan_maker,
 ...     rotation_indices=(1,),
@@ -3253,7 +3253,7 @@ show(result, key='voice_name', range_=(0, 75))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> rotated_dependent_timespan_maker = new(
 ...     new_dependent_timespan_maker,
 ...     rotation_indices=(1, -1),
@@ -3291,7 +3291,7 @@ show(result, key='voice_name', range_=(0, 75))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = new_dependent_timespan_maker(
 ...     music_specifiers=music_specifiers,
 ...     target_timespan=timespantools.Timespan(17, 58),
@@ -3347,7 +3347,7 @@ show(note_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> note_rhythm_maker = rhythmmakertools.NoteRhythmMaker()
 >>> divisions = [(3, 8), (4, 8), (3, 16), (4, 16), (5, 8), (2, 4)]
 >>> show(note_rhythm_maker, divisions=divisions)
@@ -3384,7 +3384,7 @@ show(note_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> note_rhythm_maker = new(
 ...     note_rhythm_maker,
 ...     tie_specifier=rhythmmakertools.TieSpecifier(
@@ -3419,7 +3419,7 @@ show(note_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> mask = rhythmmakertools.BooleanPattern(indices=[0], period=2)
 >>> note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(output_masks=[mask])
 >>> show(note_rhythm_maker, divisions=divisions)
@@ -3443,7 +3443,7 @@ show(note_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> mask = rhythmmakertools.BooleanPattern(indices=[0], period=1)
 >>> note_rhythm_maker = rhythmmakertools.NoteRhythmMaker(output_masks=[mask])
 >>> show(note_rhythm_maker, divisions=divisions)
@@ -3477,7 +3477,7 @@ show(talea_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
 ...     talea=rhythmmakertools.Talea(
 ...         counts=[1],
@@ -3509,7 +3509,7 @@ show(talea_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> talea_rhythm_maker = new(
 ...     talea_rhythm_maker,
 ...     talea__counts=[1, 2],
@@ -3536,7 +3536,7 @@ show(talea_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> talea_rhythm_maker = new(
 ...     talea_rhythm_maker,
 ...     talea__counts=[4, 3, 2, 1],
@@ -3578,7 +3578,7 @@ show(talea_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> talea_rhythm_maker = new(
 ...     talea_rhythm_maker,
 ...     extra_counts_per_division=[0, 1, 1],
@@ -3614,7 +3614,7 @@ show(talea_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> talea_rhythm_maker = new(
 ...     talea_rhythm_maker,
 ...     tie_specifier=rhythmmakertools.TieSpecifier(
@@ -3648,7 +3648,7 @@ show(talea_rhythm_maker_with_rests, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> talea_rhythm_maker_with_rests = new(
 ...     talea_rhythm_maker,
 ...     talea__counts=[4, -3, 2, 1],
@@ -3679,7 +3679,7 @@ show(talea_rhythm_maker_with_rests, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> talea_rhythm_maker_with_rests = new(
 ...     talea_rhythm_maker,
 ...     burnish_specifier=rhythmmakertools.BurnishSpecifier(
@@ -3714,7 +3714,7 @@ show(incised_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker()
 >>> show(incised_rhythm_maker, divisions=divisions)
 \end{minted}
@@ -3748,7 +3748,7 @@ show(incised_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
 ...     incise_specifier=rhythmmakertools.InciseSpecifier(
 ...         suffix_counts=[1],
@@ -3778,7 +3778,7 @@ show(incised_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> incised_rhythm_maker = new(
 ...     incised_rhythm_maker,
 ...     incise_specifier__suffix_talea=[-1, -2, -3],
@@ -3809,7 +3809,7 @@ show(incised_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
 ...     incise_specifier=rhythmmakertools.InciseSpecifier(
 ...         prefix_counts=[2, 1],
@@ -3841,7 +3841,7 @@ show(incised_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> incised_rhythm_maker = new(
 ...     incised_rhythm_maker,
 ...     incise_specifier__fill_with_notes=False,
@@ -3876,7 +3876,7 @@ show(incised_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> incised_rhythm_maker = rhythmmakertools.IncisedRhythmMaker(
 ...     incise_specifier=rhythmmakertools.InciseSpecifier(
 ...         outer_divisions_only=True,
@@ -3914,7 +3914,7 @@ show(incised_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> incised_rhythm_maker = new(
 ...     incised_rhythm_maker,
 ...     tie_specifier=rhythmmakertools.TieSpecifier(
@@ -3948,7 +3948,7 @@ show(even_division_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> even_division_rhythm_maker = rhythmmakertools.EvenDivisionRhythmMaker()
 >>> show(even_division_rhythm_maker, divisions=divisions)
 \end{minted}
@@ -3974,7 +3974,7 @@ show(even_division_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> even_division_rhythm_maker = new(
 ...     even_division_rhythm_maker,
 ...     denominators=[8, 16],
@@ -4002,7 +4002,7 @@ show(even_division_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> even_division_rhythm_maker = new(
 ...     even_division_rhythm_maker,
 ...     denominators=[8, 4, 16],
@@ -4036,7 +4036,7 @@ show(even_division_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> even_division_rhythm_maker = new(
 ...     even_division_rhythm_maker,
 ...     denominators=[8],
@@ -4066,7 +4066,7 @@ show(even_division_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> even_division_rhythm_maker = new(
 ...     even_division_rhythm_maker,
 ...     tie_specifier=rhythmmakertools.TieSpecifier(
@@ -4095,7 +4095,7 @@ show(even_division_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> even_division_rhythm_maker = new(
 ...     even_division_rhythm_maker,
 ...     denominators=[8, 4, 16],
@@ -4132,7 +4132,7 @@ show(composite_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> composite_rhythm_maker = consort.CompositeRhythmMaker(
 ...     default=talea_rhythm_maker,
 ...     last=note_rhythm_maker,
@@ -4183,7 +4183,7 @@ graph(six_eight_meter)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> six_eight_meter = metertools.Meter((6, 8))
 >>> graph(six_eight_meter)
 \end{minted}
@@ -4232,7 +4232,7 @@ graph(three_four_meter)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> three_four_meter = metertools.Meter((3, 4))
 >>> graph(three_four_meter)
 \end{minted}
@@ -4253,7 +4253,7 @@ graph(seven_eight_meter)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> seven_eight_meter = metertools.Meter((7, 8))
 >>> graph(seven_eight_meter)
 \end{minted}
@@ -4274,7 +4274,7 @@ graph(twelve_eight_meter)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> twelve_eight_meter = metertools.Meter((12, 8))
 >>> graph(twelve_eight_meter)
 \end{minted}
@@ -4300,7 +4300,7 @@ graph(four_four_meter)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> four_four_meter = metertools.Meter((4, 4))
 >>> graph(four_four_meter)
 \end{minted}
@@ -4324,7 +4324,7 @@ print(four_four_meter.pretty_rtm_format)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(four_four_meter.pretty_rtm_format)
 (4/4 (
 	1/4
@@ -4353,7 +4353,7 @@ graph(arbitrary_meter_1)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> arbitrary_meter_1 = metertools.Meter('(4/4 ((2/4 (1/4 1/4)) (2/4 (1/4 1/4))))')
 >>> graph(arbitrary_meter_1)
 \end{minted}
@@ -4375,7 +4375,7 @@ graph(arbitrary_meter_2)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> arbitrary_meter_2 = metertools.Meter('(4/4 ((2/4 (1/4 (1/4 (1/8 1/8)))) 1/2))')
 >>> graph(arbitrary_meter_2)
 \end{minted}
@@ -4417,7 +4417,7 @@ six_eight_meter.depthwise_offset_inventory[0]
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> six_eight_meter = metertools.Meter((6, 8))
 >>> six_eight_meter.depthwise_offset_inventory[0]
 (Offset(0, 1), Offset(3, 4))
@@ -4442,7 +4442,7 @@ show(six_eight_measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> six_eight_measure = Measure((6, 8), "r8 c'2 r8")
 >>> show(six_eight_measure)
 \end{minted}
@@ -4466,7 +4466,7 @@ six_eight_meter.depthwise_offset_inventory[1]
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> six_eight_meter.depthwise_offset_inventory[1]
 (Offset(0, 1), Offset(3, 8), Offset(3, 4))
 \end{minted}
@@ -4487,7 +4487,7 @@ show(six_eight_measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> mutate(six_eight_measure).rewrite_meter(six_eight_meter)
 >>> show(six_eight_measure)
 \end{minted}
@@ -4510,7 +4510,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> parseable = "abj: | 2/4 c'2 ~ |"
 >>> parseable += "| 4/4 c'32 d'2.. ~ d'16 e'32 ~ |"
 >>> parseable += "| 2/4 e'2 |"
@@ -4536,7 +4536,7 @@ graph(four_four_meter)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> four_four_meter = metertools.Meter((4, 4))
 >>> graph(four_four_meter)
 \end{minted}
@@ -4558,7 +4558,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> mutate(staff[1]).rewrite_meter(four_four_meter)
 >>> show(staff)
 \end{minted}
@@ -4583,7 +4583,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> two_two_meter = metertools.Meter((2, 2))
 >>> staff = Staff(parseable)
 >>> mutate(staff[1]).rewrite_meter(two_two_meter)
@@ -4615,7 +4615,7 @@ show(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
 >>> show(measure)
 \end{minted}
@@ -4637,7 +4637,7 @@ show(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> mutate(measure).rewrite_meter((3, 4))
 >>> show(measure)
 \end{minted}
@@ -4659,7 +4659,7 @@ show(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
 >>> mutate(measure).rewrite_meter((3, 4), maximum_dot_count=2)
 >>> show(measure)
@@ -4682,7 +4682,7 @@ show(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
 >>> mutate(measure).rewrite_meter((3, 4), maximum_dot_count=1)
 >>> show(measure)
@@ -4705,7 +4705,7 @@ show(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> measure = Measure((3, 4), "c'32 d'8 e'8 fs'4...")
 >>> mutate(measure).rewrite_meter((3, 4), maximum_dot_count=0)
 >>> show(measure)
@@ -4744,7 +4744,7 @@ graph(nine_eight_meter)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> nine_eight_meter = metertools.Meter((9, 8))
 >>> graph(nine_eight_meter)
 \end{minted}
@@ -4762,7 +4762,7 @@ show(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> measure = Measure((9, 8), "c'2 d'2 e'8")
 >>> show(measure)
 \end{minted}
@@ -4780,7 +4780,7 @@ show(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> mutate(measure).rewrite_meter(nine_eight_meter)
 >>> show(measure)
 \end{minted}
@@ -4812,7 +4812,7 @@ show(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> measure = Measure((9, 8), "c'2 d'2 e'8")
 >>> mutate(measure).rewrite_meter(
 ...     nine_eight_meter,
@@ -4861,7 +4861,7 @@ show(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> parseable = "abj: | 4/4 c'16 ~ c'4 d'8. ~ "
 >>> parseable += "2/3 { d'8. ~ 3/5 { d'16 e'8 ~ e'16 f'16 ~ } } "
 >>> parseable += "f'4 |"
@@ -4869,7 +4869,7 @@ show(measure)
 >>> show(measure)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-270f471c0052391c9bf1a5df2ccc4474.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> mutate(measure).rewrite_meter(
 ...     measure,
 ...     boundary_depth=1,
@@ -4909,7 +4909,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff = Staff(context_name='RhythmicStaff')
 >>> staff.extend("{ c'2 c'4 } { c'4. c'4. } { c'2 ~ c'8 c'8 }")
 >>> attach(TimeSignature((3, 4)), staff)
@@ -4937,7 +4937,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for container in staff:
 ...     mutate(container).rewrite_meter((3, 4), boundary_depth=1)
 ...
@@ -4969,7 +4969,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff = Staff(context_name='RhythmicStaff')
 >>> staff.extend("{ c'2 c'4 } { c'4. c'4. } { c'2 ~ c'8 c'8 }")
 >>> attach(TimeSignature((6, 8)), staff)
@@ -5024,7 +5024,7 @@ show(piano_staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> upper_staff = Staff("c'8 d'4. e'8 f'4.")
 >>> lower_staff = Staff(r'\clef bass c4 b,4 a,2')
 >>> piano_staff = scoretools.StaffGroup(
@@ -5055,7 +5055,7 @@ show(piano_staff_counter)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> leaves = piano_staff.select_leaves(allow_discontiguous_leaves=True)
 >>> piano_staff_counter = metertools.OffsetCounter(leaves)
 >>> print(format(piano_staff_counter))
@@ -5070,7 +5070,7 @@ metertools.OffsetCounter(
         }
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(piano_staff_counter)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-b2c45afc4a29ecdf622c76195f1251ae.pdf}
@@ -5100,7 +5100,7 @@ show(timespan_counter)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespans = timespantools.TimespanInventory([
 ...     timespantools.Timespan(-1, 10),
 ...     timespantools.Timespan(5, 15),
@@ -5156,7 +5156,7 @@ for offset, weight in sorted(kernel_44.kernel.items()):
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> meter = metertools.Meter((4, 4))
 >>> kernel_44 = metertools.MetricAccentKernel.from_meter(meter, denominator=16)
 >>> for offset, weight in sorted(kernel_44.kernel.items()):
@@ -5200,7 +5200,7 @@ float(response)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> response = kernel_44(piano_staff_counter)
 >>> float(response)
 0.5454545454545454
@@ -5230,7 +5230,7 @@ for offset, count in sorted(piano_staff_counter.items()):
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> total = Multiplier(0, 1)
 >>> for offset, count in sorted(piano_staff_counter.items()):
 ...     weight = Multiplier(0, 1)
@@ -5266,7 +5266,7 @@ kernel_54 = metertools.MetricAccentKernel.from_meter((5, 4), denominator=16)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> kernel_34 = metertools.MetricAccentKernel.from_meter((3, 4), denominator=16)
 >>> kernel_78 = metertools.MetricAccentKernel.from_meter((7, 8), denominator=16)
 >>> kernel_54 = metertools.MetricAccentKernel.from_meter((5, 4), denominator=16)
@@ -5288,15 +5288,15 @@ float(kernel_54(piano_staff_counter))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> float(kernel_34(piano_staff_counter))
 0.5384615384615384
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> float(kernel_78(piano_staff_counter))
 0.4482758620689655
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> float(kernel_54(piano_staff_counter))
 0.4186046511627907
 \end{minted}
@@ -5334,7 +5334,7 @@ show(offset_counter, range_=(0, 5))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> offset_counter = metertools.OffsetCounter([
 ...     (0, 4), (4, 4), (8, 4), (12, 4), (16, 4),
 ...     ])
@@ -5363,12 +5363,12 @@ show(fitted_meters, range_=(0, 5))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> permitted_meters = metertools.MeterInventory([(3, 4), (4, 4), (5, 4)])
 >>> show(permitted_meters, range_=(0, 5))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-903f91432f62df75348b48cdb9d7be3d.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> fitted_meters = metertools.Meter.fit_meters_to_expr(
 ...     expr=offset_counter,
 ...     meters=permitted_meters,
@@ -5406,7 +5406,7 @@ show(fitted_meters, range_=(0, 5))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> offset_counter = metertools.OffsetCounter([
 ...     (0, 4), (3, 4), (5, 4), (10, 4), (15, 4), (20, 4),
 ...     ])
@@ -5417,7 +5417,7 @@ show(fitted_meters, range_=(0, 5))
 >>> show(offset_counter, range_=(0, 5))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-51cf25a6929362a969d24f3932cb3e52.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(fitted_meters, range_=(0, 5))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5f06675a8d3349cae1b5fb107c86bb48.pdf}
@@ -5447,7 +5447,7 @@ show(fitted_meters, range_=(0, 5))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> fitted_meters = metertools.Meter.fit_meters_to_expr(
 ...     expr=offset_counter,
 ...     meters=permitted_meters,
@@ -5490,7 +5490,7 @@ show(timespan_inventory, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifiers = collections.OrderedDict([
 ...     ('Voice 1', None),
 ...     ('Voice 2', None),
@@ -5522,7 +5522,7 @@ show(offset_counter, range_=(0, (19, 4)))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> offset_counter = metertools.OffsetCounter(timespan_inventory)
 >>> show(offset_counter, range_=(0, (19, 4)))
 \end{minted}
@@ -5557,7 +5557,7 @@ show(fitted_meters, range_=(0, (19, 4)))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> permitted_meters = metertools.MeterInventory([
 ...     (5, 8), (3, 4), (6, 8), (7, 8), (4, 4),
 ...     ])
@@ -5569,7 +5569,7 @@ show(fitted_meters, range_=(0, (19, 4)))
 >>> show(offset_counter, range_=(0, (19, 4)))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0be2900a4872bf90fe9bfb22c1e66b72.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(fitted_meters, range_=(0, (19, 4)))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a67d2be37f9d9ec06d5edda3e3e7f244.pdf}
@@ -5599,7 +5599,7 @@ show(fitted_meters, range_=(0, (19, 4)))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> permitted_meters = metertools.MeterInventory([
 ...     (3, 4), (6, 8), (7, 8), (4, 4),
 ...     ])
@@ -5611,7 +5611,7 @@ show(fitted_meters, range_=(0, (19, 4)))
 >>> show(offset_counter, range_=(0, (19, 4)))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0be2900a4872bf90fe9bfb22c1e66b72.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(fitted_meters, range_=(0, (19, 4)))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-9a5158818ad5fbad7bdb5f19fd966315.pdf}
@@ -5638,7 +5638,7 @@ show(fitted_meters, range_=(0, (19, 4)))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> fitted_meters = metertools.Meter.fit_meters_to_expr(
 ...     expr=offset_counter,
 ...     meters=permitted_meters,
@@ -5646,7 +5646,7 @@ show(fitted_meters, range_=(0, (19, 4)))
 >>> show(offset_counter, range_=(0, (19, 4)))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0be2900a4872bf90fe9bfb22c1e66b72.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(fitted_meters, range_=(0, (19, 4)))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-4dea6222540afc3cf0b84d79ca2bc728.pdf}
@@ -5678,7 +5678,7 @@ show(fitted_meters, range_=(0, (19, 4)))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> permitted_meters = metertools.MeterInventory([
 ...     (2, 4), (4, 8), (3, 4), (6, 8), (7, 8), (4, 4),
 ...     ])
@@ -5690,7 +5690,7 @@ show(fitted_meters, range_=(0, (19, 4)))
 >>> show(offset_counter, range_=(0, (19, 4)))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0be2900a4872bf90fe9bfb22c1e66b72.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(fitted_meters, range_=(0, (19, 4)))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a1f558ce38e84f316c17684a30bd0fac.pdf}
@@ -5720,7 +5720,7 @@ show(poorly_fitted_meters, range_=(0, (19, 4)))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> permitted_meters = metertools.MeterInventory([
 ...     (2, 4), (3, 16), (3, 4), (4, 4), (4, 8), (5, 16),
 ...     (5, 4), (5, 8), (6, 8), (7, 8), (9, 8),
@@ -5733,7 +5733,7 @@ show(poorly_fitted_meters, range_=(0, (19, 4)))
 >>> show(offset_counter, range_=(0, (19, 4)))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0be2900a4872bf90fe9bfb22c1e66b72.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(poorly_fitted_meters, range_=(0, (19, 4)))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0750946d1cd0bfe69efd61bdaf0de800.pdf}
@@ -5859,11 +5859,11 @@ print(format(score))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(timespan_inventory, key='voice_name')
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c8add88d2445d1747bd8b6e8fad82e97.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> score_template = templatetools.GroupedRhythmicStavesScoreTemplate(
 ...     staff_count=4, with_clefs=True,
 ...     )
@@ -5986,7 +5986,7 @@ for component in inspect_(voice).get_parentage():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan = timespan_inventory[0]
 >>> print(format(timespan))
 consort.tools.PerformedTimespan(
@@ -5997,7 +5997,7 @@ consort.tools.PerformedTimespan(
     voice_name='Voice 3',
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> score = score_template()
 >>> voice = score[timespan.voice_name]
 >>> for component in inspect_(voice).get_parentage():
@@ -6248,7 +6248,7 @@ show(performed_rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> permitted_meters = metertools.MeterInventory([
 ...     (2, 4), (4, 8), (3, 4), (6, 8), (7, 8), (4, 4),
 ...     ])
@@ -6289,7 +6289,7 @@ show(score)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> score = build_score(
 ...     performed_rhythm_maker=performed_rhythm_maker,
 ...     permitted_meters=permitted_meters,
@@ -6333,7 +6333,7 @@ show(score)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> multiplier = Duration(24, 4) / Duration(19, 4)
 >>> timespan_inventory = timespan_inventory.reflect()
 >>> timespan_inventory = timespan_inventory.stretch(multiplier)
@@ -6341,7 +6341,7 @@ show(score)
 >>> show(timespan_inventory, key='voice_name')
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-cbf2e54be533296d32c9607c4f42c82f.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> score = build_score(
 ...     performed_rhythm_maker=performed_rhythm_maker,
 ...     permitted_meters=permitted_meters,

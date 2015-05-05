@@ -103,3 +103,6 @@ clean:
 
 open:
 	open dissertation.pdf
+
+copy-style:
+	cp dissertation.py /Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/pygments/styles/dissertation.py

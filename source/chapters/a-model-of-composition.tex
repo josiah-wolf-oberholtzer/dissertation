@@ -112,7 +112,7 @@ segment_maker = consort.SegmentMaker(
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> segment_maker = consort.SegmentMaker(
 ...     desired_duration_in_seconds=9,
 ...     permitted_time_signatures=[(3, 4)],
@@ -140,7 +140,7 @@ show(segment_maker, verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(segment_maker, verbose=False)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-ef0ad575af796cf07129840810211361.pdf}
@@ -165,7 +165,7 @@ show(slower_segment_maker, verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> slower_segment_maker = new(
 ...     segment_maker,
 ...     tempo=indicatortools.Tempo((1, 4), 20),
@@ -297,7 +297,7 @@ show(timespan_inventory, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> unlabeled_music_specifier = consort.MusicSpecifier()
 >>> labeled_music_specifier = consort.MusicSpecifier(labels=['labeled'])
 >>> timespan_inventory = timespantools.TimespanInventory([
@@ -379,7 +379,7 @@ show(result, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> dependent_timespan_maker = consort.DependentTimespanMaker(
 ...     include_inner_starts=True,
 ...     voice_names=('Voice 1', 'Voice 2'),
@@ -419,7 +419,7 @@ show(result, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> dependent_timespan_maker = new(
 ...     dependent_timespan_maker,
 ...     labels=['labeled'],
@@ -451,7 +451,7 @@ music_specifier_sequence = consort.MusicSpecifierSequence(
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier_sequence = consort.MusicSpecifierSequence(
 ...     music_specifiers=['A', 'B', 'C'],
 ...     )
@@ -485,7 +485,7 @@ print(format(timespan_inventory))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifiers = {'Voice': music_specifier_sequence}
 >>> target_timespan = timespantools.Timespan(0, (7, 4))
 >>> timespan_maker = consort.TaleaTimespanMaker(
@@ -563,7 +563,7 @@ print(format(timespan_inventory))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier_sequence = new(
 ...     music_specifier_sequence,
 ...     application_rate='division',
@@ -653,7 +653,7 @@ show(timespan_inventory, key='voice_name')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> composite_music_specifier = consort.CompositeMusicSpecifier(
 ...     primary_music_specifier='one',
 ...     primary_voice_name='Viola 1 RH',
@@ -805,7 +805,7 @@ music_setting = consort.MusicSetting(
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_setting = consort.MusicSetting(
 ...     timespan_identifier=consort.RatioPartsExpression(
 ...         parts=(0, 2),
@@ -845,7 +845,7 @@ print(format(score))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> score_template = consort.StringQuartetScoreTemplate()
 >>> score = score_template()
 >>> print(format(score))
@@ -974,7 +974,7 @@ for parent, child_pair in score_template.composite_context_pairs.items():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for abbr, context_name in score_template.context_name_abbreviations.items():
 ...     print(abbr, context_name)
 ...
@@ -991,7 +991,7 @@ for parent, child_pair in score_template.composite_context_pairs.items():
 ('cello_lh', 'Cello Fingering Voice')
 ('violin_1', 'Violin 1 Performer Group')
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for parent, child_pair in score_template.composite_context_pairs.items():
 ...     print(parent, child_pair)
 ...
@@ -1025,7 +1025,7 @@ for context_name, resolved_music_specifier in result.items():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> result = music_setting.resolve_music_specifiers(score_template)
 >>> for context_name, resolved_music_specifier in result.items():
 ...     print('CONTEXT:', context_name)
@@ -1078,12 +1078,12 @@ show(target_timespans, range_=(0, 8))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> segment_timespan = timespantools.Timespan(0, 8)
 >>> show(segment_timespan)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-f567667689eba1c58718b27387ee7b57.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> target_timespans = music_setting.resolve_target_timespans(segment_timespan)
 >>> show(target_timespans, range_=(0, 8))
 \end{minted}
@@ -1110,7 +1110,7 @@ show(target_timespans, range_=(0, 8))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> target_timespans = music_setting.resolve_target_timespans(
 ...     segment_timespan,
 ...     timespan_quantization=Duration(1, 16),
@@ -1140,7 +1140,7 @@ show(target_timespans, range_=(0, 8))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_setting = new(
 ...     music_setting,
 ...     timespan_identifier__mask_timespan=timespantools.Timespan(
@@ -1202,7 +1202,7 @@ show(layer_1, key='voice_name', range_=(0, (21, 4)))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> layer_1_timespan_maker = consort.FloodedTimespanMaker()
 >>> layer_1_target_timespan = timespantools.Timespan(0, (19, 4))
 >>> layer_1_music_specifiers = collections.OrderedDict([
@@ -1264,7 +1264,7 @@ show(layer_2, key='voice_name', range_=(0, (21, 4)))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> layer_2_timespan_maker = consort.TaleaTimespanMaker(
 ...     initial_silence_talea=rhythmmakertools.Talea(
 ...         counts=(0, 1, 3),
@@ -1348,7 +1348,7 @@ show(layer_3, key='voice_name', range_=(0, (21, 4)))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> layer_3_timespan_maker = consort.TaleaTimespanMaker(
 ...     initial_silence_talea=rhythmmakertools.Talea(
 ...         counts=(0, 0, 0, 1),
@@ -1431,7 +1431,7 @@ for layer, triple in enumerate(triples, 1):
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan_makers = (
 ...     layer_1_timespan_maker,
 ...     layer_2_timespan_maker,
@@ -1478,7 +1478,7 @@ show(timespan_inventory, range_=(0, (21, 4)))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(timespan_inventory, range_=(0, (21, 4)))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-fa8175e727ce4cd94ecb592ff91d7d4e.pdf}
@@ -1501,7 +1501,7 @@ show(timespan_inventory, key='voice_name', sortkey='layer', range_=(0, (21, 4)))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(timespan_inventory, key='voice_name', sortkey='layer', range_=(0, (21, 4)))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-0a31ea9155083df2944d88bc0521f271.pdf}
@@ -1544,7 +1544,7 @@ demultiplexed_maquette = consort.SegmentMaker.resolve_maquette(
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> demultiplexed_maquette = consort.SegmentMaker.resolve_maquette(
 ...     timespan_inventory,
 ...     )
@@ -1567,7 +1567,7 @@ show(demultiplexed_maquette, range_=(0, (21, 4)))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(demultiplexed_maquette, range_=(0, (21, 4)))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-75b379c362e5b09668022c8e199ec995.pdf}
@@ -1634,7 +1634,7 @@ print(format(shards))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> performed_timespan = consort.PerformedTimespan(
 ...     layer=3,
 ...     start_offset=(1, 2),
@@ -1728,7 +1728,7 @@ show(consolidated_timespans)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespans = timespantools.TimespanInventory([
 ...     consort.PerformedTimespan(
 ...         start_offset=0,
@@ -1759,7 +1759,7 @@ show(consolidated_timespans)
 >>> show(timespans)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-e9f9b90eee8e879ce05e7cfe8a6db3b2.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> consolidated_timespans = consort.SegmentMaker.consolidate_timespans(timespans)
 >>> show(consolidated_timespans)
 \end{minted}
@@ -1781,7 +1781,7 @@ print(format(consolidated_timespans))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(consolidated_timespans))
 timespantools.TimespanInventory(
     [
@@ -1899,7 +1899,7 @@ show(unconsolidated_staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> parseable = r'''
 ... \new Voice {
 ...     {
@@ -1947,7 +1947,7 @@ show(staff_group)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> consolidated_staff = Staff(parseable, context_name='RhythmicStaff')
 >>> for voice in consolidated_staff:
 ...     for phrase in voice:
@@ -1990,7 +1990,7 @@ show(rhythm_maker, divisions=divisions)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> rhythm_maker=rhythmmakertools.NoteRhythmMaker(
 ...     output_masks=[
 ...         rhythmmakertools.BooleanPattern(
@@ -2029,7 +2029,7 @@ show(timespan)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> timespan = consort.PerformedTimespan(
 ...     divisions=divisions,
 ...     start_offset=0,
@@ -2058,12 +2058,12 @@ print(format(inscribed_timespans))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> inscribed_timespans = consort.SegmentMaker.inscribe_timespan(timespan)
 >>> show(inscribed_timespans, range_=(0, (7, 4)))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a012c16826845bc8a93abb1c2067aaa2.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(inscribed_timespans))
 timespantools.TimespanInventory(
     [
@@ -2137,7 +2137,7 @@ print(format(indicator))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music = inscribed_timespans[0].music
 >>> indicator = inspect_(music).get_indicator(consort.MusicSpecifier)
 >>> print(format(indicator))
@@ -2244,7 +2244,7 @@ show(demultiplexed_maquette, range_=(0, 6))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(demultiplexed_maquette, range_=(0, 6))
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-6e89efc4773fd3a66f8cd42c73ea42f9.pdf}
@@ -2279,7 +2279,7 @@ show(demultiplexed_maquette, range_=(0, 6))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> segment_duration = Duration(24, 4)
 >>> for voice_name, timespan_inventory in demultiplexed_maquette.items():
 ...     silent_timespans = timespantools.TimespanInventory([
@@ -2341,7 +2341,7 @@ print(format(meter_timespans))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> meters = metertools.MeterInventory([(3, 4), (2, 4), (6, 8), (5, 16)])
 >>> meter_timespans = consort.SegmentMaker.meters_to_timespans(meters)
 >>> print(format(meter_timespans))
@@ -2438,7 +2438,7 @@ print(format(meter_timespan))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> inscribed_timespan = consort.PerformedTimespan(
 ...     start_offset=(5, 4),
 ...     stop_offset=(9, 5),
@@ -2452,7 +2452,7 @@ timespantools.Timespan(
     stop_offset=durationtools.Offset(3, 4),
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> translation = inscribed_timespan.start_offset
 >>> division_timespan = division_timespan.translate(translation)
 >>> print(format(division_timespan))
@@ -2461,7 +2461,7 @@ timespantools.Timespan(
     stop_offset=durationtools.Offset(2, 1),
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> meter_timespan = meter_timespans.find_timespans_intersecting_timespan(
 ...     division_timespan)[0]
 >>> print(format(meter_timespan))
@@ -2473,7 +2473,7 @@ timespantools.AnnotatedTimespan(
         ),
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> translation = -1 * division_timespan.start_offset
 >>> meter_timespan = meter_timespan.translate(translation)
 >>> print(format(meter_timespan))
@@ -2590,7 +2590,7 @@ show(illustration)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier = consort.MusicSpecifier(
 ...     attachment_handler=consort.AttachmentHandler(),
 ...     rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
@@ -2654,14 +2654,14 @@ print(format(first_attack_point_signature))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> attack_point_map = segment_maker.attack_point_map
 >>> all_pairs = list(attack_point_map.items())
 >>> first_logical_tie, first_attack_point_signature = all_pairs[0]
 >>> print(first_logical_tie)
 LogicalTie(Note("c'8"),)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(first_attack_point_signature))
 consort.tools.AttackPointSignature(
     division_index=0,
@@ -2699,7 +2699,7 @@ show(illustration)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for index, key_value_pair in enumerate(attack_point_map.items()):
 ...     logical_tie, attack_point_signature = key_value_pair
 ...     markup = Markup(index, Up)
@@ -2740,7 +2740,7 @@ show(illustration)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for logical_tie, attack_point_signature in attack_point_map.items():
 ...     for markup in inspect_(logical_tie.head).get_markup():
 ...         detached = detach(markup, logical_tie.head)
@@ -2781,7 +2781,7 @@ show(illustration)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for logical_tie, attack_point_signature in attack_point_map.items():
 ...     for markup in inspect_(logical_tie.head).get_markup():
 ...         detached = detach(markup, logical_tie.head)
@@ -2818,7 +2818,7 @@ show(illustration)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for logical_tie, attack_point_signature in attack_point_map.items():
 ...     for markup in inspect_(logical_tie.head).get_markup():
 ...         detached = detach(markup, logical_tie.head)
@@ -2861,7 +2861,7 @@ def iterate_phrasewise(score):
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> def iterate_phrasewise(score):
 ...     prototype = consort.MusicSpecifier
 ...     silent_music_specifier = consort.MusicSpecifier()
@@ -2889,7 +2889,7 @@ for logical_tie in attack_point_map.keys():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for logical_tie in attack_point_map.keys():
 ...     for markup in inspect_(logical_tie.head).get_markup():
 ...         detached = detach(markup, logical_tie.head)
@@ -2918,7 +2918,7 @@ show(illustration)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for index, phrase in enumerate(iterate_phrasewise(segment_maker.score)):
 ...     first_leaf = phrase.select_leaves()[0]
 ...     markup = Markup(index, Up)
@@ -2999,7 +2999,7 @@ show(segment_maker, verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier = consort.MusicSpecifier(
 ...     grace_handler=consort.GraceHandler(
 ...         counts=(1, 2, 0, 0, 0),
@@ -3097,7 +3097,7 @@ show(segment_maker, verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> segment_maker = consort.SegmentMaker(
 ...     desired_duration_in_seconds=9,
 ...     #omit_stylesheets=True,
@@ -3159,7 +3159,7 @@ show(segment_maker, verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier = new(
 ...     music_specifier,
 ...     pitch_handler=consort.AbsolutePitchHandler(
@@ -3200,7 +3200,7 @@ show(segment_maker, verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier = new(
 ...     music_specifier,
 ...     rhythm_maker__talea__counts=[1, 2, 3, 4],
@@ -3259,7 +3259,7 @@ show(segment_maker, verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> other_music_specifier = consort.MusicSpecifier(
 ...     pitch_handler=consort.AbsolutePitchHandler(pitch_specifier='g fs e f'),
 ...     rhythm_maker=rhythmmakertools.EvenDivisionRhythmMaker(
@@ -3312,7 +3312,7 @@ print(format(pitch_choice_timespans))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> pitch_specifier = consort.PitchSpecifier(
 ...     pitch_segments=(
 ...         "c' e' g'",
@@ -3390,7 +3390,7 @@ show(segment_maker, verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier = new(
 ...     music_specifier,
 ...     pitch_handler__pitch_specifier=pitch_specifier,
@@ -3448,7 +3448,7 @@ show(segment_maker, verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier = new(
 ...     music_specifier,
 ...     pitch_handler__pitch_operation_specifier=consort.PitchOperationSpecifier(
@@ -3501,7 +3501,7 @@ show(segment_maker, verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier = new(
 ...     music_specifier,
 ...     pitch_handler__forbid_repetitions=True,
@@ -3553,7 +3553,7 @@ show(segment_maker, verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier = new(
 ...     music_specifier,
 ...     pitch_handler__logical_tie_expressions=(
@@ -3591,7 +3591,7 @@ show(segment_maker, verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> segment_maker = new(
 ...     segment_maker,
 ...     settings=[music_setting, other_music_setting],
@@ -3635,7 +3635,7 @@ show(lilypond_file)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier = consort.MusicSpecifier(
 ...     pitch_handler=consort.AbsolutePitchHandler(
 ...         pitch_application_rate='division',
@@ -3686,7 +3686,7 @@ show(lilypond_file)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier = new(
 ...     music_specifier,
 ...     pitch_handler__pitch_application_rate='phrase',
@@ -3729,7 +3729,7 @@ show(lilypond_file)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier = new(
 ...     music_specifier,
 ...     pitch_handler__deviations=(0, 0, '-m2', '+m2'),
@@ -3824,7 +3824,7 @@ show(segment_maker, verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier = consort.MusicSpecifier(
 ...     attachment_handler=consort.AttachmentHandler(),
 ...     rhythm_maker=rhythmmakertools.TaleaRhythmMaker(
@@ -3890,7 +3890,7 @@ show(segment_maker,verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> attachment_expression = consort.AttachmentExpression(
 ...     attachments=Articulation('accent'),
 ...     selector=selectortools.Selector().by_leaves()[0],
@@ -3945,7 +3945,7 @@ show(segment_maker, verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier = new(
 ...     music_specifier,
 ...     attachment_handler__tenuti=consort.AttachmentExpression(
@@ -3998,7 +3998,7 @@ show(segment_maker, verbose=False)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier = new(
 ...     music_specifier,
 ...     attachment_handler__slurs=Slur()
@@ -4047,7 +4047,7 @@ show(lilypond_file)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> music_specifier = new(
 ...     music_specifier,
 ...     attachment_handler__dynamics=consort.DynamicExpression(['f', 'p'])
@@ -4102,7 +4102,7 @@ staff.extend(r"c'4. c'8 \times 2/3 { c'4 c'4 c'4 }")
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff = Staff()
 >>> staff.extend(r"c'4. c'8 \times 2/3 { c'4 c'4 c'4 }")
 \end{minted}
@@ -4125,7 +4125,7 @@ attach(indicatortools.BowContactPoint((0, 1)), leaves[4])
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> leaves = staff.select_leaves()
 >>> attach(indicatortools.BowMotionTechnique('jete'), leaves[0])
 >>> attach(indicatortools.BowContactPoint((1, 4)), leaves[0])
@@ -4159,7 +4159,7 @@ override(staff).time_signature.stencil = False
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> attach(Clef('percussion'), staff)
 >>> override(staff).bar_line.transparent = True
 >>> override(staff).dots.staff_position = -8
@@ -4187,7 +4187,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> attach(spannertools.BowContactSpanner(), leaves)
 >>> show(staff)
 \end{minted}

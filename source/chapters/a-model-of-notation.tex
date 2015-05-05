@@ -34,7 +34,7 @@ import abjad
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> import abjad
 \end{minted}
 \end{singlespacing}
@@ -75,7 +75,7 @@ print(abjad_names)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> abjad_names = dir(abjad)
 >>> abjad_names = [x for x in abjad_names if not x.startswith('_')]
 >>> print(abjad_names)
@@ -119,7 +119,7 @@ print(pitchtools_names)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> pitchtools_names = dir(abjad.pitchtools)
 >>> pitchtools_names = [x for x in pitchtools_names if not x.startswith('_')]
 >>> print(pitchtools_names)
@@ -190,7 +190,7 @@ from abjad import *
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> from abjad import *
 \end{minted}
 \end{singlespacing}
@@ -239,7 +239,7 @@ foo = Foo()
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> class Foo(object):
 ...     pass
 ...
@@ -265,17 +265,17 @@ str(foo)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(foo)
-<__main__.Foo object at 0x104d61890>
+<__main__.Foo object at 0x104abed50>
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> repr(foo)
-'<__main__.Foo object at 0x104d61890>'
+'<__main__.Foo object at 0x104abed50>'
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> str(foo)
-'<__main__.Foo object at 0x104d61890>'
+'<__main__.Foo object at 0x104abed50>'
 \end{minted}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -305,7 +305,7 @@ str(foo2)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> class Foo2(object):
 ...     def __repr__(self):
 ...         return '<I am Foo2>'
@@ -316,15 +316,15 @@ str(foo2)
 >>> foo2
 <I am Foo2>
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(foo2)
 foofoo
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> repr(foo2)
 '<I am Foo2>'
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> str(foo2)
 'foofoo'
 \end{minted}
@@ -363,7 +363,7 @@ format(foo3, 'special')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> class Foo3(object):
 ...     def __format__(self, format_specification=''):
 ...         if format_specification == 'special':
@@ -378,23 +378,23 @@ format(foo3, 'special')
 >>> foo3
 <I am Foo3>
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(foo3)
 foofoofoo
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> repr(foo3)
 '<I am Foo3>'
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> str(foo3)
 'foofoofoo'
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> format(foo3)
 'foofoofoo'
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> format(foo3, 'special')
 '~~~ special foo format ~~~~'
 \end{minted}
@@ -423,32 +423,32 @@ print(format(note, 'storage'))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> note = Note(NamedPitch("g'"), Duration(3, 4))
 >>> note
 Note("g'2.")
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(repr(note))
 Note("g'2.")
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(note)
 g'2.
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(str(note))
 g'2.
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(note))
 g'2.
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(note, 'lilypond'))
 g'2.
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(note, 'storage'))
 scoretools.Note("g'2.")
 \end{minted}
@@ -485,7 +485,7 @@ print(format(rhythm_maker))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
 ...     talea=rhythmmakertools.Talea([1, 2, 3], 16),
 ...     extra_counts_per_division=(1, 0, 2, 1, 0),
@@ -546,7 +546,7 @@ show(note)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(note)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-5cfff2844553f774341de4a66c379061.pdf}
@@ -632,7 +632,7 @@ show(note)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> note = Note("c'4")
 >>> show(note)
 \end{minted}
@@ -652,7 +652,7 @@ show(rest)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> rest = Rest((1, 2))
 >>> show(rest)
 \end{minted}
@@ -675,7 +675,7 @@ show(chord)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> chord = Chord(
 ...     [NamedPitch("d'"), NamedPitch("f'"), NamedPitch("a'")],
 ...     Duration(1, 4),
@@ -708,7 +708,7 @@ show(fancy_chord)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> fancy_chord = Chord(r"<g' bf'? d''>4. -\accent -\staccato ^\markup{ \italic gently }")
 >>> show(fancy_chord)
 \end{minted}
@@ -742,7 +742,7 @@ show(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> measure = Measure((4, 4), [note, rest, chord])
 >>> show(measure)
 \end{minted}
@@ -762,7 +762,7 @@ graph(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> graph(measure)
 \end{minted}
 \noindent\includegraphics[scale=0.4,max width=\textwidth,]{assets/graphviz-f7665c2f5353983ed9713715cfe4c3aa.pdf}
@@ -784,7 +784,7 @@ measure[1]
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> measure[1]
 Rest('r2')
 \end{minted}
@@ -805,7 +805,7 @@ show(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> outer_tuplet = Tuplet((2, 3), "a'4 b4 cs'4")
 >>> measure[1] = outer_tuplet
 >>> show(measure)
@@ -823,7 +823,7 @@ graph(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> graph(measure)
 \end{minted}
 \noindent\includegraphics[scale=0.4,max width=\textwidth,]{assets/graphviz-ef4980108f4d4d2b6a033286844a469e.pdf}
@@ -850,7 +850,7 @@ show(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> inner_tuplet = Tuplet((4, 5), "b'8 a'8. g'16 f'32 e'8..")
 >>> outer_tuplet[1:] = [inner_tuplet]
 >>> show(measure)
@@ -868,7 +868,7 @@ graph(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> graph(measure)
 \end{minted}
 \noindent\includegraphics[scale=0.4,max width=\textwidth,]{assets/graphviz-c1957e438c0db26d032c5b430f0ccba6.pdf}
@@ -890,7 +890,7 @@ len(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> len(measure)
 3
 \end{minted}
@@ -911,7 +911,7 @@ for component in measure:
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for component in measure:
 ...     component
 ...
@@ -939,7 +939,7 @@ for leaf in measure.select_leaves():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for leaf in measure.select_leaves():
 ...     leaf
 ...
@@ -979,7 +979,7 @@ show(chord)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> note_head_inventory = chord.note_heads
 >>> for note_head in note_head_inventory:
 ...     note_head
@@ -988,7 +988,7 @@ NoteHead("d'")
 NoteHead("f'")
 NoteHead("a'")
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> chord.note_heads.append(NamedPitch("c''"))
 >>> show(chord)
 \end{minted}
@@ -1044,14 +1044,14 @@ for component in parentage:
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> inner_b_eighth = measure[1][1][0]
 >>> inspector = inspect_(inner_b_eighth)
 >>> parentage = inspector.get_parentage()
 >>> parentage.parent
 Tuplet(Multiplier(4, 5), "b'8 a'8. g'16 f'32 e'8..")
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for component in parentage:
 ...     component
 ...
@@ -1076,7 +1076,7 @@ inspect_(whole_note).get_parentage().parent is None
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> whole_note = Note("c'1")
 >>> inspect_(whole_note).get_parentage().parent is None
 True
@@ -1102,17 +1102,17 @@ print(format(container_one))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> container_one = Container()
 >>> container_one.append(whole_note)
 >>> inspect_(whole_note).get_parentage().parent is container_one
 True
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> whole_note in container_one
 True
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(container_one))
 {
     c'1
@@ -1140,27 +1140,27 @@ print(format(container_one))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> container_two = Container()
 >>> container_two.append(whole_note)
 >>> inspect_(whole_note).get_parentage().parent is container_two
 True
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> whole_note in container_two
 True
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> whole_note in container_one
 False
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(container_two))
 {
     c'1
 }
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(container_one))
 {
 }
@@ -1183,7 +1183,7 @@ container_one.append(container_two)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> container_two.append(container_one)
 >>> container_one.append(container_two)
 Traceback (most recent call last):
@@ -1258,11 +1258,11 @@ Duration.from_lilypond_duration_string('4..')
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> Duration(7, 16)
 Duration(7, 16)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> Duration.from_lilypond_duration_string('4..')
 Duration(7, 16)
 \end{minted}
@@ -1286,15 +1286,15 @@ Duration(7, 16).lilypond_duration_string
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> Duration(7, 16).dot_count
 2
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> Duration(7, 16).flag_count
 0
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> Duration(7, 16).lilypond_duration_string
 '4..'
 \end{minted}
@@ -1317,20 +1317,20 @@ Duration(1, 2).nonexistant_property = 'This will never work'
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> string = 'abcdefghi'
 >>> string[1:-1] = 'xyz'
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: 'str' object does not support item assignment
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> Duration(3, 4).numerator = 7
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 AttributeError: can't set attribute
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> Duration(1, 2).nonexistant_property = 'This will never work'
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
@@ -1356,13 +1356,13 @@ offset_two + Duration(3, 8)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> offset_one = Offset(1, 2)
 >>> offset_two = Offset(7, 4)
 >>> offset_two - offset_one
 Duration(5, 4)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> offset_two + Duration(3, 8)
 Offset(17, 8)
 \end{minted}
@@ -1386,7 +1386,7 @@ show(measure)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(measure)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-12ab406580e016c3647c6966e70bbc2f.pdf}
@@ -1414,12 +1414,12 @@ by_hand_prolation
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> parentage = inspect_(inner_b_eighth).get_parentage()
 >>> parentage.prolation
 Multiplier(8, 15)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> by_hand_prolation = 1
 >>> for parent in parentage[1:]:
 ...     if isinstance(parent, Tuplet):
@@ -1453,7 +1453,7 @@ for leaf in measure.select_leaves():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for leaf in measure.select_leaves():
 ...     inspector = inspect_(leaf)
 ...     written_duration = leaf.written_duration
@@ -1508,7 +1508,7 @@ for i in range(17):
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for i in range(17):
 ...     binary_string = mathtools.integer_to_binary_string(i)
 ...     is_assignable = mathtools.is_assignable_integer(i)
@@ -1559,16 +1559,16 @@ for leaf in staff:
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff = Staff("c'4 d'4 e'4 f'4")
 >>> show(staff)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-3947a1689e36c26dfc1db5d199985257.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> inspect_(staff).get_duration()
 Duration(1, 1)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for leaf in staff:
 ...     offset = inspect_(leaf).get_timespan().start_offset
 ...     print(offset, leaf)
@@ -1600,16 +1600,16 @@ for leaf in staff:
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff[2:2] = "f''4 e''4 d''4 c''4"
 >>> show(staff)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-378ec9dd2a14b504935cd7108d9b08b9.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> inspect_(staff).get_duration()
 Duration(2, 1)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for leaf in staff:
 ...     offset = inspect_(leaf).get_timespan().start_offset
 ...     print(offset, leaf)
@@ -1644,16 +1644,16 @@ for leaf in staff:
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff[3:5] = []
 >>> show(staff)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-64d327db461ddb041d653c1bd1d31ee6.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> inspect_(staff).get_duration()
 Duration(3, 2)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for leaf in staff:
 ...     offset = inspect_(leaf).get_timespan().start_offset
 ...     print(offset, leaf)
@@ -1686,21 +1686,21 @@ show(multimeasure_rest)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> multimeasure_rest = scoretools.MultimeasureRest(1)
 >>> inspect_(multimeasure_rest).get_duration()
 Duration(1, 1)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(multimeasure_rest)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-099f7141431afa5ae3a046415764f35b.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> attach(Multiplier(4), multimeasure_rest)
 >>> inspect_(multimeasure_rest).get_duration()
 Duration(4, 1)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(multimeasure_rest)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a8fdc5cae1a0a9fb72680a5d18862c4e.pdf}
@@ -1748,7 +1748,7 @@ show(score)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> voice_1 = Voice(name='Voice 1')
 >>> voice_1.append(Measure((3, 4), "d'4.. b'16 af'4"))
 >>> voice_1.append(Measure((5, 4), "af'4. g'8 c''8 b'4. b'8 r16 d''16"))
@@ -1789,7 +1789,7 @@ print(format(score))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(score))
 \new Score <<
     \context PianoStaff = "Both Staves" <<
@@ -1861,11 +1861,11 @@ score['Voice 1'] is voice_1
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> score['Voice 1']
 <Voice-"Voice 1"{2}>
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> score['Voice 1'] is voice_1
 True
 \end{minted}
@@ -1933,7 +1933,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff = Staff("c'4 d'4 e'4 f'4")
 >>> accent = Articulation('accent')
 >>> for note in staff:
@@ -1962,7 +1962,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for note in staff[1:]:
 ...     detach(accent, note)
 ...
@@ -1970,7 +1970,7 @@ show(staff)
 (Articulation('accent'),)
 (Articulation('accent'),)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(staff)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-712238b1f24829bf1654cbf459e3fb22.pdf}
@@ -1994,7 +1994,7 @@ for note in staff:
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for note in staff:
 ...     has_articulation = inspect_(note).has_indicator(Articulation)
 ...     print(note, has_articulation)
@@ -2027,11 +2027,11 @@ inspect_(staff[0]).get_indicator(Articulation)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> inspect_(staff[0]).get_indicators(Articulation)
 (Articulation('accent'),)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> inspect_(staff[0]).get_indicator(Articulation)
 Articulation('accent')
 \end{minted}
@@ -2049,7 +2049,7 @@ show(score)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(score)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-b1362195566865429817139f315f5f3e.pdf}
@@ -2080,7 +2080,7 @@ show(score)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> attach(Clef('treble'), score['Upper Staff'])
 >>> attach(Clef('bass'), score['Lower Staff'])
 >>> lower_leaves = score['Lower Staff'].select_leaves()
@@ -2136,7 +2136,7 @@ for leaf in score['Lower Staff'].select_leaves():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for leaf in score['Upper Staff'].select_leaves():
 ...     clef = inspect_(leaf).get_effective(Clef)
 ...     print(leaf, clef)
@@ -2152,7 +2152,7 @@ for leaf in score['Lower Staff'].select_leaves():
 (Rest('r16'), Clef(name='treble'))
 (Note("d''16"), Clef(name='treble'))
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for leaf in score['Lower Staff'].select_leaves():
 ...     clef = inspect_(leaf).get_effective(Clef)
 ...     print(leaf, clef)
@@ -2193,7 +2193,7 @@ for leaf in score['Lower Staff'].select_leaves():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for leaf in score['Upper Staff'].select_leaves():
 ...     tempo = inspect_(leaf).get_effective(Tempo)
 ...     print(leaf, tempo)
@@ -2209,7 +2209,7 @@ for leaf in score['Lower Staff'].select_leaves():
 (Rest('r16'), Tempo(duration=Duration(1, 4), units_per_minute=88))
 (Note("d''16"), Tempo(duration=Duration(1, 4), units_per_minute=88))
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for leaf in score['Lower Staff'].select_leaves():
 ...     tempo = inspect_(leaf).get_effective(Tempo)
 ...     print(leaf, tempo)
@@ -2251,7 +2251,7 @@ for leaf in score['Lower Staff'].select_leaves():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for leaf in score['Upper Staff'].select_leaves():
 ...     dynamic = inspect_(leaf).get_effective(Dynamic)
 ...     print(leaf, dynamic)
@@ -2267,7 +2267,7 @@ for leaf in score['Lower Staff'].select_leaves():
 (Rest('r16'), Dynamic(name='f'))
 (Note("d''16"), Dynamic(name='ppp'))
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for leaf in score['Lower Staff'].select_leaves():
 ...     dynamic = inspect_(leaf).get_effective(Dynamic)
 ...     print(leaf, dynamic)
@@ -2321,7 +2321,7 @@ for leaf in score['Lower Staff'].select_leaves():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> piano_dynamic = detach(Dynamic, score['Voice 1'][0][0])[0]
 >>> forte_dynamic = detach(Dynamic, score['Voice 1'][1][0])[0]
 >>> pianississimo_dynamic = detach(Dynamic, score['Voice 1'][1][-1])[0]
@@ -2343,7 +2343,7 @@ for leaf in score['Lower Staff'].select_leaves():
 (Rest('r16'), Dynamic(name='f'))
 (Note("d''16"), Dynamic(name='ppp'))
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for leaf in score['Lower Staff'].select_leaves():
 ...     dynamic = inspect_(leaf).get_effective(Dynamic)
 ...     print(leaf, dynamic)
@@ -2393,13 +2393,13 @@ for leaf in measure_2.select_leaves():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> measure_1 = score['Voice 1'][0]
 >>> measure_2 = score['Voice 1'][1]
 >>> inspect_(measure_1).get_indicator(TimeSignature)
 TimeSignature((3, 4))
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for leaf in measure_1.select_leaves():
 ...     time_signature = inspect_(leaf).get_effective(TimeSignature)
 ...     print(leaf, time_signature)
@@ -2408,11 +2408,11 @@ TimeSignature((3, 4))
 (Note("b'16"), TimeSignature((3, 4)))
 (Note("af'4"), TimeSignature((3, 4)))
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> inspect_(measure_2).get_indicator(TimeSignature)
 TimeSignature((5, 4))
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for leaf in measure_2.select_leaves():
 ...     time_signature = inspect_(leaf).get_effective(TimeSignature)
 ...     print(leaf, time_signature)
@@ -2457,22 +2457,22 @@ print(format(tempo, 'lilypond'))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> clef = Clef('bass')
 >>> print(format(clef, 'lilypond'))
 \clef "bass"
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> time_signature = TimeSignature((5, 4))
 >>> print(format(time_signature, 'lilypond'))
 \time 5/4
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> dynamic = Dynamic('p')
 >>> print(format(dynamic, 'lilypond'))
 \p
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> tempo = Tempo((1, 4), 88)
 >>> print(format(tempo, 'lilypond'))
 \tempo 4=88
@@ -2502,7 +2502,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff = Staff("g f e d c")
 >>> attach(clef, staff)
 >>> attach(dynamic, staff)
@@ -2511,7 +2511,7 @@ show(staff)
 >>> Score([staff])
 <Score<<1>>>
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(staff))
 \new Staff {
     \clef "bass"
@@ -2524,7 +2524,7 @@ show(staff)
     c4
 }
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(staff)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-92459f3cc246a32ad77f8f6f2552a053.pdf}
@@ -2552,7 +2552,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff = Staff("g f e d c")
 >>> attach(clef, staff, is_annotation=True)
 >>> attach(dynamic, staff, is_annotation=True)
@@ -2561,7 +2561,7 @@ show(staff)
 >>> Score([staff])
 <Score<<1>>>
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(staff))
 \new Staff {
     g4
@@ -2571,7 +2571,7 @@ show(staff)
     c4
 }
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(staff)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-a55f0283cb66b704a30daf80a4471e39.pdf}
@@ -2594,7 +2594,7 @@ for note in staff:
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for note in staff:
 ...     tempo = inspect_(note).get_effective(Tempo)
 ...     print(note, tempo)
@@ -2658,7 +2658,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff = Staff(r"c'4 \times 2/3 { c'8 e'8 g'8 } g'2")
 >>> show(staff)
 \end{minted}
@@ -2691,7 +2691,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> slur = Slur()
 >>> crescendo = Crescendo()
 >>> tie_one = Tie()
@@ -2720,11 +2720,11 @@ inspect_(staff).get_spanners()
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> inspect_(staff[0]).get_spanners()
-set([Tie("c'4, c'8"), Slur("c'4, c'8, e'8, g'8, g'2")])
+set([Slur("c'4, c'8, e'8, g'8, g'2"), Tie("c'4, c'8")])
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> inspect_(staff).get_spanners()
 set([Crescendo('<Staff{3}>')])
 \end{minted}
@@ -2750,19 +2750,19 @@ inspect_(slur).get_duration()
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> len(slur)
 5
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> slur[1]
 Note("c'8")
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> slur[:]
 Selection(Note("c'4"), Note("c'8"), Note("e'8"), Note("g'8"), Note("g'2"))
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> inspect_(slur).get_duration()
 Duration(1, 1)
 \end{minted}
@@ -2795,7 +2795,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff = Staff()
 >>> measure_one = Measure((3, 4), r"c'4 \times 2/3 { d'4 e'4 f'4 }")
 >>> measure_two = Measure((4, 4), r"\times 3/4 { { g'4 a'4 } { b'4 c''4 } } c'4")
@@ -2818,7 +2818,7 @@ graph(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> graph(staff)
 \end{minted}
 \noindent\includegraphics[scale=0.4,max width=\textwidth,]{assets/graphviz-9dcf1f7f32dcf3f7c356825ed86cdb3a.pdf}
@@ -2856,7 +2856,7 @@ graph(staff, spanner=spanner, graph_attributes={
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> spanner = spannertools.Spanner()
 >>> attach(spanner, staff.select_leaves())
 >>> graph(staff, spanner=spanner, graph_attributes={
@@ -2889,7 +2889,7 @@ graph(staff, spanner=spanner)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> detach(spanner)
 >>> attach(spanner, staff)
 >>> graph(staff, spanner=spanner)
@@ -2912,7 +2912,7 @@ graph(staff, spanner=spanner)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> detach(spanner)
 >>> attach(spanner, staff[:])
 >>> graph(staff, spanner=spanner)
@@ -2938,7 +2938,7 @@ graph(staff, spanner=spanner)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> detach(spanner)
 >>> attach(spanner, measure_one[:] + measure_two[:])
 >>> graph(staff, spanner=spanner)
@@ -2962,7 +2962,7 @@ graph(staff, spanner=spanner)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> detach(spanner)
 >>> attach(spanner, measure_one[1][:] + measure_two[0][:])
 >>> graph(staff, spanner=spanner)
@@ -2989,7 +2989,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff = Staff("c'4 { d'4 e'4 } f'4")
 >>> show(staff)
 \end{minted}
@@ -3011,7 +3011,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> attach(Slur(), staff[1])
 >>> show(staff)
 \end{minted}
@@ -3036,7 +3036,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff[1].insert(1, "ef'4")
 >>> staff[1].insert(0, "af'4")
 >>> staff[1].extend("f'4 g'4")
@@ -3062,7 +3062,7 @@ inspect_(staff[1]).get_spanners()
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff[1][:] = []
 >>> print(format(staff))
 \new Staff {
@@ -3072,11 +3072,11 @@ inspect_(staff[1]).get_spanners()
     f'4
 }
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(staff)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-6b96d2995f7bab01a7332070cee299f3.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> inspect_(staff[1]).get_spanners()
 set([Slur('Container()')])
 \end{minted}
@@ -3096,7 +3096,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff[1].extend("e'4 d'4")
 >>> show(staff)
 \end{minted}
@@ -3150,14 +3150,14 @@ show(note)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> note = Note("c'4")
 >>> override(note).note_head.style = 'cross'
 >>> print(format(note))
 \once \override NoteHead #'style = #'cross
 c'4
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(note)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-440c9c49d229a9b665fb9729ca57ce6d.pdf}
@@ -3182,7 +3182,7 @@ show(container)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> container = Container("c'4 d'4 e'4 f'4")
 >>> override(container).note_head.style = 'cross'
 >>> print(format(container))
@@ -3195,7 +3195,7 @@ show(container)
     \revert NoteHead #'style
 }
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(container)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-6241a916ef5cd76a7cf9074e4b011d45.pdf}
@@ -3234,7 +3234,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff = Staff()
 >>> staff.append(Measure((3, 4), "c'4 d' r"))
 >>> staff.append(Measure((5, 4), r"e'4 \times 2/3 { f' g' r4 } a' b"))
@@ -3264,7 +3264,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> override(staff[1]).script.font_size = 10
 >>> show(staff)
 \end{minted}
@@ -3292,7 +3292,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> slur = spannertools.Slur(direction=Down)
 >>> attach(slur, staff.select_leaves()[1:-1])
 >>> override(slur).note_head.style = 'cross'
@@ -3320,7 +3320,7 @@ print(format(staff))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(staff))
 \new Staff {
     {
@@ -3369,7 +3369,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff[1][1:2] = "f'8 -. g'8 -. fs'8 -. g'8 -."
 >>> show(staff)
 \end{minted}
@@ -3398,7 +3398,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for index in (0, -2, -1):
 ...     override(staff[1][index]).note_head.style = 'slash'
 ...
@@ -3452,7 +3452,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff = Staff("c'8 ( [ d' e' f '] g' [ a' b' c'' ) ]")
 >>> show(staff)
 \end{minted}
@@ -3473,7 +3473,7 @@ print(format(selection))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> selection = staff[2:6]
 >>> print(format(selection))
 selectiontools.SliceSelection(
@@ -3505,7 +3505,7 @@ selection.get_timespan()
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for component in selection:
 ...     component
 ...
@@ -3514,11 +3514,11 @@ Note("f'8")
 Note("g'8")
 Note("a'8")
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> selection.get_duration()
 Duration(1, 2)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> selection.get_timespan()
 Timespan(start_offset=Offset(1, 4), stop_offset=Offset(3, 4))
 \end{minted}
@@ -3542,7 +3542,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> attach(Glissando(), selection)
 >>> show(staff)
 \end{minted}
@@ -3564,13 +3564,13 @@ for spanner in selection.get_spanners():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for spanner in selection.get_spanners():
 ...     spanner
 ...
-Beam("c'8, d'8, e'8, f'8")
 Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
 Beam("g'8, a'8, b'8, c''8")
+Beam("c'8, d'8, e'8, f'8")
 Glissando("e'8, f'8, g'8, a'8")
 \end{minted}
 \end{singlespacing}
@@ -3608,7 +3608,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff = Staff(context_name='RhythmicStaff')
 >>> staff.extend(r"c'4 r4.. c'16 ~ c'4 ~ \times 2/3 { c'8 r4 c'8 ~ } c'4 r4 c'4")
 >>> show(staff)
@@ -3633,7 +3633,7 @@ logical_tie.get_timespan()
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> logical_tie = inspect_(staff[2]).get_logical_tie()
 >>> print(format(logical_tie))
 selectiontools.LogicalTie(
@@ -3644,11 +3644,11 @@ selectiontools.LogicalTie(
         )
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> logical_tie.get_duration()
 Duration(19, 48)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> logical_tie.get_timespan()
 Timespan(start_offset=Offset(11, 16), stop_offset=Offset(13, 12))
 \end{minted}
@@ -3684,15 +3684,15 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> logical_tie.head
 Note("c'16")
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> logical_tie.tail
 Note("c'8")
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> head_markup = Markup('head', direction=Up)
 >>> head_markup = head_markup.pad_around(0.5).box().pad_around(0.5)
 >>> tail_markup = Markup('tail', direction=Up)
@@ -3721,15 +3721,15 @@ logical_tie.is_trivial
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> logical_tie.all_leaves_are_in_same_parent
 False
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> logical_tie.is_pitched
 True
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> logical_tie.is_trivial
 False
 \end{minted}
@@ -3755,12 +3755,12 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> trivial_logical_tie = inspect_(staff[0]).get_logical_tie()
 >>> trivial_logical_tie.is_trivial
 True
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(trivial_logical_tie))
 selectiontools.LogicalTie(
     (
@@ -3768,7 +3768,7 @@ selectiontools.LogicalTie(
         )
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> attach(head_markup, trivial_logical_tie.head)
 >>> attach(tail_markup, trivial_logical_tie.tail)
 >>> show(staff)
@@ -3799,7 +3799,7 @@ for x in ['foo', 10, 3.14159]:
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for x in ['foo', 10, 3.14159]:
 ...     x
 ...
@@ -3835,24 +3835,24 @@ for component in score['Voice 1']:
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> show(score)
 \end{minted}
 \noindent\includegraphics[max width=\textwidth,]{assets/lilypond-c5f77f1a94704e8f098e761bd215d443.pdf}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for component in score:
 ...     component
 ...
 <PianoStaff-"Both Staves"<<2>>>
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for component in score['Both Staves']:
 ...     component
 ...
 <Staff-"Upper Staff"{1}>
 <Staff-"Lower Staff"{1}>
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for component in score['Voice 1']:
 ...     component
 ...
@@ -3876,7 +3876,7 @@ iteration_agent = iterate(score)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> iteration_agent = iterate(score)
 \end{minted}
 \end{singlespacing}
@@ -3907,7 +3907,7 @@ for component in iteration_agent.depth_first():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for component in iteration_agent.depth_first():
 ...     parentage = inspect_(component).get_parentage()
 ...     component_depth = parentage.depth
@@ -3967,7 +3967,7 @@ graph(score)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> graph(score)
 \end{minted}
 \noindent\includegraphics[scale=0.4,max width=\textwidth,]{assets/graphviz-cd4e4715fc44715a6b9884dff43b2b03.pdf}
@@ -4007,7 +4007,7 @@ show(score)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> iterator = iteration_agent.by_class(Rest)
 >>> for count, rest in enumerate(iterator, start=1):
 ...     string = 'R:{}'.format(count)
@@ -4039,7 +4039,7 @@ for component in iteration_agent.depth_first():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for component in iteration_agent.depth_first():
 ...     detached = detach(Markup, component)
 \end{minted}
@@ -4071,7 +4071,7 @@ show(score)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> iterator = iteration_agent.by_timeline(scoretools.Leaf)
 >>> for count, leaf in enumerate(iterator, 1):
 ...     string = 'T:{}'.format(count)
@@ -4102,7 +4102,7 @@ for run in iterate(lower_leaves).by_run(Note):
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> lower_leaves = score['Voice 2'].select_leaves()
 >>> for run in iterate(lower_leaves).by_run(Note):
 ...     run
@@ -4135,7 +4135,7 @@ for component in iterate(score).depth_first():
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> attach(Tie(), score['Upper Staff'].select_leaves()[2:4])
 >>> attach(Tie(), score['Upper Staff'].select_leaves()[6:8])
 >>> for component in iterate(score).depth_first():
@@ -4163,7 +4163,7 @@ show(score)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> upper_leaves = score['Voice 1'].select_leaves()
 >>> for logical_tie in iterate(upper_leaves).by_logical_tie(pitched=True):
 ...     markup = Markup('H', direction=Up)
@@ -4208,7 +4208,7 @@ for x in selector(score['Upper Staff']):
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> selector = selectortools.Selector()
 >>> for x in selector(score['Upper Staff']):
 ...     x
@@ -4239,7 +4239,7 @@ for x in selector(score['Upper Staff']):
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> selector = selector.by_leaves(flatten=True)
 >>> for x in selector(score['Upper Staff']):
 ...     x
@@ -4271,7 +4271,7 @@ print(format(selector))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(selector))
 selectortools.Selector(
     callbacks=(
@@ -4300,7 +4300,7 @@ for x in selector(score['Upper Staff']):
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> selector = selector.by_logical_tie(pitched=True)
 >>> for x in selector(score['Upper Staff']):
 ...     x
@@ -4328,7 +4328,7 @@ print(format(selector))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(selector))
 selectortools.Selector(
     callbacks=(
@@ -4362,7 +4362,7 @@ for x in selector(score['Upper Staff']):
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> selector = selector.by_duration('>', Duration(1, 4))
 >>> for x in selector(score['Upper Staff']):
 ...     x
@@ -4389,7 +4389,7 @@ for x in selector(score['Upper Staff']):
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> selector = selector[0]
 >>> for x in selector(score['Upper Staff']):
 ...     print(repr(x))
@@ -4419,7 +4419,7 @@ for x in selector(score['Upper Staff']):
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> selector = selector.flatten()
 >>> for x in selector(score['Upper Staff']):
 ...     print(repr(x))
@@ -4455,7 +4455,7 @@ show(score)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> for component in iterate(score).depth_first():
 ...     detached = detach(Markup, component)
 ...
@@ -4481,7 +4481,7 @@ print(format(selector))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(selector))
 selectortools.Selector(
     callbacks=(
@@ -4558,7 +4558,7 @@ print(format(rhythm_maker))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
 ...     talea=rhythmmakertools.Talea([1, 2, 3], 16),
 ...     extra_counts_per_division=(1, 0, 2, 1, 0),
@@ -4623,7 +4623,7 @@ print(format(new_rhythm_maker))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> new_rhythm_maker = new(rhythm_maker,
 ...     extra_counts_per_division=[1, 2, 3],
 ...     )
@@ -4677,7 +4677,7 @@ print(format(new_rhythm_maker))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> new_rhythm_maker = new(new_rhythm_maker,
 ...     talea=rhythmmakertools.Talea([2, 1], 8),
 ...     extra_counts_per_division=[1, 0, 1, 2, 0, 1],
@@ -4735,7 +4735,7 @@ print(format(new_rhythm_maker))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> new_rhythm_maker = new(new_rhythm_maker,
 ...     talea__denominator=4,
 ...     )
@@ -4802,7 +4802,7 @@ evaluated_selector == selector
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> print(format(selector))
 selectortools.Selector(
     callbacks=(
@@ -4831,7 +4831,7 @@ selectortools.Selector(
         ),
     )
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> selector_format = format(selector)
 >>> evaluated_selector = eval(selector_format)
 >>> evaluated_selector == selector
@@ -4859,7 +4859,7 @@ persistence_agent.as_module(
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> persistence_agent = persist(selector)
 >>> persistence_agent.as_module(
 ...     module_file_path='a_selector_module.py',
@@ -4886,7 +4886,7 @@ print(module_file_contents)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> with open('a_selector_module.py', 'r') as module_file_pointer:
 ...     module_file_contents = module_file_pointer.read()
 ...
@@ -4941,7 +4941,7 @@ persisted_selector == selector
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> from a_selector_module import persisted_selector
 >>> persisted_selector == selector
 True
@@ -4999,7 +4999,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> staff = Staff("c'4 d'4 e'4 f'4 g'4 a'4 b'4 c''4")
 >>> agent = mutate(staff[:])
 >>> for i, shard in enumerate(agent.split(durations=[(3, 16)], cyclic=True)):
@@ -5042,29 +5042,29 @@ pitchtools.IntervalSegment(pitch_segment)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> pitch_segment = pitchtools.PitchSegment("c' d' e' fs' gf'")
 >>> pitch_segment
 PitchSegment(["c'", "d'", "e'", "fs'", "gf'"])
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> pitch_segment = pitch_segment.rotate(1, transpose=True)
 >>> pitch_segment
 PitchSegment(["c'", 'fs', 'gs', 'as', 'bs'])
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> pitch_segment[2].accidental
 Accidental('s')
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> pitch_segment[2].octave
 Octave(3)
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> pitch_segment[2].named_pitch_class
 NamedPitchClass('gs')
 \end{minted}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> pitchtools.IntervalSegment(pitch_segment)
 IntervalSegment(['-dim5', '+M2', '+M2', '+M2'])
 \end{minted}
@@ -5095,7 +5095,7 @@ show(result)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> string = r"\new Staff { c'4 ( \p \< d'4 e'4 f'4 ) \! }"
 >>> result = parse(string)
 >>> show(result)
@@ -5118,7 +5118,7 @@ show(result)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> string = r'''\new Staff { c' _ \markup { X \bold Y \italic Z "a b c" } }'''
 >>> parser = lilypondparsertools.LilyPondParser()
 >>> result = parser(string)
@@ -5145,7 +5145,7 @@ show(abjad_container)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> rtm_parser = rhythmtreetools.RhythmTreeParser()
 >>> rtm_syntax = '(1 (1 (2 (1 -1 1)) -2))'
 >>> rtm_container = rtm_parser(rtm_syntax)[0]
@@ -5181,7 +5181,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> pitches = ["c'", "ef'", "g'", 'b']
 >>> durations = [(3, 8), (5, 16), (1, 4)] * 3
 >>> notes = scoretools.make_notes(pitches, durations)
@@ -5217,7 +5217,7 @@ show(staff)
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
 ...     talea=rhythmmakertools.Talea(
 ...         counts=[1, 2, 3, 4],
@@ -5257,7 +5257,7 @@ print(format(score))
 \begin{abjadbookoutput}
 \begin{singlespacing}
 \vspace{-0.5\baselineskip}
-\begin{minted}{python}
+\begin{minted}{pycon}
 >>> score_template = templatetools.StringQuartetScoreTemplate()
 >>> score = score_template()
 >>> print(format(score))
