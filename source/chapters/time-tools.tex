@@ -12,13 +12,14 @@ import consort
 </abjad>
 \end{comment}
 
-\eblettrinedbl{C}{onsort implements a model of composition} which relies on a
-number of interrelated but distinct approaches to working with musical time.
-For example, Abjad's \emph{Timespan} suggests a \enquote{coarse} approach to
-musical time. These objects represent arbitrary durated events on a timeline,
-without respect for score hierarchy or meter. They are well-suited for modeling
-large-scale phrasing and gestural density structures and can be transformed
-through splitting, scaling, stretching, and translation among various other
+\eblettrinedbl{C}{onsort is an open-source Python package} extending Abjad and
+implementing a model of composition which relies on a number of interrelated
+but distinct approaches to working with musical time. For example, Abjad's
+\emph{timespans} suggests a \enquote{coarse} approach to musical time. These
+objects represent arbitrary durated events on a timeline, without respect for
+score hierarchy or meter. They are well-suited for modeling large-scale
+phrasing and gestural density structures and can be transformed through
+splitting, scaling, stretching, and translation among various other
 manipulations. Because they have no notational reality, they can model temporal
 concepts unsuited to notated music -- without introducing additional
 complexity--, such as arbitrarily overlapping events. Timespans may also be
@@ -30,14 +31,16 @@ rhythms, composed of note, rest, tie and tuplet objects -- among others--,
 provide the most \enquote{fine-grained} approach to musical time. While
 incredibly expressive, fully notated rhythms are potentially complex to create,
 and must ultimately be anchored in a score hierarchy. Highly-configurable
-rhythm-maker classes ameliorate the complexity of creating notated rhythms by
-providing a high-level interface to the process of rhythm generation. Meter
-coordinates time and rhythm vertically across score hierarchy, and bridges
-Consort's coarse and fine stages of rhythmic interpretation. Meter sequences
-can be generated from timespan-based phrase structures, and those meter
-sequences used to transform notated rhythms in turn. A thorough discussion of
-the implementation of these time models and their implications will clarify a
-later analysis of Consort's score interpretation stage.
+\emph{rhythm-maker} objects ameliorate the complexity of creating notated
+rhythms by providing a high-level interface to the process of rhythm
+generation. Abjad's hierarchical model of \emph{meter} coordinates time and
+rhythm vertically across different levels of depth in the score tree, and
+bridges Consort's coarse and fine stages of rhythmic interpretation. Meter
+sequences can be generated from timespan-based phrase structures, and those
+meter sequences used to transform notated rhythms in turn. A thorough
+discussion of the implementation of these time models and their implications
+will clarify an analysis in \autoref{chap:a-model-of-composition} of Consort's
+\emph{score interpretation stage}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Timespans}
@@ -72,8 +75,8 @@ timespans in terms of offsets.}
 
 Abjad implements timespans via the \texttt{Timespan} class in its
 \texttt{timespantools} library. The following code shows the definition of a
-timespan object beginning at the offset \sfrac{1}{4} and continues up until the
-offset \sfrac{3}{2}:
+timespan object beginning at the offset \sfrac[big]{1}{4} and continues up until the
+offset \sfrac[big]{3}{2}:
 
 \begin{comment}
 <abjad>
@@ -2226,7 +2229,7 @@ filling the entirety of the provided target timespan from beginning to end.
 For example, the following flooded timespan-maker will create a timespan
 inventory populated by a single performed timespan associated with a
 \enquote{Violin Voice} context, completely filling the span of its target
-timespan, from \sfrac{1}{4} to \sfrac{11}{8}:
+timespan, from \sfrac[big]{1}{4} to \sfrac[big]{11}{8}:
 
 \begin{comment}
 <abjad>
@@ -2569,8 +2572,8 @@ target_timespan = timespantools.Timespan(0, (19, 4))
 \end{abjadbookoutput}
 
 \noindent Without any manual configuration, talea timespan-makers generate
-unsynchronized 1-length groups of \sfrac{1}{4}-duration timespans, separated by
-\sfrac{1}{4}-duration silences, creating the appearance of synchronization
+unsynchronized 1-length groups of \sfrac[big]{1}{4}-duration timespans, separated by
+\sfrac[big]{1}{4}-duration silences, creating the appearance of synchronization
 across voices:
 
 \begin{comment}
@@ -2598,12 +2601,12 @@ show(result, key='voice_name')
 \end{abjadbookoutput}
 
 \noindent Changing the talea timespan-maker's \texttt{playing\_talea} property
-from a series of \sfrac{1}{4}-durations to \sfrac{1}{4}, \sfrac{2}{4},
-\sfrac{3}{4}, \sfrac{4}{4} reveals the timespan-maker's voice-wrapping
+from a series of \sfrac[big]{1}{4}-durations to \sfrac[big]{1}{4}, \sfrac[big]{2}{4},
+\sfrac[big]{3}{4}, \sfrac[big]{4}{4} reveals the timespan-maker's voice-wrapping
 behavior. Note how \enquote{Voice 1}'s timespans receive the durations
-\sfrac{1}{4}, \sfrac{2}{4}, \sfrac{3}{4}, \sfrac{4}{4}, \sfrac{1}{4} and
-\sfrac{2}{4}. \enquote{Voice 2} continues the duration sequence with
-\sfrac{3}{4}, \sfrac{4}{4} and so forth. The playing-duration talea continues
+\sfrac[big]{1}{4}, \sfrac[big]{2}{4}, \sfrac[big]{3}{4}, \sfrac[big]{4}{4}, \sfrac[big]{1}{4} and
+\sfrac[big]{2}{4}. \enquote{Voice 2} continues the duration sequence with
+\sfrac[big]{3}{4}, \sfrac[big]{4}{4} and so forth. The playing-duration talea continues
 to wrap around the end of each voice's timespans to the beginning of the next
 voice's:
 
@@ -2650,9 +2653,9 @@ controls how many timespans are created together as contiguous groups. When a
 grouping would run beyond the stop offset provided by the target timespan, that
 grouping's length is chosen again for the first timespan group of the next
 voice's timespans. Note how \enquote{Voice 2}'s final timespan, from
-\sfrac{13}{4} to \sfrac{4}{1}, should -- according to the following talea
+\sfrac[big]{13}{4} to \sfrac[big]{4}{1}, should -- according to the following talea
 timespan-maker's groupings pattern -- begin a group of length 2. Because that
-grouping would run beyond the target timespan's \sfrac{19}{4} stop offset, the
+grouping would run beyond the target timespan's \sfrac[big]{19}{4} stop offset, the
 following voice's first timespan group receives the 2-length grouping instead:
 
 \begin{comment}
@@ -2812,8 +2815,8 @@ configuring a new timespan-maker with its \texttt{synchronize\_step} flag set
 to true. This option causes the timespan-maker to create all of the timespans
 in every voice at once, then select some amount of silence between the end of
 that vertically-synchronized group and the beginning of the next. Note here how
-the duration of each timespan follows the timespan-maker's \sfrac{1}{4},
-\sfrac{2}{4}, \sfrac{3}{4}, \sfrac{4}{4}, \sfrac{5}{4} pattern not from
+the duration of each timespan follows the timespan-maker's \sfrac[big]{1}{4},
+\sfrac[big]{2}{4}, \sfrac[big]{3}{4}, \sfrac[big]{4}{4}, \sfrac[big]{5}{4} pattern not from
 left-to-right by voice, but top-to-bottom by voice and then left-to-right:
 
 \begin{comment}
@@ -2864,11 +2867,11 @@ show(result, key='voice_name')
 
 \noindent The silence durations between these synchronized groups are
 calculated from the end of the longest timespan in each group to the beginning
-of the next group. Therefore the second group starts at \sfrac{1}{1} because
-the first silence duration is \sfrac{4}{8} and the first group stops at
-\sfrac{1}{2}. Similarly, the third group starts at \sfrac{5}{2} (\sfrac{20}{8})
-because the second silence duration is \sfrac{7}{8} and the second group ended
-at \sfrac{13}{8}. This silence \emph{stepping} can also be calculated from the
+of the next group. Therefore the second group starts at \sfrac[big]{1}{1} because
+the first silence duration is \sfrac[big]{4}{8} and the first group stops at
+\sfrac[big]{1}{2}. Similarly, the third group starts at \sfrac[big]{5}{2} (\sfrac[big]{20}{8})
+because the second silence duration is \sfrac[big]{7}{8} and the second group ended
+at \sfrac[big]{13}{8}. This silence \emph{stepping} can also be calculated from the
 beginning of one group to the next, rather than from the end of one to the
 beginning of the next, by changing the timespan-maker's \texttt{step\_anchor}
 property from \texttt{Right} to \texttt{Left}. Such a change helps guarantee
@@ -2878,10 +2881,10 @@ Initial silences behave differently in synchronized talea timespan-makers than
 with unsynchronized talea timespan-makers. Rather than adding silences only at
 the very beginning of each voice's timespans, silences are determined for each
 voice at the beginning of each synchronized group. Note how \enquote{Voice 3}
-is missing a fourth timespan. That timespan, with a duration of \sfrac{5}{8},
-and an initial silence of \sfrac{2}{8} measured from the offset \sfrac{4}{1},
-would have extended to \sfrac{39}{8} -- \sfrac{1}{8} more than the target
-timespan's \sfrac{19}{4} stop offset:
+is missing a fourth timespan. That timespan, with a duration of \sfrac[big]{5}{8},
+and an initial silence of \sfrac[big]{2}{8} measured from the offset \sfrac[big]{4}{1},
+would have extended to \sfrac[big]{39}{8} -- \sfrac[big]{1}{8} more than the target
+timespan's \sfrac[big]{19}{4} stop offset:
 
 \begin{comment}
 <abjad>
@@ -3077,10 +3080,10 @@ Configuring the dependent timespan-maker with its
 \texttt{include\_inner\_starts} flag set to true causes it to create contiguous
 groups of dependent timespans, as though splitting at every moment when a
 timespan it depends upon starts. Note that new dependent timespans begin at the
-offsets \sfrac{10}{1}, \sfrac{15}{1} and \sfrac{25}{1}, for example. This is
-because a new timespan begins in \enquote{Voice 1} at both \sfrac{10}{1} and
-\sfrac{25}{1}, and another new timespan begins in \enquote{Voice 2} at
-\sfrac{15}{1}:
+offsets \sfrac[big]{10}{1}, \sfrac[big]{15}{1} and \sfrac[big]{25}{1}, for example. This is
+because a new timespan begins in \enquote{Voice 1} at both \sfrac[big]{10}{1} and
+\sfrac[big]{25}{1}, and another new timespan begins in \enquote{Voice 2} at
+\sfrac[big]{15}{1}:
 
 \begin{comment}
 <abjad>
@@ -3195,7 +3198,7 @@ by the offsets extracted from the timespans they select. Specifying a rotation
 index of 1 causes each created group of dependent timespans to rotate its
 internal durations by that index. The 10-duration dependent timespan which
 previously occurred first in the \enquote{Dependent Voice} now occurs second,
-following a \sfrac{5}{1}-duration timespan:
+following a \sfrac[big]{5}{1}-duration timespan:
 
 \begin{comment}
 <abjad>
@@ -3272,7 +3275,7 @@ timespan if no target timespan was specified explicitly. However, passing a
 target timespan to a dependent timespan-maker causes that timespan-maker to
 perform a logical \texttt{AND} of the target timespan with any selected
 timespans in the input inventory. Here the dependent timespans are constrained
-between the offsets \sfrac{17}{1} and \sfrac{58}{1}:
+between the offsets \sfrac[big]{17}{1} and \sfrac[big]{58}{1}:
 
 \begin{comment}
 <abjad>
@@ -3311,7 +3314,7 @@ input sequences of \emph{divisions} -- positive, non-reduced fraction
 tokens\footnote{Rather than coercing input into sequences of \texttt{Duration}
 objects, which reduce their denominators as much as possible, rhythm-makers
 treat all input as \emph{non-reduced fractions}, allowing them to disambiguate
-\sfrac{4}{16} from \sfrac{2}{8} or \sfrac{6}{8} from \sfrac{3}{4} and to
+\sfrac[big]{4}{16} from \sfrac[big]{2}{8} or \sfrac[big]{6}{8} from \sfrac[big]{3}{4} and to
 therefore treat those division tokens as distinct.} representing the divisions
 in some phrase of music -- and producing selections of score components as
 output. Abjad's \texttt{rhythmmakertools} library contains a variety of such
@@ -3457,7 +3460,7 @@ the use of a talea -- an infinitely cyclic pattern of durations. Talea
 rhythm-makers fill their output divisions with durations from their talea,
 splitting those durations across division boundaries when the divisions are
 over-full. The following trivial talea rhythm-maker uses a length-1 talea
-comprised of a single \sfrac{1}{16} duration:
+comprised of a single \sfrac[big]{1}{16} duration:
 
 \begin{comment}
 <abjad>
@@ -3487,9 +3490,9 @@ show(talea_rhythm_maker, divisions=divisions)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Extending the talea counts to a sequence of alternating \sfrac{1}{16}
-and \sfrac{1}{8} notes produces more complex results. Note how the \sfrac{1}{8}
-durations break over the boundaries of the \sfrac{3}{16} measure, but remain
+\noindent Extending the talea counts to a sequence of alternating \sfrac[big]{1}{16}
+and \sfrac[big]{1}{8} notes produces more complex results. Note how the \sfrac[big]{1}{8}
+durations break over the boundaries of the \sfrac[big]{3}{16} measure, but remain
 tied together. Talea rhythm-makers handle talea splitting and tying
 transparently:
 
@@ -3548,18 +3551,18 @@ show(talea_rhythm_maker, divisions=divisions)
 though they had more counts than they actually do via their
 \texttt{extra\_counts\_per\_division} property, causing tuplets to appear in
 the output. The following talea, reconfigured from the previous, adds an extra
-count to every second and third input division. This causes the \sfrac{4}{8}
-and \sfrac{3}{16} as well as the \sfrac{5}{8} and \sfrac{2}{4} divisions to
-become tuplets, each with a pre-prolated contents duration \sfrac{1}{16} longer
-than their prolated duration. In other words, the \sfrac{4}{8} division
-contains a tuplet whose contents sum to \sfrac{9}{16}, but scaled into a
-duration of \sfrac{8}{16}. Likewise, the \sfrac{3}{16} division contains a
-tuplet whose contents sum to \sfrac{4}{16}, but scaled into a duration of
-\sfrac{3}{16}. Note how this tupletting causes the pattern of split and tied
+count to every second and third input division. This causes the \sfrac[big]{4}{8}
+and \sfrac[big]{3}{16} as well as the \sfrac[big]{5}{8} and \sfrac[big]{2}{4} divisions to
+become tuplets, each with a pre-prolated contents duration \sfrac[big]{1}{16} longer
+than their prolated duration. In other words, the \sfrac[big]{4}{8} division
+contains a tuplet whose contents sum to \sfrac[big]{9}{16}, but scaled into a
+duration of \sfrac[big]{8}{16}. Likewise, the \sfrac[big]{3}{16} division contains a
+tuplet whose contents sum to \sfrac[big]{4}{16}, but scaled into a duration of
+\sfrac[big]{3}{16}. Note how this tupletting causes the pattern of split and tied
 talea durations to shift. In the previous example, the second instance of the
-talea's \sfrac{3}{16} duration occurred entirely during the \sfrac{3}{16}
-division. Here, that same \sfrac{3}{16} talea duration begins on the final
-\sfrac{1}{16} of the \sfrac{4}{8} division's 9:8 tuplet, tied into the 4:3
+talea's \sfrac[big]{3}{16} duration occurred entirely during the \sfrac[big]{3}{16}
+division. Here, that same \sfrac[big]{3}{16} talea duration begins on the final
+\sfrac[big]{1}{16} of the \sfrac[big]{4}{8} division's 9:8 tuplet, tied into the 4:3
 tuplet in the following division:
 
 \begin{comment}
@@ -3630,7 +3633,7 @@ talea, or by configuring the rhythm-maker with a special \emph{burnish}
 specifier which casts logical ties generated by the rhythm-maker as either
 notes or rests, in a patterned way. Here, the 3-count in the talea
 rhythm-maker's talea is changed to -3, resulting in the production of
-\sfrac{3}{16}-duration silences:
+\sfrac[big]{3}{16}-duration silences:
 
 \begin{comment}
 <abjad>
@@ -3727,7 +3730,7 @@ well as the \emph{sign} of the component to be incised. Negative talea items
 indicate rests, while positive talea items indicate notes. The count properties
 -- \texttt{suffix\_counts} and \texttt{prefix\_counts} -- indicate how many
 talea durations should be selected at each pass. The following incised
-rhythm-maker incises a single \sfrac{1}{16} rest at the end of each division:
+rhythm-maker incises a single \sfrac[big]{1}{16} rest at the end of each division:
 
 \begin{comment}
 <abjad>
@@ -3850,7 +3853,7 @@ show(incised_rhythm_maker, divisions=divisions)
 \end{abjadbookoutput}
 
 \noindent Incised rhythm-makers can be configured to only incise the outer
-divisions of their output. The following rhythm-maker cuts \sfrac{1}{8} rests
+divisions of their output. The following rhythm-maker cuts \sfrac[big]{1}{8} rests
 from the beginning of the first division in its output, and the end of the last
 division:
 
@@ -3954,9 +3957,9 @@ show(even_division_rhythm_maker, divisions=divisions)
 \end{abjadbookoutput}
 
 \noindent Extending the even-division rhythm-maker's denominator sequence to a
-2-length pattern produces divisions filled alternatingly with \sfrac{1}{8} and
-\sfrac{1}{16} notes. Note that the \sfrac{3}{16} measure is filled with a
-dotted \sfrac{1}{8} note:
+2-length pattern produces divisions filled alternatingly with \sfrac[big]{1}{8} and
+\sfrac[big]{1}{16} notes. Note that the \sfrac[big]{3}{16} measure is filled with a
+dotted \sfrac[big]{1}{8} note:
 
 \begin{comment}
 <abjad>
@@ -3983,7 +3986,7 @@ show(even_division_rhythm_maker, divisions=divisions)
 \end{abjadbookoutput}
 
 \noindent Extending the denominator sequence even further results in more
-complex output. Note here how the \sfrac{5}{8} division is rendered as a
+complex output. Note here how the \sfrac[big]{5}{8} division is rendered as a
 tuplet:
 
 \begin{comment}
@@ -4015,9 +4018,9 @@ configured to add extra counts to each output division, forcing the
 rhythm-maker to treat input divisions as longer than they actually are.
 Artificially lengthened divisions are rendered as tuplets. With the following
 rhythm-maker which attempts to fill each output division with a run of
-\sfrac{1}{8} notes, every other division is extended by one count, causing the
-\sfrac{4}{8} and \sfrac{2}{4} divisions to be rendered as 5:4 tuplets, and the
-\sfrac{4}{16} division to be rendered as a 3:2 tuplet:
+\sfrac[big]{1}{8} notes, every other division is extended by one count, causing the
+\sfrac[big]{4}{8} and \sfrac[big]{2}{4} divisions to be rendered as 5:4 tuplets, and the
+\sfrac[big]{4}{16} division to be rendered as a 3:2 tuplet:
 
 \begin{comment}
 <abjad>
@@ -4168,7 +4171,7 @@ even metrical structures above odd or otherwise prime divisions. Constructing
 rhythm-trees in this fashion gives results which generally align with common
 practice expectations.
 
-Consider the following \sfrac{6}{8} meter and its graph representation:
+Consider the following \sfrac[big]{6}{8} meter and its graph representation:
 
 \begin{comment}
 <abjad>
@@ -4197,27 +4200,27 @@ bottom -- the relative weight of their accent. The final oval on the right
 indicates the offset and accent weight of the \enquote{next} downbeat.
 
 The topmost triangle in the above graph represent the \enquote{highest}
-metrical grouping in a \sfrac{6}{8} meter. Tracing the leftmost and rightmost
+metrical grouping in a \sfrac[big]{6}{8} meter. Tracing the leftmost and rightmost
 arrows down through the topmost node's children gives the offsets 0 and
-\sfrac{3}{4}: the first downbeat and next downbeat in a \sfrac{6}{8} meter.
-Offsets 0 and \sfrac{3}{4} also have the strongest accent weights as they occur
+\sfrac[big]{3}{4}: the first downbeat and next downbeat in a \sfrac[big]{6}{8} meter.
+Offsets 0 and \sfrac[big]{3}{4} also have the strongest accent weights as they occur
 as either the start offset or stop offset of nodes at three levels of hierarchy
-in the rhythm tree. At the second level the \sfrac{6}{8} grouping divides into
-two \sfrac{3}{8} groupings, following common practice expectations: metrical
+in the rhythm tree. At the second level the \sfrac[big]{6}{8} grouping divides into
+two \sfrac[big]{3}{8} groupings, following common practice expectations: metrical
 groupings tend to subdivide into groups of two before they subdivide into
-groups of three.\footnote{Consider a \sfrac{12}{8} meter. Western musicians
+groups of three.\footnote{Consider a \sfrac[big]{12}{8} meter. Western musicians
 tend to subdivide twelve into either two groups of six or four groups of three
 rather than into three groups of four.} Both second-level nodes share the
-offset of \sfrac{3}{8}, which also occurs in the third level, giving
-\sfrac{3}{8} a weight of two. The third level contains the \sfrac{1}{8}
+offset of \sfrac[big]{3}{8}, which also occurs in the third level, giving
+\sfrac[big]{3}{8} a weight of two. The third level contains the \sfrac[big]{1}{8}
 duration beats, grouped by their parents in the second level into two groups
-three \sfrac{1}{8} duration nodes. The offsets \sfrac{1}{8}, \sfrac{1}{4},
-\sfrac{1}{2} and \sfrac{5}{8} are not shared by any nodes except at the lowest
+three \sfrac[big]{1}{8} duration nodes. The offsets \sfrac[big]{1}{8}, \sfrac[big]{1}{4},
+\sfrac[big]{1}{2} and \sfrac[big]{5}{8} are not shared by any nodes except at the lowest
 metrical level and therefore all receive an accent weight of one.
 
 Consider the following other examples of meters modeled in Abjad. A
-\sfrac{3}{4} meter consists of a top-level \sfrac{3}{4} metrical grouping
-divided into three \sfrac{1}{4} duration beats:
+\sfrac[big]{3}{4} meter consists of a top-level \sfrac[big]{3}{4} metrical grouping
+divided into three \sfrac[big]{1}{4} duration beats:
 
 \begin{comment}
 <abjad>
@@ -4237,8 +4240,8 @@ graph(three_four_meter)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent By default, a \sfrac{7}{8} meter subdivides its top-level metrical
-grouping into \sfrac{3}{8}+\sfrac{2}{8}+\sfrac{2}{8} groupings:
+\noindent By default, a \sfrac[big]{7}{8} meter subdivides its top-level metrical
+grouping into \sfrac[big]{3}{8}+\sfrac[big]{2}{8}+\sfrac[big]{2}{8} groupings:
 
 \begin{comment}
 <abjad>
@@ -4258,8 +4261,8 @@ graph(seven_eight_meter)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent A \sfrac{12}{8} meter subdivides into four \sfrac{3}{8} duration
-groupings, each containing three \sfrac{1}{8} duration beats:
+\noindent A \sfrac[big]{12}{8} meter subdivides into four \sfrac[big]{3}{8} duration
+groupings, each containing three \sfrac[big]{1}{8} duration beats:
 
 \begin{comment}
 <abjad>
@@ -4281,11 +4284,11 @@ graph(twelve_eight_meter)
 
 \noindent Abjad also permits alternate representations of meters which
 ostensibly share the same numerator and denominator. The default interpretation
-of \sfrac{4}{4} generates a top-level rhythmic grouping with a duration of
-\sfrac{4}{4} and four \sfrac{1}{4} beats as children:\footnote{A \enquote{flat}
-\sfrac{4}{4} metrical structure is useful for meter rewriting as it allows the
+of \sfrac[big]{4}{4} generates a top-level rhythmic grouping with a duration of
+\sfrac[big]{4}{4} and four \sfrac[big]{1}{4} beats as children:\footnote{A \enquote{flat}
+\sfrac[big]{4}{4} metrical structure is useful for meter rewriting as it allows the
 meter rewriting algorithm to ignore many common rhythmic idioms like
-\sfrac{1}{4}+\sfrac{1}{2}+\sfrac{1}{4} and \sfrac{1}{4}+\sfrac{3}{4}.}
+\sfrac[big]{1}{4}+\sfrac[big]{1}{2}+\sfrac[big]{1}{4} and \sfrac[big]{1}{4}+\sfrac[big]{3}{4}.}
 
 \begin{comment}
 <abjad>
@@ -4334,11 +4337,11 @@ print(four_four_meter.pretty_rtm_format)
 
 \noindent Instantiating meters from explicit rhythm tree syntax allows
 composers to choose alternate representations of metrical structures. For
-example, a \sfrac{4}{4} meter which strongly emphasizes beat three is possible
-by subdividing the top-level \sfrac{4}{4} metrical grouping into two
-\sfrac{2}{4} duration groupings, which are then subdivided each into two
-\sfrac{1}{4} duration beats. Such a metrical structure effectively treats
-\sfrac{4}{4} as identical to \sfrac{2}{2}:
+example, a \sfrac[big]{4}{4} meter which strongly emphasizes beat three is possible
+by subdividing the top-level \sfrac[big]{4}{4} metrical grouping into two
+\sfrac[big]{2}{4} duration groupings, which are then subdivided each into two
+\sfrac[big]{1}{4} duration beats. Such a metrical structure effectively treats
+\sfrac[big]{4}{4} as identical to \sfrac[big]{2}{2}:
 
 \begin{comment}
 <abjad>
@@ -4359,7 +4362,7 @@ graph(arbitrary_meter_1)
 \end{abjadbookoutput}
 
 \noindent Unusual metrical structures are also possible, such as the following
-\sfrac{4}{4} meter which divides into two parts, with the first part dividing
+\sfrac[big]{4}{4} meter which divides into two parts, with the first part dividing
 into two again, and the second grouping of that divided into two again:
 
 \begin{comment}
@@ -4401,7 +4404,7 @@ ties against offsets outlined first by the root node of a meter and, if found
 invalid, against those offsets found in nodes progressively deeper in the
 meter's rhythm-tree.
 
-For example, the offsets outlined by the root node of a \sfrac{6}{8} meter can
+For example, the offsets outlined by the root node of a \sfrac[big]{6}{8} meter can
 be found by examining its depth-wise offset inventory:
 
 \begin{comment}
@@ -4423,10 +4426,10 @@ six_eight_meter.depthwise_offset_inventory[0]
 \end{abjadbookoutput}
 
 \noindent A logical tie three-quarters in duration starting at the offset 0
-would be considered valid in the context of \sfrac{6}{8} because it aligns to
+would be considered valid in the context of \sfrac[big]{6}{8} because it aligns to
 the offsets outlined at depth-0 of the meter's rhythm-tree. In contrast, a
-logical tie two quarters in duration starting at \sfrac{1}{8} -- therefore
-outlining the timespan of \sfrac{1}{8}:\sfrac{5}{8} -- would be considered
+logical tie two quarters in duration starting at \sfrac[big]{1}{8} -- therefore
+outlining the timespan of \sfrac[big]{1}{8}:\sfrac[big]{5}{8} -- would be considered
 invalid due to misalignment:
 
 \begin{comment}
@@ -4450,9 +4453,9 @@ show(six_eight_measure)
 \noindent Meter rewriting splits misaligned logical ties at any possible offset
 found in the currently considered depth. If no offsets at that depth intersect
 with the misaligned tie, the depth is increased and the process repeats. At a
-depth of 1 in a \sfrac{6}{8} meter we finally find an offset intersecting the
-timespan of the misaligned \sfrac{1}{8}:\sfrac{5}{8} logical tie at the offset
-\sfrac{3}{8}:
+depth of 1 in a \sfrac[big]{6}{8} meter we finally find an offset intersecting the
+timespan of the misaligned \sfrac[big]{1}{8}:\sfrac[big]{5}{8} logical tie at the offset
+\sfrac[big]{3}{8}:
 
 \begin{comment}
 <abjad>
@@ -4470,8 +4473,8 @@ six_eight_meter.depthwise_offset_inventory[1]
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Rewriting the contents of the \sfrac{6}{8} measure against a
-\sfrac{6}{8} meter splits the inner half-note at the \sfrac{3}{8} offset
+\noindent Rewriting the contents of the \sfrac[big]{6}{8} measure against a
+\sfrac[big]{6}{8} meter splits the inner half-note at the \sfrac[big]{3}{8} offset
 boundary:
 
 \begin{comment}
@@ -4520,8 +4523,8 @@ show(staff)
 
 \noindent The middle measure is notated in a perfectly valid manner. However,
 the double-dotted D does not align with or break against any of the offsets of
-a \sfrac{4}{4} metrical structure: \sfrac{0}{4}, \sfrac{1}{4}, \sfrac{2}{4},
-\sfrac{3}{4} or \sfrac{4}{4}:
+a \sfrac[big]{4}{4} metrical structure: \sfrac[big]{0}{4}, \sfrac[big]{1}{4}, \sfrac[big]{2}{4},
+\sfrac[big]{3}{4} or \sfrac[big]{4}{4}:
 
 \begin{comment}
 <abjad>
@@ -4541,8 +4544,8 @@ graph(four_four_meter)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Rewriting the inner measure against a \sfrac{4}{4} meter breaks the
-inner logical tie at \sfrac{1}{4} and \sfrac{3}{4}, slightly improving
+\noindent Rewriting the inner measure against a \sfrac[big]{4}{4} meter breaks the
+inner logical tie at \sfrac[big]{1}{4} and \sfrac[big]{3}{4}, slightly improving
 readability:
 
 \begin{comment}
@@ -4563,9 +4566,9 @@ show(staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Rewriting the same measure against a \sfrac{2}{2} meter breaks the
-inner logical tie at the offset \sfrac{1}{2}, as two double-dotted quarter
-notes. While identical to \sfrac{4}{4} in duration, \sfrac{2}{2} strongly
+\noindent Rewriting the same measure against a \sfrac[big]{2}{2} meter breaks the
+inner logical tie at the offset \sfrac[big]{1}{2}, as two double-dotted quarter
+notes. While identical to \sfrac[big]{4}{4} in duration, \sfrac[big]{2}{2} strongly
 emphasizes this duple division:
 
 \begin{comment}
@@ -4600,7 +4603,7 @@ individual notes exceed the maximum number of permitted dots will be rewritten,
 if a maximum dot count has been specified.
 
 Consider this series of progressively rewritten rhythms, beginning with the
-following unrewritten \sfrac{3}{4} measure:
+following unrewritten \sfrac[big]{3}{4} measure:
 
 \begin{comment}
 <abjad>
@@ -4723,10 +4726,10 @@ different \emph{depths} in a meter's rhythm-tree by marking as invalid logical
 ties which do not immediately align to those offsets on the very first pass of
 the recursive meter rewriting process. Use of boundary depth often clarifies
 distinctive groupings in more deeply nested meters, such as the
-\enquote{3-ness} inherent to a \sfrac{9}{8} meter. The nodes with a depth of 1
-in the following \sfrac{9}{8} meter's rhythm-tree -- the three \sfrac{3}{8}
-inner nodes marked by triangles -- outline the offsets \sfrac{0}{8},
-\sfrac{3}{8}, \sfrac{6}{8} and \sfrac{9}{8}. When rewriting a \sfrac{9}{8}
+\enquote{3-ness} inherent to a \sfrac[big]{9}{8} meter. The nodes with a depth of 1
+in the following \sfrac[big]{9}{8} meter's rhythm-tree -- the three \sfrac[big]{3}{8}
+inner nodes marked by triangles -- outline the offsets \sfrac[big]{0}{8},
+\sfrac[big]{3}{8}, \sfrac[big]{6}{8} and \sfrac[big]{9}{8}. When rewriting a \sfrac[big]{9}{8}
 rhythm with a boundary depth of 1, any logical ties not aligning with -- either
 starting or stopping at -- those offsets would be marked as invalid and
 therefore rewritten:
@@ -4786,14 +4789,14 @@ show(measure)
 \end{abjadbookoutput}
 
 \noindent After rewriting, without any boundary depth specified, the D
-half-note in the above \sfrac{9}{8} measure has been split into two
+half-note in the above \sfrac[big]{9}{8} measure has been split into two
 quarter-notes, tied together. The second of these quarter-notes begins at
-\sfrac{6}{8}, therefore aligning with the start of the third \sfrac{3}{8} node
-at depth 1 in the \sfrac{9}{8} meter's rhythm tree. Likewise, the first half of
-the split half-note ends at the same \sfrac{6}{8} offset. However, the initial
+\sfrac[big]{6}{8}, therefore aligning with the start of the third \sfrac[big]{3}{8} node
+at depth 1 in the \sfrac[big]{9}{8} meter's rhythm tree. Likewise, the first half of
+the split half-note ends at the same \sfrac[big]{6}{8} offset. However, the initial
 C half-note, while aligning with the beginning of the meter and therefore
 treated as valid, does not emphasize any of the meter's inner offsets as
-outlined by the offsets \sfrac{3}{8} and \sfrac{6}{8}:
+outlined by the offsets \sfrac[big]{3}{8} and \sfrac[big]{6}{8}:
 
 \begin{comment}
 <abjad>
@@ -4823,12 +4826,12 @@ show(measure)
 
 \noindent After rewriting with boundary depth set to 1, not only has the D
 half-note been split in half, but the initial C half-note has been split at its
-\sfrac{3}{8} offset. Because the initial half note aligned at the \sfrac{0}{8}
-offset -- as outlined by the root node in the \sfrac{9}{8} meter's rhythm tree
---, but not at the \sfrac{3}{8} offset -- as outlined by the first and second
-\sfrac{3}{8}-duration nodes at depth 1 of the same meter's rhythm tree --, it
+\sfrac[big]{3}{8} offset. Because the initial half note aligned at the \sfrac[big]{0}{8}
+offset -- as outlined by the root node in the \sfrac[big]{9}{8} meter's rhythm tree
+--, but not at the \sfrac[big]{3}{8} offset -- as outlined by the first and second
+\sfrac[big]{3}{8}-duration nodes at depth 1 of the same meter's rhythm tree --, it
 was marked invalid and therefor split at the first available offset:
-\sfrac{3}{8}.
+\sfrac[big]{3}{8}.
 
 \subsection{Recursive meter rewriting} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{ssec:recursive-meter-rewriting}
@@ -4887,10 +4890,10 @@ rewritten in a relevant metrical context.
 \label{ssec:meter-rewriting-examples}
 
 Meter rewriting can clarify structural differences between meters with
-identical durations, such as \sfrac{3}{4} and \sfrac{6}{8}, or between various
-possible representations of other prime-numerator meters like \sfrac{5}{4},
-\sfrac{7}{8} and so forth. The following series of \sfrac{3}{4} measures
-contain rhythms which emphasize \sfrac{3}{4}-ness or \sfrac{6}{8}-ness to
+identical durations, such as \sfrac[big]{3}{4} and \sfrac[big]{6}{8}, or between various
+possible representations of other prime-numerator meters like \sfrac[big]{5}{4},
+\sfrac[big]{7}{8} and so forth. The following series of \sfrac[big]{3}{4} measures
+contain rhythms which emphasize \sfrac[big]{3}{4}-ness or \sfrac[big]{6}{8}-ness to
 different degrees. While perfectly valid and totally legible, they can still be
 rewritten to more strongly express one meter over the other:
 
@@ -4916,10 +4919,10 @@ show(staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Rewriting under a \sfrac{3}{4} meter with a boundary depth of 1
-forces emphasis of the offsets found in the \sfrac{3}{4} meter's depth-1 group
-of three quarter-duration nodes: \sfrac{0}{4}, \sfrac{1}{4}, \sfrac{2}{4} and
-\sfrac{3}{4}. Both the outer measures' contents align to these offsets, but the
+\noindent Rewriting under a \sfrac[big]{3}{4} meter with a boundary depth of 1
+forces emphasis of the offsets found in the \sfrac[big]{3}{4} meter's depth-1 group
+of three quarter-duration nodes: \sfrac[big]{0}{4}, \sfrac[big]{1}{4}, \sfrac[big]{2}{4} and
+\sfrac[big]{3}{4}. Both the outer measures' contents align to these offsets, but the
 inner measure's hemiola contents do not, and are rewritten:
 
 \begin{comment}
@@ -4944,12 +4947,12 @@ show(staff)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Conversely, rewriting with a \sfrac{6}{8} meter -- again with a
+\noindent Conversely, rewriting with a \sfrac[big]{6}{8} meter -- again with a
 boundary depth of 1 -- forces emphasis of the offsets outlined by
-\sfrac{6}{8}'s two depth-1 \sfrac{3}{8}-duration nodes: \sfrac{0}{8},
-\sfrac{3}{8} and \sfrac{6}{8}. Only the inner measure's contents align
+\sfrac[big]{6}{8}'s two depth-1 \sfrac[big]{3}{8}-duration nodes: \sfrac[big]{0}{8},
+\sfrac[big]{3}{8} and \sfrac[big]{6}{8}. Only the inner measure's contents align
 perfectly these offsets, so the outer measures are rewritten, better
-demonstrating \sfrac{6}{8}'s duple-ness:
+demonstrating \sfrac[big]{6}{8}'s duple-ness:
 
 \begin{comment}
 <abjad>
@@ -5074,8 +5077,8 @@ metertools.OffsetCounter(
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Note that the offset \sfrac{1}{2} shows a count of 4. This is because
-\sfrac{1}{2} acts as both the start or stop offset for four separate leaves in
+\noindent Note that the offset \sfrac[big]{1}{2} shows a count of 4. This is because
+\sfrac[big]{1}{2} acts as both the start or stop offset for four separate leaves in
 the score.
 
 Offset counters can also be generated from timespan inventories, allowing meter
@@ -5118,14 +5121,14 @@ As demonstrated earlier, Abjad's model of meter describes a sequence of offsets
 with varying degrees of weight -- accentedness -- attributed to each offset, as
 determined by the hierarchical tree structure of that meter. This model allows
 us to explain how downbeats have a stronger weight than upbeats, and how the
-\sfrac{3}{8} offset in a \sfrac{6}{8} measure is less strong than its downbeat
-but still stronger than the offsets at \sfrac{1}{8}, \sfrac{2}{8}, \sfrac{4}{8}
-or \sfrac{5}{8}. However, the default model of a \sfrac{6}{8} meter makes no
-explicit reference to offsets such as \sfrac{1}{16} or \sfrac{3}{16}. A common
+\sfrac[big]{3}{8} offset in a \sfrac[big]{6}{8} measure is less strong than its downbeat
+but still stronger than the offsets at \sfrac[big]{1}{8}, \sfrac[big]{2}{8}, \sfrac[big]{4}{8}
+or \sfrac[big]{5}{8}. However, the default model of a \sfrac[big]{6}{8} meter makes no
+explicit reference to offsets such as \sfrac[big]{1}{16} or \sfrac[big]{3}{16}. A common
 practice understanding of meter tells us that these offsets should be taken as
-less accented than those at \sfrac{1}{8}, \sfrac{2}{8}, \sfrac{3}{8} and so
+less accented than those at \sfrac[big]{1}{8}, \sfrac[big]{2}{8}, \sfrac[big]{3}{8} and so
 forth. They effectively represent an even lower level of leaves on the
-rhythm-tree for \sfrac{6}{8}. Likewise, offsets with a denominator of 32 or 64
+rhythm-tree for \sfrac[big]{6}{8}. Likewise, offsets with a denominator of 32 or 64
 should be explainable in an identical fashion.
 
 Abjad's \texttt{MetricAccentKernel} class provides an object model for both the
@@ -5135,8 +5138,8 @@ one-dimensional convolution kernel against an offset counter. Metric accent
 kernels allow meters to be fitted against offset counters containing offsets
 not explicitly modeled by the rhythm-trees of those same meters.
 
-Here a metric accent kernel is generated from a \sfrac{4}{4} meter, extending
-its denominator to a \emph{limit} of \sfrac{1}{16}. The weights at each offset
+Here a metric accent kernel is generated from a \sfrac[big]{4}{4} meter, extending
+its denominator to a \emph{limit} of \sfrac[big]{1}{16}. The weights at each offset
 are normalized such that they sum to 1. Normalization prevents very long meters
 from having undue influence during meter fitting:
 
@@ -5180,7 +5183,7 @@ for offset, weight in sorted(kernel_44.kernel.items()):
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent The \sfrac{4}{4} metric accent kernel can be called against an offset
+\noindent The \sfrac[big]{4}{4} metric accent kernel can be called against an offset
 counter -- as though it were a function -- to generate the convolution
 response. The count at each offset in the input offset counter is multiplied
 against the weight at the corresponding offset in the metric accent kernel. If
@@ -5249,8 +5252,8 @@ for offset, count in sorted(piano_staff_counter.items()):
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Now consider the metric accent kernels for \sfrac{3}{4}, \sfrac{7}{8}
-and \sfrac{5}{4} meters:
+\noindent Now consider the metric accent kernels for \sfrac[big]{3}{4}, \sfrac[big]{7}{8}
+and \sfrac[big]{5}{4} meters:
 
 \begin{comment}
 <abjad>
@@ -5317,7 +5320,7 @@ compare against.
 
 Consider the following offsets, which are separated from one another by the
 duration of a whole note, outlining the start and stop offsets of a series of
-\sfrac{4}{4} meters:
+\sfrac[big]{4}{4} meters:
 
 \begin{comment}
 <abjad>
@@ -5342,7 +5345,7 @@ show(offset_counter, range_=(0, 5))
 \end{abjadbookoutput}
 
 \noindent Given the following collection of meters, after meter fitting is
-performed only \sfrac{4}{4} meters should be selected as they perfectly align
+performed only \sfrac[big]{4}{4} meters should be selected as they perfectly align
 with the previously defined collection of offsets:
 
 \begin{comment}
@@ -5376,15 +5379,15 @@ show(fitted_meters, range_=(0, 5))
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent If we change the input offsets to no longer outline only \sfrac{4}{4}
+\noindent If we change the input offsets to no longer outline only \sfrac[big]{4}{4}
 meters, the meter fitting process will arrive at a different solution. Note how
-the following fitted meters emphasize the \sfrac{3}{4} and \sfrac{5}{4}
-durations inherent to the new input offsets. The initial \sfrac{3}{4} fitted
-meter perfectly matches the offsets \sfrac{0}{1} and \sfrac{3}{4}, while the
-\sfrac{4}{4} meter after it matches the \sfrac{5}{4} offset against its third
+the following fitted meters emphasize the \sfrac[big]{3}{4} and \sfrac[big]{5}{4}
+durations inherent to the new input offsets. The initial \sfrac[big]{3}{4} fitted
+meter perfectly matches the offsets \sfrac[big]{0}{1} and \sfrac[big]{3}{4}, while the
+\sfrac[big]{4}{4} meter after it matches the \sfrac[big]{5}{4} offset against its third
 beat. The next meter's end-beat offset aligns against the offset counter's
-\sfrac{5}{2} offset allowing the meter fitting process to perfectly match the
-remaining offsets against a pair of \sfrac{5}{4} meters:
+\sfrac[big]{5}{2} offset allowing the meter fitting process to perfectly match the
+remaining offsets against a pair of \sfrac[big]{5}{4} meters:
 
 \begin{comment}
 <abjad>
@@ -5422,13 +5425,13 @@ show(fitted_meters, range_=(0, 5))
 \end{abjadbookoutput}
 
 \noindent Meter fitting can also control for how many times meters are
-permitted to immediately repeat. The above example ends with two \sfrac{5}{4}
+permitted to immediately repeat. The above example ends with two \sfrac[big]{5}{4}
 meters in a row. If desired, this repetition can be prevented entirely by the
 \texttt{maximum\_run\_length} keyword to
 \texttt{Meter.fit\_meters\_to\_expr()}. With \texttt{maximum\_run\_length} set
-to 1, the meter fitting process can no longer select two \sfrac{5}{4} meters
-for the end of the fitted meter sequence. Instead, a pair of \sfrac{3}{4} and
-\sfrac{4}{4} meters replace the previously final \sfrac{5}{4} meter:
+to 1, the meter fitting process can no longer select two \sfrac[big]{5}{4} meters
+for the end of the fitted meter sequence. Instead, a pair of \sfrac[big]{3}{4} and
+\sfrac[big]{4}{4} meters replace the previously final \sfrac[big]{5}{4} meter:
 
 \begin{comment}
 <abjad>
@@ -5506,8 +5509,8 @@ show(timespan_inventory, key='voice_name')
 \end{abjadbookoutput}
 
 \noindent Constructing an offset counter from this timespan inventory shows
-several offsets with strong simultaneities, notably at \sfrac{11}{8},
-\sfrac{13}{8}, \sfrac{17}{8} and \sfrac{25}{8}:
+several offsets with strong simultaneities, notably at \sfrac[big]{11}{8},
+\sfrac[big]{13}{8}, \sfrac[big]{17}{8} and \sfrac[big]{25}{8}:
 
 \begin{comment}
 <abjad>
@@ -5530,10 +5533,10 @@ show(offset_counter, range_=(0, (19, 4)))
 \noindent As before, a collection of permitted meters are fit against the
 offset counter. Compare the weights in the counter to the meter sequence below
 it. Offsets in the counter with weights greater than 1 tend to have been fitted
-against strong beats in each meter. The initial \sfrac{6}{8} meter receive a
-2-count accent on its half-way \sfrac{3}{8} offset. The second \sfrac{6}{8}
+against strong beats in each meter. The initial \sfrac[big]{6}{8} meter receive a
+2-count accent on its half-way \sfrac[big]{3}{8} offset. The second \sfrac[big]{6}{8}
 meter is matches strong accents on both its downbeat, its half-beat and on its
-end-beat. Likewise, the \sfrac{7}{8} meter matches strong accents on its
+end-beat. Likewise, the \sfrac[big]{7}{8} meter matches strong accents on its
 down-beat and end-beat, as well as its inner 2-count groupings:
 
 \begin{comment}
@@ -5573,9 +5576,9 @@ show(fitted_meters, range_=(0, (19, 4)))
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Removing the \sfrac{5}{8} meter from the permitted meters inventory
+\noindent Removing the \sfrac[big]{5}{8} meter from the permitted meters inventory
 gives less convincing results. Notably, the strong simultaneities at offsets
-\sfrac{11}{8} and \sfrac{17}{8} no longer align with any downbeats in the
+\sfrac[big]{11}{8} and \sfrac[big]{17}{8} no longer align with any downbeats in the
 fitted meters:
 
 \begin{comment}
@@ -5616,9 +5619,9 @@ show(fitted_meters, range_=(0, (19, 4)))
 \end{abjadbookoutput}
 
 \noindent Lifting the constraint on meter repetition does not improve the
-results. Both the \sfrac{11}{8} and \sfrac{17}{8} offsets still align with weak
+results. Both the \sfrac[big]{11}{8} and \sfrac[big]{17}{8} offsets still align with weak
 beats in the fitted meters. The only real change is the swapping of
-\sfrac{6}{8} and \sfrac{3}{4} meters in the first and last pairs of fitted
+\sfrac[big]{6}{8} and \sfrac[big]{3}{4} meters in the first and last pairs of fitted
 meters:
 
 \begin{comment}
@@ -5652,9 +5655,9 @@ show(fitted_meters, range_=(0, (19, 4)))
 
 \noindent However, reinstating the repetition constraint and permitting a
 greater variety of meters gives an even closer fitting than the very first
-example. Not only do the \sfrac{11}{8} and \sfrac{17}{8} offsets align at
-downbeats, but the three-weight offset at \sfrac{25}{8} matches the downbeat of
-a \sfrac{3}{4} meter with two-weight accents on both its second and third beat
+example. Not only do the \sfrac[big]{11}{8} and \sfrac[big]{17}{8} offsets align at
+downbeats, but the three-weight offset at \sfrac[big]{25}{8} matches the downbeat of
+a \sfrac[big]{3}{4} meter with two-weight accents on both its second and third beat
 as well as the following downbeat:
 
 \begin{comment}
@@ -5696,7 +5699,7 @@ show(fitted_meters, range_=(0, (19, 4)))
 
 \noindent Increasing the number of permitted offsets even further does not
 necessarily improve results further. A better initial meter fitting -- like the
-initial \sfrac{9}{8} here -- often diminishes the choices possible afterward:
+initial \sfrac[big]{9}{8} here -- often diminishes the choices possible afterward:
 
 \begin{comment}
 <abjad>
@@ -6144,8 +6147,8 @@ This difference is passed to the \texttt{MutationAgent}'s
 allowing the division to be properly aligned against the desired meter.
 Prolated divisions -- tuplets -- are rewritten solely with respect to the
 duration of their contents, not to the prevailing meter. That is, a 5:4 tuplet
-in a \sfrac{4}{8} measure is rewritten with a meter of \sfrac{5}{8}, not of
-\sfrac{4}{8}:
+in a \sfrac[big]{4}{8} measure is rewritten with a meter of \sfrac[big]{5}{8}, not of
+\sfrac[big]{4}{8}:
 
 \begin{comment}
 <abjadextract dissertation.py.time_tools:rewrite_meters />[strip_prompt]
@@ -6305,8 +6308,8 @@ show(score)
 
 \noindent Large-scale variations are possible simply by altering the arguments
 to the \texttt{build\_score()} function. For example, the timespan inventory
-can be reflected around its axis and stretched from a duration of \sfrac{19}{4}
-to \sfrac{25}{4}. This will change the overall duration and phrase density of
+can be reflected around its axis and stretched from a duration of \sfrac[big]{19}{4}
+to \sfrac[big]{25}{4}. This will change the overall duration and phrase density of
 the resulting score while maintaining the character of its surface rhythms:
 
 \begin{comment}

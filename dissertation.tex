@@ -29,6 +29,14 @@
 \usepackage{upquote}
 \usepackage{xfrac}
 
+\DeclareInstance{xfrac}{big}{text}{
+    scale-factor=1.25,
+    numerator-bot-sep=2pt,
+    denominator-bot-sep=-2pt,
+    slash-right-kern=0.5pt,
+    slash-left-kern=1pt,
+}
+
 \usepackage[
     labelfont={sc,scriptsize},
     textfont={rm,scriptsize},

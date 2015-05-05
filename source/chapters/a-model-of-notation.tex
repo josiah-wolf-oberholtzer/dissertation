@@ -725,10 +725,10 @@ allowing them to be used transparently as though they were lists. Components
 can be appended, extended, or inserted into containers. Containers can also be
 instantiated with lists of components to be inserted as one of their
 instantiation arguments. Note in the previous notation examples that the
-LilyPond output always shows a \sfrac{4}{4} time signature even though none of
+LilyPond output always shows a \sfrac[big]{4}{4} time signature even though none of
 the created leaves takes up a whole note's duration. LilyPond simply treats all
-music as \sfrac{4}{4} unless explicitly instructed otherwise. We can make the
-\sfrac{4}{4} time signature explicit by instantiating a \sfrac{4}{4} measure
+music as \sfrac[big]{4}{4} unless explicitly instructed otherwise. We can make the
+\sfrac[big]{4}{4} time signature explicit by instantiating a \sfrac[big]{4}{4} measure
 object to contain the three previously-created leaf instances, with the three
 leaves passed in a list as an instantiation argument to the new measure:
 
@@ -897,7 +897,7 @@ len(measure)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Iterating over the contents of the \sfrac{4}{4} measure yields only
+\noindent Iterating over the contents of the \sfrac[big]{4}{4} measure yields only
 the top-most components in that container -- its immediate children:
 
 \begin{comment}
@@ -1024,7 +1024,7 @@ would occur, projects traditionally append an underscore to the name they wish
 to use.} Consider the parentage for the first eighth note of the inner
 quintuplet in the previously created measure. This eighth-note's parentage --
 \emph{improper} by default -- includes itself, its immediate quintuplet parent,
-its triplet grandparent and the \sfrac{4}{4} measure as its
+its triplet grandparent and the \sfrac[big]{4}{4} measure as its
 great-grandparent:\footnote{The component summary strings in the interpreter
 representations of the components in the parentage are \emph{not} valid
 LilyPond syntax, but simply a concise LilyPond-like syntax.}
@@ -1232,7 +1232,7 @@ Every Abjad score component may be expressed in terms of its duration, as well
 as its start offset relative to the score origin and, by extension, its
 timespan -- the span of time bounded by its start offset and stop offset. Abjad
 models all such duration objects as \emph{rationals}: ratios of real numbers,
-e.g. \sfrac{1}{2}, \sfrac{7}{23} or \sfrac{16}{1}. This concern arises from the
+e.g. \sfrac[big]{1}{2}, \sfrac[big]{7}{23} or \sfrac[big]{16}{1}. This concern arises from the
 realization that all durations and offsets expressible in Western common
 practice notation are rational, rather than floating-point or any other
 representation. Necessarily, Abjad's \texttt{Duration}, \texttt{Offset} and
@@ -1245,7 +1245,7 @@ source's legibility.
 
 Abjad's \texttt{Duration} class extends Python's \texttt{Fraction} class with a
 number of new initialization patterns and a variety of notation-specific
-properties. For example, a \sfrac{7}{16} duration can be instantiated from a
+properties. For example, a \sfrac[big]{7}{16} duration can be instantiated from a
 numerator/denominator pair, or from a LilyPond syntax duration string:
 
 \begin{comment}
@@ -1271,7 +1271,7 @@ Duration(7, 16)
 
 \noindent Duration objects can provide information about how they should be
 interpreted notationally, including how many dots or flags they would have if
-used to instantiate a leaf. A \sfrac{7}{16} duration, without resorting to
+used to instantiate a leaf. A \sfrac[big]{7}{16} duration, without resorting to
 tuplets or ties, might be represented in notation by a double-dotted quarter
 note, thus giving a dot count of 2 and a flag count of 0:
 
@@ -1478,7 +1478,7 @@ Chord("<d' f' a' c''>4"): 1/4 * 1 = 1/4
 \noindent Written durations must be \emph{assignable}. Assignability describes
 the set of durations describable in Western common practice notation solely
 through combining a single note head, its flags and dots, without recourse to
-ties or tuplets. Any rational duration $\sfrac{n}{d}$ is considered assignable
+ties or tuplets. Any rational duration $\sfrac[big]{n}{d}$ is considered assignable
 when and only when it adheres to the form
 
 \begin{equation}
@@ -1488,7 +1488,7 @@ when and only when it adheres to the form
 \noindent where $u$, $v$ and $k$ are nonnegative integers, $j \leq u$ and $j$
 is either 1 or 0. Assignability guarantees that a duration's denominator is
 always a positive power-of-two integer, such as 1, 2, 4, 8, 16 and so forth,
-and therefore precludes durations such as $\sfrac{1}{3}$ or $\sfrac{2}{5}$.
+and therefore precludes durations such as $\sfrac[big]{1}{3}$ or $\sfrac[big]{2}{5}$.
 Likewise, assignability permits numerators such as 1, 2, 3, 4, 6, 7, 8, 12, 14
 and 15 but forbids 5, 9, 10, 13 and 17, as they imply ties. More elegantly, any
 integer is considered assignable if its binary representation -- disregarding
@@ -2534,7 +2534,7 @@ show(staff)
 \noindent The above staff can be recreated with the indicators attached as
 annotations, still effective for each leaf, but providing no format
 contributions in the output. This results in rather poor notation, falling back
-on LilyPond's default \sfrac{4}{4} time signature and treble clef:
+on LilyPond's default \sfrac[big]{4}{4} time signature and treble clef:
 
 \begin{comment}
 <abjad>
@@ -4348,7 +4348,7 @@ selectortools.Selector(
 \end{abjadbookoutput}
 
 \noindent The selector can be configured to filter out logical ties shorter
-than a duration of \sfrac{1}{4}:
+than a duration of \sfrac[big]{1}{4}:
 
 \begin{comment}
 <abjad>
