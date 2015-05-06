@@ -5,6 +5,50 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{figure}
+\begin{centering}
+\includegraphics[
+    page=1,
+    width=\textwidth,
+    height=0.9\textheight,
+    keepaspectratio,
+]{assets/dissertation-score-mbrsi.pdf}
+\caption{The first page of \emph{mbrsi} (2006), an unfinished tablature score
+for one to twelve string performers. This represents an early attempt of mine
+at computationally modeling massed performers with timespans to create an
+evolving \enquote{granular} texture. The instructions for the score were
+created through a variety of Max/MSP patches which painstakingly converted
+noise functions into text files which I then collated into spreadsheets. The
+score itself was drawn by hand on size A1 graph paper with Rapidographs.
+I completed seventeen of the intended fifty-three pages before stopping for the
+sake of my wrists and due a general lack of faith in the project. While still
+incomplete, the concerns that motivated this score remain with me.}
+\end{centering} \end{figure}
+
+\begin{figure}
+\begin{centering}
+\noindent\includegraphics[
+    page=1,
+    width=\textwidth,
+]{assets/dissertation-score-mbrsi-lh.pdf}
+\caption{Page one of fifty-three from a spreadsheet containing fingering
+instructions for six of the twelve string performers in \emph{mbrsi} (2006).}
+\end{centering}
+\end{figure}
+
+\begin{figure}
+\begin{centering}
+\noindent\includegraphics[
+    clip=true,
+    trim=0in 0.125in 0in 0in,
+    page=1,
+    width=\textwidth,
+]{assets/dissertation-score-mbrsi-rh.pdf}
+\caption{Page one of fifty-three from a spreadsheet containing bowing
+instructions for six of the twelve string performers in \emph{mbrsi} (2006).}
+\end{centering}
+\end{figure}
+
 \begin{markdown}
 
 # What is this?
@@ -30,9 +74,14 @@ this work as well as my specific implementation that those who read
 this would be able to consult the source to each of the three Invisible Cities
 scores included in the appendices and make some (or a lot of) sense of them.
 
-It is then, more of a tutorial than anything else.
+It is then, more of a tutorial than anything else, presented in order to
+explain the architectural decisions, implementations and implications behind a
+system designed to assist in the composition of music.
 
 # Background
+
+Mention Trevor Wishart's \emph{On Sonic Art} with regard to textural variation,
+and Curtis Roads' \emph{Microsound} for granular techniques.
 
 Both historical and personal.
 
@@ -42,7 +91,13 @@ Differentiate from Max, PWGL, OM.
 
 # Overview of the dissertation
 
-The first six chapters...
+This dissertation consists of six chapters of prose -- including this chapter
+--, followed by five chapters each presenting a score, and four extensive
+appendices comprising complete code listings for the implementations of the
+scores and of Consort. Please consult the source for Abjad directly, as it is
+far too large to include here.
+
+The first six chapters 
 
 Chapter 2 presents an overview of Abjad, detailing its structure and usage in
 the creation of scores.
