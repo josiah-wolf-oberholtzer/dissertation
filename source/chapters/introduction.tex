@@ -5,21 +5,71 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-\begin{markdown}
-
-
-\end{markdown}
-
 \section{Intent}
 \label{sec:intent}
 
-The intent of this dissertation
+The intent of this dissertation is to document my research into
+\emph{formalized score control}\cite{ baca2011xi, baca2015tenor,
+trevino2013compositional} in order to demonstrate a \emph{computational model
+of music composition}. The term formalized score control, inspired by Iannis
+Xenakis' seminal text \emph{Formalized Music}\cite{xenakis1992formalized,
+baca2012}, describes the discipline of modeling and manipulating the typography
+of common practice notation programmatically via software. An emphasis on
+\emph{modeling}, here, is crucial. When working computationally, models provide
+an explicit formal description of what objects exist within a given domain, how
+they behave, and what transformations they afford. The clearer the model
+becomes, the easier it is to extend and to construct increasingly higher-order
+abstractions around that model. That is to say, a clear model of notation --
+the description of symbols on the page -- affords a clear model of composition
+-- how those symbols come to be there.
+
+At the time of this writing, a wide variety computational models of notation
+exist\cite{ baca2015tenor, trevino2013compositional, }, expressing an equally
+wide range of explicitness or implicitness in their modeling, and providing
+composers with varying degrees of programmatic control. For
+example, many composers make use of vector graphics programs for notation,
+working in a environment which behaves like a hyper-extended writing desk, but
+which provides no more semantic understanding of the contents of the page than
+a physical pencil does. Likewise, many composers rely on more traditional
+notation software which mimics the physical page while providing some model of
+common practice notation, and still others on the idiosyncratic score-modeling
+systems often developed hand-in-hand with computer-assisted composition tools.
+
+Of course it's important to understand that I don't denigrate the use of vector
+graphics programs to create scores. The relative presence or absence of
+notation modeling in a tool cuts both ways.
+
+Others make use of more traditional 
+
+- What is a notation model, what does it do, what is it good for?
+
+- What is the name of this notational model? Abjad.
+
+- Short history of Abjad
+
+- An explicit model of notation affords an equally explicit model of
+  composition.
+
+- What is the name of this composition model? Consort.
+
+- What does Consort do? Why is it interesting?
+
+
+Notational and compositional modeling bring the discipline of computer science
+to bear on a variety of musical questions: how does one arrange large-scale
+form? what manner of rhythmic, harmonic and timbral transformations are
+available? how can one describe formal structural relationships between the
+objects on a page?
+
 
 -   Desire to describe the process by which a score is created
+
 -   To model the musical objects, both notational and compositional explicitly
+
 -   Formalized score control
+
 -   automated typesetting
+
 -   Modern software development techniques, 
 
 To provide a full documentation of the process of working in a formalized way,
@@ -42,8 +92,15 @@ Automated typesetting greases the wheel.
 \section{Background}
 \label{sec:background}
 
-Computer-assisted composition has a long history, many practitioners, and a
-tremendous number of tools to work with.
+Computer-assisted composition has a fairly short history, dating at the time of
+this writing a little more than half a century. While one could certainly argue
+about the timeline and origins of the techniques falling under this umbrella --
+and providing a complete history of computer music is not the goal of this
+dissertation -- it is generally agreed that work began in earnest in the
+post-war decades of the 20th century.\cite{curtis1996computer,
+xenakis1992formalized} Despite its relative youth as a musical tradition,
+computer-assisted composition has many practitioners and a tremendous number
+of tools to work with, both generalized and idiosyncratic.
 
 Xenakis' massed string music, Curtis Roads' granular explorations, Trevor
 Wishart's schema of textural transformations.
@@ -141,34 +198,32 @@ three most recent scores and of Consort. Please consult the source for Abjad
 version 2.16\footnote{https://github.com/Abjad/abjad/releases/tag/2.16}
 directly, as it is far too large to include here.
 
-The first six chapters discuss  
-
-Chapter 2 presents an overview of Abjad, detailing its structure and usage in
-the creation of scores. The objects comprising Abjad's core notation model,
-\emph{components}, \emph{indicators} and \emph{spanners}, are introduced, and
-the techniques by which those objects are aggregated into scores, inspected,
-selected, iterated over, mutated, persisted to disk, and visualized are
-demonstrated at length.
-
-Chapter 3 expands on chapter 2, discussing various models of musical time
-implemented in Abjad, and introducing many of tools and techniques employed in
-Consort to create large-scale musical works. Timespans -- objects which model a
-duration of time positioned along a timeline without regard for score
-hierarchy --, as well as collections of timespans, and operations applied
-against both single timespans and their collections, are presented as a means
-for modeling high-level phrasing and score structure. Highly-configurable
-factory classes for programmatically creating both timespan and rhythmic
-structures are introduced along with a hierarchical model of meter which
-affords coordination between the two models of time.
-
-Chapter 4 analyzes the mechanisms implemented in Consort's model of composition
-to specify the structure of musical score at a high level and to interpret
-those specifications into completely-notated segments of music.
-
-- Specification
-- Rhythmic interpretation
-- Non-rhythmic interpretation
-
+The first six chapters discuss formalized score control, gradually laying out
+and building upon the concepts necessary to understand the process of modeling
+notation and composition computationally. Chapter 2 presents an overview of
+Abjad, detailing its structure and usage in the creation of scores. The objects
+comprising Abjad's core notation model, \emph{components}, \emph{indicators}
+and \emph{spanners}, are introduced, and the techniques by which those objects
+are aggregated into scores, inspected, selected, iterated over, mutated,
+persisted to disk, and visualized are demonstrated at length. Chapter 3 expands
+on chapter 2, discussing various models of musical time implemented in Abjad,
+and introducing many of tools and techniques employed in Consort to create
+large-scale musical works. Timespans -- objects which model a duration of time
+positioned along a timeline without regard for score hierarchy --, as well as
+collections of timespans, and operations applied against both single timespans
+and their collections, are presented as a means for modeling high-level
+phrasing and score structure. Highly-configurable factory classes for
+programmatically creating both timespan and rhythmic structures are introduced
+along with a hierarchical model of meter which affords coordination between the
+two models of time. Chapter 4 analyzes the mechanisms implemented in Consort's
+model of composition to specify the structure of musical score at a high level
+and to interpret those specifications into completely-notated segments of
+music. The analysis proceeds step-by-step through the process of specification,
+introducing the reader to Consort's segment-makers, music specifiers and music
+settings. The discussion then turns to interpretation, divided into rhythmic-
+and non-rhythmic stages. The mechanisms by which grace notes, pitches and
+attachments are applied to the interpreted score are presented, providing a
+link back to the iteration and selection techniques presented in chapter 2.
 Chapter 5 proposes standardized solutions to practical concerns surrounding the
 composition of scores in software, such as score package layout on the
 file-system, typesetting workflows, version control, and testing. The means by
@@ -176,34 +231,29 @@ which an individual score segment, as described in chapter 4, is combined with
 many other segments to create a complete work is presented, and the document
 preparation techniques necessary for automating the extraction of parts in
 LilyPond and producing the various non-musical component documents of a score
-with \LaTeX{} are also introduced.
-
-Chapter 6, the conclusion to the prose portion of the dissertation, summarizes
-the previously presented research, suggests some implications and failings, and
-proposes directions for future work.
+with \LaTeX{} are also introduced. Chapter 6, the conclusion to the prose
+portion of the dissertation, summarizes the previously presented research,
+suggests some implications and areas for improvement, and proposes directions
+for future work.
 
 The remaining chapters consist of five scores, all composed computationally
 with Abjad and LilyPond, both prior to and after the development of Consort.
-
-Chapter 7 presents \emph{Aurora} (2011), for string orchestra, which 
-represents the results of my first formal research into composition with
-timespan structures, as well as my first formalized work which allowed multiple
-distinct textures to overlap. This score implemented a very rudimentary version
-of the \enquote{specify \& interpret} pattern enshrined in Consort.
-
-Chapter 8 presents \emph{Plague Water} (2014), for baritone saxophone, electric
-guitar, piano and percussion, my first attempt at composing scores in segments
-through explicit specification and interpretation, and whose code-base
-provided Consort's foundation.
-
-Chapters 9, 10 and 11 present a set of pieces, \emph{Invisible Cities
-(i): Zaira} (2014), for eight players, \emph{Invisible Cities (ii): Armilla}
-(2015), for viola duet, and \emph{Invisible Cities (iii): Ersilia} (2015), for
-chamber orchestra, all implemented via Consort. These three scores demonstrate
-Consort's flexibility as tool for structuring both large and small ensemble
-works of widely divergent textures, notated both conservatively -- as in
-\emph{Zaira} and \emph{Ersilia} -- and with more complex tablature -- as in
-Armilla.
+Chapter 7 presents \emph{Aurora} (2011), for string orchestra, which represents
+the results of my first formal research into composition with timespan
+structures, as well as my first formalized work which allowed multiple distinct
+textures to overlap. This score implemented a very rudimentary version of the
+\enquote{specify \& interpret} pattern enshrined in Consort. Chapter 8 presents
+\emph{Plague Water} (2014), for baritone saxophone, electric guitar, piano and
+percussion, my first attempt at composing scores in segments through explicit
+specification and interpretation, and whose code-base provided Consort's
+original foundation. Chapters 9, 10 and 11 present a set of pieces,
+\emph{Invisible Cities (i): Zaira} (2014), for eight players, \emph{Invisible
+Cities (ii): Armilla} (2015), for viola duet, and \emph{Invisible Cities (iii):
+Ersilia} (2015), for chamber orchestra, all implemented via Consort. These
+three scores demonstrate Consort's flexibility as tool for structuring both
+large and small ensemble works of widely divergent textures, notated both
+conservatively -- as in \emph{Zaira} and \emph{Ersilia} -- and more
+unconventionally, with tablature -- as in Armilla.
 
 Finally, the appendices contain the source to all classes and functions
 implemented in Consort -- as of the time of this writing --, as well as the
@@ -211,7 +261,7 @@ source to all material and segment definitions, as well as any LilyPond
 stylesheets, for the three Invisible Cities scores. My sincere hope is that
 these appendices provide a concrete, \enquote{reverse-engineerable} even, link
 between the descriptions of my research into formalized score control and the
-scores I have actually written with those tools.
+scores written with these tools.
 
 %\begin{markdown}
 %
