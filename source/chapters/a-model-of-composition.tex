@@ -1305,12 +1305,13 @@ attacks in three voices -- \enquote{Voice 1}, \enquote{Voice 3} and
 guaranteeing that any performed timespans with layers lower than 3 will be
 masked not only by this layer's performed timespans, but by its silent
 timespans as well. Additionally, the third timespan inventory was created with
-a target timespan of \sfrac[big]{6}{4} to \sfrac[big]{21}{4}. While -- due to the
-complexities of the talea timespan-maker's patterns -- the generated timespan
-texture may not extend all of the way to its target timespan's stop offset at
-\sfrac[big]{21}{4}, it will certainly not contain any performed or silent timespans
-earlier than \sfrac[big]{6}{4}, leaving lower layers untouched from \sfrac[big]{0}{1} to
-\sfrac[big]{6}{4}:
+a target timespan of \sfrac[big]{6}{4} to \sfrac[big]{21}{4}. While -- due to
+the complexities of the talea timespan-maker's patterns -- the generated
+timespan texture may not extend all of the way to its target timespan's stop
+offset at \sfrac[big]{21}{4}, it will certainly not contain any performed or
+silent timespans earlier than \sfrac[big]{5}{4} -- the target timespan's start
+offset minus the timespan-maker's padding --, leaving lower layers untouched
+from \sfrac[big]{0}{1} to \sfrac[big]{5}{4}:
 
 \begin{comment}
 <abjad>
