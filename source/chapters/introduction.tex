@@ -24,7 +24,7 @@ the description of symbols on the page -- affords a clear model of composition
 -- how those symbols come to be there.
 
 At the time of this writing, a wide variety of computational models of notation
-exist\cite{ baca2015tenor, trevino2013compositional, }, expressing an equally
+exist\cite{ baca2015tenor, trevino2013compositional}, expressing an equally
 wide range of explicitness or implicitness in their modeling, and providing
 composers with varying degrees of programmatic control over those models. For
 example, many composers make use of vector graphics programs for notation,
@@ -35,167 +35,149 @@ distinction between an oval representing a note head and any other line on the
 page. Likewise, many composers rely on more traditional notation software which
 mimics the physical page while providing some model of common practice
 notation, rigidly enforcing a measure-based understanding of musical
-score on the artist, while still others rely on the idiosyncratic
+score on the artist, while still others make use of the idiosyncratic
 score-modeling systems often developed hand-in-hand with computer-assisted
-composition tools. Of course it's important to understand that I don't
-denigrate the use of vector graphics programs to create scores. The relative
-presence or absence of notation modeling in a tool cuts both ways. While one
-tool might model notation exquisitely, it still provides programmatic control
-over only what it can describe, and may even forbid the manipulation of
-anything beyond that domain. Conversely, another tool, providing only a minimal
-model of notation, or even none at all, is not so constrained, and while it may
-not afford programmatic control over the contents of the score at all, it does
-allow composers to radically reinvent and extend an understanding of Western
-notation.
+composition tools.\footnote{Composers often make use of all the above
+categories of tool in a single score, working programmatically with a
+computer-assisted composition tool to generate material which is then exported
+into a more traditional notation editor for page layout and further editing,
+and finally exported as vector graphics for fine-tuning. This work-flow is not
+reversible. The changes made to the score as vector graphics cannot be
+propagated back into the semantic model of the score provided by either the
+traditional score editor or the computer-assisted composition tool.} Of course
+it's important to understand that I don't denigrate the use of vector graphics
+programs to create scores. The relative presence or absence of notation
+modeling in a tool cuts both ways. While one tool might model notation
+exquisitely, it still provides programmatic control over only what it can
+describe, and may even forbid the manipulation of anything beyond that domain.
+Conversely, another tool, providing only a minimal model of notation, or even
+none at all, is not so constrained, and while it may not afford programmatic
+control over the contents of the score at all, it does allow composers to
+radically reinvent and extend an understanding of Western notation.
 
-Others make use of more traditional 
+My own compositional work now makes extensive use of the Abjad API for
+formalized score control.\cite{baca2011xi, baca2015tenor,
+trevino2013compositional} Abjad, which originated in 2008 as a joint effort
+between the composers V\'{i}ctor Ad\'{a}n and Trevor Ba\v{c}a, and to which I
+have also been contributing significantly for over six years, extends the
+Python\cite{vanrossum2003ys} programming language with a rich model of common
+practice notation, and visualizes the scores it models with
+LilyPond\cite{nienhuys2003ve}, an automated engraving system inspired by the
+venerable \LaTeX{}. On top of Abjad, I have implemented a model of composition
+in the Python package \emph{Consort}, which allows for the specification of the
+structure of a score and the processes to be used to create it, and the
+interpretation of that specification first into Abjad's notation model, and
+subsequently into publication-quality typography via LilyPond. These twin
+notational and compositional models bring the discipline and collective
+knowledge of computer science to bear on a variety of musical questions: how
+does one arrange large-scale form? What manner of rhythmic, harmonic and
+timbral transformations are available? How can one describe formal structural
+relationships between the objects on a page? How can one quickly audition and
+vary dense, multi-layered orchestral textures?
 
-- What is a notation model, what does it do, what is it good for?
+%Working in this way attempts to provide a full documentation of the process of
+%working in a formalized way, from the low-level notational primitives through
+%to high-level descriptions of large-scale structure, with considerable time
+%spent on the work in the mid-ground, as well as proposed solutions to the
+%practical concerns of software development and document preparation.
 
-- What is the name of this notational model? Abjad.
-
-- Short history of Abjad
-
-- An explicit model of notation affords an equally explicit model of
-  composition.
-
-- What is the name of this composition model? Consort.
-
-- What does Consort do? Why is it interesting?
-
-
-Notational and compositional modeling bring the discipline of computer science
-to bear on a variety of musical questions: how does one arrange large-scale
-form? what manner of rhythmic, harmonic and timbral transformations are
-available? how can one describe formal structural relationships between the
-objects on a page?
-
-
--   Desire to describe the process by which a score is created
-
--   To model the musical objects, both notational and compositional explicitly
-
--   Formalized score control
-
--   automated typesetting
-
--   Modern software development techniques, 
-
-To provide a full documentation of the process of working in a formalized way,
-from the low-level notational primitives through to high-level descriptions of
-large-scale structure, with considerable time spent on the work in the
-mid-ground, as well as proposed solutions to the practical concerns of software
-development and document preparation.
-
-Score as inseparable from the software that created
-
-Introduce Abjad, Consort, LilyPond, Python and \LaTeX{}
-
-Modeling acoustic music in similar ways to electronic music. How to transfer
-that same facility I found in the transformations of fixed-media pieces into 
-the notated domain.
-
-Modeling is inevitably the answer: A model of notation, a model of composition.
-Automated typesetting greases the wheel.
-
-\section{Background}
-\label{sec:background}
-
-Computer-assisted composition has a fairly short history, dating at the time of
-this writing a little more than half a century. While one could certainly argue
-about the timeline and origins of the techniques falling under this umbrella --
-and providing a complete history of computer music is not the goal of this
-dissertation -- it is generally agreed that work began in earnest in the
-post-war decades of the 20th century.\cite{curtis1996computer,
-xenakis1992formalized} Despite its relative youth as a musical tradition,
-computer-assisted composition has many practitioners and a tremendous number
-of tools to work with, both generalized and idiosyncratic.
-
-Xenakis' massed string music, Curtis Roads' granular explorations, Trevor
-Wishart's schema of textural transformations.
-
-Some of the most important tools available contemporary with my entry into the
-field include OpenMusic, PWGL, Common Lisp music, and somewhat later the BACH
-library for use with modern versions of Max, as well as a whole host of more
-marginal experiments including LilyCollider which provides an interface between
-SuperCollider -- generally used for live electronics -- and LilyPond.
-
-My earliest experiments with computer-assisted composition involved Max/MSP,
-writing patches to generate tabular data from various noise functions which I
-collected into spreadsheets and painstakingly notated by hand.
-
-Poor model - highly implicit. No automated typesetting.
-
-That work culminated at the end of my undergraduate study in 2006 with the
-never-completed score \emph{mbrsi} -- excerpted in \autoref{fig:mbrsi-score},
-with spreadsheet \enquote{sources} in \autoref{fig:mbrsi-lh} and
-\autoref{fig:mbrsi-rh} --, whose textural fabric of massed strings attempted to
-crystallize the possibilities I felt in granular synthesis at the time: a kind
-of sparkling, nervous energy hovering between a flame and the strange
-Bezier-cloud outlined by starling swarms. Unfortunately, the process of simply
-notating the piece by hand was gruelling, and effectively forbade any effort at
-compositional exploration, let alone revising. I set it aside and spent the
-next few years looking for alternative approaches to formalizing large-scale
-structure in score.
-
-\begin{figure}[H]
-\begin{centering}
-\includegraphics[
-    page=1,
-    width=\textwidth,
-    height=0.9\textheight,
-    keepaspectratio,
-]{assets/dissertation-score-mbrsi.pdf}
-\caption{The first page of \emph{mbrsi} (2006), an unfinished tablature score
-for one to twelve string performers. This represents an early attempt of mine
-at computationally modeling massed performers with timespans to create an
-evolving \enquote{granular} texture. The instructions for the score were
-created through a variety of Max/MSP patches which painstakingly converted
-noise functions into text files which I then collated into spreadsheets. The
-score itself was drawn by hand on size A1 graph paper with Rapidographs.
-I completed seventeen of the intended fifty-three pages before stopping for the
-sake of my wrists and due a general lack of faith in the project. While still
-incomplete, the concerns that motivated this score remain with me.}
-\label{fig:mbrsi-score}
-\end{centering} 
-\end{figure}
-
-\begin{figure}[H]
-\begin{centering}
-\noindent\includegraphics[
-    clip=true,
-    trim=0in 0in 0in 0.125in,
-    page=1,
-    width=\textwidth,
-]{assets/dissertation-score-mbrsi-lh.pdf}
-\caption{Page one of fifty-three from a spreadsheet containing fingering
-instructions for six of the twelve string performers in \emph{mbrsi} (2006).}
-\label{fig:mbrsi-lh}
-\end{centering}
-\end{figure}
-
-\begin{figure}[H]
-\begin{centering}
-\noindent\includegraphics[
-    clip=true,
-    trim=0in 0.25in 0in 0in,
-    page=1,
-    width=\textwidth,
-]{assets/dissertation-score-mbrsi-rh.pdf}
-\caption{Page one of fifty-three from a spreadsheet containing bowing
-instructions for six of the twelve string performers in \emph{mbrsi} (2006).}
-\label{fig:mbrsi-rh}
-\end{centering}
-\end{figure}
-
-A number of years later, at the beginning of my graduate studies, I was
-introduced to first LilyPond, and then Abjad.
-
-Expand on Abjad
-
-\section{Methodology}
-\label{sec:methodology}
-
+%\section{Background}
+%\label{sec:background}
+%
+%Computer-assisted composition has a fairly short history, dating at the time of
+%this writing a little more than half a century. While one could certainly argue
+%about the timeline and origins of the techniques falling under this umbrella --
+%and providing a complete history of computer music is not the goal of this
+%dissertation -- it is generally agreed that work began in earnest in the
+%post-war decades of the 20th century.\cite{curtis1996computer,
+%xenakis1992formalized} Despite its relative youth as a musical tradition,
+%computer-assisted composition has many practitioners and a tremendous number
+%of tools to work with, both generalized and idiosyncratic.
+%
+%Xenakis' massed string music, Curtis Roads' granular explorations, Trevor
+%Wishart's schema of textural transformations.
+%
+%Some of the most important tools available contemporary with my entry into the
+%field include OpenMusic, PWGL, Common Lisp music, and somewhat later the BACH
+%library for use with modern versions of Max, as well as a whole host of more
+%marginal experiments including LilyCollider which provides an interface between
+%SuperCollider -- generally used for live electronics -- and LilyPond.
+%
+%My earliest experiments with computer-assisted composition involved Max/MSP,
+%writing patches to generate tabular data from various noise functions which I
+%collected into spreadsheets and painstakingly notated by hand.
+%
+%Poor model - highly implicit. No automated typesetting.
+%
+%That work culminated at the end of my undergraduate study in 2006 with the
+%never-completed score \emph{mbrsi} -- excerpted in \autoref{fig:mbrsi-score},
+%with spreadsheet \enquote{sources} in \autoref{fig:mbrsi-lh} and
+%\autoref{fig:mbrsi-rh} --, whose textural fabric of massed strings attempted to
+%crystallize the possibilities I felt in granular synthesis at the time: a kind
+%of sparkling, nervous energy hovering between a flame and the strange
+%Bezier-cloud outlined by starling swarms. Unfortunately, the process of simply
+%notating the piece by hand was gruelling, and effectively forbade any effort at
+%compositional exploration, let alone revising. I set it aside and spent the
+%next few years looking for alternative approaches to formalizing large-scale
+%structure in score.
+%
+%\begin{figure}[H]
+%\begin{centering}
+%\includegraphics[
+%    page=1,
+%    width=\textwidth,
+%    height=0.9\textheight,
+%    keepaspectratio,
+%]{assets/dissertation-score-mbrsi.pdf}
+%\caption{The first page of \emph{mbrsi} (2006), an unfinished tablature score
+%for one to twelve string performers. This represents an early attempt of mine
+%at computationally modeling massed performers with timespans to create an
+%evolving \enquote{granular} texture. The instructions for the score were
+%created through a variety of Max/MSP patches which painstakingly converted
+%noise functions into text files which I then collated into spreadsheets. The
+%score itself was drawn by hand on size A1 graph paper with Rapidographs.
+%I completed seventeen of the intended fifty-three pages before stopping for the
+%sake of my wrists and due a general lack of faith in the project. While still
+%incomplete, the concerns that motivated this score remain with me.}
+%\label{fig:mbrsi-score}
+%\end{centering} 
+%\end{figure}
+%
+%\begin{figure}[H]
+%\begin{centering}
+%\noindent\includegraphics[
+%    clip=true,
+%    trim=0in 0in 0in 0.125in,
+%    page=1,
+%    width=\textwidth,
+%]{assets/dissertation-score-mbrsi-lh.pdf}
+%\caption{Page one of fifty-three from a spreadsheet containing fingering
+%instructions for six of the twelve string performers in \emph{mbrsi} (2006).}
+%\label{fig:mbrsi-lh}
+%\end{centering}
+%\end{figure}
+%
+%\begin{figure}[H]
+%\begin{centering}
+%\noindent\includegraphics[
+%    clip=true,
+%    trim=0in 0.25in 0in 0in,
+%    page=1,
+%    width=\textwidth,
+%]{assets/dissertation-score-mbrsi-rh.pdf}
+%\caption{Page one of fifty-three from a spreadsheet containing bowing
+%instructions for six of the twelve string performers in \emph{mbrsi} (2006).}
+%\label{fig:mbrsi-rh}
+%\end{centering}
+%\end{figure}
+%
+%A number of years later, at the beginning of my graduate studies, I was
+%introduced to first LilyPond, and then Abjad.
+%
+%Expand on Abjad
+%
+%\section{Methodology}
+%\label{sec:methodology}
 
 \section{Overview of the dissertation}
 \label{sec:overview-of-the-dissertation}
@@ -216,34 +198,37 @@ and \emph{spanners}, are introduced, and the techniques by which those objects
 are aggregated into scores, inspected, selected, iterated over, mutated,
 persisted to disk, and visualized are demonstrated at length. Chapter 3 expands
 on chapter 2, discussing various models of musical time implemented in Abjad,
-and introducing many of tools and techniques employed in Consort to create
+and introducing many of the tools and techniques employed in Consort to create
 large-scale musical works. Timespans -- objects which model a duration of time
 positioned along a timeline without regard for score hierarchy --, as well as
-collections of timespans, and operations applied against both single timespans
-and their collections, are presented as a means for modeling high-level
-phrasing and score structure. Highly-configurable factory classes for
-programmatically creating both timespan and rhythmic structures are introduced
-along with a hierarchical model of meter which affords coordination between the
-two models of time. Chapter 4 analyzes the mechanisms implemented in Consort's
-model of composition to specify the structure of musical score at a high level
-and to interpret those specifications into completely-notated segments of
-music. The analysis proceeds step-by-step through the process of specification,
-introducing the reader to Consort's segment-makers, music specifiers and music
-settings. The discussion then turns to interpretation, divided into rhythmic-
-and non-rhythmic stages. The mechanisms by which grace notes, pitches and
-attachments are applied to the interpreted score are presented, providing a
-link back to the iteration and selection techniques presented in chapter 2.
-Chapter 5 proposes standardized solutions to practical concerns surrounding the
-composition of scores in software, such as score package layout on the
-file-system, typesetting workflows, version control, and testing. The means by
-which an individual score segment, as described in chapter 4, is combined with
-many other segments to create a complete work is presented, and the document
-preparation techniques necessary for automating the extraction of parts in
-LilyPond and producing the various non-musical component documents of a score
-with \LaTeX{} are also introduced. Chapter 6, the conclusion to the prose
-portion of the dissertation, summarizes the previously presented research,
-suggests some implications and areas for improvement, and proposes directions
-for future work.
+massed collections of timespans, and operations applied against both single
+timespans and those collections, are presented as a means for modeling
+high-level phrasing and score structure. Highly-configurable factory classes
+for programmatically creating both timespan and rhythmic structures are
+introduced along with a hierarchical model of meter which affords coordination
+between the two models of time. Chapter 4 analyzes the mechanisms implemented
+in Consort's model of composition to specify the structure of musical score at
+a high level and to interpret those specifications into completely-notated
+segments of music. The analysis proceeds step-by-step through the process of
+specification, introducing the reader to Consort's segment-makers, music
+specifiers and music settings. The discussion then turns to interpretation,
+divided into rhythmic- and non-rhythmic stages. The mechanisms by which the
+music settings comprising a score specification are gradually resolved into a
+maquette consisting of annotated timespans, that maquette interpreted into a
+score, and grace notes, pitches and attachments applied against that
+interpreted score are presented, providing a link back to the iteration and
+selection techniques presented in chapter 2 and the timespan transformations
+demonstrated in chapter 3. Chapter 5 proposes standardized solutions to
+practical concerns surrounding the composition of scores in software, such as
+score package layout on the file-system, typesetting workflows, version
+control, and testing. The means by which an individual score segment, as
+described in chapter 4, is combined with many other segments to create a
+complete work is presented, and the document preparation techniques necessary
+for automating the extraction of parts in LilyPond and producing the various
+non-musical component documents of a score with \LaTeX{} are also introduced.
+Chapter 6, the conclusion to the prose portion of the dissertation, summarizes
+the previously presented research, suggests some implications and areas for
+improvement, and proposes directions for future work.
 
 The remaining chapters consist of five scores, all composed computationally
 with Abjad and LilyPond, both prior to and after the development of Consort.
@@ -259,10 +244,10 @@ original foundation. Chapters 9, 10 and 11 present a set of pieces,
 \emph{Invisible Cities (i): Zaira} (2014), for eight players, \emph{Invisible
 Cities (ii): Armilla} (2015), for viola duet, and \emph{Invisible Cities (iii):
 Ersilia} (2015), for chamber orchestra, all implemented via Consort. These
-three scores demonstrate Consort's flexibility as tool for structuring both
+three scores demonstrate Consort's flexibility as a tool for structuring both
 large and small ensemble works of widely divergent textures, notated both
 conservatively -- as in \emph{Zaira} and \emph{Ersilia} -- and more
-unconventionally, with tablature -- as in Armilla.
+unconventionally, with tablature -- as in \emph{Armilla}.
 
 Finally, the appendices contain the source to all classes and functions
 implemented in Consort -- as of the time of this writing --, as well as the
