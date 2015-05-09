@@ -58,9 +58,9 @@ trevino2013compositional}\footnote{http://projectabjad.org/} Abjad, which
 originated in 2008 as a joint effort between the composers V\'{i}ctor Ad\'{a}n
 and Trevor Ba\v{c}a, and to which I have also been contributing significantly
 for over six years, extends the
-\emph{Python}\cite{vanrossum2003ys}\footnote{http://python.org/}
-programming language with a rich model of common practice notation, and
-visualizes the scores it models with
+\emph{Python}\cite{vanrossum2003ys}\footnote{http://python.org/} programming
+language with a rich model of common practice notation, and visualizes the
+scores it models with
 \emph{LilyPond}\cite{nienhuys2003ve}\footnote{http://lilypond.org/}, an
 automated engraving system inspired by the venerable \LaTeX{}. On top of Abjad,
 I have implemented a model of composition in the Python package \emph{Consort},
@@ -68,115 +68,142 @@ which allows for the specification of the structure of a score and the
 processes to be used to create it, and the interpretation of that specification
 first into Abjad's notation model, and subsequently into publication-quality
 typography via LilyPond. These twin notational and compositional models bring
-the discipline and collective knowledge of computer science to bear on a
+the collective knowledge of the computer science discipline to bear on a
 variety of musical questions: how does one arrange large-scale form? What
 manner of rhythmic, harmonic and timbral transformations are available? How can
 one describe formal structural relationships between the objects on a page? How
-can one quickly audition and vary dense, multi-layered orchestral textures?
+can one quickly audition and vary dense, multi-layered orchestral textures? The
+chapters that follow investigate these two intertwined forms of modeling,
+attempting to address some of the musical questions posed here, while paying
+special attention to those details -- often missing from treatises on
+computer-assisted composition -- which straddle the line between high-level and
+low.
 
-The chapters that follow
+Importantly, this dissertation is not a general survey of the techniques used
+by composers working in computer-assisted composition, but the work of one
+composer implementing for the specifics of his own process. This work may well
+be applicable to others in many ways, but I do not claim universality. It is
+then, more of a tutorial than anything else, presented in order to explain the
+architectural decisions, implementations and implications behind a system
+designed to assist in the composition of music.
 
-%Working in this way attempts to provide a full documentation of the process of
-%working in a formalized way, from the low-level notational primitives through
-%to high-level descriptions of large-scale structure, with considerable time
-%spent on the work in the mid-ground, as well as proposed solutions to the
-%practical concerns of software development and document preparation.
+\section{Background \& Motivation}
+\label{sec:background-and-motivation}
 
-%\section{Background \& Motivation}
-%\label{sec:background-and-motivation}
-%
-%Computer-assisted composition has a fairly short history, dating at the time of
-%this writing a little more than half a century. While one could certainly argue
-%about the timeline and origins of the techniques falling under this umbrella --
-%and providing a complete history of computer music is not the goal of this
-%dissertation -- it is generally agreed that work began in earnest in the
-%post-war decades of the 20th century.\cite{curtis1996computer,
-%xenakis1992formalized} Despite its relative youth as a musical tradition,
-%computer-assisted composition has many practitioners and a tremendous number
-%of tools to work with, both generalized and idiosyncratic.
-%
-%Xenakis' massed string music, Curtis Roads' granular explorations, Trevor
-%Wishart's schema of textural transformations.
-%
+Computer-assisted composition has a fairly short history, dating at the time of
+this writing a little more than half a century. While one could certainly argue
+about the timeline and origins of the techniques falling under this umbrella --
+and providing a complete history of computer music is not the goal of this
+dissertation -- it is generally agreed that work began in earnest in the
+post-war decades of the 20th century.\cite{curtis1996computer,
+xenakis1992formalized} Despite its relative youth as a musical tradition,
+computer-assisted composition has many practitioners and a tremendous number
+of tools to work with, both generalized and idiosyncratic.
+
+My personal introduction to computer-assisted composition began with Iannis
+Xenakis' mid-century massed string works,\cite{xenakis1992formalized} and,
+combined with a life-long interest in electro-acoustic music dating back to my
+serendipitous childhood exposure to a copy of Ivan Tcherepnin's \emph{Flores
+Musicales / Five Songs / Sant\={u}r Live!}, quickly progressed through study of
+Curtis Roads' granular explorations,\cite{roads2004microsound} Trevor Wishart's
+schema for textural transformations,\cite{wishart1996sonic} and Kaaija
+Saariaho's analytic orchestrations. While I've turned to other music and other
+considerations since reading these texts and listening to these works, they
+instilled in me a confidence that \emph{somehow} computation could be useful
+for creating the sort of music I wanted to hear but was consistently unable to
+write, simply sitting at my desk.\footnote{The jury is still out, but I persist
+anyway.}
+
+\begin{figure}[tp]
+\begin{centering}
+\includegraphics[
+    page=1,
+    width=\textwidth,
+    height=0.9\textheight,
+    keepaspectratio,
+]{assets/dissertation-score-mbrsi.pdf}
+\caption{The first page of \emph{mbrsi} (2006), an unfinished tablature score
+for one to twelve string performers. This represents an early attempt of mine
+at computationally modeling massed performers with timespans to create an
+evolving \enquote{granular} texture. The instructions for the score were
+created through a variety of Max/MSP patches which painstakingly converted
+noise functions into text files which I then collated into spreadsheets. The
+score itself was drawn by hand on size A1 graph paper with Rapidographs.
+I completed seventeen of the intended fifty-three pages before stopping for the
+sake of my wrists and due a general lack of faith in the project. While still
+incomplete, the concerns that motivated this score remain with me.}
+\label{fig:mbrsi-score}
+\end{centering} 
+\end{figure}
+
+My earliest experiments with computer-assisted composition involved Max/MSP,
+writing patches to generate tabular data from various noise functions which I
+collected into spreadsheets and painstakingly notated by hand. That work
+culminated at the end of my undergraduate study in 2006 with the
+never-completed score \emph{mbrsi} -- excerpted in \autoref{fig:mbrsi-score},
+with one spreadsheet \enquote{source} in \autoref{fig:mbrsi-lh} --, whose
+textural fabric of massed strings attempted to crystallize the possibilities I
+felt in granular synthesis at the time: a kind of sparkling, nervous energy
+hovering between a flame and the strange Bezier-cloud outlined by starling
+swarms. Unfortunately, the process of simply notating the piece by hand was
+gruelling, and effectively forbade any effort at compositional exploration, let
+alone revising. In short, while this early work did take lengths to model a
+compositional process, it lacked any notational model beyond my own hands. And
+in the absence of any automated typesetting tool, the project collapsed under
+its inherent labor difficulties. I set \emph{mbrsi} aside and spent the next
+few years looking for alternative approaches to both formalizing large-scale
+structure in score, and automating the typesetting of those structures into
+notation, going so far as to attempt scripting various vector graphics programs
+directly in order to establish a formalized model of music notation which
+I could use to complete the project.
+
+\begin{figure}[tp]
+\begin{centering}
+\noindent\includegraphics[
+    clip=true,
+    trim=0in 0in 0in 0.125in,
+    page=1,
+    width=\textwidth,
+]{assets/dissertation-score-mbrsi-lh.pdf}
+\caption{Page one of fifty-three from a spreadsheet containing fingering
+instructions for six of the twelve string performers in \emph{mbrsi} (2006).
+Each box consists of the instructions for one performer, over the course of one
+measure. The instructions in the upper-left box here correspond to the
+upper-most row of boxes in \autoref{fig:mbrsi-score}.}
+\label{fig:mbrsi-lh}
+\end{centering} \end{figure}
+
 %Some of the most important tools available contemporary with my entry into the
 %field include OpenMusic, PWGL, Common Lisp music, and somewhat later the BACH
 %library for use with modern versions of Max, as well as a whole host of more
 %marginal experiments including LilyCollider which provides an interface between
 %SuperCollider -- generally used for live electronics -- and LilyPond.
-%
-%My earliest experiments with computer-assisted composition involved Max/MSP,
-%writing patches to generate tabular data from various noise functions which I
-%collected into spreadsheets and painstakingly notated by hand.
-%
-%Poor model - highly implicit. No automated typesetting.
-%
-%That work culminated at the end of my undergraduate study in 2006 with the
-%never-completed score \emph{mbrsi} -- excerpted in \autoref{fig:mbrsi-score},
-%with spreadsheet \enquote{sources} in \autoref{fig:mbrsi-lh} and
-%\autoref{fig:mbrsi-rh} --, whose textural fabric of massed strings attempted to
-%crystallize the possibilities I felt in granular synthesis at the time: a kind
-%of sparkling, nervous energy hovering between a flame and the strange
-%Bezier-cloud outlined by starling swarms. Unfortunately, the process of simply
-%notating the piece by hand was gruelling, and effectively forbade any effort at
-%compositional exploration, let alone revising. I set it aside and spent the
-%next few years looking for alternative approaches to formalizing large-scale
-%structure in score.
-%
-%\begin{figure}[H]
-%\begin{centering}
-%\includegraphics[
-%    page=1,
-%    width=\textwidth,
-%    height=0.9\textheight,
-%    keepaspectratio,
-%]{assets/dissertation-score-mbrsi.pdf}
-%\caption{The first page of \emph{mbrsi} (2006), an unfinished tablature score
-%for one to twelve string performers. This represents an early attempt of mine
-%at computationally modeling massed performers with timespans to create an
-%evolving \enquote{granular} texture. The instructions for the score were
-%created through a variety of Max/MSP patches which painstakingly converted
-%noise functions into text files which I then collated into spreadsheets. The
-%score itself was drawn by hand on size A1 graph paper with Rapidographs.
-%I completed seventeen of the intended fifty-three pages before stopping for the
-%sake of my wrists and due a general lack of faith in the project. While still
-%incomplete, the concerns that motivated this score remain with me.}
-%\label{fig:mbrsi-score}
-%\end{centering} 
-%\end{figure}
-%
-%\begin{figure}[H]
-%\begin{centering}
-%\noindent\includegraphics[
-%    clip=true,
-%    trim=0in 0in 0in 0.125in,
-%    page=1,
-%    width=\textwidth,
-%]{assets/dissertation-score-mbrsi-lh.pdf}
-%\caption{Page one of fifty-three from a spreadsheet containing fingering
-%instructions for six of the twelve string performers in \emph{mbrsi} (2006).}
-%\label{fig:mbrsi-lh}
-%\end{centering}
-%\end{figure}
-%
-%\begin{figure}[H]
-%\begin{centering}
-%\noindent\includegraphics[
-%    clip=true,
-%    trim=0in 0.25in 0in 0in,
-%    page=1,
-%    width=\textwidth,
-%]{assets/dissertation-score-mbrsi-rh.pdf}
-%\caption{Page one of fifty-three from a spreadsheet containing bowing
-%instructions for six of the twelve string performers in \emph{mbrsi} (2006).}
-%\label{fig:mbrsi-rh}
-%\end{centering}
-%\end{figure}
-%
-%A number of years later, at the beginning of my graduate studies, I was
-%introduced to first LilyPond, and then Abjad.
-%
-%Expand on Abjad
-%
+
+\todo[inline]{Mention OpenMusic, PWGL, Common Lisp, BACH, etc.}
+
+A number of years later, at the beginning of my graduate studies, I was
+introduced to first LilyPond, and then Abjad. LilyPond, much like \LaTeX{},
+is a command-line tool takes a text file comprising various commands which
+describe the content of a musical document, and converts those commands into
+graphic representations of music notation, generally as a PDF. This working
+modality is often referred to as \enquote{what you see is what you mean}: the
+user of the system edits with the intent to describe their desired structure,
+rather than manipulating a representation of the end-product itself. The
+discovery of a such a plain-text-based way of working was a revelation to me,
+precisely because plain text is eminently susceptible to manipulation. One
+would be hard-pressed to find \emph{any} programming languages which cannot
+generate plain-text files. While hardly easy -- and I simply couldn't have
+known at the time how far off that impression was -- a way forward finally
+seemed possible: I could develop a system to model notation, using LilyPond as
+its typesetting engine. Luckily, V\'{i}ctor Ad\'{a}n and Trevor Ba\v{c}a had
+reached an identical conclusion sometime before, and had already begun the work
+of implementing a notation model in the Python programming language, using
+LilyPond as the primary output.
+
+\vspace*{0.25\baselineskip}
+\todo[inline]{Fill in the intervening years.}
+\todo[inline]{Why are other systems unnecessary?}
+
 \section{Overview of the dissertation}
 \label{sec:overview-of-the-dissertation}
 
@@ -254,45 +281,3 @@ stylesheets, for the three Invisible Cities scores. My sincere hope is that
 these appendices provide a concrete, \enquote{reverse-engineerable} even, link
 between the descriptions of my research into formalized score control and the
 scores written with these tools.
-
-%\begin{markdown}
-%
-%# What is this?
-%
-%Laying out the terms.
-%
-%This is an analysis of a model of composition, implemented computationally.
-%
-%This is not an analysis of any works, although works are included.
-%
-%This is not a survey of techniques used by composers working in
-%computer-assisted composition, but the work of one composer implementing for
-%the specifics of his own process. This work may well be applicable to others in
-%many ways, but I do not claim universality.
-%
-%Provide a description of formalized score control.
-%
-%Mention Abjad, Python, LilyPond and LaTeX very briefly. Drop names as
-%appropriate.
-%
-%My aim is to provide a sufficiently detailed explanation of the theory behind
-%this work as well as my specific implementation that those who read
-%this would be able to consult the source to each of the three Invisible Cities
-%scores included in the appendices and make some (or a lot of) sense of them.
-%
-%It is then, more of a tutorial than anything else, presented in order to
-%explain the architectural decisions, implementations and implications behind a
-%system designed to assist in the composition of music.
-%
-%# Background
-%
-%Mention Trevor Wishart's \emph{On Sonic Art} with regard to textural variation,
-%and Curtis Roads' \emph{Microsound} for granular techniques.
-%
-%Both historical and personal.
-%
-%Provide wider discussion of Abjad, Python, LilyPond and LaTeX.
-%
-%Differentiate from Max, PWGL, OM.
-%
-%\end{markdown}
