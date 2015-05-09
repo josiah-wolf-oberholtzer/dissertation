@@ -5,9 +5,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Intent}
-\label{sec:intent}
-
 The intent of this dissertation is to document my research into
 \emph{formalized score control}\cite{ baca2011xi, baca2015tenor,
 trevino2013compositional} in order to demonstrate a \emph{computational model
@@ -55,25 +52,29 @@ none at all, is not so constrained, and while it may not afford programmatic
 control over the contents of the score at all, it does allow composers to
 radically reinvent and extend an understanding of Western notation.
 
-My own compositional work now makes extensive use of the Abjad API for
-formalized score control.\cite{baca2011xi, baca2015tenor,
-trevino2013compositional} Abjad, which originated in 2008 as a joint effort
-between the composers V\'{i}ctor Ad\'{a}n and Trevor Ba\v{c}a, and to which I
-have also been contributing significantly for over six years, extends the
-Python\cite{vanrossum2003ys} programming language with a rich model of common
-practice notation, and visualizes the scores it models with
-LilyPond\cite{nienhuys2003ve}, an automated engraving system inspired by the
-venerable \LaTeX{}. On top of Abjad, I have implemented a model of composition
-in the Python package \emph{Consort}, which allows for the specification of the
-structure of a score and the processes to be used to create it, and the
-interpretation of that specification first into Abjad's notation model, and
-subsequently into publication-quality typography via LilyPond. These twin
-notational and compositional models bring the discipline and collective
-knowledge of computer science to bear on a variety of musical questions: how
-does one arrange large-scale form? What manner of rhythmic, harmonic and
-timbral transformations are available? How can one describe formal structural
-relationships between the objects on a page? How can one quickly audition and
-vary dense, multi-layered orchestral textures?
+My own compositional work now makes extensive use of the \emph{Abjad API for
+Formalized Score Control}.\cite{baca2011xi, baca2015tenor,
+trevino2013compositional}\footnote{http://projectabjad.org/} Abjad, which
+originated in 2008 as a joint effort between the composers V\'{i}ctor Ad\'{a}n
+and Trevor Ba\v{c}a, and to which I have also been contributing significantly
+for over six years, extends the
+\emph{Python}\cite{vanrossum2003ys}\footnote{http://python.org/}
+programming language with a rich model of common practice notation, and
+visualizes the scores it models with
+\emph{LilyPond}\cite{nienhuys2003ve}\footnote{http://lilypond.org/}, an
+automated engraving system inspired by the venerable \LaTeX{}. On top of Abjad,
+I have implemented a model of composition in the Python package \emph{Consort},
+which allows for the specification of the structure of a score and the
+processes to be used to create it, and the interpretation of that specification
+first into Abjad's notation model, and subsequently into publication-quality
+typography via LilyPond. These twin notational and compositional models bring
+the discipline and collective knowledge of computer science to bear on a
+variety of musical questions: how does one arrange large-scale form? What
+manner of rhythmic, harmonic and timbral transformations are available? How can
+one describe formal structural relationships between the objects on a page? How
+can one quickly audition and vary dense, multi-layered orchestral textures?
+
+The chapters that follow
 
 %Working in this way attempts to provide a full documentation of the process of
 %working in a formalized way, from the low-level notational primitives through
@@ -81,8 +82,8 @@ vary dense, multi-layered orchestral textures?
 %spent on the work in the mid-ground, as well as proposed solutions to the
 %practical concerns of software development and document preparation.
 
-%\section{Background}
-%\label{sec:background}
+%\section{Background \& Motivation}
+%\label{sec:background-and-motivation}
 %
 %Computer-assisted composition has a fairly short history, dating at the time of
 %this writing a little more than half a century. While one could certainly argue
@@ -176,9 +177,6 @@ vary dense, multi-layered orchestral textures?
 %
 %Expand on Abjad
 %
-%\section{Methodology}
-%\label{sec:methodology}
-
 \section{Overview of the dissertation}
 \label{sec:overview-of-the-dissertation}
 
