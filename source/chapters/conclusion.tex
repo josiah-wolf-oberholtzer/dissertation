@@ -5,27 +5,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Summary}
-\label{sec:summary}
-
-\begin{markdown}
--   a collection of open-source tools, interoperating
-    -   python, lilypond, latex, abjad and consort,
--   a model of notation
-    -   score as hierarchy (this is not contentious)
-    -   a model of time: timespans, hierarchical rhythm, meter
-    -   a model which is explicit, expressive (in the programming sense)
-    -   which aspires to be compositionally agnostic
-    -   (although it certainly must remain engaged with western notation)
-    -   and which affords inspection, iteration, selection
--   a model of composition
-    -   specification
-    -   interpretation
-    -   maquette
-    -   segments
--   overarching concepts
-    -   configuration, aggregation
-\end{markdown}
+%\section{Summary}
+%\label{sec:summary}
 
 The previous chapters have discussed a computational model of music
 composition, implemented in the Python library Consort, and the model of
@@ -33,7 +14,7 @@ notation which it extends, Abjad. The various open-source systems -- \LaTeX{},
 LilyPond, Python, etc. -- which interoperate to make these twin computational
 models possible have also been demonstrated, and some standard solutions for
 establishing a document preparation workflow which streamlines and accelerates
-a cycle of score visualization has been proposed.
+a cycle of score visualization through automated typesetting has been proposed. 
 
 As described in \autoref{chap:a-model-of-notation}, Abjad's model of notation
 treats musical score as a hierarchy consisting of containers -- staves, voices,
@@ -72,18 +53,108 @@ data structure, often used for modeling scheduling conflicts, as it provides a
 highly-optimized search algorithm for overlap between time intervals and other
 intervals or offsets. Trevor Ba\v{c}a later introduced a much more generalized
 \texttt{timespantools} subpackage and nominative \texttt{Timespan} class, into
-which I merged some of the more idiosyncratic functionality, such as timespan
-explosion. } developed them as an affordance for structuring large-scale
-orchestral works. All of these aspects, combined with Abjad's tools for
-iterating over, selecting, and inspecting score components provides a strong
-foundation for others to implement their own personal models of composition:
-how one goes about organizing notation into a musical work.
+which I merged some of the more idiosyncratic \texttt{timeintervaltools}
+functionality, such as timespan explosion. } developed them as an affordance
+for structuring large-scale orchestral works. All of these aspects, combined
+with Abjad's tools for iterating over, selecting, and inspecting score
+components provides a strong foundation for others to implement their own
+personal models of composition: how one goes about organizing notation into a
+musical work.
 
 For my part, Consort constitutes such a model of composition: a collection of
-abstractions for organizing the elements of notation.
+high-level abstractions for organizing the elements of notation. Consort
+divides the process of composition into two stages -- specification and
+interpretation -- and proposes -- but does not enforce -- that scores be
+structured as a series of segments.\footnote{Segmentation acts both as a
+practical aid for typesetting, allowing smaller portions of the score to be
+visualized anew, and as a cognitive aid to the composer, by constraining the
+scope of detail they must confront during specification to a more manageable
+amount.} Specification entails the configuration of a segment-maker -- the
+object responsible for coordinating the creation of a segment of score -- with
+music settings. These \enquote{settings} bundle a timespan-maker, whose
+responsibility it is for determining when and in which voices some material
+should appear, with music specifiers, objects aggregating together the various
+makers and handlers defining a musical material. Once configured, the
+segment-maker may be interpreted, evaluating each of its music settings to
+generate a maquette -- an annotated timespan structure describing the location
+of musical materials in the score, but not yet their notation -- as well as a
+governing sequence of meters. That maquette is then progressively interpreted
+into notation, with each timespan's annotating music specifier contributing
+rhythm, pitch and other typographic information to the resulting segment of
+score.
 
-\section{Implications}
-\label{sec:implications}
+\section{Concerns \& Implications}
+\label{sec:concerns-and-implications}
+
+As described in \autoref{sec:interpretation}, Consort's specification and
+interpretation process treats the act of composition analogously to the act of
+\emph{compilation} in software. Consort's segment-maker parses a high-level
+description of music -- its music settings, timespan-makers and music
+specifiers -- into an intermediate representation -- the timespan maquette,
+itself perhaps akin to computing's notion of an \emph{abstract syntax tree}--,
+and finally converts that intermediate representation into \enquote{low-level}
+notational primitives. In this way, Consort privileges composition with the
+procedural, or the general, over the specific. It is much more difficult --
+although not impossible -- to change a single pitch at one moment in time than
+it is to change all of the pitches in an entire score. This has tremendous
+practical implications when working with such a highly-procedural system and,
+from experience, can be rather problematic. For example, because pitches are
+often \enquote{painted} onto the score in time-wise order across different
+voices, adding or removing a single attack-point can shift the pitches painted
+onto all subsequent attack-points. This entanglement makes revising music
+already in the hands of performers treacherous, and I'm certainly guilty of
+raising some eyebrows from time to time. But the ability to describe and
+perform precise, mass transformations on musical materials -- even if
+occasionally unintentionally -- is one of, if not \emph{the} driving motivation
+behind Consort. 
+
+\todo[inline]{Talk about mass transformations.}
+
+More generously, and practical considerations aside, one can consider Consort
+as a system which treats scores as enormous composite expressions, comprising
+the notational sum of the interpretation algorithm applied against each
+specification:
+
+\begin{equation}
+\displaystyle\sum_{i=1}^{n} Interpretation(Specification_i)
+\end{equation}
+
+\noindent In considering Consort as revolving around
+\emph{score-as-expression}, it's also worth noting that randomness -- random
+number generators, noise functions, coin flipping, or any other such variant --
+plays no part in this discussion. Every segment-maker, every rhythm-maker,
+pitch-handler or other procedural mechanism in Consort's ecosystem, is
+completely deterministic.
+
+\begin{markdown}
+-   patterns and randomness
+    -   a sufficiently complex pattern of values is indistinguishable to a
+        listener from a random sequence
+    -   this is compounded when multiple sequences of different lengths
+        interact
+\end{markdown}
+
+Consort's origin as a software library and the composition model it implements
+contains a number of implicit assumptions. Amongst these assumptions is
+that, at least for myself, composition is most strongly situated in the act of
+specification. When I compose, I specify what will be in the score, and I
+specify where and how it will come to be there. This is perhaps a little vague,
+but consider that each of the three \emph{Invisible Cities} scores, in
+\autoref{chap:zaira}, \autoref{chap:armilla} and \autoref{chap:ersilia}, rely
+on only superficially different segment-makers. Virtually all of their
+differentiation lies in the specification of their segments, not in the process
+by which they are interpreted. Interpretation then becomes almost like an
+instrument performing these different specifications, a recapitulation of so
+much of my electronic composing, where one-off electronic instruments performed
+different configurations over and over, auditioning for me the materials I
+would later maquette into the final work. In both cases, the acoustic and the
+electronic, I am also acting -- quite pointedly -- as the author of the
+\enquote{instrument} and so the algorithm used to perform a given specification
+is certainly not exterior to composition, just positioned differently: less
+specific and more general, like a compositional voice or fingerprint rather
+than a particular performance.
+
+Abstraction, encapsulation, re-use, labor.
 
 \begin{markdown}
 -   implications for how one works:
@@ -100,28 +171,48 @@ abstractions for organizing the elements of notation.
             as bulwarks against disappearing, and as barrier-to-entry reducers
             for newcomers
     -   separation of notation and composition is not trivial
--   score as expression
-    -   interpretation defines an algorithm
-    -   that algorithm further extended by the insertion of additional
-        sub-algorithms: handlers, rhythm-makers
--   patterns and randomness
-    -   a sufficiently complex pattern of values is indistinguishable to a
-        listener from a random sequence
-    -   this is compounded when multiple sequences of different lengths
-        interact
 \end{markdown}
 
-Coyly:
+\section{Future work}
+\label{sec:future-work}
 
-\begin{equation}
-\displaystyle\sum_{i=1}^{n} Interpretation(Specification_i)
-\end{equation}
+In no way do I consider this project finished. Nor do I think a project like
+this -- the model of composition, rather than notation -- can ever be complete.
+There is, in my opinion, no single universal methodology to composition, nor
+should there ever be. There is still quite a lot of work to do to solve an
+entire array of practical problems, let alone aesthetic ones. Having devoted so
+much effort to large- and small-scale time structures, I need to turn my
+attention toward harmony and orchestration as constraints and coordinating
+forces.
 
-\section{Lacunae \& future work}
-\label{sec:lacunae-and-future-work}
+Convincing piano music remains a bugaboo. Multi-staff writing, with voices
+crossing between upper and lower staves and back again is well supported by
+LilyPond, which was designed with the spacing concerns of dense Romantic music
+as a foremost priority, but requires considerable hand-adjustment.
+Without careful rhythmic and pitch control to account for collisions,
+procedurally-generated staff-changing music in a multi-voice texture quickly
+becomes a mess. Likewise, the use of dependent timespan-makers to create
+pedaling voices based on other voices, as outlined in
+\autoref{ssec:dependent-timespan-makers}, sometimes producing satisfactory
+results, but more often doesn't. The dependent timespan-maker is unable to
+truly account for the events it reacts against, and creates pedaling changes at
+timespan boundaries rather than at meaningful musical moments. Of course, what
+constitutes a meaningful musical moment is difficult to say.
+
+Idiomatic writing
+
+Modeling string instrument fingerings, and cataloguing woodwind trills and
+multiphonics, as well as the relative dynamic ranges in different registers and
+with different techniques
+
+Perhaps most crucially, mechanisms for specifying that literal music
+expressions -- not procedures to be applied during interpretation, but fully complete excerpts of
+music -- be placed into a segment-maker's output wherever desired 
+
+Likewise, transformations on the interpreted music, for example shifting a
+phrase forward or backward along the timeline, or deleting specific moments
 
 \begin{markdown}
--   score-as-expression is delicate
 -   multi-staff writing and pedaling
 -   more flexible pitch structuring
 -   idiomatic writing
@@ -131,3 +222,26 @@ Coyly:
 
 \section{Parting words}
 \label{sec:parting-words}
+
+My intention with providing the complete sources to both my scores and working
+methods is not that others copy me, although they certainly can if they like. I
+wouldn't be offended, but maybe a little disappointed that someone who managed
+to put together the tools and knowledge was also so strangely lazy that they
+didn't take the time to place some personal stamp on their duplication by
+turning the knobs or mixing the potions differently. All-in-all that seems
+incredibly unlikely to me. Rather, I hope this shared knowledge can be
+something like a lifeboat to those who come after me, rather than hiding it
+away to collect dust. And while the code presented here may become dusty, as
+most code does, the concepts and techniques -- as separate from their concrete
+implementations -- most likely won't. While everything has been presented in
+Python, this work could, and should, be implemented in any other programming
+languages.
+
+I imagine myself, a composer ten years younger, searching for answers to many
+of the questions I've now made good progress on solving, questions which rarely
+even concern making art because there is still too much groundwork to lay. Had
+I a clear path then to follow, change, or even wholly react against, maybe I
+would have produced more music by now. Or maybe not. I no longer have the same
+misgivings as I did when younger about splitting my creative energies between
+composition and engineering. If anything, they don't seem that different to me
+anymore.
