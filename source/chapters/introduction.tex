@@ -134,7 +134,7 @@ I completed seventeen of the intended fifty-three pages before stopping for the
 sake of my wrists and due a general lack of faith in the project. While still
 incomplete, the concerns that motivated this score remain with me.}
 \label{fig:mbrsi-score}
-\end{centering} 
+\end{centering}
 \end{figure}
 
 My earliest experiments with computer-assisted composition involved Max/MSP,
@@ -174,14 +174,6 @@ upper-most row of boxes in \autoref{fig:mbrsi-score}.}
 \label{fig:mbrsi-lh}
 \end{centering} \end{figure}
 
-%Some of the most important tools available contemporary with my entry into the
-%field include OpenMusic, PWGL, Common Lisp music, and somewhat later the BACH
-%library for use with modern versions of Max, as well as a whole host of more
-%marginal experiments including LilyCollider which provides an interface between
-%SuperCollider -- generally used for live electronics -- and LilyPond.
-
-\todo[inline]{Mention OpenMusic, PWGL, Common Lisp, BACH, etc.}
-
 A number of years later, at the beginning of my graduate studies, I was
 introduced to first LilyPond, and then Abjad. LilyPond, much like \LaTeX{},
 is a command-line tool takes a text file comprising various commands which
@@ -199,11 +191,22 @@ seemed possible: I could develop a system to model notation, using LilyPond as
 its typesetting engine. Luckily, V\'{i}ctor Ad\'{a}n and Trevor Ba\v{c}a had
 reached an identical conclusion sometime before, and had already begun the work
 of implementing a notation model in the Python programming language, using
-LilyPond as the primary output.
+LilyPond as the primary output. And now, nearly six years later, this work
+continues, unabated.
 
-\vspace*{0.25\baselineskip}
-\todo[inline]{Fill in the intervening years.}
-\todo[inline]{Why are other systems unnecessary?}
+Of course there were already a tremendous number of composition tools
+contemporary with my entry into the field, such as OpenMusic, PWGL, Common Lisp
+music, and somewhat later the BACH library for use with modern versions of Max,
+as well as a whole host of more marginal experiments including LilyCollider,
+which provides an interface between SuperCollider -- generally used for live
+electronics -- and LilyPond. Why develop yet another? The answer is both
+pragmatic, and also simply preferential. I wanted a tool usable from the
+command-line, not a graphic application, and therefore transparently
+interoperative with the Unix ecosystem. I wanted it to be open-source, so I
+could inspect it, break it, and come to understand all of its mechanisms. I
+wanted it to be free, so I could use it anywhere. And I wanted it to be written
+in an imperative language, so I could learn it more quickly. Abjad fit all of
+these desires.
 
 \section{Overview of the dissertation}
 \label{sec:overview-of-the-dissertation}
