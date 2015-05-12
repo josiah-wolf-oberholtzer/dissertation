@@ -50,16 +50,16 @@ contribution to Abjad, authored around 2010, which introduced a timespan-like
 class called \texttt{TimeInterval} and a \texttt{TimeIntervalTree} for
 containing them. These classes were named after the \enquote{interval-tree}
 data structure, often used for modeling scheduling conflicts, as it provides a
-highly-optimized search algorithm for overlap between time intervals and other
-intervals or offsets. Trevor Ba\v{c}a later introduced a much more generalized
-\texttt{timespantools} subpackage and nominative \texttt{Timespan} class, into
-which I merged some of the more idiosyncratic \texttt{timeintervaltools}
-functionality, such as timespan explosion. } developed them as an affordance
-for structuring large-scale orchestral works. All of these aspects, combined
-with Abjad's tools for iterating over, selecting, and inspecting score
-components provides a strong foundation for others to implement their own
-personal models of composition: how one goes about organizing notation into a
-musical work.
+highly-optimized search algorithm for finding overlap between one time interval
+and other time intervals or offsets. Trevor Ba\v{c}a later introduced a much
+more generalized \texttt{timespantools} subpackage and nominative
+\texttt{Timespan} class, into which I merged some of the more idiosyncratic
+\texttt{timeintervaltools} functionality, such as timespan explosion. }
+developed them as an affordance for structuring large-scale orchestral works.
+All of these aspects, combined with Abjad's tools for iterating over,
+selecting, and inspecting score components provides a strong foundation for
+others to implement their own personal models of composition: how one goes
+about organizing notation into a musical work.
 
 For my part, Consort constitutes such a model of composition: a collection of
 high-level abstractions for organizing the elements of notation. Consort
@@ -88,11 +88,13 @@ score.
 
 As described in \autoref{sec:interpretation}, Consort's specification and
 interpretation process treats the act of composition analogously to the act of
-\emph{compilation} in software. Consort's segment-maker parses a high-level
-description of music -- its music settings, timespan-makers and music
-specifiers -- into an intermediate representation -- the timespan maquette,
-itself perhaps akin to computing's notion of an \emph{abstract syntax tree}--,
-and finally converts that intermediate representation into \enquote{low-level}
+\emph{compilation} in software. Like a compiler, Consort's segment-maker parses
+a high-level description of music -- its music settings, timespan-makers and
+music specifiers -- into an intermediate representation -- the timespan
+maquette, itself perhaps poetically akin to computing's notion of an
+\emph{abstract syntax tree}\footnote{I do not want to overstretch this
+metaphor, though. I doubt it would hold up to vigorous inspection.}--, and
+finally converts that intermediate representation into \enquote{low-level}
 notational primitives. In this way, Consort privileges composition with the
 procedural, or the general, over the specific. It is much more difficult --
 although not impossible -- to change a single pitch at one moment in time than
@@ -101,18 +103,19 @@ practical implications when working with such a highly-procedural system and,
 from experience, can be rather problematic. For example, because pitches are
 often \enquote{painted} onto the score in time-wise order across different
 voices, adding or removing a single attack-point can shift the pitches painted
-onto all subsequent attack-points. This entanglement makes revising music
-already in the hands of performers treacherous, and I'm certainly guilty of
-raising some eyebrows from time to time. But the ability to describe and
-perform precise, mass transformations on musical materials -- even if
-occasionally unintentionally -- is one of, if not \emph{the} driving motivation
-behind Consort. 
-
-\todo[inline]{Talk about mass transformations.}
-
-More generously, and practical considerations aside, one can consider Consort
-as a system which treats scores as enormous composite expressions, comprising
-the notational sum of the interpretation algorithm applied against each
+onto all subsequent attack-points. This expressive \enquote{entanglement} makes
+revising music already in the hands of performers treacherous, and I'm
+certainly guilty of raising some eyebrows from time to time. But the ability to
+describe and perform precise, mass transformations on musical materials -- even
+if occasionally unintentionally -- is one of, if not \emph{the} driving
+motivation behind Consort. Segments may be stretched, while preserving their
+overall internal phrase structure. The rhythm-makers inscribing a subset of a
+maquette can be swapped for other rhythm-makers, yielding wholly different
+surface textures. Runs of notes and chords occupying weighted pitch centers can
+be selected and octavated en masse. Such transformations are afforded by
+computation. And from a computational perspective, one can consider Consort as
+a system which treats scores as enormous composite expressions, comprising the
+notational sum of the interpretation algorithm applied against each
 specification:
 
 \begin{equation}
@@ -123,125 +126,165 @@ specification:
 \emph{score-as-expression}, it's also worth noting that randomness -- random
 number generators, noise functions, coin flipping, or any other such variant --
 plays no part in this discussion. Every segment-maker, every rhythm-maker,
-pitch-handler or other procedural mechanism in Consort's ecosystem, is
-completely deterministic.
-
-\begin{markdown}
--   patterns and randomness
-    -   a sufficiently complex pattern of values is indistinguishable to a
-        listener from a random sequence
-    -   this is compounded when multiple sequences of different lengths
-        interact
-\end{markdown}
+pitch-handler or other procedural mechanism both in Consort's ecosystem and
+Abjad's, is completely deterministic. This decision is primarily pragmatic.
+Each package's testing regime is considerably simpler without randomness, and
+the results produced by each system remain stable across multiple runs. But
+there's another realisation at work here. I would argue that randomness is
+often a proxy for richness, detail or creative \enquote{touch}. Artists
+generally rely on randomness as a tool not for ideological or conceptual
+reasons -- although some certainly do --, but simply because it affords the
+rapid production of material and variations on that material. In effect, a
+labor-saving device, and one which I relied on myself for a number of years in
+my acoustic music, for example in \emph{Aurora} (\autoref{chap:aurora}), as
+well as in all of my electronic music to this day. But there are other, less
+surprising means of production. Any sufficiently complex, but finite, fixed
+pattern of values is liable to be indistiguishable to a listener from a random
+sequence. This is compounded when multiple sequences of different lengths
+interact, as is the case in the talea timespan-makers described in
+\autoref{ssec:talea-timespan-makers}, as well as most rhythm-makers. In fact,
+such sequences need not be particularly long. Less than ten integers in a
+talea's count sequence is often sufficient, so long as it combines with other
+patterns, such as the prolation-inducing \texttt{extra\_counts\_per\_division}
+keyword. Fixed patterns also offer something that random sequences do not: the
+ability to both appear random, and to appear memorable. I suppose this
+realisation is rather trivial, but it took me a number of years to fully come
+to terms with it as a working philosophy and, in practice, the sequences I use
+for phrasing, rhythm, pitches and anything else have become shorter and
+shorter. In retrospect, it's worth interrogating whether randomness is
+necessary or desirable at all.
 
 Consort's origin as a software library and the composition model it implements
-contains a number of implicit assumptions. Amongst these assumptions is
-that, at least for myself, composition is most strongly situated in the act of
-specification. When I compose, I specify what will be in the score, and I
-specify where and how it will come to be there. This is perhaps a little vague,
-but consider that each of the three \emph{Invisible Cities} scores, in
+contains a number of other implicit assumptions. Amongst these -- and 
+I can only speak for myself -- is that composition is most strongly situated in
+the act of specification. When I compose, I specify what will be in the score,
+and I specify where and how it will come to be there -- that is, by what
+processes. This description is either a little vague or over-obvious, but
+consider that each of the three \emph{Invisible Cities} scores, in
 \autoref{chap:zaira}, \autoref{chap:armilla} and \autoref{chap:ersilia}, rely
 on only superficially different segment-makers. Virtually all of their
 differentiation lies in the specification of their segments, not in the process
 by which they are interpreted. Interpretation then becomes almost like an
 instrument performing these different specifications, a recapitulation of so
-much of my electronic composing, where one-off electronic instruments performed
-different configurations over and over, auditioning for me the materials I
-would later maquette into the final work. In both cases, the acoustic and the
-electronic, I am also acting -- quite pointedly -- as the author of the
-\enquote{instrument} and so the algorithm used to perform a given specification
-is certainly not exterior to composition, just positioned differently: less
-specific and more general, like a compositional voice or fingerprint rather
-than a particular performance.
+much of my electronic composing, where custom synthesizers and audio processing
+networks perform different configurations over and over, auditioning for me the
+materials I will later maquette into the final work. In both cases, the
+acoustic and the electronic, I am also acting -- quite pointedly -- as the
+author of these \enquote{instruments} and so the algorithm used to perform a
+given specification is certainly not exterior to composition, just positioned
+differently: less specific, more general, like a compositional voice or
+fingerprint rather than a particular performance. Crucially, these algorithms
+persist from one score to the next, just as I re-use and re-combine the
+synthesizers I created for one electronic piece in another. The scores created
+with Consort are an extreme example of this re-use, undertaken specifically to
+investigate its practicality.
 
-Abstraction, encapsulation, re-use, labor.
+Abstraction, encapsulation, inheritance, all foundational principles in
+computing, point at re-use. They act to conserve labor, to persist the work
+done on one day in formalizing a process so that it might be reapplied on
+another day with little additional effort. In effect, they act as a kind of
+accelerant in the development and extension of further computational systems.
+And computing of course allows us to do things \emph{fast}. But I believe it's
+important to be cautious, even deeply suspicious of this. The same computing
+research, built over cumulative generations often in the service of finance and
+war, powering the so-called information age we find ourselves in today -- its
+prizes being efficiency, productivity, accuracy, connectivity -- also allows me
+to create new musical material faster and in greater quantity than I can ever
+hope to read through. This is a false economy. Unlike with electronic music, my
+attention simply cannot keep up with an endless stream of score. Speed has its
+place -- and I am no more immune to its siren call than anyone else -- but I
+hope to firmly position the benefits of computation, of library-writing
+elsewhere. The same qualities which afford speed often also afford structure,
+and ultimately extensibility. Consort and Abjad's existence as libraries in a
+network of other libraries, their \enquote{library-ness}, their
+\enquote{open-sourceness} -- even their testing regimes -- act as bulwarks
+against the loss of knowledge encoded in them, and encourage others to
+interrogate, critique and extend their structure, and the music-making world
+they propose.
 
-\begin{markdown}
--   implications for how one works:
-    -   re-use
-        -   abstraction and encapsulation define, in some sense, a voice
-    -   extension
-        -   simply because i haven't described something here doesn't mean i
-            haven't thought of it
-        -   in no small sense, all of this grows as a gradual extension of the
-            notation model, itself growing from the previous projects, and from
-            the underlying language
-        -   there are always foot-holds for new work
-        -   the "library-ness", "open-sourceness", and testing regime all act
-            as bulwarks against disappearing, and as barrier-to-entry reducers
-            for newcomers
-    -   separation of notation and composition is not trivial
-\end{markdown}
+Finally, it's important to reiterate a comment from the introduction: when
+working within a formal framework, one only has computational, programmatic
+control over what that framework describes. That which cannot be named, cannot
+truly be touched, and if it can be named, but cannot be described with
+clarity, it can only be grasped weakly, or even incorrectly. This is both
+cautionary to those who work in formal systems, and perhaps a panacea for those
+who eschew them. There is much work to be done to bring more names and
+descriptions into the \enquote{light,} but many things simply cannot be
+described specifically enough for a creature as stupid as a computer to
+understand.
 
 \section{Future work}
 \label{sec:future-work}
 
 In no way do I consider this project finished. Nor do I think a project like
-this -- the model of composition, rather than notation -- can ever be complete.
+this -- both the modeling of notation and composition -- can ever be complete.
 There is, in my opinion, no single universal methodology to composition, nor
-should there ever be. There is still quite a lot of work to do to solve an
-entire array of practical problems, let alone aesthetic ones. Having devoted so
-much effort to large- and small-scale time structures, I need to turn my
-attention toward harmony and orchestration as constraints and coordinating
-forces.
-
-Convincing piano music remains a bugaboo. Multi-staff writing, with voices
-crossing between upper and lower staves and back again is well supported by
-LilyPond, which was designed with the spacing concerns of dense Romantic music
-as a foremost priority, but requires considerable hand-adjustment.
-Without careful rhythmic and pitch control to account for collisions,
-procedurally-generated staff-changing music in a multi-voice texture quickly
-becomes a mess. Likewise, the use of dependent timespan-makers to create
-pedaling voices based on other voices, as outlined in
-\autoref{ssec:dependent-timespan-makers}, sometimes producing satisfactory
+should there ever be. And there is still quite a lot of work to do to solve an
+entire array of practical problems, let alone the compositional ones I often
+wait months or years to approach. Having devoted so much effort to large- and
+small-scale time structures, I need to turn my attention toward harmony and
+orchestration as constraints and coordinating forces. Convincing piano music
+remains a bugaboo. Multi-staff writing, with voices crossing between upper and
+lower staves and back again is well supported by LilyPond, which was designed
+with the spacing concerns of dense Romantic music as a foremost priority, but
+which requires considerable hand-adjustment. Without careful rhythmic and pitch
+control to account for collisions, procedurally-generated staff-changing music
+in a multi-voice texture quickly becomes a mess. Likewise, the use of dependent
+timespan-makers to create pedaling voices based on other voices, as outlined in
+\autoref{ssec:dependent-timespan-makers}, sometimes produces satisfactory
 results, but more often doesn't. The dependent timespan-maker is unable to
 truly account for the events it reacts against, and creates pedaling changes at
 timespan boundaries rather than at meaningful musical moments. Of course, what
-constitutes a meaningful musical moment is difficult to say.
+constitutes a meaningful musical moment is difficult to say, and I'm simply not
+sure yet that I \emph{can} say. And in light of my cautions about naming and
+describing concepts computationally, I'm not sure I ever will.
 
-Idiomatic writing
-
-Modeling string instrument fingerings, and cataloguing woodwind trills and
-multiphonics, as well as the relative dynamic ranges in different registers and
-with different techniques
-
-Perhaps most crucially, mechanisms for specifying that literal music
-expressions -- not procedures to be applied during interpretation, but fully complete excerpts of
-music -- be placed into a segment-maker's output wherever desired 
-
-Likewise, transformations on the interpreted music, for example shifting a
-phrase forward or backward along the timeline, or deleting specific moments
-
-\begin{markdown}
--   multi-staff writing and pedaling
--   more flexible pitch structuring
--   idiomatic writing
--   explicit modeling of variation, transformation
--   simpler targeting of specific changes (this note, right here)
-\end{markdown}
+Any additional affordances for idiomatic instrumental writing would be a great
+help: models of string instrument fingerings, and catalogues of woodwind trills
+and multiphonics, as well as the relative dynamic ranges in different registers
+and with different techniques: all of the quantitative knowledge contained in
+the various orchestration manuals which composers make use of. Perhaps most
+crucially, mechanisms for specifying that literal music expressions -- not
+procedures to be applied during interpretation, but fully complete excerpts of
+music -- be placed into a segment-maker's output wherever desired would greatly
+extend Consort's expressivity. The same holds true for transformations on the
+interpreted music, such as shifting a phrase forward or backward along the
+timeline, or deleting specific moments.
 
 \section{Parting words}
 \label{sec:parting-words}
 
 My intention with providing the complete sources to both my scores and working
-methods is not that others copy me, although they certainly can if they like. I
-wouldn't be offended, but maybe a little disappointed that someone who managed
-to put together the tools and knowledge was also so strangely lazy that they
-didn't take the time to place some personal stamp on their duplication by
-turning the knobs or mixing the potions differently. All-in-all that seems
-incredibly unlikely to me. Rather, I hope this shared knowledge can be
-something like a lifeboat to those who come after me, rather than hiding it
+methods -- as laid out in the appendices, and discussed throughout the
+preceding chapters -- is not that others copy me, although they certainly can
+if they like. This work is open-source, after all. I wouldn't be offended, but
+maybe a little disappointed. Why would someone who managed to put together the
+tools and knowledge to successfully interpret one of these scores also not take
+the time to place some personal stamp on their duplication by turning the knobs
+or mixing the potions differently, at least a little bit? It seems so unlikely
+to me, and I'm sure I'll be surprised if and when it ever happens.
+
+Rather, my intentions are purely pedagogical. I hope this shared knowledge can
+be something like a lighthouse to those who come after me, rather than hiding it
 away to collect dust. And while the code presented here may become dusty, as
 most code does, the concepts and techniques -- as separate from their concrete
-implementations -- most likely won't. While everything has been presented in
-Python, this work could, and should, be implemented in any other programming
-languages.
+implementations -- most likely won't. While I presented all of the work in this
+dissertation in the programming language Python and with LilyPond as its
+typesetting engine, these notional and compositional models could and certainly
+\emph{should} be implemented in many other programming languages. A rich
+ecosystem of models would do wonders to keep stagnation at bay, to share
+knowledge amongst colleagues, and to reduce the barriers-to-entry for newcomers
+to this compositional modality.
 
 I imagine myself, a composer ten years younger, searching for answers to many
 of the questions I've now made good progress on solving, questions which rarely
 even concern making art because there is still too much groundwork to lay. Had
-I a clear path then to follow, change, or even wholly react against, maybe I
-would have produced more music by now. Or maybe not. I no longer have the same
-misgivings as I did when younger about splitting my creative energies between
-composition and engineering. If anything, they don't seem that different to me
-anymore.
+I a clear path then to follow, diverge from, reverse-engineer, or even wholly
+reject, maybe I would have produced more music by now. Or maybe not. I no
+longer have the same misgivings as I did when younger about splitting my
+creative energies between composition and engineering. If anything, they don't
+seem that different to me anymore.
+
+\vspace{\baselineskip}
+
+\flushright{\textsc{Basta.}}
