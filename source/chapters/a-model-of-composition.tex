@@ -44,12 +44,10 @@ import consort
 
 \eblettrinedbl{C}{onsort, a Python library} I have written as an extension to
 Abjad, models the process of composing of notated musical scores in terms of a
-repeated cycle containing three distinct stages: \emph{specification},
-\emph{interpretation} and \emph{visualization}. What follows is a detailed
-analysis of the various algorithms and subroutines employed during Consort's
-specification and interpretation stages. Visualization, via Abjad's
-\emph{illustration protocol} was already discussed in
-\autoref{chap:a-model-of-notation}.
+repeated cycle containing two distinct stages: \emph{specification},
+\emph{interpretation}. What follows is a detailed analysis of the various
+algorithms and subroutines employed during Consort's specification and
+interpretation stages.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Specification}
@@ -3230,7 +3228,7 @@ measure two, and followed by the C5 \sfrac[big]{1}{8} note directly below in the
 lower voice. The C-major pattern continues despite the intrusion of the triplet
 texture defined by the \texttt{other\_music\_specifier}:
 
-\todo[inline]{\textbf{TODO:} Fix seed-handling at pitch-choice boundaries.}
+%\todo[inline]{\textbf{TODO:} Fix seed-handling at pitch-choice boundaries.}
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -4272,9 +4270,9 @@ interpretation, make changes to each segment's specification, and re-interpret
 as necessary, a large-scale re-enactment of interactive programming's pervasive
 \emph{read-eval-print} loop paradigm.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Conclusion}
-\label{sec:a-model-of-notation-conclusion}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\todo[inline]{\textbf{TODO:} Summarize this chapter for conclusion.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Conclusion}
+%\label{sec:a-model-of-notation-conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\todo[inline]{\textbf{TODO:} Summarize this chapter for conclusion.}

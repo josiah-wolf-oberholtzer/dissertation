@@ -6,10 +6,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 The intent of this dissertation is to document my research into
-\emph{formalized score control}\cite{ baca2011xi, baca2015tenor,
+\emph{formalized score control}\citep{ baca2011xi, baca2015tenor,
 trevino2013compositional} in order to demonstrate a \emph{computational model
 of music composition}. The term formalized score control, inspired by Iannis
-Xenakis' seminal text \emph{Formalized Music}\cite{xenakis1992formalized,
+Xenakis' seminal text \emph{Formalized Music}\citep{xenakis1992formalized,
 baca2012}, describes the discipline of modeling and manipulating the typography
 of common practice notation programmatically via software. An emphasis on
 \emph{modeling}, here, is crucial. When working computationally, models provide
@@ -21,7 +21,7 @@ the description of symbols on the page -- affords a clear model of composition
 -- how those symbols come to be there.
 
 At the time of this writing, a wide variety of computational models of notation
-exist\cite{ baca2015tenor, trevino2013compositional}, expressing an equally
+exist\citep{ baca2015tenor, trevino2013compositional}, expressing an equally
 wide range of explicitness or implicitness in their modeling, and providing
 composers with varying degrees of programmatic control over those models. For
 example, many composers make use of vector graphics programs for notation,
@@ -31,37 +31,38 @@ a physical pencil does. That is to say, the software make no categorical
 distinction between an oval representing a note head and any other line on the
 page. Likewise, many composers rely on more traditional notation software which
 mimics the physical page while providing some model of common practice
-notation, rigidly enforcing a measure-based understanding of musical
-score on the artist, while still others make use of the idiosyncratic
-score-modeling systems often developed hand-in-hand with computer-assisted
-composition tools.\footnote{Composers often make use of all the above
-categories of tool in a single score, working programmatically with a
-computer-assisted composition tool to generate material which is then exported
-into a more traditional notation editor for page layout and further editing,
-and finally exported as vector graphics for fine-tuning. This work-flow is not
-reversible. The changes made to the score as vector graphics cannot be
-propagated back into the semantic model of the score provided by either the
-traditional score editor or the computer-assisted composition tool.} Of course
-it's important to understand that I don't denigrate the use of vector graphics
-programs to create scores. The relative presence or absence of notation
-modeling in a tool cuts both ways. While one tool might model notation
-exquisitely, it still provides programmatic control over only what it can
-describe, and may even forbid the manipulation of anything beyond that domain.
-Conversely, another tool, providing only a minimal model of notation, or even
-none at all, is not so constrained, and while it may not afford programmatic
-control over the contents of the score at all, it does allow composers to
-radically reinvent and extend an understanding of Western notation.
+notation, rigidly enforcing a measure-based understanding of musical score on
+the artist, while still others make use of the idiosyncratic score-modeling
+systems often developed hand-in-hand with computer-assisted composition
+tools.\footnote{Composers often make use of all the above categories of tool in
+a single score, working programmatically with a computer-assisted composition
+tool to generate material which is then exported into a more traditional
+notation editor for page layout and further editing, and finally exported as
+vector graphics for fine-tuning. This work-flow is not reversible. The changes
+made to the score as vector graphics cannot be propagated back into the
+semantic model of the score provided by either the traditional score editor or
+the computer-assisted composition tool.} Of course it's important to understand
+that I don't denigrate the use of vector graphics programs to create scores.
+The relative presence or absence of notation modeling in a tool can be a boon
+or a hindrance, depending on how it aligns with the needs of the composer using
+it. While one tool might model notation exquisitely, it still provides
+programmatic control over only what it can describe, and may even forbid the
+manipulation of anything beyond that domain. Conversely, another tool,
+providing only a minimal model of notation, or even none at all, is not so
+constrained, and while it may not afford programmatic control over the contents
+of the score at all, it does allow composers to radically reinvent and extend
+an understanding of Western notation.
 
 My own compositional work now makes extensive use of the \emph{Abjad API for
-Formalized Score Control}.\cite{baca2011xi, baca2015tenor,
-trevino2013compositional}\footnote{http://projectabjad.org/} Abjad, which
+Formalized Score Control}.\citep{baca2011xi, baca2015tenor,
+trevino2013compositional} Abjad,\footnote{http://projectabjad.org/} which
 originated in 2008 as a joint effort between the composers V\'{i}ctor Ad\'{a}n
 and Trevor Ba\v{c}a, and to which I have also been contributing significantly
 for over six years, extends the
-\emph{Python}\cite{vanrossum2003ys}\footnote{http://python.org/} programming
+\emph{Python}\citep{vanrossum2003ys}\footnote{http://python.org/} programming
 language with a rich model of common practice notation, and visualizes the
 scores it models with
-\emph{LilyPond}\cite{nienhuys2003ve}\footnote{http://lilypond.org/}, an
+\emph{LilyPond}\citep{nienhuys2003ve}\footnote{http://lilypond.org/}, an
 automated engraving system inspired by the venerable \LaTeX{}. On top of Abjad,
 I have implemented a model of composition in the Python package \emph{Consort},
 which allows for the specification of the structure of a score and the
@@ -95,18 +96,18 @@ this writing a little more than half a century. While one could certainly argue
 about the timeline and origins of the techniques falling under this umbrella --
 and providing a complete history of computer music is not the goal of this
 dissertation -- it is generally agreed that work began in earnest in the
-post-war decades of the 20th century.\cite{curtis1996computer,
+post-war decades of the 20th century.\citep{curtis1996computer,
 xenakis1992formalized} Despite its relative youth as a musical tradition,
 computer-assisted composition has many practitioners and a tremendous number
 of tools to work with, both generalized and idiosyncratic.
 
 My personal introduction to computer-assisted composition began with Iannis
-Xenakis' mid-century massed string works,\cite{xenakis1992formalized} and,
+Xenakis' mid-century massed string works,\citep{xenakis1992formalized} and,
 combined with a life-long interest in electro-acoustic music dating back to my
 serendipitous childhood exposure to a copy of Ivan Tcherepnin's \emph{Flores
 Musicales / Five Songs / Sant\={u}r Live!}, quickly progressed through study of
-Curtis Roads' granular explorations,\cite{roads2004microsound} Trevor Wishart's
-schema for textural transformations,\cite{wishart1996sonic} and Kaaija
+Curtis Roads' granular explorations,\citep{roads2004microsound} Trevor Wishart's
+schema for textural transformations,\citep{wishart1996sonic} and Kaaija
 Saariaho's analytic orchestrations. While I've turned to other music and other
 considerations since reading these texts and listening to these works, they
 instilled in me a confidence that \emph{somehow} computation could be useful
