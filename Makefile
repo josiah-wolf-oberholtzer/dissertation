@@ -84,13 +84,20 @@ compile/fast:
 		-shell-escape \
 		dissertation.tex
 
-clean:
-	rm -Rif assets/graphviz-*.pdf
-	rm -Rif assets/graphviz-*.dot
-	rm -Rif assets/lilypond-*.pdf
-	rm -Rif assets/lilypond-*.ly
+clean/temp:
 	rm -Rif assets/tmp*
 	rm -Rif tmp/tmp*
+	rm -Rif dissertation.aux
+	rm -Rif dissertation.bbl
+	rm -Rif dissertation.bcf
+	rm -Rif dissertation.blg
+	rm -Rif dissertation.idx
+	rm -Rif dissertation.ilg
+	rm -Rif dissertation.ind
+	rm -Rif dissertation.ist
+	rm -Rif dissertation.out
+	rm -Rif dissertation.run.xml
+	rm -Rif dissertation.toc
 	find . -name "*.aux" -exec rm -rf {} \;
 	find . -name "*.bbl" -exec rm -rf {} \;
 	find . -name "*.blg" -exec rm -rf {} \;
@@ -99,7 +106,11 @@ clean:
 	find . -name "*.out" -exec rm -rf {} \;
 	find . -name "*.pyc" -exec rm -rf {} \;
 	find . -name "*.toc" -exec rm -rf {} \;
-	say "cleaned assets"
+	say "cleaned temp files"
+
+clean/assets:
+	rm -Rif assets/lilypond*
+	rm -Rif assets/graphviz*
 
 open:
 	open dissertation.pdf

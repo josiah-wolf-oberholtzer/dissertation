@@ -267,15 +267,15 @@ str(foo)
 \vspace{-0.5\baselineskip}
 \begin{minted}{pycon}
 >>> print(foo)
-<__main__.Foo object at 0x104abed50>
+<__main__.Foo object at 0x106775d90>
 \end{minted}
 \begin{minted}{pycon}
 >>> repr(foo)
-'<__main__.Foo object at 0x104abed50>'
+'<__main__.Foo object at 0x106775d90>'
 \end{minted}
 \begin{minted}{pycon}
 >>> str(foo)
-'<__main__.Foo object at 0x104abed50>'
+'<__main__.Foo object at 0x106775d90>'
 \end{minted}
 \end{singlespacing}
 \end{abjadbookoutput}
@@ -2722,7 +2722,7 @@ inspect_(staff).get_spanners()
 \vspace{-0.5\baselineskip}
 \begin{minted}{pycon}
 >>> inspect_(staff[0]).get_spanners()
-set([Slur("c'4, c'8, e'8, g'8, g'2"), Tie("c'4, c'8")])
+set([Tie("c'4, c'8"), Slur("c'4, c'8, e'8, g'8, g'2")])
 \end{minted}
 \begin{minted}{pycon}
 >>> inspect_(staff).get_spanners()
@@ -3568,10 +3568,10 @@ for spanner in selection.get_spanners():
 >>> for spanner in selection.get_spanners():
 ...     spanner
 ...
-Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
+Glissando("e'8, f'8, g'8, a'8")
 Beam("g'8, a'8, b'8, c''8")
 Beam("c'8, d'8, e'8, f'8")
-Glissando("e'8, f'8, g'8, a'8")
+Slur("c'8, d'8, e'8, f'8, g'8, a'8, b'8, c''8")
 \end{minted}
 \end{singlespacing}
 \end{abjadbookoutput}
