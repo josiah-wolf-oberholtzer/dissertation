@@ -3,8 +3,6 @@
 \label{chap:a-model-of-composition}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\todo[inline]{\textbf{TODO:} Elaborate on motivation for Consort.}
-
 \begin{comment}
 <abjad>[hide=true]
 import collections
@@ -12,42 +10,17 @@ import consort
 </abjad>
 \end{comment}
 
-\begin{comment}
-\begin{markdown}
--   Materials
--   Configuration
--   Templating
--   Layers
--   Coarse to fine
--   Rhythm first
--   What is specification? What is a specifier? What is configuration and
-    aggregation?
--   What should happen musically, where should it happen?
--   What is material?
--   What is music?
--   Rhythm is interpreted first, as all other parameters depend on it.
--   Rhythm is interpreted from "coarse" to "fine": from the level of phrase
-    boundaries to the level of individual notes, rests, tuplets and ties.
--   This discussion only focuses on notation, nothing related to aesthetic
-    experience, physical modeling or anything else. This is a tool for a
-    specific composer to create scores, not a discussion explicitly of why they
-    would work this way (although that should be discussed in the conclusion).
--   Specification and interpretation conceive of the score as a single, hugely
-    complex expression.
--   Templating as variation.
--   Define what composition means here: laying out symbols on the page.
--   This way of thinking and working does not attempt to define or even model
-    concepts like "melody" or even "phrase". They're too vague. If we use that
-    terminology at all, it is only in the most incredibly constrained way.
-\end{markdown}
-\end{comment}
-
 \eblettrinedbl{C}{onsort, a Python library} I have written as an extension to
-Abjad, models the process of composing of notated musical scores in terms of a
-repeated cycle containing two distinct stages: \emph{specification},
-\emph{interpretation}. What follows is a detailed analysis of the various
-algorithms and subroutines employed during Consort's specification and
-interpretation stages.
+Abjad, models the process of composing notated musical scores in terms of a
+repeated cycle containing two distinct stages: \emph{specification} and
+\emph{interpretation}. During specification, the composer describes the
+structure of the score procedurally in terms of what musical materials --
+themselves modeled as bundles of procedures for generating notation -- should
+appear at particular moments in time. Then, during interpretation, those
+procedural descriptions are gradually converted into notation, turning the
+abstract specification of structure into a concrete segment of score. What
+follows is a detailed analysis of the various algorithms and subroutines
+employed during Consort's specification and interpretation stages.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Specification}
@@ -57,19 +30,17 @@ interpretation stages.
 \emph{Specification} describes how \emph{out-of-time materials} -- both
 concrete and programmatic -- should be deployed \emph{in-time} in a
 \emph{segment} of musical score as notation. Materials encompass abstractions
--- such as pitch sets or collections of performance technique indications --,
-concrete fragments of \emph{music} -- narrowly defined here as any contiguous
-selection of score components --, and procedures for producing, altering or
-embellishing music such as rhythm-makers or attachment-handlers. Score segments
-comprise any contiguous passage of music, demarcating an area of compositional
-concern. Consort treats scores as comprised of at least one segment, but
-potentially many more concatenated together. Any segment may of course contain
-arbitrarily complex inner structuring. Separation of scores into distinct
-segments acts then mainly as an aid for the composer, both by simplifying the
-complexity of the current specification under consideration, and by allowing
-the typesetting engine -- LilyPond -- to display more manageable amounts of
-notation than the full score, thus speeding up the cycle of specifying,
-interpreting and visualizing.
+-- such as pitch sets or collections of performance technique indications --
+and procedures for producing, altering or embellishing music such as
+rhythm-makers or attachment-handlers. Score segments comprise any contiguous
+passage of music, demarcating an area of compositional concern. Consort treats
+scores as comprised of at least one segment, but potentially many more
+concatenated together. Any segment may of course contain arbitrarily complex
+inner structuring. Separation of scores into distinct segments acts then mainly
+as an aid for the composer, both by simplifying the complexity of the current
+specification under consideration, and by allowing the typesetting engine --
+LilyPond -- to display more manageable amounts of notation than the full score,
+thus speeding up the cycle of specifying, interpreting and visualizing.
 
 \subsection{Segment-makers}
 \label{ssec:segment-makers}
@@ -78,20 +49,18 @@ Composers specify segments by creating and progressively configuring
 \emph{segment-makers}, classes which conceptually mirror the rhythm- and
 timespan-makers described in \autoref{chap:time-tools}, but on a much larger
 scale. Such configuration parameters include tempo, permitted meters, desired
-duration, and score template. Score templates are notation factories which
-build scores comprised of staff groups, staves, voices, clefs and instruments,
-as necessary to model the context hierarchy of a score to which no count-time
-components have yet been added. All segment-makers in a score project must use
-the same score template if they are to appear contiguously in the complete
-typeset score. LilyPond will automatically concatenate scores with identical
-context hierarchies. All contexts need to be present in every concatenated
-segment, otherwise LilyPond will concatenate incorrectly. However, various
-typographic overrides can be employed to make it seem that a context has
-disappeared.
-
-The following defines a segment-maker with desired duration of 9 seconds, only
-\sfrac[big]{3}{4} meters permitted, a score-template comprised of two rhythmic
-staves, and a tempo or quarter-equals-60:
+duration, and score template. Score templates, introduced in
+\autoref{ssec:notation-factories}, are notation factories which build scores
+comprised of staff groups, staves, voices, clefs and instruments, as necessary
+to model the context hierarchy of a score to which no count-time components
+have yet been added. All segment-makers in a score project must use the same
+score template if they are to appear contiguously in the complete typeset
+score, as this mechanism makes use of LilyPond's context concatenation
+behavior, demonstrated in
+\autoref{ssec:collecting-and-concatenating-segment-illustrations}. The
+following defines a segment-maker with a desired duration of 9 seconds, only
+\sfrac[big]{3}{4} meters permitted, a score template comprised of two rhythmic
+staves, and a tempo of 60 quarter-notes per minute:
 
 \begin{comment}
 <abjad>
@@ -148,7 +117,8 @@ show(segment_maker, verbose=False)
 \noindent By changing the tempo from quarter-equals-60 to quarter-equals-20,
 the overall notated duration of the segment shrinks by two thirds, but the
 duration in seconds remains the same. This mechanism allows segments to be
-planned relative one another in terms of their \enquote{actual} durations:
+planned relative one another in terms of their \enquote{actual} durations, even
+if their tempi differ:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -189,10 +159,10 @@ defines in what portion of the current segment the timespan-maker's texture
 should be spooled out, and the music specifiers define both in which voices the
 timespan texture should appear as well as how those timespans should ultimately
 be rendered as notation. The order in which composers configure segment-makers
-with music settings defines each music setting's \emph{layer} -- the first
-setting defined being layer 0, the second layer 1 and so forth, with each
-higher layer number indicating higher precedence or \enquote{foregroundness}
---, determining how overlapping events in a single voice will mask one another.
+with music settings defines each music setting's \emph{layer}. Layer determines
+how overlapping events in a single voice will mask one another. The first
+setting defined receives layer 0, the second layer 1 and so forth, with each
+higher layer number indicating higher precedence or \enquote{foregroundness}.
 The timespans created by music settings which are defined later during segment
 specification \enquote{hide} any timespans created by those music settings
 defined earlier. Score materials, including music settings, music specifiers,
@@ -214,9 +184,9 @@ grouped as a phrase. This information includes optional rhythm-maker
 strategies for creating or modifying notation --, as well as a variety of other
 properties including an optional \emph{minimum phrase duration} -- described
 further in \autoref{ssec:splitting-pruning-and-consolidation} --, and
-\emph{seed}.
+\emph{seed} (\autoref{ssec:inscription}).
 
-Music specifiers can also be configured with a \emph{labels}: a tuple of one or
+Music specifiers can also be configured with a \emph{labels}, a tuple of one or
 more arbitrary strings, identifying some quality of those performed timespans.
 As demonstrated in \autoref{ssec:dependent-timespan-makers}, composers
 configure dependent timespan-makers in order to create timespans according to
@@ -434,8 +404,8 @@ show(result, key='voice_name')
 \end{abjadbookoutput}
 
 \noindent Music specifiers can be grouped into sequences called,
-unsurprisingly, music specifier sequences, allowing a music setting to specify
-that the timespans it creates associated with a certain voice should be
+unsurprisingly, \emph{music specifier sequences}, allowing a music setting to
+specify that the timespans it creates for a particular voice should be
 annotated with multiple different music specifiers in a patterned way:
 
 \begin{comment}
@@ -459,9 +429,9 @@ music_specifier_sequence = consort.MusicSpecifierSequence(
 
 \noindent Recall from \autoref{ssec:talea-timespan-makers} that talea
 timespan-makers can create contiguous groups of 1 or more timespan associated
-with a specific voice. Music specifier sequences can be used to annotated a
-different music specifier to each timespan in a contiguous group, or to
-annotated a different music specifier to \emph{each} contiguous group. This
+with a specific voice. Music specifier sequences can be used to annotate each
+timespan in a contiguous group with a different music specifier, or to simply
+choose a different music specifier for each contiguous group as a whole. This
 behavior is controlled via the music specifier's \emph{application rate}
 property:
 
@@ -623,9 +593,9 @@ tandem, such as the fingering- and bowing-voice in a split-hands string
 notation. When passed as part of a voice-name-to-music-specifier mapping to a
 timespan-maker, that timespan-maker will create timespans for the first voice
 of the composite music specifier and then create timespans for the second voice
-as though it had its own dependent timespan-maker solely for those timespans.
-This behavior ensures a degree of synchronization between pairs of voices which
-should always appear at the same time in a score:
+as though it had its own dependent timespan-maker solely for those timespans
+from the first voice. This behavior ensures a degree of synchronization between
+pairs of voices which should always appear at the same time in a score:
 
 \begin{comment}
 <abjad>
@@ -704,7 +674,7 @@ previously-constructed rhythmic skeleton.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Broadly speaking, rhythmic interpretation proceeds from coarse- to
-fine-grained. The segment-maker creates a *maquette* -- a model of the
+fine-grained. The segment-maker creates a \emph{maquette} -- a model of the
 locations of musical materials in the score -- by calling each of its
 music-settings in turn to populate a timespan inventory. It then resolves
 overlap conflicts within that inventory, fits meters against the resolved
@@ -742,13 +712,13 @@ the music setting must resolve its timespan identifier against the segment's
 desired duration. Target timespan resolution must also take into account offset
 quantization, as the target timespans resulting from the evaluation of a
 ratio-parts expression may not align against a power-of-two-denominator offset
-grid such as \sfrac[big]{1}{8}, \sfrac[big]{1}{16} or \sfrac[big]{1}{32}. Because
-timespan-makers produce their output relative to the start-offset of their
-target timespan, a misaligned target timespan -- starting at an offset like
-\sfrac[big]{1}{3} or \sfrac[big]{15}{7} rather than \sfrac[big]{1}{4} or 0 -- will cause all
-generated timespans to be misaligned.
+grid such as \sfrac[big]{1}{8}, \sfrac[big]{1}{16} or \sfrac[big]{1}{32}.
+Because timespan-makers produce their output relative to the start-offset of
+their target timespan, a misaligned target timespan -- starting at an offset
+like \sfrac[big]{1}{3} or \sfrac[big]{15}{7} rather than \sfrac[big]{1}{4} or 0
+-- will cause all generated timespans to be misaligned.
 
-Music setting's associate their music specifiers with strings containing
+Music settings associate their music specifiers with strings containing
 voice-name abbreviations. These abbreviations are always underscore-delimited
 strings such as \texttt{violin\_1} or \texttt{piano\_lh} -- necessitated by
 Python's keyword argument syntax so that they can be used as keys during class
@@ -759,17 +729,17 @@ resolve its voice-name abbreviations against a score template, looking up each
 abbreviation on the template and returning the real name of the associated
 context. This lookup process allows music settings to construct well-formed
 voice-name-to-music-specifier mappings, implemented as ordered dictionaries and
-ordered by the actual *score index* -- effectively, the vertical location -- of
-each looked-up context in the segment-maker's under-construction score. As
-demonstrated in \autoref{sec:timespan-makers}, timespan-makers require these
+ordered by the actual \emph{score index} -- effectively, the vertical location
+-- of each looked-up context in the segment-maker's under-construction score.
+As demonstrated in \autoref{sec:timespan-makers}, timespan-makers require these
 mappings to produce their output. Additionally, voice-name resolution
 guarantees that the values in the resolved voice-name-to-music-specifier
 mapping are always either a \texttt{MusicSpecifierSequence} or
 \texttt{CompositeMusicSpecifier} instance via coercion, where any composite
 music-specifier's primary and secondary music specifiers are themselves coerced
 into music specifier sequences. This coercion ensures that all arguments to the
-music setting's timespan-maker are in a well-formed and predictable state.
-\footnote{Timespan-makers actually delegate the creation of performed and
+music setting's timespan-maker are in a well-formed and predictable
+state.\footnote{Timespan-makers actually delegate the creation of performed and
 silent timespans to music specifier sequences. While not demonstrated
 explicitly in \autoref{sec:timespan-makers}, this delegation allows
 timespan-makers to use both music specifier sequences and composite music
@@ -780,50 +750,7 @@ composite music specifiers -- as was the case in all of the examples in
 \autoref{sec:timespan-makers} -- they implicitly coerce those values into music
 specifier sequences.}
 
-\begin{comment}
-<abjad>
-music_setting = consort.MusicSetting(
-    timespan_identifier=consort.RatioPartsExpression(
-        parts=(0, 2),
-        ratio=(1, 3, 2),
-        ),
-    timespan_maker=consort.FloodedTimespanMaker(),
-    violin_2_lh='A',
-    viola_lh=('B', 'C', 'D'),
-    cello=consort.CompositeMusicSpecifier(
-        primary_music_specifier='one',
-        secondary_music_specifier=consort.MusicSpecifierSequence(
-            music_specifiers=['two', 'three', 'four'],
-            ),
-        )
-    )
-</abjad>
-\end{comment}
-
-\begin{abjadbookoutput}
-\begin{singlespacing}
-\vspace{-0.5\baselineskip}
-\begin{minted}{pycon}
->>> music_setting = consort.MusicSetting(
-...     timespan_identifier=consort.RatioPartsExpression(
-...         parts=(0, 2),
-...         ratio=(1, 3, 2),
-...         ),
-...     timespan_maker=consort.FloodedTimespanMaker(),
-...     violin_2_lh='A',
-...     viola_lh=('B', 'C', 'D'),
-...     cello=consort.CompositeMusicSpecifier(
-...         primary_music_specifier='one',
-...         secondary_music_specifier=consort.MusicSpecifierSequence(
-...             music_specifiers=['two', 'three', 'four'],
-...             ),
-...         )
-...     )
-\end{minted}
-\end{singlespacing}
-\end{abjadbookoutput}
-
-\noindent Consider the following string quartet score template, which will be
+Consider the following string quartet score template, which will be
 used with the above music setting. Note the names of the various contexts
 defined in it, made visible when formatted as LilyPond syntax, where each
 context name is given by a quoted string on the lines beginning with
@@ -1001,14 +928,62 @@ for parent, child_pair in score_template.composite_context_pairs.items():
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent Resolving the previously defined music specifier against Consort's
-string quartet score template dereferences the correct context names, allowing
-them to be indexed into any score created by that score template. Note that not
-only are the two non-composite music specifiers now associated with voices in
-the score, but they have been recreated as music specifier sequences. Likewise,
-the composite music specifier has been reconfigured such that it knows the
-specific names of the two voices associated with its primary and secondary
-music specifiers, themselves recreated as music specifier sequences:
+\noindent Consider the following music setting, which includes a timespan-maker
+definition, a ratio-parts expression as its timespan identifier, and three
+music specifiers, one of which is a composite music specifier. String values
+for the music specifiers are used simply for pedagogical reasons:
+
+\begin{comment}
+<abjad>
+music_setting = consort.MusicSetting(
+    timespan_identifier=consort.RatioPartsExpression(
+        parts=(0, 2),
+        ratio=(1, 3, 2),
+        ),
+    timespan_maker=consort.FloodedTimespanMaker(),
+    violin_2_lh='A',
+    viola_lh=('B', 'C', 'D'),
+    cello=consort.CompositeMusicSpecifier(
+        primary_music_specifier='one',
+        secondary_music_specifier=consort.MusicSpecifierSequence(
+            music_specifiers=['two', 'three', 'four'],
+            ),
+        )
+    )
+</abjad>
+\end{comment}
+
+\begin{abjadbookoutput}
+\begin{singlespacing}
+\vspace{-0.5\baselineskip}
+\begin{minted}{pycon}
+>>> music_setting = consort.MusicSetting(
+...     timespan_identifier=consort.RatioPartsExpression(
+...         parts=(0, 2),
+...         ratio=(1, 3, 2),
+...         ),
+...     timespan_maker=consort.FloodedTimespanMaker(),
+...     violin_2_lh='A',
+...     viola_lh=('B', 'C', 'D'),
+...     cello=consort.CompositeMusicSpecifier(
+...         primary_music_specifier='one',
+...         secondary_music_specifier=consort.MusicSpecifierSequence(
+...             music_specifiers=['two', 'three', 'four'],
+...             ),
+...         )
+...     )
+\end{minted}
+\end{singlespacing}
+\end{abjadbookoutput}
+
+\noindent Resolving the above music specifier against Consort's string quartet
+score template dereferences the correct context names, allowing them to be
+indexed into any score created by that score template. Note that not only are
+the two non-composite music specifiers now associated with voices in the score,
+but they have been recreated as music specifier sequences. Likewise, the
+composite music specifier has been reconfigured such that it knows the specific
+names of the two voices associated with its primary and secondary music
+specifiers, themselves recreated as music specifier sequences:
 
 \begin{comment}
 <abjad>
@@ -1062,7 +1037,9 @@ consort.tools.CompositeMusicSpecifier(
 
 \noindent Resolving a music setting's timespan identifier against the
 segment-maker's segment timespan results in one or more target timespans which
-can be used as argument to the music setting's timespan-maker:
+can be used as argument to the music setting's timespan-maker. We can simulate
+resolution against an actual timespan-maker's timespan by simply creating a
+\enquote{segment timespan} from scratch:
 
 \begin{comment}
 <abjad>
@@ -1119,7 +1096,8 @@ show(target_timespans, range_=(0, 8))
 \end{singlespacing}
 \end{abjadbookoutput}
 
-\noindent A mask can also be applied to the target timespans:
+\noindent Additionally, a subtractive mask can be applied to the target
+timespans:
 
 \begin{comment}
 <abjad>
@@ -1170,7 +1148,7 @@ allowing multiple materials of various provenances to appear in the same
 instrumental voice. Still, because acoustic instruments cannot simply
 \enquote{create} arbitrary numbers of voices like a synthesizer might, any
 overlap in material allocated for a given voice needs to be resolved. Consort
-handles resolution of overlap via a tournament, choosing only one material from
+handles resolution of overlap via tournament, choosing only one material from
 a collection of overlapping candidates.
 
 Consider the following three timespan inventories, created with three different
@@ -1389,7 +1367,7 @@ the process of calling multiple timespan-makers with their corresponding target
 timespans and voice-name-to-music-specifier mappings to progressively populate
 a single timespan inventory in-place. Note the use of two Python builtin
 iterators \texttt{zip()} and \texttt{enumerate()}. The \texttt{zip()} iterators
-iterates over the iterables with which it was instantiated yielding the first
+iterates over the iterables with which it was instantiated, yielding the first
 item of each of its iterables as a tuple, then the second of each of its
 iterables, then the third, and so forth. The \texttt{enumerate()} iterator
 yields each item of its input iterable paired with that item's index, filling
@@ -1524,13 +1502,13 @@ timespan inventories are computationally trivial.} With the maquette fully
 demultiplexed, the segment-maker can proceed through each layer in each voice,
 from lowest to highest. It progressively subtracts the timespans in each higher
 inventory from the lowest inventory, effectively cutting out holes outlining
-the shapes of that higher inventory's timespans, then adds that higher
-inventory's timespans into the lowest-layered inventory. This process masks
-lower-layered timespans with higher ones. The process repeats until no more
-timespan inventories remain for that voice, then moves onto the inventories for
-the next voice. The resolved, demultiplexed results are finally collected into
-a timespan inventory mapping, associating voice names with resolved timespan
-inventories, and returned.
+the shapes of that higher inventory's timespans. The segment-maker then adds
+that higher inventory's timespans into the lowest-layered inventory. This
+process masks lower-layered timespans with higher ones. The process repeats
+until no more timespan inventories remain for that voice, then moves onto the
+inventories for the next voice. The resolved, demultiplexed results are finally
+collected into a timespan inventory mapping, associating voice names with
+resolved timespan inventories, and returned.
 
 \begin{comment}
 <abjad>
@@ -1826,30 +1804,29 @@ under that threshold, it too is discarded.
 \emph{Inscription} describes the process of generating \emph{music} from a
 performed timespan's divisions and rhythm-maker and \emph{inscribing} the
 timespan with the result. Consort's segment-maker performs inscription by
-iterating over the timespans for each voice in the demultiplexed maquette, in
-score order. For each performed timespan encountered, the segment-maker
-retrieves that performed timespan's music specifier, and increments that music
-specifiers count in a counter. This allows each music specifier to maintain a
-seed value while inscribing each performed timespan, even in fragmentary
-textures, and to produce continuously varied results from each successive
-rhythm-maker belonging to the same music specifier. Recall from
+iterating over the timespans for each voice in the demultiplexed, consolidated
+maquette, in score order. For each performed timespan encountered, the
+segment-maker retrieves that performed timespan's music specifier, and
+increments that music specifiers count in a counter. This allows each music
+specifier to maintain a seed value while inscribing each performed timespan,
+even in fragmentary textures, and to produce continuously varied results from
+each successive rhythm-maker belonging to the same music specifier. Recall from
 \autoref{ssec:populating-voices} that rhythm-makers can be called not only with
 a list of divisions, but also a seed value, rotating the rhythm-makers
 sequence-like properties when creating its rhythmic output. All of the handlers
 discussed in \autoref{sec:non-rhythmic-interpretation} employ similar -- or
 even more complex -- techniques for maintaining state across different phrases
-sharing the same music specifier.
-The segment-maker also retrieves the performed timespan's division list --
-created during consolidation, as described in
-\autoref{ssec:splitting-pruning-and-consolidation} -- and its rhythm-maker.
-Rhythm-maker retrieval, like seed retrieval, is non-trivial. A performed
-timespan's music specifier may not have rhythm-maker defined, or that performed
-timespan may not even have a music specifier defined. If a performed timespan
-\emph{has} a rhythm-maker defined on its music specifier, the segment-maker
-retrieves that. If the timespan has a music specifier, but no defined
-rhythm-maker, the segment-maker constructs a note rhythm-maker which ties all
-of its divisions together. If the timespan has no music specifier defined at
-all, the segment-maker returns a fully-masked note rhythm-maker.
+sharing the same music specifier. The segment-maker also retrieves the
+performed timespan's division list -- created during consolidation, as
+described in \autoref{ssec:splitting-pruning-and-consolidation} -- and its
+rhythm-maker. Rhythm-maker retrieval, like seed retrieval, is non-trivial. A
+performed timespan's music specifier may not have rhythm-maker defined, or that
+performed timespan may not even have a music specifier defined. If a performed
+timespan \emph{has} a rhythm-maker defined on its music specifier, the
+segment-maker retrieves that. If the timespan has a music specifier, but no
+defined rhythm-maker, the segment-maker constructs a note rhythm-maker which
+ties all of its divisions together. If the timespan has no music specifier
+defined at all, the segment-maker returns a fully-masked note rhythm-maker.
 
 With the performed timespan's seed, rhythm-maker and division list ready, the
 segment-maker creates the performed timespan's music. This proceeds almost
@@ -2119,11 +2096,12 @@ performed timespan has been split into two new performed timespans, whose start
 and stop offsets outline only those portions of the generated rhythm which do
 not contain rests. Their music attributes have likewise been populated with
 only the non-silent portions of that rhythm. During inscription, the
-segment-maker replaces each performed timespan against which inscription is
-called with the result of the inscription process. Additionally, the
-segment-maker performs some simple post-processing on each inscribed timespan's
-music, attaching both a beam spanner to the leaves of the phrase, as well as
-the music specifier used to specify the phrase's music to the phrase itself:
+segment-maker replaces each performed timespan in the maquette against which
+inscription was called with the result of that inscription process.
+Additionally, the segment-maker performs some simple post-processing on each
+inscribed timespan's music, attaching both a beam spanner to the leaves of the
+phrase, as well as the music specifier used to specify the phrase's music to
+the phrase itself:
 
 \begin{comment}
 <abjad>
@@ -2181,12 +2159,12 @@ timespan in the maquette.
 
 The previous few passages, from \autoref{ssec:populating-the-maquette} through
 \autoref*{ssec:meter-pruning}, describe the process of populating a
-segment-makers's timespan maquette with the products of its *independent* music
+segment-makers's timespan maquette with the products of its \emph{independent} music
 settings -- those music settings whose timespan makers are independent, notably
 flooded and talea timespan-makers. With the maquette partially populated, those
 music settings with dependent timespan-makers -- timespan-makers which generate
 timespans based on the contents of a preexisting timespan inventory -- may
-finally be called to provide their contributions to the maquette. Dependent
+finally be called to provide their contributions. Dependent
 population proceeds almost identically to independent population with a few
 notable differences. For one, dependent population dispenses with meter finding
 entirely. Consort treats meter as entirely dependent upon independent
@@ -2229,7 +2207,7 @@ a phrase of music containing only rests using a fully-masked note rhythm-maker
 -- as described in \autoref{ssec:inscription} --, attaches a dummy
 music-specifier to the phrase and instantiates a performed timespan annotated
 with that phrase, adding it to the current voice's timespan inventory in the
-demultiplex maquette.
+demultiplexed maquette.
 
 Recall the demultiplexed maquette created earlier in
 \autoref{ssec:resolving-cascading-overlap}:
@@ -2503,7 +2481,7 @@ Consort's segment-maker performs a logical-tie cleanup pass, fusing all
 2-length logical ties consisting of matched pairs of \sfrac[big]{1}{16} or
 \sfrac[big]{1}{32} notes. This takes care of some possible artifacts of heavily
 subdivided meter-rewriting, and makes the final rhythmic output generally more
-readable.
+readable.\footnote{Special thanks to Rei Nakamura for the suggestion.}
 
 \subsection{Populating the score}
 \label{ssec:populating-the-score}
@@ -2537,15 +2515,16 @@ iterates through all logical ties in the score in \emph{time order} according
 to their start offset in the score, regardless of their vertical position
 within the score. Logical ties with identical start offsets -- those appearing
 at simultaneities across voices -- are then sorted by their \emph{score order}.
-This results in an iteration which moves first forward in time and the
-top-of-score to bottom. The second -- \emph{phrase-wise} iteration -- locates
-each voice context in the score, then iterates through the top-level containers
-in that voice. These top-level containers are the same containers reference by
-each performed timespan's \texttt{music} property, and represent each phrase in
-the maquette. Attack-point iteration helps maintain the continuity of some
-process across multiple voices in time, while phrase-wise iteration returns
-entire phrases and therefore allows processes to treat those phrases and all of
-the components located in the subtree rooted at the phrase as a group.
+This results in an iteration which moves first forward in time and then from
+the top of the score to the bottom. The second technique -- \emph{phrase-wise}
+iteration -- locates each voice context in the score, then iterates through the
+top-level containers in that voice. These top-level containers are the same
+containers reference by each performed timespan's \texttt{music} property, and
+represent each phrase in the maquette. Attack-point iteration helps maintain
+the continuity of some process across multiple voices in time, while
+phrase-wise iteration returns entire phrases and therefore allows processes to
+treat those phrases and all of the components located in the subtree rooted at
+that phrase as a single group.
 
 Consider the following two voice score, produced by a segment-maker and
 annotated to show each division and phrase:
@@ -2930,7 +2909,7 @@ show(illustration)
 \end{singlespacing}
 \end{abjadbookoutput}
 
-Some of the handlers used during non-rhythmic interpretation rely on
+\noindent Some of the handlers used during non-rhythmic interpretation rely on
 information about each pitched logical tie in the score. Both grace- and
 pitch-handlers iterate through the score in time order. While grace-handlers do
 not make use of information stored within each logical tie's associated
@@ -2944,7 +2923,7 @@ iteration procedures.
 
 Consort's segment-maker can be instructed to attach grace notes to various
 parts of the score by defining a \emph{grace-handler} on a music-specifier.
-Grace-handlers attach *grace containers* to logical ties within a score in a
+Grace-handlers attach \emph{grace containers} to logical ties within a score in a
 patterned way, according to a cyclic sequence of counts, as well as collection
 of flags which restrict what leaves may be selected for attachment.
 Abjad implements grace notes as normal leaves -- notes, chords and rests --
@@ -3288,7 +3267,7 @@ show(segment_maker, verbose=False)
 behave somewhat analogously to the ratio-parts expressions discussed in
 \autoref{ssec:populating-the-maquette}, describing which pitches or
 pitch-classes are to be used in which sections of a segment, as partitioned by
-a ratio.
+a ratio:
 
 \begin{comment}
 <abjad>
@@ -3605,10 +3584,11 @@ show(segment_maker, verbose=False)
 earlier in this section, whose pitch-handler cycled through a C-major scale.
 Pitch-handlers may be configure to use the same pitch for each division, or
 even phrase, rather than choosing a new pitch for each encountered logical tie.
-This behavior is defined by the pitch-handler's \emph{application rate}. The
-following pitch handler applies the same pitch from its pitch specifier to each
-logical tie within each division. Both the divisions and phrases have been
-annotated for clarity:
+This behavior is defined by the pitch-handler's \emph{application rate}, which
+is quite analogous to the music specifier sequence application rate discussed
+in \autoref{ssec:music-specifiers}. The following pitch handler applies the
+same pitch from its pitch specifier to each logical tie within each division.
+Both the divisions and phrases have been annotated for clarity:
 
 \begin{comment}
 <abjad>[stylesheet=../consort.ily]
@@ -3748,7 +3728,7 @@ show(lilypond_file)
 
 \noindent Other pitch-handlers are possible. For example, Consort's
 \texttt{PitchClassPitchHandler} first applies pitch-classes to each logical
-tie, then an octavation according a \emph{register specifier} which acts
+tie, then an octavation according to a \emph{register specifier} which acts
 similarly to a break-point function, shifting the pitch-class up and down by
 octaves according to the shape of the specifier and the logical tie's position
 within its division, phrase and segment. Pitch-handlers based on vertical
@@ -3772,7 +3752,7 @@ series of \emph{callbacks} which progressively refine a selection as each
 callback processes it. Much like the other handler classes described already,
 an attachment-expression's attachments sequence cycles, allowing different
 groups of attachments to be attached each time the attachment-expression is
-called with a different seed value. Attachment-handler associate their
+called with a different seed value. Attachment-handlers associate their
 attachment expressions with underscore-delimited string keys. This mechanism,
 nearly identical to that employed by music settings for associating music
 specifiers with voice-name abbreviations, allows attachment expressions --
@@ -3780,7 +3760,7 @@ which may have an arbitrary number of such associations -- to be reconfigured
 through templating to add new attachment expressions or overwrite or nullify
 specific existing expressions.\footnote{The principle employed by both music
 settings and attachment handlers is crucial: named references beat positional
-references.}
+references for ease of reconfiguration.}
 
 Consider the following two-staff segment containing phrases interspersed by
 rests and a surface-rhythm with a variety of tuplets and ties:
@@ -4082,11 +4062,11 @@ inspect the leaves it covers for the previously attached annotations. For
 example, Consort's \texttt{StringContactSpanner} can inspect its leaves for
 \texttt{StringContactPoint} indicators and then construct markup for each
 contact point -- sul ponticello, ordinario, and so forth -- bridged by arrows
-when the contact points changed, and parenthesizing the contact point markup
+when the contact points change, and parenthesizing the contact point markup
 when cautionary. Likewise, the \texttt{BowContactSpanner} can inspect its
 leaves for \texttt{BowContactPoint} indicators -- which indicate the current
 position along the hair of the bow -- as well as \texttt{BowMotionTechnique}
-indicators -- which describe various motion qualities like \emph{jete} and
+indicators -- which describe various motion qualities like \emph{jet\'{e}} and
 tremolo -- replacing the note heads of the staff with fractions for the current
 bow position and adding up- or down-bow markup as necessary. When combined with
 the appropriate typographic overrides, complex graphic notation results:

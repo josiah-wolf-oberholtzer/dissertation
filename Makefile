@@ -84,6 +84,11 @@ compile/fast:
 		-shell-escape \
 		dissertation.tex
 
+compile/talk:
+	xelatex \
+		-shell-escape \
+		talk.tex
+
 clean/temp:
 	rm -Rif assets/tmp*
 	rm -Rif tmp/tmp*
