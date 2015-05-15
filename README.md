@@ -1,183 +1,26 @@
 dissertation
 ============
 
-A theory of composition
------------------------
+Submitted to Harvard University GSAS on May 1st, 2015.
 
-## motivations
+Abstract:
 
-- specification
-- interpretation
-- different timescales
-
-## actors
-
-- makers
-    - configure and call
-- handlers
-    - configure and call
-- selectors
-    - configure and call
-- specifiers
-    - aggregate makers, handlers
-- materials
-    - something out of time
-- segments
-    - something in time
-
-## before rhythm, after rhythm
-
-## dramatis personae
-
-- segment maker
-- music setting
-- timespan maker
-    - independent, dependent
-- timespan identifier
-    - ratio parts expression
-- context names
-- music specifier
-    - composite music specifier
-- rhythm maker
-    - composite rhythm maker
-- handler
-    - grace
-    - pitch
-    - attachment
-- score post processing
-
-Laying out time
----------------
-
-## timespans and timespan inventories
-
-- offsets and duration
-- wellformedness
-- time relations: intersection, congruency etc.
-- unioning, differencing and splitting
-- multiplexing and demultiplexing
-- resolution
-- partitioning
-- timespan collection vs timespan inventory
-
-## rhythm makers
-
-- divisions
-- rhythm maker
-- specifiers: tie, duration spelling, beam
-- specific rhythm makers
-    - NoteRhythmMaker
-    - IncisedRhythmMaker
-    - EvenDivisionsRhythmMaker
-    - TaleaRhythmMaker
-- composite rhythm maker
-
-## meter finding and rewriting
-
-- meters vs time signatures
-    - rhythm trees
-- finding meters
-    - metric accent kernels
-    - offset counters
-    - discard final silence
-- rewriting meters
-    - specific iteration techniques
-    - boundary depth
-    - dot count
-
-## performed and silent timespans
-
-- payloaded timespans:
-    - layer
-    - voice name
-- performed timespans:
-    - forbid fusing
-    - forbid splitting
-    - minimum duration
-    - (additionally, music specifier: minimum phrase duration)
-    - divisions
-    - music
-    - music specifier
-
-## timespan makers
-
-- timespan specifier
-- independent vs dependent
-- target timespans
-- talea
-- padding
-- flooded timespan maker
-- dependent timespan maker
-- talea timespan maker
-    - taleas: playing, silence and initial silence
-    - groupings
-    - synchronization
-    - repeat and reflect
-- aside: looms in aurora
-
-Consort's time manager
-----------------------
-
-## the time manager pipeline
-
-## populating independent timespans
-
-- populate multiplexed timespans
-- find meters
-- demultiplex timespans
-    - resolve timespan inventories
-    - subtract timespan inventories
-- split demultiplexed timespans
-- prune malformed timespans
-- consolidate demultiplexed timespans
-- inscribe demultiplexed timespans
-    - get rhythm maker
-    - make simple music
-    - consolidate rests
-    - group nonsilent divisions
-- multiplex timespans
-- prune short timespans
-- prune meters
-
-## populating dependent timespans
-
-- populate multiplexed timespans
-- demultiplex timespans
-- split demultiplexed timespans
-- prune short timespans
-- prune malformed timespans
-- consolidate demultiplexed timespans
-- inscribe demultiplexed timespans
-
-## post processing
-
-- populate silent timespans
-- validate timespans
-- rewrite meters
-- collect attack points
-- populate score
-
-Consort's handlers
-------------------
-
-## score iteration
-
-- phrase-wise
-- time-wise
-- seeds
-
-## grace handler
-
-- quirks of LilyPond's grace handling
-
-## pitch handler
-
-- pitch specifier
-- pitch operation
-- pitch operation specifier
-- register specifier
-
-## attachment handler
-
-- attachment expressions
-- selectors
+This thesis documents my research into formalized score control, in order to
+demonstrate a computational model of music composition. When working
+computationally, models provide an explicit formal description of what objects
+exist within a given domain, how they behave, and what transformations they
+afford. The clearer the model becomes, the easier it is to extend and to
+construct increasingly higher-order abstractions around that model. In other
+words, a clear computational model of music notation affords the development of
+a clear model of music composition. The Abjad API for Formalized Score Control,
+an open-source software library written in the Python programming language and
+making use of the LilyPond automated typesetting system for graphical output,
+is presented as such a computational model of music notation. My own
+compositional modeling work, extending Abjad, is introduced and analyzed in the
+Python library Consort. A collection of five scores, each implemented as Python
+packages extending these software libraries, are included. Three of these
+scores, *Zaira*, *Armilla* and *Ersilia*, rely on Consort as their
+compositional engine, and are presented along with their complete sources.
+These scores demonstrate my development as a composer investigating the role of
+computation in music, and display a variety of large-scale structures and
+musical textures made possible when working with such modeling tools.
