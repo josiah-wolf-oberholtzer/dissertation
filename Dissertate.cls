@@ -13,6 +13,22 @@
 \ProvidesClass{Dissertate}[2014/01/24 v1.0 Dissertate Class]
 \LoadClass[12pt, twoside, openright, letterpaper]{book}
 
+\def\@endpart{\vfil\newpage
+    \if@twoside
+        \vspace*{\fill}
+        \hfill
+        \begin{center}
+        This page intentionally left blank.
+        \end{center}
+        \vspace{\fill}
+        \thispagestyle{fancy}
+        \newpage
+    \fi
+    \if@tempswa
+        \twocolumn
+    \fi
+}
+
 % some definitions
 \def\degreeyear#1{\gdef\@degreeyear{#1}}
 \def\degreemonth#1{\gdef\@degreemonth{#1}}
