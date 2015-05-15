@@ -1,9 +1,10 @@
-dissertation
-============
+A Computational Model of Music Composition
+==========================================
 
-Submitted to Harvard University GSAS on May 1st, 2015.
+Dissertation submitted to Harvard University GSAS on May 1st, 2015.
 
-Abstract:
+Abstract
+--------
 
 This thesis documents my research into formalized score control, in order to
 demonstrate a computational model of music composition. When working
