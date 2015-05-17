@@ -25,3 +25,14 @@ compositional engine, and are presented along with their complete sources.
 These scores demonstrate my development as a composer investigating the role of
 computation in music, and display a variety of large-scale structures and
 musical textures made possible when working with such modeling tools.
+
+See also
+--------
+
+https://github.com/Abjad/abjad
+https://github.com/josiah-wolf-oberholtzer/consort
+https://github.com/josiah-wolf-oberholtzer/ersilia
+https://github.com/josiah-wolf-oberholtzer/armilla
+https://github.com/josiah-wolf-oberholtzer/zaira
+https://github.com/josiah-wolf-oberholtzer/aurora
+https://github.com/josiah-wolf-oberholtzer/plague_water
