@@ -29,10 +29,10 @@ musical textures made possible when working with such modeling tools.
 See also
 --------
 
-https://github.com/Abjad/abjad
-https://github.com/josiah-wolf-oberholtzer/consort
-https://github.com/josiah-wolf-oberholtzer/ersilia
-https://github.com/josiah-wolf-oberholtzer/armilla
-https://github.com/josiah-wolf-oberholtzer/zaira
-https://github.com/josiah-wolf-oberholtzer/aurora
-https://github.com/josiah-wolf-oberholtzer/plague_water
+- https://github.com/Abjad/abjad
+- https://github.com/josiah-wolf-oberholtzer/consort
+- https://github.com/josiah-wolf-oberholtzer/ersilia
+- https://github.com/josiah-wolf-oberholtzer/armilla
+- https://github.com/josiah-wolf-oberholtzer/zaira
+- https://github.com/josiah-wolf-oberholtzer/plague_water
+- https://github.com/josiah-wolf-oberholtzer/aurora
