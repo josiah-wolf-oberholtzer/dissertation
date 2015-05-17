@@ -1,7 +1,7 @@
 A Computational Model of Music Composition
 ==========================================
 
-Dissertation submitted to Harvard University GSAS on May 1st, 2015.
+Dissertation submitted to Harvard University GSAS on May 15th, 2015.
 
 Abstract
 --------
