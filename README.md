@@ -3,6 +3,11 @@ A Computational Model of Music Composition
 
 Dissertation submitted to Harvard University GSAS on May 15th, 2015.
 
+Download
+--------
+
+[Get it.](https://github.com/josiah-wolf-oberholtzer/dissertation/blob/master/dissertation.pdf)
+
 Abstract
 --------
 
